@@ -24,7 +24,7 @@ async function createWindow () {
   mainWindow.loadFile('index.html')
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -59,22 +59,6 @@ for (var i = 1; i <= LXConfig.e131Universes; i++) {
   e131Clients[i]['packet'].setUniverse(i);
   e131Clients[i]['packet'].setPriority(LXConfig.e131Priority);
 }
-
-/*
-var e131Listener = new e131.Server([1,2]);
-e131Listener.on('listening', function() {
-  console.log('server listening on port %d, universes %j', this.port, this.universes);
-});
-e131Listener.on('packet', function (packet) {
-  var sourceName = packet.getSourceName();
-  var sequenceNumber = packet.getSequenceNumber();
-  var universe = packet.getUniverse();
-  var slotsData = packet.getSlotsData();
-
-  console.log('source="%s", seq=%d, universe=%d, slots=%d',
-      sourceName, sequenceNumber, universe, slotsData.length);
-  console.log('slots data = %s', slotsData.toString('hex'));
-});*/
 
 ipcMain.on("sendACN", (event, args) => {
   var universe = args.universe;
