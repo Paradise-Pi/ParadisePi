@@ -66,9 +66,10 @@ ipcMain.on("sendACN", (event, args) => {
   for (var channel=0; channel<e131Clients[universe]['addressData'].length; channel++) {
     if (channelsValues[(channel+1)] !== undefined) {
       e131Clients[universe]['addressData'][channel] = channelsValues[(channel+1)];
-    } else {
+    } else { //this bit allows only one preset at a time
+      //todo make an additive or solo option?
       e131Clients[universe]['addressData'][channel] = null;
-      console.log(e131Clients[universe]['addressData'][channel]);
+      //console.log(e131Clients[universe]['addressData'][channel]);
     }
   }
 });
@@ -86,6 +87,12 @@ if (LXConfig.e131Universes > 0) {
   }
 }
 
+ipcMain.on("sendOSC", (event, arguments) =>{
+  udpPort.send({address: arguments.command, args: arguments.commandArgs}, SNDConfig.targetIP, SNDConfig.targetPort)
+  if (arguments.response === true){
+    event.sender.send("hello");
+  }
+});
 
 
 var udpPort = new osc.UDPPort({
@@ -96,9 +103,11 @@ var udpPort = new osc.UDPPort({
 
 udpPort.on("ready", function () {
   console.log("Listening out");
-  //udpPort.send("/info","");
+  udpPort.send({address:"/info", args:[]}, SNDConfig.targetIP, 10023);
+  ipcMain.emit("fromMain", {data:"hello"});
 });
 udpPort.on("message", function (oscMessage) {
+  mainWindow.send("fromOSC", {data:oscMessage})
   console.log(oscMessage);
 });
 udpPort.on("error", function (err) {

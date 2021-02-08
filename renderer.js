@@ -5,6 +5,8 @@
 // selectively enable features needed in the rendering
 // process.
 
+//device info
+//todo convert to sqlite database
 var presetFile = {
     name: "untitled",
     deviceName: "untitled device",
@@ -13,30 +15,35 @@ var presetFile = {
             enabled: true,
             label: "1",
             universe: 1,
-            values: {45:255,2:255}
+            setValues: {45:255,2:255},
+            unSetValues: {45:0,2:0},
         },
         2:{
             enabled: true,
             label: "2",
             universe: 1,
-            values: {10:255, 12:255, 14:255}
+            setValues: {10:255, 12:255, 14:255},
+            unSetValues: {10:0, 12:0, 14:0},
         },
         3:{
             enabled: true,
             label: "3",
             universe: 1,
-            values: {100:255, 120:255, 121:255}
+            setValues: {100:255, 120:255, 121:255},
+            unSetValues: {100:0, 120:0, 121:0},
         },
         4:{
             enabled: true,
             label: "4",
             universe: 1,
-            values: {200:255, 201:255, 202:255}
+            setValues: {200:255, 201:255, 202:255},
+            unSetValues: {200:0, 201:0, 202:0},
         },
 }
 }
 
 let presetStatus = [null, false, false, false, false]; //used to store on or off values of each preset
+let soundStatus = [null, false];
 
 /**
  * generic function to send an sACN call.
@@ -47,20 +54,19 @@ function sendACN(universe, channels){
     window.api.send("sendACN", {"universe":universe, "channelsValues": channels})
 }
 
-window.api.receive("fromMain", (data) => {
-    console.log(`Received ${data} from main process`);
-});
-
 /**
- * Sets all preset channel values to 0
- * values should be a copy of a value object
- * @param values - object
- * @returns {*}
+ * generic function to send an OSC call
+ * @param command - string - osc command to send
+ * @param args - array - osc arguments
+ * @param response - boolean - does the caller want the response from the remote device
  */
-function zeroChannelValues(values){
-    Object.keys(values).forEach(function (key){values[key] = 0})
-    return values;
+function sendOSC(command, args = []) {
+    window.api.send("sendOSC", {"command": command, "commandArgs": args})
 }
+
+window.api.receive("fromOSC", (data) => {
+    console.log(data);
+});
 
 /**
  * button click function
@@ -69,9 +75,9 @@ function zeroChannelValues(values){
 function presetEvent () {
     var preset = this.getAttribute("data-preset");
     var universe = presetFile.presetConfig[preset].universe;
-    var values = JSON.parse(JSON.stringify(presetFile.presetConfig[preset].values));//dirty copy
+    var values = presetFile.presetConfig[preset].setValues;
     if (presetStatus[preset] === true){
-        values = zeroChannelValues(values);
+        values = presetFile.presetConfig[preset].unSetValues;
     }
     sendACN(universe, values);
     presetStatus[preset] = !presetStatus[preset];
@@ -83,3 +89,29 @@ for (var i = 0; i < elements.length; i++) {
     elements[i].addEventListener('click', presetEvent);
 }
 
+
+// this function maaay not be useful cause of network demand
+function OSCfade(command, start, end){
+    if (start == end){
+        sendOSC(command, [{type:"f", value:start}])
+    } else if (start < end) {
+        for (let i = start; i < end; i += 0.01){
+            sendOSC(command, [{type:"f", value:i}]);
+        }
+    } else {
+        for (let i = start; i > end; i -= 0.01){
+            sendOSC(command, [{type:"f", value:i}]);
+        }
+    }
+}
+
+function soundEvent () {
+    if (soundStatus[1] === false){
+        sendOSC("/ch/01/mix/fader", [{type:"f", value:0.75}]);
+    } else {
+        sendOSC("/ch/01/mix/fader", [{type:"f", value:0.0}]);
+    }
+    soundStatus[1] = !soundStatus[1];
+}
+
+document.getElementById("sound1").addEventListener('click', soundEvent)

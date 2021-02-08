@@ -6,6 +6,7 @@ const LXConfig = {
     "e131Frequency":"5" //In HZ - this is only a target and it might not represent real-world conditions
 }
 const SNDConfig = {
-    "targetIP":"0.0.0.0",
+    "targetIP":"192.168.1.123",
+    "targetPort":"10023",
 }
 module.exports = { LXConfig, SNDConfig };
