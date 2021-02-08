@@ -3,7 +3,7 @@ const {app, BrowserWindow,ipcMain} = require('electron')
 const path = require('path')
 const e131 = require('e131');
 const osc = require("osc");
-const { LXConfig } = require('./config.js');
+const { LXConfig, SNDConfig } = require('./config.js');
 
 let mainWindow;
 
@@ -63,10 +63,12 @@ for (var i = 1; i <= LXConfig.e131Universes; i++) {
 ipcMain.on("sendACN", (event, args) => {
   var universe = args.universe;
   var channelsValues = args.channelsValues; //Format = {53:244,14:34,56:255}
-  for (var channel=1; channel<e131Clients[universe]['addressData'].length; channel++) {
-    if (channelsValues[channel] !== undefined) {
-      e131Clients[universe]['addressData'][channel] = channelsValues[channel];
-      console.log(channel,channelsValues[channel]);
+  for (var channel=0; channel<e131Clients[universe]['addressData'].length; channel++) {
+    if (channelsValues[(channel+1)] !== undefined) {
+      e131Clients[universe]['addressData'][channel] = channelsValues[(channel+1)];
+    } else {
+      e131Clients[universe]['addressData'][channel] = null;
+      console.log(e131Clients[universe]['addressData'][channel]);
     }
   }
 });
@@ -83,3 +85,23 @@ if (LXConfig.e131Universes > 0) {
     sendE131(universe);
   }
 }
+
+
+
+var udpPort = new osc.UDPPort({
+  localAddress: "0.0.0.0",
+  localPort: 57121,
+  //remoteAddress: SNDConfig.targetIP,
+});
+
+udpPort.on("ready", function () {
+  console.log("Listening out");
+  //udpPort.send("/info","");
+});
+udpPort.on("message", function (oscMessage) {
+  console.log(oscMessage);
+});
+udpPort.on("error", function (err) {
+  console.log(err);
+});
+udpPort.open();
