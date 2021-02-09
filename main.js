@@ -1,10 +1,17 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow,ipcMain} = require('electron')
-const path = require('path')
+const {app, BrowserWindow,ipcMain} = require('electron');
+const path = require('path');
+const {LXConfig,SNDConfig} = require('./config.js');
+const oscHandler = require("osc");
 const e131 = require('e131');
-const osc = require("osc");
-const { LXConfig, SNDConfig } = require('./config.js');
+const knex = require('knex')({
+  client: 'sqlite3',
+  connection: {
+    filename: path.join(__dirname, 'database.sqlite'),
+  },
+});
 
+//Main Window
 let mainWindow;
 
 async function createWindow () {
@@ -47,9 +54,83 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+// Database Handling
+//define db
+knex.schema
+    .createTable('lxPreset', table => {
+      table.integer('id');
+      table.string('name');
+      table.boolean('enabled');
+      table.integer('universe');
+      table.json('setValues');
+      table.json('unSetValues');
+    })
 
+    .createTable('sndPreset', table => {
+      table.integer('id');
+      table.string('name');
+      table.boolean('enabled');
+      table.string('address');
+      table.json('setArguments');
+      table.json('unSetArguments');
+    })
+
+    .createTable('lxConfig', table => {
+      table.string('key');
+      table.string('value');
+    })
+
+    .createTable('sndConfig', table => {
+      table.string('key');
+      table.string('value');
+    })
+
+    .then(() => knex('lxPreset').insert({ id:1, name: "LX1", enabled: true, universe: 1, setValues: {45:255,2:255}, unSetValues: {45:0,2:0}}))
+    .then( () => knex('sndPreset').insert({id:1, name: "Sound1", enabled: true, address: "/ch/01/mix/fader", setArguments:{type:"f", value:0.75}, unSetArguments: {type:"f", value:0.0}}) )
+
+    .catch(e => {
+      console.error(e);
+    });
+
+ipcMain.on("queryDB", (event, args) => {
+  let validTables = ['lxPreset', 'sndPreset', 'lxConfig', 'sndConfig'];
+  let tableIdentifiers = {'lxPreset':'id', 'sndPreset':'id', 'lxConfig':'id', 'sndConfig':'id'}
+  if (validTables.includes(args.tableName)) {
+    knex.select().table(args.tableName).where(tableIdentifiers[args.tableName], args.value)
+        .then((rows) => {
+          event.sender.send("dbRequestReply", {element: args.element, data:rows[0]});
+        })
+  }
+})
+
+//OSC
+//define oscHandler stuff
+var udpPort = new oscHandler.UDPPort({
+  localAddress: "0.0.0.0",
+  localPort: 57121,
+  //remoteAddress: SNDConfig.targetIP,
+});
+
+udpPort.on("ready", function () {
+  console.log("Listening out");
+  udpPort.send({address:"/info", args:[]}, SNDConfig.targetIP, 10023);
+  ipcMain.emit("fromMain", {data:"hello"});
+});
+udpPort.on("message", function (oscMessage) {
+  mainWindow.send("fromOSC", {data:oscMessage})
+  console.log(oscMessage);
+});
+udpPort.on("error", function (err) {
+  console.log(err);
+});
+udpPort.open();
+
+//events
+ipcMain.on("sendOSC", (event, arguments) =>{
+  udpPort.send({address: arguments.command, args: arguments.commandArgs}, SNDConfig.targetIP, SNDConfig.targetPort)
+});
+
+//sACN
 var e131Clients = [];
 for (var i = 1; i <= LXConfig.e131Universes; i++) {
   e131Clients[i] = {"client": new e131.Client(i)};
@@ -86,31 +167,3 @@ if (LXConfig.e131Universes > 0) {
     sendE131(universe);
   }
 }
-
-ipcMain.on("sendOSC", (event, arguments) =>{
-  udpPort.send({address: arguments.command, args: arguments.commandArgs}, SNDConfig.targetIP, SNDConfig.targetPort)
-  if (arguments.response === true){
-    event.sender.send("hello");
-  }
-});
-
-
-var udpPort = new osc.UDPPort({
-  localAddress: "0.0.0.0",
-  localPort: 57121,
-  //remoteAddress: SNDConfig.targetIP,
-});
-
-udpPort.on("ready", function () {
-  console.log("Listening out");
-  udpPort.send({address:"/info", args:[]}, SNDConfig.targetIP, 10023);
-  ipcMain.emit("fromMain", {data:"hello"});
-});
-udpPort.on("message", function (oscMessage) {
-  mainWindow.send("fromOSC", {data:oscMessage})
-  console.log(oscMessage);
-});
-udpPort.on("error", function (err) {
-  console.log(err);
-});
-udpPort.open();

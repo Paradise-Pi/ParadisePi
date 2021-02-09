@@ -43,7 +43,41 @@ var presetFile = {
 }
 
 let presetStatus = [null, false, false, false, false]; //used to store on or off values of each preset
-let soundStatus = [null, false];
+
+//db handling
+/**
+ * This function updates the relevant element with the information from the database
+ * it relies on each type of button having the specified class.
+ */
+window.api.receive("dbRequestReply", (data) => {
+    console.log(data);
+    let element = document.getElementById(data.element);
+    element.innerText = data.data.name;
+    element.setAttribute('data-status', "false");
+    element.disabled = !data.data.enabled;
+    if (element.className === "lx"){
+        //for LX presets
+        element.setAttribute('data-universe', data.data.universe);
+        element.setAttribute('data-set', data.data.setValues);
+        element.setAttribute('data-unset', data.data.unSetValues);
+    } else if (element.className === "snd"){
+        //for sound presets
+        element.setAttribute('data-address', data.data.address);
+        element.setAttribute('data-set', data.data.setArguments);
+        element.setAttribute('data-unset', data.data.unSetArguments);
+    }
+})
+
+/**
+ * request information from the database
+ * will return an entire entry from the given table using the given entry id
+ * @param elementID - calling element so that changes can be made
+ * @param table - table to query
+ * @param id - entry id
+ */
+function updateElement(elementID, table, id){
+    window.api.send("queryDB", {element:elementID, tableName: table, value:id})
+}
 
 /**
  * generic function to send an sACN call.
@@ -58,7 +92,6 @@ function sendACN(universe, channels){
  * generic function to send an OSC call
  * @param command - string - osc command to send
  * @param args - array - osc arguments
- * @param response - boolean - does the caller want the response from the remote device
  */
 function sendOSC(command, args = []) {
     window.api.send("sendOSC", {"command": command, "commandArgs": args})
@@ -73,18 +106,19 @@ window.api.receive("fromOSC", (data) => {
  * gets preset number from preset data attribute
  */
 function presetEvent () {
-    var preset = this.getAttribute("data-preset");
-    var universe = presetFile.presetConfig[preset].universe;
-    var values = presetFile.presetConfig[preset].setValues;
-    if (presetStatus[preset] === true){
-        values = presetFile.presetConfig[preset].unSetValues;
+    var universe = this.getAttribute("data-universe");
+    var values = JSON.parse(this.getAttribute("data-set"));
+    if (this.getAttribute("data-status") === "true"){
+        values = JSON.parse(this.getAttribute("data-unset"));
+        this.setAttribute("data-status", "false");
+    } else {
+        this.setAttribute("data-status", "true");
     }
     sendACN(universe, values);
-    presetStatus[preset] = !presetStatus[preset];
 }
 
 //Add above function to all preset buttons
-let elements = document.getElementsByClassName("preset");
+let elements = document.getElementsByClassName("lx");
 for (var i = 0; i < elements.length; i++) {
     elements[i].addEventListener('click', presetEvent);
 }
@@ -106,12 +140,13 @@ function OSCfade(command, start, end){
 }
 
 function soundEvent () {
-    if (soundStatus[1] === false){
+    /*if (soundStatus[1] === false){
         sendOSC("/ch/01/mix/fader", [{type:"f", value:0.75}]);
     } else {
         sendOSC("/ch/01/mix/fader", [{type:"f", value:0.0}]);
     }
-    soundStatus[1] = !soundStatus[1];
+    soundStatus[1] = !soundStatus[1];*/
+    updateElement(this.id, "lxPreset", 1)
 }
 
-document.getElementById("sound1").addEventListener('click', soundEvent)
+document.getElementById("snd1").addEventListener('click', soundEvent)

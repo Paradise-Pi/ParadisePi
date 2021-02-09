@@ -22,13 +22,13 @@ contextBridge.exposeInMainWorld(
     "api", {
       send: (channel, data) => {
         // whitelist channels
-        let validChannels = ["sendACN", "sendOSC"];
+        let validChannels = ["sendACN", "sendOSC", "queryDB"];
         if (validChannels.includes(channel)) {
           ipcRenderer.send(channel, data);
         }
       },
       receive: (channel, func) => {
-        let validChannels = ["fromOSC"];
+        let validChannels = ["fromOSC", "dbRequestReply"];
         if (validChannels.includes(channel)) {
           // Deliberately strip event as it includes `sender`
           ipcRenderer.on(channel, (event, ...args) => func(...args));
