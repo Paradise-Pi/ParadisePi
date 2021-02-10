@@ -5,45 +5,6 @@
 // selectively enable features needed in the rendering
 // process.
 
-//device info
-//todo convert to sqlite database
-var presetFile = {
-    name: "untitled",
-    deviceName: "untitled device",
-    presetConfig: {
-        1:{
-            enabled: true,
-            label: "1",
-            universe: 1,
-            setValues: {45:255,2:255},
-            unSetValues: {45:0,2:0},
-        },
-        2:{
-            enabled: true,
-            label: "2",
-            universe: 1,
-            setValues: {10:255, 12:255, 14:255},
-            unSetValues: {10:0, 12:0, 14:0},
-        },
-        3:{
-            enabled: true,
-            label: "3",
-            universe: 1,
-            setValues: {100:255, 120:255, 121:255},
-            unSetValues: {100:0, 120:0, 121:0},
-        },
-        4:{
-            enabled: true,
-            label: "4",
-            universe: 1,
-            setValues: {200:255, 201:255, 202:255},
-            unSetValues: {200:0, 201:0, 202:0},
-        },
-}
-}
-
-let presetStatus = [null, false, false, false, false]; //used to store on or off values of each preset
-
 //db handling
 /**
  * This function updates the relevant element with the information from the database

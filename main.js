@@ -9,6 +9,7 @@ const knex = require('knex')({
   connection: {
     filename: path.join(__dirname, 'database.sqlite'),
   },
+  useNullAsDefault: true,
 });
 
 //Main Window
@@ -38,6 +39,7 @@ async function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+  createDatabases()
   createWindow()
   
   app.on('activate', function () {
@@ -56,41 +58,61 @@ app.on('window-all-closed', function () {
 
 // Database Handling
 //define db
-knex.schema
-    .createTable('lxPreset', table => {
-      table.integer('id');
-      table.string('name');
-      table.boolean('enabled');
-      table.integer('universe');
-      table.json('setValues');
-      table.json('unSetValues');
-    })
-
-    .createTable('sndPreset', table => {
-      table.integer('id');
-      table.string('name');
-      table.boolean('enabled');
-      table.string('address');
-      table.json('setArguments');
-      table.json('unSetArguments');
-    })
-
-    .createTable('lxConfig', table => {
-      table.string('key');
-      table.string('value');
-    })
-
-    .createTable('sndConfig', table => {
-      table.string('key');
-      table.string('value');
-    })
-
-    .then(() => knex('lxPreset').insert({ id:1, name: "LX1", enabled: true, universe: 1, setValues: {45:255,2:255}, unSetValues: {45:0,2:0}}))
-    .then( () => knex('sndPreset').insert({id:1, name: "Sound1", enabled: true, address: "/ch/01/mix/fader", setArguments:{type:"f", value:0.75}, unSetArguments: {type:"f", value:0.0}}) )
-
-    .catch(e => {
-      console.error(e);
+async function createDatabases() {
+  const haslxPreset = await knex.schema.hasTable('lxPreset');
+  if (!haslxPreset) {
+    knex.schema.createTable('sndPreset', table => {
+        table.integer('id');
+        table.string('name');
+        table.boolean('enabled');
+        table.string('address');
+        table.json('setArguments');
+        table.json('unSetArguments');
     });
+    knex('lxPreset').insert({ id:1, name: "LX1", enabled: false, universe: 1, setValues: {}, unSetValues: {}});
+    knex('lxPreset').insert({ id:2, name: "LX2", enabled: false, universe: 1, setValues: {}, unSetValues: {}});
+    knex('lxPreset').insert({ id:3, name: "LX3", enabled: false, universe: 1, setValues: {}, unSetValues: {}});
+    knex('lxPreset').insert({ id:4, name: "LX4", enabled: false, universe: 1, setValues: {}, unSetValues: {}});
+  }
+
+  const hassndPreset = await knex.schema.hasTable('sndPreset');
+  if (!hassndPreset){
+    knex.schema.createTable('sndPreset', table => {
+        table.integer('id');
+        table.string('name');
+        table.boolean('enabled');
+        table.string('address');
+        table.json('setArguments');
+        table.json('unSetArguments');
+    });
+    knex('sndPreset').insert({id:1, name: "Sound1", enabled: false, address: "/info", setArguments:{}, unSetArguments: {}});
+    knex('sndPreset').insert({id:2, name: "Sound2", enabled: false, address: "/info", setArguments:{}, unSetArguments: {}});
+    knex('sndPreset').insert({id:3, name: "Sound3", enabled: false, address: "/info", setArguments:{}, unSetArguments: {}});
+    knex('sndPreset').insert({id:4, name: "Sound4", enabled: false, address: "/info", setArguments:{}, unSetArguments: {}});
+  }
+
+  const haslxConfig = await knex.schema.hasTable('lxConfig');
+  if (!haslxConfig){
+    knex.schema.createTable('lxConfig', table => {
+      table.string('key');
+      table.string('value');
+    });
+    knex('lxConfig').insert({key:"e131Universes", value:1})
+    knex('lxConfig').insert({key:"e131SourceName", value:"Paradise Pi"})
+    knex('lxConfig').insert({key:"e131Priority", value:25})
+    knex('lxConfig').insert({key:"e131Frequency", value:5})
+  }
+
+  const hassndConfig = await knex.schema.hasTable('sndConfig');
+  if (!hassndConfig) {
+    knex.schema.createTable('sndConfig', table => {
+      table.string('key');
+      table.string('value');
+    })
+    knex('sndConfig').insert({key:"targetIP", value:"192.168.1.1"});
+    knex('sndConfig').insert({key:"targetPort", value:"10023"});
+  }
+}
 
 ipcMain.on("queryDB", (event, args) => {
   let validTables = ['lxPreset', 'sndPreset', 'lxConfig', 'sndConfig'];
