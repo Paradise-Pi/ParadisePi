@@ -10,6 +10,15 @@ const knex = require('knex')({
   },
   useNullAsDefault: true,
 });
+const staticServer = require('node-static');
+const staticServerFile = new(staticServer.Server)(__dirname + "/admin", { cache: false, serverInfo: "ParadisePi",indexFile: "index.html" });
+const server = require('http').createServer(function (req, res) {
+  staticServerFile.serve(req, res);
+});
+const options = {
+
+};
+const io = require('socket.io')(server, options);
 
 const template = [
   {
@@ -54,7 +63,9 @@ const menu = Menu.buildFromTemplate(template)
 
 //Main Window
 let mainWindow;
-var LXConfig = SNDConfig = MAINConfig = {}; //Config variables
+var LXConfig = {};
+var SNDConfig = {};
+var MAINConfig = {}; //Config variables
 
 async function createWindow () {
   // Create the browser window.
@@ -96,6 +107,7 @@ app.whenReady().then(() => {
     setupOSC();
     setupE131();
     createWindow();
+    server.listen(80);
   });
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -135,27 +147,37 @@ async function initDatabases() {
   }
   if (!await knex.schema.hasTable('lxConfig')){
     await knex.schema.createTable('lxConfig', table => {
-      table.string('key');
+      table.string('key').primary();
       table.string('value');
+      table.string('name');
+      table.string('description');
+      table.boolean('canEdit').defaultTo(true);
     });
-    await knex('lxConfig').insert({key:"e131Universes", value:2})
-    await knex('lxConfig').insert({key:"e131SourceName", value:"Paradise Pi"})
-    await knex('lxConfig').insert({key:"e131Priority", value:25})
-    await knex('lxConfig').insert({key:"e131Frequency", value:5})
+    await knex('lxConfig').insert({key:"e131Universes", value:2,name:'Number of Universes',description:''})
+    await knex('lxConfig').insert({key:"e131SourceName", value:"Paradise Pi",name:'sACN Source Name',description:''})
+    await knex('lxConfig').insert({key:"e131Priority", value:25,name:'sACN Priority',description:'Higher values take precedence'})
+    await knex('lxConfig').insert({key:"e131Frequency", value:5,name:'Refresh Rate',description:'',canEdit:false})
   }
   if (!await knex.schema.hasTable('sndConfig')) {
     await knex.schema.createTable('sndConfig', table => {
-      table.string('key');
+      table.string('key').primary();
       table.string('value');
+      table.string('name');
+      table.string('description');
+      table.boolean('canEdit').defaultTo(true);
     })
-    await knex('sndConfig').insert({key:"targetIP", value:"192.168.1.143"});
-    await knex('sndConfig').insert({key:"targetPort", value:"10023"});
+    await knex('sndConfig').insert({key:"targetIP", value:"192.168.1.143",name:'OSC Target IP',description:''});
+    await knex('sndConfig').insert({key:"targetPort", value:"10023",name:'OSC Target Port',description:''});
   }
   if (!await knex.schema.hasTable('config')) {
     await knex.schema.createTable('config', table => {
-      table.string('key');
+      table.string('key').primary();
       table.string('value');
-    })
+      table.string('name');
+      table.string('description');
+      table.boolean('canEdit').defaultTo(true);
+    });
+    await knex('config').insert({key:"deviceName", value:"James\'s PC",name:'Device Name',description:'Device\'s friendly name'});
   }
 
   await knex.select().table('sndConfig').then((data) => {
@@ -206,7 +228,9 @@ ipcMain.on("reboot", (event, arguments) =>{
 ipcMain.handle('getVersions', async (event, data) => {
   return process.versions;
 });
-
+ipcMain.handle('getConfig', async (event, data) => {
+  return {"LXConfig":LXConfig,"SNDConfig":SNDConfig,"MAINConfig":MAINConfig};
+});
 
 //OSC Setup
 var udpPort;
@@ -275,4 +299,33 @@ ipcMain.on("sendACN", (event, args) => {
       e131Clients[universe]['addressData'][channel] = 0;
     }
   }
+});
+
+
+// Socket.io admin site
+io.on('connection', socket => {
+  knex.select().table('sndConfig').then((data) => {
+    socket.emit('config', { "SNDConfig": data } );
+  });
+  knex.select().table('lxConfig').then((data) => {
+    socket.emit('config', { "LXConfig": data } );
+  });
+  knex.select().table('config').then((data) => {
+    socket.emit('config', { "config": data } );
+  });
+  socket.emit('about', {
+    "npmVersions": process.versions,
+    "version": app.getVersion()
+  });
+  socket.on('updateConfig', async(table,data) => {
+    if (["config","LXCofig","SNDConfig"].includes(table)) {
+      for (const [key, value] of Object.entries(data)) {
+        await knex(table).where({ key: value.name }).update({ value: value.value })
+      }
+      reboot();
+    }
+  });
+  socket.on("disconnect", (reason) => {
+    console.log("Disconnected: " + reason)
+  });
 });

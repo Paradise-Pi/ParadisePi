@@ -63,4 +63,8 @@ $(document).ready(function() {
     $(document).on("click",".reboot",function() {
         window.api.send("reboot", {});
     });
+    window.api.asyncSend("getConfig", {}).then((result) => {
+        $("#deviceName").html(result['MAINConfig']['deviceName']);
+    });
+
 });
