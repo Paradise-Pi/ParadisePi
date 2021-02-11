@@ -5,6 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "e131": "^1.1.3",
+    "jquery": "^3.5.1",
     "knex": "^0.21.17",
     "osc": "^2.4.1",
     "sqlite3": "^5.0.1"
