@@ -202,14 +202,7 @@ async function initDatabases() {
     });
   });
 }
-/*
-ipcMain.on("queryDB", (event, args) => {
-  await knex.select().table(args.tableName).where(args.keyName, args.value).then((rows) => {
-    if (typeof args.callback === "function") {
-      args.callback(rows);
-    }
-  });
-});*/
+
 ipcMain.handle('simpleQueryDB', async (event, data) => {
   if ("keyName" in data && data.keyName !== null) {
     var result = await knex.select().table(data.tableName).where(data.keyName, data.value);
@@ -218,12 +211,6 @@ ipcMain.handle('simpleQueryDB', async (event, data) => {
   }
   return result;
 });
-
-ipcMain.handle('countQueryDB', async (event, data) => {
-  let counts = await knex.select().table(data.tableName).count();
-  return counts[0]['count(*)'];
-})
-
 
 //General Setup
 function reboot() {
@@ -315,6 +302,7 @@ ipcMain.on("sendACN", (event, args) => {
 
 // Socket.io admin site
 io.on('connection', socket => {
+  //send information from tables
   knex.select().table('sndConfig').then((data) => {
     socket.emit('config', { "SNDConfig": data } );
   });
@@ -324,15 +312,36 @@ io.on('connection', socket => {
   knex.select().table('config').then((data) => {
     socket.emit('config', { "config": data } );
   });
+  knex.select().table('lxPreset').then( (data) => {
+    socket.emit('preset', {"LXPreset": data} );
+  });
+  knex.select().table('sndPreset').then( (data) => {
+    socket.emit('preset', {"SNDPreset":data});
+  });
   socket.emit('about', {
     "npmVersions": process.versions,
     "version": app.getVersion()
   });
+  //update config when received from site
   socket.on('updateConfig', async(table,data) => {
-    if (["config","LXCofig","SNDConfig"].includes(table)) {
+    if (["config","LXConfig","SNDConfig"].includes(table)) {
       for (const [key, value] of Object.entries(data)) {
         await knex(table).where({ key: value.name }).update({ value: value.value })
       }
+      //reboot to update settings on controller
+      reboot();
+    }
+  });
+  //update preset when received from site
+  socket.on('updatePreset', async(table, data) => {
+    if (["LXPreset", "SNDPreset"].includes(table)){
+      //rearrange received data for database formatting
+      datas = {}
+      for (const [key, value] of Object.entries(data)) {
+        datas[value.name] = value.value;
+      }
+      await  knex.table(table).where({id:(datas.id)}).update(datas);
+      //reboot to update settings on controller
       reboot();
     }
   });
