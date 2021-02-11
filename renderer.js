@@ -54,20 +54,15 @@ window.api.receive("fromOSC", (data) => {
 
 $(document).ready(function() {
     //create buttons dynamically
-    window.api.asyncSend("countQueryDB", {"tableName":"lxPreset"}).then((result) => {
-        for (i = 1; i <= result; i++){
-            window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset","keyName": "id", "value":i}).then((result) => {
-                $("#lxContainer").append('<button type="button" class="lx" data-preset="'+ (i-1) +'">' + result[0].name +'</button>');
-            })
-
-        }
+    window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset"}).then((result) => {
+        $.each(result, function (key,value) {
+            $("#lxContainer").append('<button type="button" class="lx" data-preset="'+ (value.id) +'">' + value.name +'</button>');
+        });
     });
-    window.api.asyncSend("countQueryDB", {"tableName":"sndPreset"}).then((result) => {
-        for (i = 1; i <= result; i++){
-            window.api.asyncSend("simpleQueryDB", {"tableName": "sndPreset","keyName": "id", "value":i}).then((result) => {
-                $("#sndContainer").append('<button type="button" class="snd" data-preset="' + (i-1) + '">' + result[0].name +'</button>');
-            })
-        }
+    window.api.asyncSend("simpleQueryDB", {"tableName": "sndPreset"}).then((result) => {
+        $.each(result, function (key,value) {
+            $("#sndContainer").append('<button type="button" class="snd" data-preset="' + (value.id) + '">' + value.name +'</button>');
+        });
     });
 
 
