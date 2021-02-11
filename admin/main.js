@@ -29,7 +29,7 @@ socket.on('config', (data) => {
     }
     if (type) {
         $("form.settings-form[data-table=" + type + "]").html("");
-        $(data[type]).each(function (key,value) {
+        $.each(data[type],function (key,value) {
             $("form.settings-form[data-table=" + type + "]").append('<div class="form-group"><label>' + value.name + '</label><input class="form-control" name="' + value.key + '" type="text" value="' + value.value + '" ' + (value.canEdit != 1 ? 'disabled' : '') + '><span class="help-block">' + value.description + '</span></div>');
         });
         $("form.settings-form[data-table=" + type + "]").append('<button class="btn btn-sm btn-success" type="submit">Save</button>');
