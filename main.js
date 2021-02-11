@@ -20,6 +20,10 @@ async function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    minHeight: 400,
+    minWidth: 600,
+    title: "Paradise",
+    icon: path.join(__dirname, 'assets/icon/icon.png'),
     webPreferences: {
       nodeIntegration: false, // is default value after Electron v5
       contextIsolation: true, // protect against prototype pollution
