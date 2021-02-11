@@ -5,14 +5,23 @@
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' ">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'">
-    <title>Hello World!</title>
+    <link type="text/css" rel="stylesheet" href="style.css">
+    <title>Paradise Pi</title>
   </head>
   <body>
-    <button type="button" class="lx" data-preset="1">Preset 1</button>
-    <button type="button" class="lx" data-preset="2">Preset 2</button>
-    <button type="button" class="lx" data-preset="3">Preset 3</button>
-    <button type="button" class="lx" data-preset="4">Preset 4</button>
-    <button type="button" class="snd" data-preset="1">Sound action</button>
+    <div class="row">
+      <div class="column">
+        <div class="button-container" id="lxContainer">
+          <!-- Buttons generated on load -->
+        </div>
+      </div>
+      <div class="column">
+        <div class="button-container" id="sndContainer">
+          <!-- Buttons generated on load -->
+        </div>
+      </div>
+    </div>
+
     <!-- You can also require other files to run in this process -->
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>

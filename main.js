@@ -22,6 +22,12 @@ const template = [
           console.log("CLicked");
         }
       },
+      {
+        label: 'Reboot',
+        click () {
+          reboot();
+        }
+      },
       { type: 'separator' },
     ]
   },
@@ -62,7 +68,7 @@ async function createWindow () {
     width: 800,
     height: 600,
     minHeight: 400,
-    minWidth: 600,
+    minWidth: 650,
     title: "Paradise",
     icon: path.join(__dirname, 'assets/icon/icon.png'),
     webPreferences: {
@@ -190,6 +196,11 @@ ipcMain.handle('simpleQueryDB', async (event, data) => {
   }
   return result;
 });
+
+ipcMain.handle('countQueryDB', async (event, data) => {
+  let counts = await knex.select().table(data.tableName).count();
+  return counts[0]['count(*)'];
+})
 
 
 //General Setup
