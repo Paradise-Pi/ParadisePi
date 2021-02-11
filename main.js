@@ -1,7 +1,6 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow,ipcMain} = require('electron');
+const {app, BrowserWindow,ipcMain,Menu,dialog} = require('electron');
 const path = require('path');
-const {LXConfig,SNDConfig} = require('./config.js');
 const oscHandler = require("osc");
 const e131 = require('e131');
 const knex = require('knex')({
@@ -12,8 +11,50 @@ const knex = require('knex')({
   useNullAsDefault: true,
 });
 
+const template = [
+  {
+    label: 'File',
+    submenu: [
+      {
+        label: 'Test',
+        click () {
+          //mainWindow.send("newFile", {})
+          console.log("CLicked");
+        }
+      },
+      { type: 'separator' },
+    ]
+  },
+  {
+    role: 'help',
+    submenu: [
+      {
+        label: 'About',
+        role: 'about'
+      }
+    ]
+  }
+]
+
+if (process.platform === 'darwin') {
+  template.unshift({
+    label: app.getName(),
+    submenu: [
+      { role: 'hide' },
+      { role: 'hideothers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' }
+    ]
+  })
+}
+
+const menu = Menu.buildFromTemplate(template)
+
+
 //Main Window
 let mainWindow;
+var LXConfig = SNDConfig = MAINConfig = {}; //Config variables
 
 async function createWindow () {
   // Create the browser window.
@@ -31,7 +72,7 @@ async function createWindow () {
       preload: path.join(__dirname, 'preload.js')
     }
   });
-
+  Menu.setApplicationMenu(menu)
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 
@@ -43,9 +84,19 @@ async function createWindow () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createDatabases()
-  createWindow()
-  
+  var versions = JSON.stringify(process.versions);
+  app.setAboutPanelOptions({
+    applicationName: "Paradise",
+    applicationVersion: app.getVersion(),
+    version: app.getVersion(),
+    credits: versions,
+    copyright: "©2021 James Bithell & John Cherry"
+  });
+  initDatabases().then(() => {
+    setupOSC();
+    setupE131();
+    createWindow();
+  });
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -62,125 +113,150 @@ app.on('window-all-closed', function () {
 
 // Database Handling
 //define db
-async function createDatabases() {
-  const haslxPreset = await knex.schema.hasTable('lxPreset');
-  if (!haslxPreset) {
-    knex.schema.createTable('sndPreset', table => {
+async function initDatabases() {
+  if (!await knex.schema.hasTable('lxPreset')) {
+    await knex.schema.createTable('lxPreset', table => {
+      table.integer('id');
+      table.string('name');
+      table.boolean('enabled');
+      table.string('universe');
+      table.json('setArguments');
+    });
+    await knex('lxPreset').insert({ id:1, name: "LX1", enabled: true, universe: 1, setArguments: JSON.stringify({"1":150,"512":25})});
+  }
+  if (!await knex.schema.hasTable('sndPreset')){
+    await knex.schema.createTable('sndPreset', table => {
         table.integer('id');
         table.string('name');
         table.boolean('enabled');
-        table.string('address');
-        table.json('setArguments');
-        table.json('unSetArguments');
+        table.json('data');
     });
-    knex('lxPreset').insert({ id:1, name: "LX1", enabled: false, universe: 1, setValues: {}, unSetValues: {}});
-    knex('lxPreset').insert({ id:2, name: "LX2", enabled: false, universe: 1, setValues: {}, unSetValues: {}});
-    knex('lxPreset').insert({ id:3, name: "LX3", enabled: false, universe: 1, setValues: {}, unSetValues: {}});
-    knex('lxPreset').insert({ id:4, name: "LX4", enabled: false, universe: 1, setValues: {}, unSetValues: {}});
+    await knex('sndPreset').insert({id:1, name: "Sound1", enabled: true, data: JSON.stringify({"/ch/01/mix/fader": {type:"f", value:0.5},"/ch/01/mix/on": {type:"i", value:1}})});
   }
-
-  const hassndPreset = await knex.schema.hasTable('sndPreset');
-  if (!hassndPreset){
-    knex.schema.createTable('sndPreset', table => {
-        table.integer('id');
-        table.string('name');
-        table.boolean('enabled');
-        table.string('address');
-        table.json('setArguments');
-        table.json('unSetArguments');
-    });
-    knex('sndPreset').insert({id:1, name: "Sound1", enabled: false, address: "/info", setArguments:{}, unSetArguments: {}});
-    knex('sndPreset').insert({id:2, name: "Sound2", enabled: false, address: "/info", setArguments:{}, unSetArguments: {}});
-    knex('sndPreset').insert({id:3, name: "Sound3", enabled: false, address: "/info", setArguments:{}, unSetArguments: {}});
-    knex('sndPreset').insert({id:4, name: "Sound4", enabled: false, address: "/info", setArguments:{}, unSetArguments: {}});
-  }
-
-  const haslxConfig = await knex.schema.hasTable('lxConfig');
-  if (!haslxConfig){
-    knex.schema.createTable('lxConfig', table => {
+  if (!await knex.schema.hasTable('lxConfig')){
+    await knex.schema.createTable('lxConfig', table => {
       table.string('key');
       table.string('value');
     });
-    knex('lxConfig').insert({key:"e131Universes", value:1})
-    knex('lxConfig').insert({key:"e131SourceName", value:"Paradise Pi"})
-    knex('lxConfig').insert({key:"e131Priority", value:25})
-    knex('lxConfig').insert({key:"e131Frequency", value:5})
+    await knex('lxConfig').insert({key:"e131Universes", value:2})
+    await knex('lxConfig').insert({key:"e131SourceName", value:"Paradise Pi"})
+    await knex('lxConfig').insert({key:"e131Priority", value:25})
+    await knex('lxConfig').insert({key:"e131Frequency", value:5})
   }
-
-  const hassndConfig = await knex.schema.hasTable('sndConfig');
-  if (!hassndConfig) {
-    knex.schema.createTable('sndConfig', table => {
+  if (!await knex.schema.hasTable('sndConfig')) {
+    await knex.schema.createTable('sndConfig', table => {
       table.string('key');
       table.string('value');
     })
-    knex('sndConfig').insert({key:"targetIP", value:"192.168.1.1"});
-    knex('sndConfig').insert({key:"targetPort", value:"10023"});
+    await knex('sndConfig').insert({key:"targetIP", value:"192.168.1.143"});
+    await knex('sndConfig').insert({key:"targetPort", value:"10023"});
   }
+  if (!await knex.schema.hasTable('config')) {
+    await knex.schema.createTable('config', table => {
+      table.string('key');
+      table.string('value');
+    })
+  }
+
+  await knex.select().table('sndConfig').then((data) => {
+    data.forEach(function(entry) {
+      SNDConfig[entry['key']] = entry['value'];
+    });
+  });
+  await knex.select().table('lxConfig').then((data) => {
+    data.forEach(function(entry) {
+      LXConfig[entry['key']] = entry['value'];
+    });
+  });
+  await knex.select().table('config').then((data) => {
+    data.forEach(function(entry) {
+      MAINConfig[entry['key']] = entry['value'];
+    });
+  });
 }
-
+/*
 ipcMain.on("queryDB", (event, args) => {
-  let validTables = ['lxPreset', 'sndPreset', 'lxConfig', 'sndConfig'];
-  let tableIdentifiers = {'lxPreset':'id', 'sndPreset':'id', 'lxConfig':'id', 'sndConfig':'id'}
-  if (validTables.includes(args.tableName)) {
-    knex.select().table(args.tableName).where(tableIdentifiers[args.tableName], args.value)
-        .then((rows) => {
-          event.sender.send("dbRequestReply", {element: args.element, data:rows[0]});
-        })
+  await knex.select().table(args.tableName).where(args.keyName, args.value).then((rows) => {
+    if (typeof args.callback === "function") {
+      args.callback(rows);
+    }
+  });
+});*/
+ipcMain.handle('simpleQueryDB', async (event, data) => {
+  if ("keyName" in data && data.keyName !== null) {
+    var result = await knex.select().table(data.tableName).where(data.keyName, data.value);
+  } else {
+    var result = await knex.select().table(data.tableName);
   }
-})
-
-//OSC
-//define oscHandler stuff
-var udpPort = new oscHandler.UDPPort({
-  localAddress: "0.0.0.0",
-  localPort: 57121,
-  //remoteAddress: SNDConfig.targetIP,
+  return result;
 });
 
-udpPort.on("ready", function () {
-  console.log("Listening out");
-  udpPort.send({address:"/info", args:[]}, SNDConfig.targetIP, 10023);
-  ipcMain.emit("fromMain", {data:"hello"});
-});
-udpPort.on("message", function (oscMessage) {
-  mainWindow.send("fromOSC", {data:oscMessage})
-  console.log(oscMessage);
-});
-udpPort.on("error", function (err) {
-  console.log(err);
-});
-udpPort.open();
 
+//General Setup
+function reboot() {
+  knex.destroy().then(() => {
+    //TODO hang up any listeners for OSC etc.
+    app.relaunch();
+    app.exit();
+  });
+}
+ipcMain.on("reboot", (event, arguments) =>{
+  reboot();
+});
+ipcMain.handle('getVersions', async (event, data) => {
+  return process.versions;
+});
+
+
+//OSC Setup
+var udpPort;
+function setupOSC() {
+  udpPort = new oscHandler.UDPPort({
+    localAddress: "0.0.0.0",
+    localPort: 57121,
+    remotePort: SNDConfig.targetPort,
+    remoteAddress: SNDConfig.targetIP,
+    //broadcast: true,
+    multicastMembership: []
+  });
+  udpPort.on("ready", function () {
+    console.log("UDP Socket open and listening");
+    udpPort.send({address:"/info", args:[]});
+  });
+  udpPort.on("message", function (oscMessage) {
+    console.log(oscMessage);
+    mainWindow.send("fromOSC", {data:oscMessage});
+  });
+  udpPort.on("error", function (err) {
+    console.log(err);
+  });
+  udpPort.open();
+}
 //events
 ipcMain.on("sendOSC", (event, arguments) =>{
-  udpPort.send({address: arguments.command, args: arguments.commandArgs}, SNDConfig.targetIP, SNDConfig.targetPort)
+  udpPort.send({address: arguments.command, args: arguments.commandArgs});
 });
 
-//sACN
-var e131Clients = [];
-for (var i = 1; i <= LXConfig.e131Universes; i++) {
-  e131Clients[i] = {"client": new e131.Client(i)};
-  e131Clients[i]['packet'] = e131Clients[i]["client"].createPacket(512);
-  e131Clients[i]['addressData'] = e131Clients[i]['packet'].getSlotsData();
-  e131Clients[i]['packet'].setSourceName(LXConfig.e131SourceName);
-  e131Clients[i]['packet'].setUniverse(i);
-  e131Clients[i]['packet'].setPriority(LXConfig.e131Priority);
-}
 
-ipcMain.on("sendACN", (event, args) => {
-  var universe = args.universe;
-  var channelsValues = args.channelsValues; //Format = {53:244,14:34,56:255}
-  for (var channel=0; channel<e131Clients[universe]['addressData'].length; channel++) {
-    if (channelsValues[(channel+1)] !== undefined) {
-      e131Clients[universe]['addressData'][channel] = channelsValues[(channel+1)];
-    } else { //this bit allows only one preset at a time
-      //todo make an additive or solo option?
-      e131Clients[universe]['addressData'][channel] = null;
-      //console.log(e131Clients[universe]['addressData'][channel]);
+//LX Setup
+var e131Clients = [];
+function setupE131() {
+  //sACN = E131
+  e131Clients = [];
+  for (var i = 1; i <= LXConfig.e131Universes; i++) {
+    e131Clients[i] = {"client": new e131.Client(i)};
+    e131Clients[i]['packet'] = e131Clients[i]["client"].createPacket(512);
+    e131Clients[i]['addressData'] = e131Clients[i]['packet'].getSlotsData();
+    e131Clients[i]['packet'].setSourceName(LXConfig.e131SourceName);
+    e131Clients[i]['packet'].setUniverse(i);
+    e131Clients[i]['packet'].setPriority(LXConfig.e131Priority);
+  }
+  if (LXConfig.e131Universes > 0) {
+    for (var universe = 1; universe <= LXConfig.e131Universes; universe++) {
+      sendE131(universe);
     }
   }
-});
-
+}
 function sendE131(universe) {
   e131Clients[universe]['client'].send(e131Clients[universe]['packet'], function () {
     setTimeout(function () {
@@ -188,8 +264,15 @@ function sendE131(universe) {
     }, (1000/LXConfig.e131Frequency));
   });
 }
-if (LXConfig.e131Universes > 0) {
-  for (var universe = 1; universe <= LXConfig.e131Universes; universe++) {
-    sendE131(universe);
+ipcMain.on("sendACN", (event, args) => {
+  var universe = args.universe;
+  var channelsValues = args.channelsValues; //Format = {53:244,14:34,56:255}
+  for (var channel=0; channel<e131Clients[universe]['addressData'].length; channel++) {
+    if (channelsValues[(channel+1)] !== undefined) {
+      e131Clients[universe]['addressData'][channel] = channelsValues[(channel+1)];
+    } else {
+      //TODO fork library and make an additive or solo option?
+      e131Clients[universe]['addressData'][channel] = 0;
+    }
   }
-}
+});
