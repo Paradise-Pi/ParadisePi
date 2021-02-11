@@ -1,5 +1,7 @@
 # ParadisePi
 
+![Logo](assets/icon/icon.jpg)
+
 A facility control panel for sACN & OSC, in Electron.
 
 ## Limitations
