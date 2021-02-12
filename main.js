@@ -340,7 +340,29 @@ io.on('connection', socket => {
       for (const [key, value] of Object.entries(data)) {
         datas[value.name] = value.value;
       }
-      await  knex.table(table).where({id:(datas.id)}).update(datas);
+      let exists = await knex.select().table(table).where("id", datas.id);
+      console.log(exists[0]);
+      if (exists[0]){
+        await knex.table(table).where({id:(datas.id)}).update(datas);
+      } else {
+        console.log("insert")
+        if (table === "LXPreset") {
+          await knex(table).insert({
+            id: datas.id,
+            name: datas.name,
+            enabled: datas.enabled,
+            universe: datas.universe,
+            setArguments: datas.setArguments
+          });
+        } else if (table === "SNDPreset") {
+          await knex(table).insert({
+            id: datas.id,
+            name: datas.name,
+            enabled: datas.enabled,
+            data: datas.data
+          });
+        }
+      }
       //reboot to update settings on controller
       reboot();
     }

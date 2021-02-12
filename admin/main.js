@@ -1,3 +1,50 @@
+//generates the lighting card for a given value object
+function lxPresetCard(value){
+    return  '<div class="card">\n' +
+    '    <div class="card-header"><strong>Preset</strong> ' + value.id + '</div>\n' +
+    '    <div class="card-body">\n' +
+    '        <form class="preset-form" data-table="LXPreset">\n' +
+    '            <div class="form-group"><label>Preset Name</label>\n' +
+    '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
+    '            </div>\n' +
+    '            <div class="form-group"><label>Preset Enabled</label>\n' +
+    '                <input class="form-control" name="enabled" type="checkbox" checked="' + value.enabled + '">\n' +
+    '            </div>\n' +
+    '            <div class="form-group"><label>Preset Universe</label>\n' +
+    '                <input class="form-control" name="universe" type="number" value="' + value.universe + '">\n' +
+    '            </div>\n' +
+    '            <div class="form-group"><label>Preset Channels</label>\n' +
+    '                <textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.setArguments + '</textarea>\n' +
+    '            </div>\n' +
+    '            <input type="hidden" name="id" value="'+ value.id + '">\n' +
+    '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
+    '        </form>\n' +
+    '    </div>\n' +
+    '</div>';
+}
+//generates the sound card for a given value object
+function sndPresetCard(value){
+    return '<div class="card">\n' +
+    '    <div class="card-header"><strong>Preset</strong> ' + value.id + '</div>\n' +
+    '    <div class="card-body">\n' +
+    '        <form class="preset-form" data-table="SNDPreset">\n' +
+    '            <div class="form-group"><label>Preset Name</label>\n' +
+    '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
+    '            </div>\n' +
+    '            <div class="form-group"><label>Preset Enabled</label>\n' +
+    '                <input class="form-control" name="enabled" type="checkbox" checked="' + value.enabled + '">\n' +
+    '            </div>\n' +
+    '            <div class="form-group"><label>Preset Data</label>\n' +
+    '                <textarea class="form-control" name="data" type="text" rows="10" cols="30">' + value.data + '</textarea>\n' +
+    '            </div>\n' +
+    '            <input type="hidden" name="id" value="'+ value.id + '">\n' +
+    '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
+    '        </form>\n' +
+    '    </div>\n' +
+    '</div>';
+}
+
+//websocket
 const socket = io(':80');
 //Mechanics of the connection
 //updates interface when connection lost/found
@@ -19,56 +66,24 @@ socket.on('disconnect', (reason) => {
 });
 
 //Presets section
+let LXCount = SNDCount = 0;
 socket.on('preset', (data) => {
     if ("LXPreset" in data) {
         let presetarea = $("#LXPresetList");
         presetarea.html("");
         $.each(data["LXPreset"], function (key, value){
-            presetarea.append('<div class="card">\n' +
-                '    <div class="card-header"><strong>Preset</strong> ' + value.id + '</div>\n' +
-                '    <div class="card-body">\n' +
-                '        <form class="preset-form" data-table="LXPreset">\n' +
-                '            <div class="form-group"><label>Preset Name</label>\n' +
-                '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
-                '            </div>\n' +
-                '            <div class="form-group"><label>Preset Enabled</label>\n' +
-                '                <input class="form-control" name="enabled" type="checkbox" checked="' + value.enabled + '">\n' +
-                '            </div>\n' +
-                '            <div class="form-group"><label>Preset Universe</label>\n' +
-                '                <input class="form-control" name="universe" type="number" value="' + value.universe + '">\n' +
-                '            </div>\n' +
-                '            <div class="form-group"><label>Preset Channels</label>\n' +
-                '                <textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.setArguments + '</textarea>\n' +
-                '            </div>\n' +
-                '            <input type="hidden" name="id" value="'+ value.id + '">\n' +
-                '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
-                '        </form>\n' +
-                '    </div>\n' +
-                '</div>');
+            //add a card for each preset
+            presetarea.append(lxPresetCard(value));
         });
+        LXCount = (data["LXPreset"]).length;
     } else if ("SNDPreset" in data) {
         let presetarea = $("#SNDPresetList");
         presetarea.html("");
         $.each(data["SNDPreset"], function (key, value){
-            presetarea.append('<div class="card">\n' +
-                '    <div class="card-header"><strong>Preset</strong> ' + value.id + '</div>\n' +
-                '    <div class="card-body">\n' +
-                '        <form class="preset-form" data-table="SNDPreset">\n' +
-                '            <div class="form-group"><label>Preset Name</label>\n' +
-                '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
-                '            </div>\n' +
-                '            <div class="form-group"><label>Preset Enabled</label>\n' +
-                '                <input class="form-control" name="enabled" type="checkbox" checked="' + value.enabled + '">\n' +
-                '            </div>\n' +
-                '            <div class="form-group"><label>Preset Data</label>\n' +
-                '                <textarea class="form-control" name="data" type="text" rows="10" cols="30">' + value.data + '</textarea>\n' +
-                '            </div>\n' +
-                '            <input type="hidden" name="id" value="'+ value.id + '">\n' +
-                '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
-                '        </form>\n' +
-                '    </div>\n' +
-                '</div>');
+            //add a card for each preset
+            presetarea.append(sndPresetCard(value));
         });
+        SNDCount = (data["SNDPreset"]).length;
     }
 });
 
@@ -113,3 +128,15 @@ $(document).on('submit', 'form.preset-form[data-table]', function(){
    socket.emit('updatePreset', $(this).data("table"), $(this).serializeArray());
    return false;
 });
+
+//add new preset
+$('#lxNew').click(function (){
+    //an empty object for creating new presets
+    const emptyValues = {id:(LXCount + 1), name:"", universe:1, enabled:true, setArguments:"" };
+    $("#LXPresetList").append(lxPresetCard(emptyValues));
+})
+$('#sndNew').click( function (){
+    //an empty object for creating new presets
+    const emptyValues = {id:(SNDCount + 1), name:"", enabled:true, data:"" };
+    $("#SNDPresetList").append(sndPresetCard(emptyValues));
+})
