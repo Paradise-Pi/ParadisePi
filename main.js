@@ -364,6 +364,19 @@ io.on('connection', socket => {
       reboot();
     }
   });
+  //remove preset
+  socket.on('removePreset', async (table, data) => {
+    if (["LXPreset", "SNDPreset"].includes(table)){
+      console.log(data);
+
+      //remove
+      await knex(table).where({ id : data.id }).del();
+
+      //reboot to update settings on controller
+      reboot();
+    }
+  });
+
   socket.on("disconnect", (reason) => {
     console.log("Disconnected: " + reason)
   });

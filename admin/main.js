@@ -16,8 +16,11 @@ function lxPresetCard(value){
     '            <div class="form-group"><label>Preset Channels</label>\n' +
     '                <textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.setArguments + '</textarea>\n' +
     '            </div>\n' +
-                    (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
-    '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
+        (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
+    '            <div style="display: inline">\n' +
+    '               <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
+                    (value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '') +
+    '            </div>\n'+
     '        </form>\n' +
     '    </div>\n' +
     '</div>';
@@ -25,7 +28,7 @@ function lxPresetCard(value){
 //generates the sound card for a given value object
 function sndPresetCard(value){
     return '<div class="card">\n' +
-    '    <div class="card-header"><strong>Preset</strong> ' + value.id + '</div>\n' +
+    '    <div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n' +
     '    <div class="card-body">\n' +
     '        <form class="preset-form" data-table="SNDPreset">\n' +
     '            <div class="form-group"><label>Preset Name</label>\n' +
@@ -37,7 +40,7 @@ function sndPresetCard(value){
     '            <div class="form-group"><label>Preset Data</label>\n' +
     '                <textarea class="form-control" name="data" type="text" rows="10" cols="30">' + value.data + '</textarea>\n' +
     '            </div>\n' +
-    '            <input type="hidden" name="id" value="'+ value.id + '">\n' +
+        (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
     '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
     '        </form>\n' +
     '    </div>\n' +
@@ -93,8 +96,6 @@ socket.on('config', (data) => {
         type = "SNDConfig";
     } else if ("LXConfig" in data) {
         type = "LXConfig";
-    } else if ("LXPreset" in data){
-        type = "LXPreset"
     }
     if (type) {
         $("form.settings-form[data-table=" + type + "]").html("");
@@ -137,3 +138,8 @@ $('#sndNew').click( function (){
     const emptyValues = {id:null, name:"", enabled:true, data:"" };
     $("#SNDPresetList").append(sndPresetCard(emptyValues));
 })
+
+//remove preset
+function removePreset (button) {
+    socket.emit('removePreset', button.form.getAttribute('data-table'), {id:button.getAttribute('data-id')});
+}
