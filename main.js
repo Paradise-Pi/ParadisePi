@@ -134,7 +134,7 @@ app.on('window-all-closed', function () {
 async function initDatabases() {
   if (!await knex.schema.hasTable('lxPreset')) {
     await knex.schema.createTable('lxPreset', table => {
-      table.integer('id');
+      table.increments('id').primary();
       table.string('name');
       table.boolean('enabled');
       table.string('universe');
@@ -144,7 +144,7 @@ async function initDatabases() {
   }
   if (!await knex.schema.hasTable('sndPreset')){
     await knex.schema.createTable('sndPreset', table => {
-        table.integer('id');
+        table.increments('id').primary();
         table.string('name');
         table.boolean('enabled');
         table.json('data');
@@ -340,15 +340,10 @@ io.on('connection', socket => {
       for (const [key, value] of Object.entries(data)) {
         datas[value.name] = value.value;
       }
-      let exists = await knex.select().table(table).where("id", datas.id);
-      console.log(exists[0]);
-      if (exists[0]){
-        await knex.table(table).where({id:(datas.id)}).update(datas);
-      } else {
-        console.log("insert")
+      if (datas.id == null){
+        //new preset
         if (table === "LXPreset") {
           await knex(table).insert({
-            id: datas.id,
             name: datas.name,
             enabled: datas.enabled,
             universe: datas.universe,
@@ -356,12 +351,14 @@ io.on('connection', socket => {
           });
         } else if (table === "SNDPreset") {
           await knex(table).insert({
-            id: datas.id,
             name: datas.name,
             enabled: datas.enabled,
             data: datas.data
           });
         }
+      } else {
+        //update preset
+        await knex.table(table).where({id:(datas.id)}).update(datas);
       }
       //reboot to update settings on controller
       reboot();

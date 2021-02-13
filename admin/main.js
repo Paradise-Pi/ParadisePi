@@ -1,7 +1,7 @@
 //generates the lighting card for a given value object
 function lxPresetCard(value){
     return  '<div class="card">\n' +
-    '    <div class="card-header"><strong>Preset</strong> ' + value.id + '</div>\n' +
+    '    <div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n' +
     '    <div class="card-body">\n' +
     '        <form class="preset-form" data-table="LXPreset">\n' +
     '            <div class="form-group"><label>Preset Name</label>\n' +
@@ -16,7 +16,7 @@ function lxPresetCard(value){
     '            <div class="form-group"><label>Preset Channels</label>\n' +
     '                <textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.setArguments + '</textarea>\n' +
     '            </div>\n' +
-    '            <input type="hidden" name="id" value="'+ value.id + '">\n' +
+                    (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
     '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
     '        </form>\n' +
     '    </div>\n' +
@@ -66,7 +66,6 @@ socket.on('disconnect', (reason) => {
 });
 
 //Presets section
-let LXCount = SNDCount = 0;
 socket.on('preset', (data) => {
     if ("LXPreset" in data) {
         let presetarea = $("#LXPresetList");
@@ -75,7 +74,6 @@ socket.on('preset', (data) => {
             //add a card for each preset
             presetarea.append(lxPresetCard(value));
         });
-        LXCount = (data["LXPreset"]).length;
     } else if ("SNDPreset" in data) {
         let presetarea = $("#SNDPresetList");
         presetarea.html("");
@@ -83,7 +81,6 @@ socket.on('preset', (data) => {
             //add a card for each preset
             presetarea.append(sndPresetCard(value));
         });
-        SNDCount = (data["SNDPreset"]).length;
     }
 });
 
@@ -132,11 +129,11 @@ $(document).on('submit', 'form.preset-form[data-table]', function(){
 //add new preset
 $('#lxNew').click(function (){
     //an empty object for creating new presets
-    const emptyValues = {id:(LXCount + 1), name:"", universe:1, enabled:true, setArguments:"" };
+    const emptyValues = {id:null, name:"", universe:1, enabled:true, setArguments:"" };
     $("#LXPresetList").append(lxPresetCard(emptyValues));
 })
 $('#sndNew').click( function (){
     //an empty object for creating new presets
-    const emptyValues = {id:(SNDCount + 1), name:"", enabled:true, data:"" };
+    const emptyValues = {id:null, name:"", enabled:true, data:"" };
     $("#SNDPresetList").append(sndPresetCard(emptyValues));
 })
