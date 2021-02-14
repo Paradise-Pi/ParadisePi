@@ -65,6 +65,17 @@ $(document).ready(function() {
         });
     });
 
+    //create Faders dynamically
+    window.api.asyncSend("simpleQueryDB", {"tableName": "sndFaders"}).then((result) => {
+        $.each(result, function (key,value) {
+            console.log(value);
+            $("#sndFaders").append('<div class="channel">\n' +
+                '            <label>' + value.name + '</label>\n' +
+                '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + (value.channel < 10 ? '0'+value.channel : value.channel ) + '" value="0">\n' +
+                '            <button class="channel-toggle" data-channel="' + (value.channel < 10 ? '0'+value.channel : value.channel ) + '" data-status="1">OFF</button>\n' +
+                '          </div>');
+        });
+    });
 
     //setup all bindings/handlers
     $(document).on("click",".snd",function() {
@@ -80,9 +91,12 @@ $(document).ready(function() {
         $("#deviceName").html(result['MAINConfig']['deviceName']);
     });
 
+    //Channel Fader handlimg
+    //handle fader movement
     $(document).on('input', '.fader', function() {
         sendOSC("/ch/" + this.getAttribute("data-channel") + "/mix/fader", {type:"f", value:this.value});
     });
+    //handle button toggle
     $(document).on("click", ".channel-toggle", function () {
         let  status = this.getAttribute("data-status")
         sendOSC("/ch/" + this.getAttribute("data-channel")+ "/mix/on", {type: "i", value:status});

@@ -22,18 +22,13 @@
         <h2>Paradise<strong>Pi</strong></h2>
     </div>
     <ul class="c-sidebar-nav">
-        <li class="c-sidebar-nav-item">
-            <a class="c-sidebar-nav-link" href="#dashboard">
-                Dashboard<span class="badge badge-info">NEW</span></a>
-        </li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#dashboard">Dashboard</a></li>
         <li class="c-sidebar-nav-title">Presets</li>
-        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#lightingPresets">
-            Lighting</a></li>
-        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#soundPresets">
-            Sound</a></li>
-        <li class="c-sidebar-nav-item mt-auto"><a class="c-sidebar-nav-link"
-                                                  href="#status" id="status-menuStatus">
-            Connected</a></li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#lightingPresets">Lighting</a></li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#soundPresets">Sound</a></li>
+        <li class="c-sidebar-nav-title">Faders</li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#soundFaders">Sound<span class="badge badge-info">NEW</span></a></li>
+        <li class="c-sidebar-nav-item mt-auto"><a class="c-sidebar-nav-link" href="#status" id="status-menuStatus">Connected</a></li>
     </ul>
 </div>
 <div class="c-wrapper c-fixed-components">
@@ -69,19 +64,33 @@
                 <hr/>
                 <div id="lightingPresets">
                     <h2>Lighting Presets</h2>
+                    <hr>
                     <button type="button" class="btn btn-primary" id="lxNew">Add New</button>
-                    <hr/>
+                    <br>
                     <div id="LXPresetList">
 
                     </div>
+                    <br>
                 </div>
                 <div id="soundPresets">
                     <h2>Sound Presets</h2>
-                    <button type="button" class="btn btn-primary" id="sndNew">Add New</button>
                     <hr>
+                    <button type="button" class="btn btn-primary" id="sndNew">Add New</button>
+                    <br>
                     <div id="SNDPresetList">
 
                     </div>
+                    <br>
+                </div>
+                <div id="soundFaders">
+                    <h2>Sound Faders</h2>
+                    <hr>
+                    <button type="button" class="btn btn-primary" id="fdrNew">Add New</button>
+                    <br>
+                    <div id="SNDFaderList">
+
+                    </div>
+                    <br>
                 </div>
                 <div id="settings">
                     <h2>Settings</h2>

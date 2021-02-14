@@ -11,24 +11,19 @@
   <body>
 	<h1 id="deviceName">Device Name</h1>
     <div class="row">
-      <div class="left">
+      <div class="third">
         <div class="button-container" id="lxContainer">
           <!-- Buttons generated on load -->
         </div>
       </div>
-      <div class="right">
+      <div class="third">
         <div class="button-container" id="sndContainer">
           <!-- Buttons generated on load -->
-          <div class="channel">
-            <label>CH 01</label>
-            <input class="fader" type="range" max="1" step="0.01" data-channel="01" value="0">
-            <button class="channel-toggle" data-channel="01" data-status="1">OFF</button>
-          </div>
-          <div class="channel">
-            <label>CH 02</label>
-            <input class="fader" type="range" max="1" step="0.01" data-channel="02" value="0">
-            <button class="channel-toggle" data-channel="02" data-status="1">OFF</button>
-          </div>
+        </div>
+      </div>
+      <div class="third">
+        <div class="button-container" id="sndFaders">
+          <!-- Faders generated on Load -->
         </div>
       </div>
     </div>

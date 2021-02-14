@@ -48,6 +48,25 @@ function sndPresetCard(value){
     '</div>';
 }
 
+function sndFaderCard(value){
+    return '<div class="card">\n' +
+        '    <div class="card-header">' + (value.id == null ? '<strong>New Fader</strong>' : '<strong>Fader</strong> ' + value.id) + '</div>\n' +
+        '    <div class="card-body">\n' +
+        '        <form class="preset-form" data-table="SNDFaders">\n' +
+        '            <div class="form-group"><label>Fader Name</label>\n' +
+        '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
+        '            </div>\n' +
+        '            <div class="form-group"><label>Fader Channel</label>\n' +
+        '                <input class="form-control" name="channel" type="number" value="' + value.channel + '">\n' +
+        '            </div>\n' +
+        (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
+        '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
+        (value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '') +
+        '        </form>\n' +
+        '    </div>\n' +
+        '</div>';
+}
+
 //websocket
 const socket = io(':80');
 //Mechanics of the connection
@@ -66,6 +85,17 @@ socket.on('disconnect', (reason) => {
         $("#status-menuStatus").removeClass("c-sidebar-nav-link-success");
         $("#status-menuStatus").html("Disconnected");
         $("#status-menuStatus").addClass("c-sidebar-nav-link-danger");
+    }
+});
+
+//Faders Section
+socket.on('fader', (data) => {
+    if ("SNDFader" in data) {
+        let faderArea = $("#SNDFaderList");
+        faderArea.html("");
+        $.each(data["SNDFader"], function (key, value){
+           faderArea.append(sndFaderCard(value));
+        });
     }
 });
 
@@ -133,12 +163,19 @@ $('#lxNew').click(function (){
     //an empty object for creating new presets
     const emptyValues = {id:null, name:"", universe:1, enabled:true, setArguments:"" };
     $("#LXPresetList").append(lxPresetCard(emptyValues));
-})
+});
 $('#sndNew').click( function (){
     //an empty object for creating new presets
     const emptyValues = {id:null, name:"", enabled:true, data:"" };
     $("#SNDPresetList").append(sndPresetCard(emptyValues));
-})
+});
+
+//add new fader
+$('#fdrNew').click( function (){
+    //empty object
+    const emptyValues = {id:null, name:"", channel:1}
+    $("#SNDFaderList").append(sndFaderCard(emptyValues));
+});
 
 //remove preset
 function removePreset (button) {

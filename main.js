@@ -149,6 +149,14 @@ async function initDatabases() {
     });
     await knex('sndPreset').insert({id:1, name: "Sound1", enabled: true, data: JSON.stringify({"/ch/01/mix/fader": {type:"f", value:0.5},"/ch/01/mix/on": {type:"i", value:1}})});
   }
+  if (!await knex.schema.hasTable('sndFaders')){
+    await knex.schema.createTable('sndFaders', table => {
+      table.increments('id').primary();
+      table.string('name');
+      table.integer('channel');
+    });
+  }
+
   if (!await knex.schema.hasTable('lxConfig')){
     await knex.schema.createTable('lxConfig', table => {
       table.string('key').primary();
@@ -310,12 +318,16 @@ io.on('connection', socket => {
   knex.select().table('config').then((data) => {
     socket.emit('config', { "config": data } );
   });
-  knex.select().table('lxPreset').then( (data) => {
+  knex.select().table('lxPreset').then((data) => {
     socket.emit('preset', {"LXPreset": data} );
   });
-  knex.select().table('sndPreset').then( (data) => {
+  knex.select().table('sndPreset').then((data) => {
     socket.emit('preset', {"SNDPreset":data});
   });
+  knex.select().table('sndFaders').then((data) => {
+    socket.emit('fader', {"SNDFader":data});
+  });
+
   socket.emit('about', {
     "npmVersions": process.versions,
     "version": app.getVersion()
@@ -332,7 +344,7 @@ io.on('connection', socket => {
   });
   //update preset when received from site
   socket.on('updatePreset', async(table, data) => {
-    if (["LXPreset", "SNDPreset"].includes(table)){
+    if (["LXPreset", "SNDPreset", "SNDFaders"].includes(table)){
       //rearrange received data for database formatting
       datas = {}
       for (const [key, value] of Object.entries(data)) {
@@ -353,6 +365,11 @@ io.on('connection', socket => {
             enabled: datas.enabled,
             data: datas.data
           });
+        } else if (table === "SNDFaders") {
+          await  knex(table).insert({
+            name:datas.name,
+            channel:datas.channel
+          })
         }
       } else {
         //update preset
