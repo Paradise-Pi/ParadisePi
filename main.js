@@ -25,19 +25,20 @@ const template = [
     label: 'File',
     submenu: [
       {
-        label: 'Test',
+        label: 'Dev Tools',
         click () {
-          //mainWindow.send("newFile", {})
-          console.log("CLicked");
+          // Open the DevTools.
+          mainWindow.webContents.openDevTools()
         }
       },
+      { type: 'separator' },
       {
         label: 'Reboot',
         click () {
           reboot();
         }
       },
-      { type: 'separator' },
+
     ]
   },
   {
@@ -76,10 +77,10 @@ var MAINConfig = {}; //Config variables
 async function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
+    width: 900,
     height: 600,
-    minHeight: 400,
-    minWidth: 650,
+    minHeight: 500,
+    minWidth: 900,
     title: "Paradise",
     icon: path.join(__dirname, 'assets/icon/icon.png'),
     webPreferences: {
@@ -92,9 +93,6 @@ async function createWindow () {
   Menu.setApplicationMenu(menu)
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
-
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

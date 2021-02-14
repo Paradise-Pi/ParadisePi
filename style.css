@@ -5,13 +5,23 @@ body {
     overflow-x: hidden;
 }
 
+body {
+    background-color: black;
+    color: whitesmoke;
+    font-family: system, -apple-system, '.SFNSText-Regular', 'SF UI Text', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+}
+
 .row {
     display: flex;
 }
 
-.column {
-    flex: 50%;
+.left {
+    flex: 30%;
     padding: 20px;
+}
+
+.right {
+    flex: 70%;
 }
 
 .button-container {
@@ -22,4 +32,25 @@ body {
     width: 100px;
     height: 100px;
     margin: 5px;
+}
+
+.channel {
+    width: 80px;
+    height: 100%;
+    padding: 10px;
+    float:left;
+    text-align: center;
+}
+
+input[type=range] {
+    -webkit-appearance: slider-vertical;
+    height: 200px;
+    width: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.channel > button {
+    width: 60%;
+    height: 25px;
 }

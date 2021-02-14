@@ -42,6 +42,7 @@ function sndPresetCard(value){
     '            </div>\n' +
         (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
     '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
+        (value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '') +
     '        </form>\n' +
     '    </div>\n' +
     '</div>';

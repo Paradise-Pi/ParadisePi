@@ -80,4 +80,19 @@ $(document).ready(function() {
         $("#deviceName").html(result['MAINConfig']['deviceName']);
     });
 
+    $(document).on('input', '.fader', function() {
+        sendOSC("/ch/" + this.getAttribute("data-channel") + "/mix/fader", {type:"f", value:this.value});
+    });
+    $(document).on("click", ".channel-toggle", function () {
+        let  status = this.getAttribute("data-status")
+        sendOSC("/ch/" + this.getAttribute("data-channel")+ "/mix/on", {type: "i", value:status});
+        if (status == 1) {
+            this.setAttribute("data-status", 0);
+            this.innerText = "ON";
+        } else {
+            this.setAttribute("data-status", 1);
+            this.innerText = "OFF";
+        }
+    });
+
 });
