@@ -15,9 +15,18 @@ body {
     display: flex;
 }
 
-.third {
-    flex: 33%;
-    padding: 20px;
+.left {
+    flex: 30%;
+    padding: 10px;
+}
+
+.center {
+    flex: 20%;
+    padding: 10px;
+}
+
+.right {
+    flex: 50%;
 }
 
 .button-container {

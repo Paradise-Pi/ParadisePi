@@ -33,6 +33,12 @@ const template = [
       },
       { type: 'separator' },
       {
+        label: 'Lock',
+        click () {
+          toggleLock();
+        }
+      },
+      {
         label: 'Reboot',
         click () {
           reboot();
@@ -66,7 +72,6 @@ if (process.platform === 'darwin') {
 }
 
 const menu = Menu.buildFromTemplate(template)
-
 
 //Main Window
 let mainWindow;
@@ -138,7 +143,7 @@ async function initDatabases() {
       table.string('universe');
       table.json('setArguments');
     });
-    await knex('lxPreset').insert({ id:1, name: "LX1", enabled: true, universe: 1, setArguments: JSON.stringify({"1":150,"512":25})});
+    await knex('lxPreset').insert({name: "LX1", enabled: true, universe: 1, setArguments: JSON.stringify({"1":150,"512":25})});
   }
   if (!await knex.schema.hasTable('sndPreset')){
     await knex.schema.createTable('sndPreset', table => {
@@ -147,7 +152,7 @@ async function initDatabases() {
         table.boolean('enabled');
         table.json('data');
     });
-    await knex('sndPreset').insert({id:1, name: "Sound1", enabled: true, data: JSON.stringify({"/ch/01/mix/fader": {type:"f", value:0.5},"/ch/01/mix/on": {type:"i", value:1}})});
+    await knex('sndPreset').insert({name: "Sound1", enabled: true, data: JSON.stringify({"/ch/01/mix/fader": {type:"f", value:0.5},"/ch/01/mix/on": {type:"i", value:1}})});
   }
   if (!await knex.schema.hasTable('sndFaders')){
     await knex.schema.createTable('sndFaders', table => {
@@ -155,6 +160,7 @@ async function initDatabases() {
       table.string('name');
       table.integer('channel');
     });
+    await knex('sndFaders').insert({name:"CH 01", channel:1})
   }
 
   if (!await knex.schema.hasTable('lxConfig')){
@@ -190,6 +196,7 @@ async function initDatabases() {
       table.boolean('canEdit').defaultTo(true);
     });
     await knex('config').insert({key:"deviceName", value:"James\'s PC",name:'Device Name',description:'Device\'s friendly name'});
+    await knex('config').insert({key:"deviceLock", value:"UNLOCKED", name:"Device Lock", description:"Lock the device", canEdit:false})
   }
 
   await knex.select().table('sndConfig').then((data) => {
@@ -236,6 +243,16 @@ ipcMain.handle('getConfig', async (event, data) => {
   return {"LXConfig":LXConfig,"SNDConfig":SNDConfig,"MAINConfig":MAINConfig};
 });
 
+//Toggle lock value and reboot.
+async function toggleLock() {
+  if (MAINConfig.deviceLock === "LOCKED") {
+    await knex('config').where({key: "deviceLock"}).update({value: "UNLOCKED"});
+  } else {
+    await knex('config').where({key: "deviceLock"}).update({value: "LOCKED"});
+  }
+  reboot();
+}
+
 //OSC Setup
 var udpPort;
 function setupOSC() {
@@ -262,7 +279,10 @@ function setupOSC() {
 }
 //events
 ipcMain.on("sendOSC", (event, arguments) =>{
-  udpPort.send({address: arguments.command, args: arguments.commandArgs});
+  if (MAINConfig.deviceLock === "UNLOCKED"){
+    udpPort.send({address: arguments.command, args: arguments.commandArgs});
+  }
+
 });
 
 
@@ -293,14 +313,16 @@ function sendE131(universe) {
   });
 }
 ipcMain.on("sendACN", (event, args) => {
-  var universe = args.universe;
-  var channelsValues = args.channelsValues; //Format = {53:244,14:34,56:255}
-  for (var channel=0; channel<e131Clients[universe]['addressData'].length; channel++) {
-    if (channelsValues[(channel+1)] !== undefined) {
-      e131Clients[universe]['addressData'][channel] = channelsValues[(channel+1)];
-    } else {
-      //TODO fork library and make an additive or solo option?
-      e131Clients[universe]['addressData'][channel] = 0;
+  if (MAINConfig.deviceLock === "UNLOCKED") {
+    var universe = args.universe;
+    var channelsValues = args.channelsValues; //Format = {53:244,14:34,56:255}
+    for (var channel = 0; channel < e131Clients[universe]['addressData'].length; channel++) {
+      if (channelsValues[(channel + 1)] !== undefined) {
+        e131Clients[universe]['addressData'][channel] = channelsValues[(channel + 1)];
+      } else {
+        //TODO fork library and make an additive or solo option?
+        e131Clients[universe]['addressData'][channel] = 0;
+      }
     }
   }
 });
@@ -391,6 +413,10 @@ io.on('connection', socket => {
       reboot();
     }
   });
+  //Lock mechanism
+  socket.on('lock', async () => {
+    await toggleLock();
+  })
 
   socket.on("disconnect", (reason) => {
     console.log("Disconnected: " + reason)

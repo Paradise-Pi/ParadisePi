@@ -39,6 +39,7 @@ function soundPreset (id) {
         if (result.length == 1) {
             result = result[0];
             if (result.enabled) {
+                console.log(result['data']);
                 var data = JSON.parse(result['data']);
                 for (const [key, value] of Object.entries(data)) {
                     sendOSC(key, [value]);
@@ -88,7 +89,7 @@ $(document).ready(function() {
         window.api.send("reboot", {});
     });
     window.api.asyncSend("getConfig", {}).then((result) => {
-        $("#deviceName").html(result['MAINConfig']['deviceName']);
+        $("#deviceName").html(result['MAINConfig']['deviceName'] + (result['MAINConfig']['deviceLock'] === "LOCKED" ? " - LOCKED" : ""));
     });
 
     //Channel Fader handlimg
