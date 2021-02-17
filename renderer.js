@@ -52,7 +52,11 @@ window.api.receive("fromOSC", (data) => {
     console.log(data);
 });
 
-
+var timeout = { //Black the screen after a timeout
+    lastMove: (new Date()).getTime(),
+    timeoutTime: 300000, //5 minutes = Default
+    timedOut: false
+};
 $(document).ready(function() {
     //create buttons dynamically
     window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset"}).then((result) => {
@@ -90,8 +94,8 @@ $(document).ready(function() {
     });
     window.api.asyncSend("getConfig", {}).then((result) => {
         $("#deviceName").html(result['MAINConfig']['deviceName'] + (result['MAINConfig']['deviceLock'] === "LOCKED" ? " - LOCKED" : ""));
+        timeout['timeoutTime'] = result['MAINConfig']['timeoutTime']*60*1000;
     });
-
     //Channel Fader handlimg
     //handle fader movement
     $(document).on('input', '.fader', function() {
@@ -109,5 +113,19 @@ $(document).ready(function() {
             this.innerText = "OFF";
         }
     });
-
+    $(document).on("mousemove", function () {
+        timeout["lastMove"] = (new Date()).getTime();
+        if (timeout['timedOut']) {
+            timeout['timedOut'] = false;
+            $("#container").show();
+        }
+    });
 });
+setInterval(function() {
+    if (!timeout['timedOut'] && (timeout['lastMove']+timeout['timeoutTime']) <= (new Date()).getTime()) {
+        $("#container").fadeOut();
+        timeout['timedOut'] = true;
+    }
+    
+    console.log((new Date()).getTime());
+}, 1000);

@@ -196,7 +196,9 @@ async function initDatabases() {
       table.boolean('canEdit').defaultTo(true);
     });
     await knex('config').insert({key:"deviceName", value:"James\'s PC",name:'Device Name',description:'Device\'s friendly name'});
-    await knex('config').insert({key:"deviceLock", value:"UNLOCKED", name:"Device Lock", description:"Lock the device", canEdit:false})
+    await knex('config').insert({key:"deviceLock", value:"UNLOCKED", name:"Device Lock", description:"Lock the device", canEdit:false});
+    await knex('config').insert({key:"timeoutTime", value:5, name:"Device Timeout", description:"How soon should the device be blanked after last interaction (minutes)"});
+
   }
 
   await knex.select().table('sndConfig').then((data) => {
