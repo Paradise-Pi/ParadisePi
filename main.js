@@ -82,10 +82,10 @@ var MAINConfig = {}; //Config variables
 async function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 600,
-    minHeight: 500,
-    minWidth: 900,
+    width: 800,
+    height: 480,
+    minWidth: 800,
+    minHeight: 480,
     title: "Paradise",
     icon: path.join(__dirname, 'assets/icon/icon.png'),
     webPreferences: {
