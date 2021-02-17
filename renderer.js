@@ -92,6 +92,10 @@ $(document).ready(function() {
         $("#deviceName").html(result['MAINConfig']['deviceName'] + (result['MAINConfig']['deviceLock'] === "LOCKED" ? " - LOCKED" : ""));
     });
 
+    $("#fadeAll").click(function() {
+        window.api.send("fadeAll");
+    });
+
     //Channel Fader handlimg
     //handle fader movement
     $(document).on('input', '.fader', function() {

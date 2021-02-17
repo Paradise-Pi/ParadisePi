@@ -175,6 +175,7 @@ async function initDatabases() {
     await knex('lxConfig').insert({key:"e131SourceName", value:"Paradise Pi",name:'sACN Source Name',description:''})
     await knex('lxConfig').insert({key:"e131Priority", value:25,name:'sACN Priority',description:'Higher values take precedence'})
     await knex('lxConfig').insert({key:"e131Frequency", value:5,name:'Refresh Rate',description:'',canEdit:false})
+    await knex('lxConfig').insert({key:"fadeTime", value:10,name:'LX Fade Time',description:'Delay time to fade all levels in ms (0 is not instant)',canEdit:true})
   }
   if (!await knex.schema.hasTable('sndConfig')) {
     await knex.schema.createTable('sndConfig', table => {
@@ -326,7 +327,25 @@ ipcMain.on("sendACN", (event, args) => {
     }
   }
 });
-
+ipcMain.on("fadeAll", async (event, args) =>  {
+  if (MAINConfig.deviceLock === "UNLOCKED") {
+    let universes = LXConfig.e131Universes;
+    let changedZero = true;
+    while(changedZero) {
+      changedZero = false;
+      for (var channel = 0; channel < 512; channel++) {
+        for (let universe = 1; universe <= universes; universe++){
+          if (e131Clients[universe]['addressData'][channel] > 0){
+            console.log(channel)
+            changedZero = true;
+            e131Clients[universe]['addressData'][channel]--;
+          }
+        }
+      }
+      await new Promise(r => setTimeout(r, LXConfig.fadeTime));
+    }
+  }
+})
 
 // Socket.io admin site
 io.on('connection', socket => {
