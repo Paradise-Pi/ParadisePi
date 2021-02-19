@@ -45,11 +45,21 @@ function changeTab(tab) {
  */
 function modalShow(id) {
     $("#"+id).css("display", "block");
+    var timeout = $("#"+id).data("timeout");
     clearTimeout(modalTimeouts[id]);
-    modalTimeouts[id] = setTimeout(function() {
-        //Close the modal after 5 seconds
+    if (timeout === 0) { //0 is infinite
+        timeout = false;
+    } else if (!isNaN(timeout)) {
+        timeout = timeout*1000;
+    } else {
+        timeout = 5000;
+    }
+    if (timeout) {
+        modalTimeouts[id] = setTimeout(function() {
+            //Close the modal after 5 seconds
             $("#"+id).hide();
-        }, 5000);
+        }, timeout);
+    }
 }
 /**
  * generic function triggered by frontend JS on the admin tab
