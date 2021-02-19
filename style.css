@@ -4,41 +4,98 @@ body {
     overflow-y: hidden;
     overflow-x: hidden;
 }
-
 body {
     background-color: black;
     color: whitesmoke;
     font-family: system, -apple-system, '.SFNSText-Regular', 'SF UI Text', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+    margin: 0;
 }
+table {
+    width: 100%;
+    text-align: center;
+}
+/*
+Menu
+ */
+table#menu {
+    padding: 3px 0 0;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 5px 0px;
+    background-color:black;
+}
+#menu th, #menu td {
+    border-style: solid;
+    border-color: white;
+    border-width: 2px 2px 0px 2px;
+    padding: 10px;
+    margin: 5px 5px 0px 0px;
+    background-color:#4b8a9c;
+    min-width: 30px;
+    font-size: 1.5em;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 25px 25px 0px 0px;
+}
+#menu th.selected, #menu td.selected {
+    background-color:#d6dfde;
+    border-style: solid;
+    border-color: white;
+    border-width: 2px 2px 0px 2px;
+    font-weight: bolder;
+    color:black;
 
-.row {
+}
+#menu th.pad, #menu td.pad {
+    border: 2px solid black;
+    padding: 10px;
+    margin: 5px;
+    background-color:black;
+}
+#menu td#allOff {
+    border: 4px solid black;
+    padding: 10px;
+    margin: 5px;
+    background-color:#be0002;
+    border-radius: 20px;
+    border-spacing:20px;
+}
+/*
+Main container
+ */
+#container {
+    border-radius:5px;
+    height: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    background-color:#d6dfde;
+    border-radius:0px 5px 0px  0px;
+    border-style: solid;
+    border-color: white;
+    border-width: 0px 2px 2px 2px;
+    margin: 0 5px 10px;
+}
+.tab {
+    padding: 20px;
+    color:black;
+}
+.button-container {
     display: flex;
 }
-
-.left {
-    flex: 30%;
-    padding: 10px;
-}
-
-.center {
-    flex: 20%;
-    padding: 10px;
-}
-
-.right {
-    flex: 50%;
-}
-
-.button-container {
-    overflow-y: auto;
-}
-
+/*
+    Individual items
+ */
 .button-container > button {
-    width: 100px;
-    height: 100px;
-    margin: 5px;
+    width: 140px;
+    height: 60px;
+    margin:5px;
+    padding:5px;
+    background-color: #154d7d;
+    color: white;
+    border: 3px solid white;
+    border-radius: 5px;
+    font-size: 1em;
 }
-
 .channel {
     width: 80px;
     height: 100%;
@@ -46,7 +103,6 @@ body {
     float:left;
     text-align: center;
 }
-
 input[type=range] {
     -webkit-appearance: slider-vertical;
     height: 200px;
@@ -54,7 +110,6 @@ input[type=range] {
     margin-top: 10px;
     margin-bottom: 10px;
 }
-
 .channel > button {
     width: 60%;
     height: 25px;

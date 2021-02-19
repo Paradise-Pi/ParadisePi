@@ -15,51 +15,12 @@ const staticServerFile = new(staticServer.Server)(__dirname + "/admin", { cache:
 const server = require('http').createServer(function (req, res) {
   staticServerFile.serve(req, res);
 });
-const options = {
-
-};
-const io = require('socket.io')(server, options);
-
-const template = [
-  {
-    label: 'File',
-    submenu: [
-      {
-        label: 'Dev Tools',
-        click () {
-          // Open the DevTools.
-          mainWindow.webContents.openDevTools()
-        }
-      },
-      { type: 'separator' },
-      {
-        label: 'Lock',
-        click () {
-          toggleLock();
-        }
-      },
-      {
-        label: 'Reboot',
-        click () {
-          reboot();
-        }
-      },
-
-    ]
-  },
-  {
-    role: 'help',
-    submenu: [
-      {
-        label: 'About',
-        role: 'about'
-      }
-    ]
-  }
-]
+const io = require('socket.io')(server, {
+});
+const ip = require('ip');
 
 if (process.platform === 'darwin') {
-  template.unshift({
+  const menu = Menu.buildFromTemplate([{
     label: app.getName(),
     submenu: [
       { role: 'hide' },
@@ -68,10 +29,10 @@ if (process.platform === 'darwin') {
       { type: 'separator' },
       { role: 'quit' }
     ]
-  })
+  }]);
 }
 
-const menu = Menu.buildFromTemplate(template)
+
 
 //Main Window
 let mainWindow;
@@ -95,7 +56,11 @@ async function createWindow () {
       preload: path.join(__dirname, 'preload.js')
     }
   });
-  Menu.setApplicationMenu(menu)
+  if (process.platform === 'darwin') {
+    Menu.setApplicationMenu(menu)
+  } else {
+    Menu.setApplicationMenu(null)
+  }
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
 }
@@ -195,7 +160,6 @@ async function initDatabases() {
       table.string('description');
       table.boolean('canEdit').defaultTo(true);
     });
-    await knex('config').insert({key:"deviceName", value:"James\'s PC",name:'Device Name',description:'Device\'s friendly name'});
     await knex('config').insert({key:"deviceLock", value:"UNLOCKED", name:"Device Lock", description:"Lock the device", canEdit:false});
     await knex('config').insert({key:"timeoutTime", value:5, name:"Device Timeout", description:"How soon should the device be blanked after last interaction (minutes)"});
 
@@ -238,12 +202,23 @@ function reboot() {
 ipcMain.on("reboot", (event, arguments) =>{
   reboot();
 });
+ipcMain.on("toggleLock", (event, arguments) =>{
+  toggleLock();
+});
+ipcMain.on("devTools", (event, arguments) =>{
+  mainWindow.webContents.openDevTools();
+});
 ipcMain.handle('getVersions', async (event, data) => {
   return process.versions;
 });
 ipcMain.handle('getConfig', async (event, data) => {
   return {"LXConfig":LXConfig,"SNDConfig":SNDConfig,"MAINConfig":MAINConfig};
 });
+ipcMain.handle('getIP', async (event, data) => {
+  return ip.address();
+});
+
+
 
 //Toggle lock value and reboot.
 async function toggleLock() {

@@ -23,6 +23,33 @@ function sendOSC(command, args = []) {
 }
 
 /**
+ * generic function to change tab view
+ * @param tab - int - tab to select
+ */
+function changeTab(tab) {
+    $(".tab[data-tab]").hide();
+    $(".tab[data-tab='" + tab + "']").show();
+    $("#menu td.selected").removeClass( "selected" );
+    $("#menu td[data-tab='" + tab + "']").addClass( "selected" );
+}
+
+/**
+ * generic function triggered by frontend JS on the admin tab
+ */
+function adminFunctions(type) {
+    switch (type) {
+        case 'lock':
+            window.api.send("reboot", {});
+            break;
+        case 'reboot':
+            window.api.send("toggleLock", {});
+            break;
+        case 'devTools':
+            window.api.send("devTools", {});
+            break;
+    }
+}
+/**
  * button click function for LX
  */
 function lxPreset (id) {
@@ -57,6 +84,7 @@ var timeout = { //Black the screen after a timeout
     timeoutTime: 300000, //5 minutes = Default
     timedOut: false
 };
+var tab;
 $(document).ready(function() {
     //create buttons dynamically
     window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset"}).then((result) => {
@@ -93,7 +121,6 @@ $(document).ready(function() {
         window.api.send("reboot", {});
     });
     window.api.asyncSend("getConfig", {}).then((result) => {
-        $("#deviceName").html(result['MAINConfig']['deviceName'] + (result['MAINConfig']['deviceLock'] === "LOCKED" ? " - LOCKED" : ""));
         timeout['timeoutTime'] = result['MAINConfig']['timeoutTime']*60*1000;
     });
     //Channel Fader handlimg
@@ -119,6 +146,20 @@ $(document).ready(function() {
             timeout['timedOut'] = false;
             $("#container").show();
         }
+    });
+    changeTab(1);
+    $(document).on("click", "#menu td[data-tab]", function () {
+        changeTab($(this).data("tab"));
+    });
+    window.api.asyncSend("getIP", {}).then((result) => {
+        new QRCode(document.getElementById("adminQRCode"), {
+            text: result,
+            width: 200,
+            height: 200,
+            colorDark : "#000000",
+            colorLight : "#d6dfde"
+        });
+        $("#adminURL").html("http://" + result);
     });
 });
 setInterval(function() {
