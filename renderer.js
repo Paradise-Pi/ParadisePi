@@ -170,6 +170,4 @@ setInterval(function() {
         $("#container").fadeOut();
         timeout['timedOut'] = true;
     }
-    
-    console.log((new Date()).getTime());
 }, 1000);
