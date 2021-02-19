@@ -123,6 +123,9 @@ $(document).ready(function() {
     window.api.asyncSend("getConfig", {}).then((result) => {
         timeout['timeoutTime'] = result['MAINConfig']['timeoutTime']*60*1000;
     });
+    $("#allOff").click(function() {
+        window.api.send("fadeAll");
+    });
     //Channel Fader handlimg
     //handle fader movement
     $(document).on('input', '.fader', function() {
