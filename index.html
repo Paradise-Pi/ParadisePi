@@ -14,7 +14,7 @@
           <td data-tab="1" rowspan="2">Lighting</td>
           <td data-tab="2" rowspan="2">Sound</td>
           <td data-tab="3" rowspan="2">Admin</td>
-          <td class="pad" rowspan="2"></td>
+          <td class="pad" rowspan="2"><span id="lockIcon">&#128274;</span></td>
           <td id="allOff"><b>ALL OFF</b></td>
         </tr>
       </table>
@@ -38,7 +38,7 @@
               <td>
                 <div class="button-container">
                   <button type="button" class="bnt-amx" onclick="adminFunctions('devTools')">Open DevTools</button>
-                  <button type="button" onclick="adminFunctions('lock')">Lock</button>
+                  <button type="button" id="deviceLockButton" onclick="adminFunctions('lock')">Lock</button>
                   <button type="button" onclick="adminFunctions('reboot')">Reboot</button>
                 </div>
               </td>
@@ -51,6 +51,21 @@
           </table>
         </div>
     </div>
+    <div id="allOffModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1>Turning Lights off and Muting Audio</h1>
+        <p>Lights not turning off? Ensure that the Lighting Control Computer/Lighting Desk is powered off</p>
+      </div>
+    </div>
+    <div id="lockedWarning" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1>Device Locked</h1>
+        <p>Sorry this device is locked, so you cannot complete this action</p>
+      </div>
+    </div>
+
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
     <script src="assets/jquery-3.5.1.min.js"></script>

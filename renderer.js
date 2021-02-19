@@ -11,6 +11,10 @@
  * @param channels - object - channels to update in form {channel:dmxValue}
  */
 function sendACN(universe, channels){
+    if (locked) {
+        modalShow("lockedWarning");
+        return false;
+    }
     window.api.send("sendACN", {"universe":universe, "channelsValues": channels})
 }
 /**
@@ -19,6 +23,10 @@ function sendACN(universe, channels){
  * @param args - array - osc arguments
  */
 function sendOSC(command, args = []) {
+    if (locked) {
+        modalShow("lockedWarning");
+        return false;
+    }
     window.api.send("sendOSC", {"command": command, "commandArgs": args})
 }
 
@@ -32,17 +40,27 @@ function changeTab(tab) {
     $("#menu td.selected").removeClass( "selected" );
     $("#menu td[data-tab='" + tab + "']").addClass( "selected" );
 }
+/*
 
+ */
+function modalShow(id) {
+    $("#"+id).css("display", "block");
+    modalTimeouts[id] = setTimeout(function() {
+        //Close the modal after 5 seconds
+            $("#"+id).hide();
+        }, 5000);
+}
 /**
  * generic function triggered by frontend JS on the admin tab
  */
 function adminFunctions(type) {
     switch (type) {
         case 'lock':
-            window.api.send("reboot", {});
+            window.api.asyncSend("toggleLock", {}).then((result) => {
+            });
             break;
         case 'reboot':
-            window.api.send("toggleLock", {});
+            window.api.send("reboot", {});
             break;
         case 'devTools':
             window.api.send("devTools", {});
@@ -85,6 +103,8 @@ var timeout = { //Black the screen after a timeout
     timedOut: false
 };
 var tab;
+var modalTimeouts = {};
+var locked = false;
 $(document).ready(function() {
     //create buttons dynamically
     window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset"}).then((result) => {
@@ -121,10 +141,19 @@ $(document).ready(function() {
         window.api.send("reboot", {});
     });
     window.api.asyncSend("getConfig", {}).then((result) => {
+        locked = (result['MAINConfig']['deviceLock'] === "LOCKED");
+        if (locked) {
+            $("#lockIcon").show();
+            $("#deviceLockButton").html('Unlock');
+        } else {
+            $("#lockIcon").hide();
+            $("#deviceLockButton").html('Lock');
+        }
         timeout['timeoutTime'] = result['MAINConfig']['timeoutTime']*60*1000;
     });
     $("#allOff").click(function() {
         window.api.send("fadeAll");
+        modalShow("allOffModal");
     });
     //Channel Fader handlimg
     //handle fader movement
@@ -163,6 +192,14 @@ $(document).ready(function() {
             colorLight : "#d6dfde"
         });
         $("#adminURL").html("http://" + result);
+    });
+    //Modals
+    $(document).on("click", "span.close", function () {
+        var modal = $(this).parents(".modal")[0];
+        modal.hide();
+        if(typeof modalTimeouts[modal.attr('id')] !== "undefined"){
+            clearTimeout(modalTimeouts[modal.attr('id')]);
+        }
     });
 });
 setInterval(function() {

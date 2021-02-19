@@ -203,8 +203,8 @@ function reboot() {
 ipcMain.on("reboot", (event, arguments) =>{
   reboot();
 });
-ipcMain.on("toggleLock", (event, arguments) =>{
-  toggleLock();
+ipcMain.handle('toggleLock', async (event, data) => {
+  await toggleLock();
 });
 ipcMain.on("devTools", (event, arguments) =>{
   mainWindow.webContents.openDevTools();
