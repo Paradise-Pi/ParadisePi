@@ -81,6 +81,7 @@ Main container
 }
 .button-container {
     display: flex;
+    flex-wrap: wrap;
 }
 /*
     Individual items
