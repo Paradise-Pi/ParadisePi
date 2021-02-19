@@ -45,6 +45,7 @@ function changeTab(tab) {
  */
 function modalShow(id) {
     $("#"+id).css("display", "block");
+    clearTimeout(modalTimeouts[id]);
     modalTimeouts[id] = setTimeout(function() {
         //Close the modal after 5 seconds
             $("#"+id).hide();
@@ -195,11 +196,7 @@ $(document).ready(function() {
     });
     //Modals
     $(document).on("click", "span.close", function () {
-        var modal = $(this).parents(".modal")[0];
-        modal.hide();
-        if(typeof modalTimeouts[modal.attr('id')] !== "undefined"){
-            clearTimeout(modalTimeouts[modal.attr('id')]);
-        }
+        $(this).parents(".modal").hide();
     });
 });
 setInterval(function() {
