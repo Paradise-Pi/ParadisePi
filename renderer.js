@@ -186,7 +186,7 @@ $(document).ready(function() {
     });
     window.api.asyncSend("getIP", {}).then((result) => {
         new QRCode(document.getElementById("adminQRCode"), {
-            text: result,
+            text: "http://" + result,
             width: 200,
             height: 200,
             colorDark : "#000000",
