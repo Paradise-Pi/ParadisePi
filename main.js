@@ -16,6 +16,9 @@ const server = require('http').createServer(function (req, res) {
   staticServerFile.serve(req, res);
 });
 const io = require('socket.io')(server, {
+  cors: {
+    origin: '*',
+  }
 });
 const ip = require('ip');
 
@@ -81,7 +84,7 @@ app.whenReady().then(() => {
     setupOSC();
     setupE131();
     createWindow();
-    server.listen(80);
+    server.listen(8080);
   });
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

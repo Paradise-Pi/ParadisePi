@@ -195,14 +195,15 @@ $(document).ready(function() {
         changeTab($(this).data("tab"));
     });
     window.api.asyncSend("getIP", {}).then((result) => {
+        let url = "http://" + result + ":8080"
         new QRCode(document.getElementById("adminQRCode"), {
-            text: "http://" + result,
+            text: url,
             width: 200,
             height: 200,
             colorDark : "#000000",
             colorLight : "#d6dfde"
         });
-        $("#adminURL").html("http://" + result);
+        $("#adminURL").html(url);
     });
     //Modals
     $(document).on("click", "span.close", function () {

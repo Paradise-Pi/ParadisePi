@@ -68,7 +68,7 @@ function sndFaderCard(value){
 }
 
 //websocket
-const socket = io(':80');
+const socket = io(':8080');
 //Mechanics of the connection
 //updates interface when connection lost/found
 socket.on('connect', () => {
