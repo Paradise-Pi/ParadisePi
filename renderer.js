@@ -215,7 +215,7 @@ $(document).ready(function() {
 });
 setInterval(function() {
     if (!timeout['timedOut'] && (timeout['lastMove']+timeout['timeoutTime']) <= (new Date()).getTime()) {
-        $("#page").fadeOut();
+        $("#page").fadeOut(5000);
         timeout['timedOut'] = true;
     }
 }, 1000);
