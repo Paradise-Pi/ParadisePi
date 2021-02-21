@@ -1,3 +1,6 @@
 node_modules
 .idea/
 database.sqlite
+release-builds/
+
+dist/

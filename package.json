@@ -11,10 +11,12 @@
     "node-static": "^0.7.11",
     "osc": "^2.4.1",
     "socket.io": "3.1.1",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.0"
   },
   "devDependencies": {
     "electron": "^11.2.3",
+    "electron-builder": "^22.9.1",
+    "electron-packager": "^15.2.0",
     "electron-rebuild": "^2.3.5"
   },
   "scripts": {
@@ -22,7 +24,8 @@
     "install": "electron-rebuild",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icon/scaled/icon.icns --prune=true --out=release-builds",
     "package-win": "electron-packager . paradise --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icon/scaled/icon.ico --prune=true --out=release-builds --version-string.CompanyName=JBithell --version-string.FileDescription=Paradise --version-string.ProductName=\"Paradise Software\"",
-    "package-linux": "electron-packager . paradise --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icon/scaled/1024x1024.png --prune=true --out=release-builds"
+    "package-linux": "electron-packager . paradise --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icon/scaled/1024x1024.png --prune=true --out=release-builds",
+    "package-pi": "electron-builder --armv7l --dir"
   },
   "repository": {
     "type": "git",
@@ -33,5 +36,20 @@
   "optionalDependencies": {
     "bufferutil": "^4.0.3",
     "utf-8-validate": "^5.0.4"
+  },
+  "build": {
+    "appId": "com.jbithell.CueB",
+    "productName": "CueB Controller Software",
+    "linux": {
+      "target": {
+        "target": "appimage",
+        "arch": [
+          "armv7l"
+        ]
+      }
+    },
+    "deb": {},
+    "artifactName": "ParadisePi_${version}.${ext}",
+    "forceCodeSigning": false
   }
 }
