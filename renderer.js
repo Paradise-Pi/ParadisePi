@@ -73,6 +73,9 @@ function adminFunctions(type) {
         case 'reboot':
             window.api.send("reboot", {});
             break;
+        case 'exit':
+            window.api.send("exit", {});
+            break;
         case 'devTools':
             window.api.send("devTools", {});
             break;

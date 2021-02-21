@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow,ipcMain,Menu,dialog} = require('electron');
 const path = require('path');
+const os = require('os');
 const oscHandler = require("osc");
 const e131 = require('e131');
 const knex = require('knex')({
@@ -50,6 +51,7 @@ async function createWindow () {
     height: 480,
     minWidth: 800,
     minHeight: 480,
+    fullscreen: (os.platform() == "linux"),
     title: "Paradise",
     icon: path.join(__dirname, 'assets/icon/icon.png'),
     webPreferences: {
@@ -196,15 +198,20 @@ ipcMain.handle('simpleQueryDB', async (event, data) => {
 });
 
 //General Setup
-function reboot() {
+function reboot(reboot) {
   knex.destroy().then(() => {
     //TODO hang up any listeners for OSC etc.
-    app.relaunch();
+    if (reboot) {
+      app.relaunch();
+    }
     app.exit();
   });
 }
 ipcMain.on("reboot", (event, arguments) =>{
-  reboot();
+  reboot(true);
+});
+ipcMain.on("exit", (event, arguments) =>{
+  reboot(false);
 });
 ipcMain.handle('toggleLock', async (event, data) => {
   await toggleLock();
@@ -231,7 +238,7 @@ async function toggleLock() {
   } else {
     await knex('config').where({key: "deviceLock"}).update({value: "LOCKED"});
   }
-  reboot();
+  reboot(true);
 }
 
 //OSC Setup
@@ -360,7 +367,7 @@ io.on('connection', socket => {
         await knex(table).where({ key: value.name }).update({ value: value.value })
       }
       //reboot to update settings on controller
-      reboot();
+      reboot(true);
     }
   });
   //update preset when received from site
@@ -397,7 +404,7 @@ io.on('connection', socket => {
         await knex.table(table).where({id:(datas.id)}).update(datas);
       }
       //reboot to update settings on controller
-      reboot();
+      reboot(true);
     }
   });
   //remove preset
@@ -409,7 +416,7 @@ io.on('connection', socket => {
       await knex(table).where({ id : data.id }).del();
 
       //reboot to update settings on controller
-      reboot();
+      reboot(true);
     }
   });
   //Lock mechanism
