@@ -190,7 +190,7 @@ $(document).ready(function() {
         timeout["lastMove"] = (new Date()).getTime();
         if (timeout['timedOut']) {
             timeout['timedOut'] = false;
-            $("#container").show();
+            $("#page").show();
         }
     });
     changeTab(1);
@@ -215,7 +215,7 @@ $(document).ready(function() {
 });
 setInterval(function() {
     if (!timeout['timedOut'] && (timeout['lastMove']+timeout['timeoutTime']) <= (new Date()).getTime()) {
-        $("#container").fadeOut();
+        $("#page").fadeOut();
         timeout['timedOut'] = true;
     }
 }, 1000);

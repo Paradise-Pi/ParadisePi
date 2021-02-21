@@ -66,7 +66,7 @@ Main container
 #container {
     border-radius:5px;
     height: 100%;
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: hidden;
     background-color:#d6dfde;
     border-radius:0px 5px 0px  0px;
