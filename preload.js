@@ -13,8 +13,8 @@ contextBridge.exposeInMainWorld(
       receive: (channel, func) => {
         ipcRenderer.on(channel, (event, ...args) => func(...args));
       },
-        asyncSend: async (channel, data) => {
-            return await ipcRenderer.invoke(channel, data);
-        }
+      asyncSend: async (channel, data) => {
+        return await ipcRenderer.invoke(channel, data);
+      }
     }
 );

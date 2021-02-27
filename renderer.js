@@ -107,7 +107,16 @@ function soundPreset (id) {
     });
 }
 window.api.receive("fromOSC", (data) => {
-    console.log(data);
+    let addressArray = data.address.split("/")
+    //check split address to make sure it's a fader update
+    if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "fader") {
+        $(".fader").each(function(key, value) {
+            if(value.getAttribute("data-channel") === addressArray[2]) {
+                value.value = data.args[0];
+            };
+        })
+        //console.log($(".fader[data-channel='" + addressArray[2] + "']").value);// = data.args[0];
+    }
 });
 
 var timeout = { //Black the screen after a timeout
@@ -225,7 +234,6 @@ async function sndFadeAll(){
     while(changedZero){
         changedZero = false;
         faders.each( function (){
-            console.log(this.value);
             if (this.value > 0){
                 changedZero = true;
                 this.value -= 0.01;
@@ -234,5 +242,22 @@ async function sndFadeAll(){
         });
         await new Promise(r => setTimeout(r, 30));
     }
-
 }
+
+async function getFaderValue(element){
+    let channel = element.getAttribute("data-channel");
+    window.api.asyncSend("getFader", {"id": channel}).then((result) => {
+        console.log(result);
+        //fader.value = result.faderValue;
+    });
+}
+
+function updateFaders(){
+    $(".fader").each(function () {
+        getFaderValue(this);
+    });
+}
+
+setInterval(function (){
+    updateFaders()
+}, 100);

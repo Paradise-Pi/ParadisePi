@@ -68,6 +68,7 @@ async function createWindow () {
   }
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
+  mainWindow.openDevTools();
 }
 
 // This method will be called when Electron has finished
@@ -258,8 +259,7 @@ function setupOSC() {
     udpPort.send({address:"/info", args:[]});
   });
   udpPort.on("message", function (oscMessage) {
-    console.log(oscMessage);
-    mainWindow.send("fromOSC", {data:oscMessage});
+    mainWindow.webContents.send("fromOSC", oscMessage);
   });
   udpPort.on("error", function (err) {
     console.log(err);
@@ -273,6 +273,11 @@ ipcMain.on("sendOSC", (event, arguments) =>{
   }
 
 });
+
+ipcMain.handle("getFader", (event, args) => {
+  udpPort.send({address: "/ch/"+args.id + "/mix/fader", data: {}});
+})
+
 
 
 //LX Setup
