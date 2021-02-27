@@ -98,7 +98,6 @@ function soundPreset (id) {
         if (result.length == 1) {
             result = result[0];
             if (result.enabled) {
-                console.log(result['data']);
                 var data = JSON.parse(result['data']);
                 for (const [key, value] of Object.entries(data)) {
                     sendOSC(key, [value]);
@@ -135,7 +134,6 @@ $(document).ready(function() {
     //create Faders dynamically
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndFaders"}).then((result) => {
         $.each(result, function (key,value) {
-            console.log(value);
             $("#sndFaders").append('<div class="channel">\n' +
                 '            <label>' + value.name + '</label>\n' +
                 '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + (value.channel < 10 ? '0'+value.channel : value.channel ) + '" value="0">\n' +
@@ -167,6 +165,7 @@ $(document).ready(function() {
     });
     $("#allOff").click(function() {
         window.api.send("fadeAll");
+        sndFadeAll();
         modalShow("allOffModal");
     });
     //Channel Fader handlimg
@@ -219,3 +218,21 @@ setInterval(function() {
         timeout['timedOut'] = true;
     }
 }, 1000);
+
+async function sndFadeAll(){
+    let faders = $(".fader");
+    let changedZero = true;
+    while(changedZero){
+        changedZero = false;
+        faders.each( function (){
+            console.log(this.value);
+            if (this.value > 0){
+                changedZero = true;
+                this.value -= 0.01;
+                sendOSC("/ch/" + this.getAttribute("data-channel") + "/mix/fader", {type:"f", value:this.value});
+            }
+        });
+        await new Promise(r => setTimeout(r, 30));
+    }
+
+}

@@ -122,7 +122,8 @@ async function initDatabases() {
         table.boolean('enabled');
         table.json('data');
     });
-    await knex('sndPreset').insert({name: "Sound1", enabled: true, data: JSON.stringify({"/ch/01/mix/fader": {type:"f", value:0.5},"/ch/01/mix/on": {type:"i", value:1}})});
+    await knex('sndPreset').insert({name:"Unmute Main Mix", enabled: true, data: JSON.stringify({"/main/st/mix/on": {type:"i", value:1}, "/main/st/mix/fader": {type:"f", value:0.5}})});
+    await knex('sndPreset').insert({name:"Mute Main Mix", enabled: true, data: JSON.stringify({"/main/st/mix/on": {type:"i", value:0}, "/main/st/mix/fader": {type:"f", value:0.0}})});
   }
   if (!await knex.schema.hasTable('sndFaders')){
     await knex.schema.createTable('sndFaders', table => {
@@ -321,9 +322,8 @@ ipcMain.on("fadeAll", async (event, args) =>  {
     while(changedZero) {
       changedZero = false;
       for (var channel = 0; channel < 512; channel++) {
-        for (let universe = 1; universe <= universes; universe++){
+        for (var universe = parseInt(LXConfig.e131FirstUniverse); universe <= parseInt(LXConfig.e131FirstUniverse)+parseInt(LXConfig.e131Universes)-1; universe++){
           if (e131Clients[universe]['addressData'][channel] > 0){
-            console.log(channel)
             changedZero = true;
             e131Clients[universe]['addressData'][channel]--;
           }
@@ -410,7 +410,6 @@ io.on('connection', socket => {
   //remove preset
   socket.on('removePreset', async (table, data) => {
     if (["LXPreset", "SNDPreset"].includes(table)){
-      console.log(data);
 
       //remove
       await knex(table).where({ id : data.id }).del();
