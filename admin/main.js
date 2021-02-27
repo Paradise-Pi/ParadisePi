@@ -1,5 +1,5 @@
 //generates the lighting card for a given value object
-function lxPresetCard(value){
+function lxPresetCard(value, firstUniverse, lastUniverse){
     return  '<div class="card">\n' +
     '    <div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n' +
     '    <div class="card-body">\n' +
@@ -11,7 +11,7 @@ function lxPresetCard(value){
     '                <input class="form-control" name="enabled" type="checkbox" checked="' + value.enabled + '">\n' +
     '            </div>\n' +
     '            <div class="form-group"><label>Preset Universe</label>\n' +
-    '                <input class="form-control" name="universe" type="number" min="1" value="' + value.universe + '">\n' +
+    '                <input class="form-control" name="universe" type="number" min="'+ firstUniverse +'" max="'+ lastUniverse +'" value="' + value.universe + '">\n' +
     '            </div>\n' +
     '            <div class="form-group"><label>Preset Channels</label>\n' +
     '                <textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.setArguments + '</textarea>\n' +
@@ -106,7 +106,7 @@ socket.on('preset', (data) => {
         presetarea.html("");
         $.each(data["LXPreset"], function (key, value){
             //add a card for each preset
-            presetarea.append(lxPresetCard(value));
+            presetarea.append(lxPresetCard(value, firstUniverse, lastUniverse));
         });
     } else if ("SNDPreset" in data) {
         let presetarea = $("#SNDPresetList");
@@ -118,6 +118,8 @@ socket.on('preset', (data) => {
     }
 });
 
+let firstUniverse = 1;
+let lastUniverse = 2;
 //Settings Section
 socket.on('config', (data) => {
     var type = false;
@@ -127,6 +129,9 @@ socket.on('config', (data) => {
         type = "SNDConfig";
     } else if ("LXConfig" in data) {
         type = "LXConfig";
+        //set first and last values
+        firstUniverse = parseInt(data['LXConfig'][0]['value']);
+        lastUniverse = firstUniverse + parseInt(data['LXConfig'][1]['value']) - 1;
     }
     if (type) {
         $("form.settings-form[data-table=" + type + "]").html("");
@@ -162,7 +167,7 @@ $(document).on('submit', 'form.preset-form[data-table]', function(){
 $('#lxNew').click(function (){
     //an empty object for creating new presets
     const emptyValues = {id:null, name:"", universe:1, enabled:true, setArguments:"" };
-    $("#LXPresetList").append(lxPresetCard(emptyValues));
+    $("#LXPresetList").append(lxPresetCard(emptyValues, firstUniverse, lastUniverse));
 });
 $('#sndNew').click( function (){
     //an empty object for creating new presets
