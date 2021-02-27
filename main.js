@@ -301,23 +301,31 @@ function sendE131(universe) {
     }, (1000/LXConfig.e131Frequency));
   });
 }
-ipcMain.on("sendACN", (event, args) => {
+ipcMain.on("sendACN", async (event, args) => {
   if (MAINConfig.deviceLock === "UNLOCKED") {
     var universe = args.universe;
     var channelsValues = args.channelsValues; //Format = {53:244,14:34,56:255}
-    for (var channel = 0; channel < e131Clients[universe]['addressData'].length; channel++) {
-      if (channelsValues[(channel + 1)] !== undefined) {
-        e131Clients[universe]['addressData'][channel] = channelsValues[(channel + 1)];
-      } else {
-        //TODO fork library and make an additive or solo option?
-        e131Clients[universe]['addressData'][channel] = 0;
+    let changedZero = true;
+    while (changedZero) {
+      changedZero = false;
+      for (var channel = 0; channel < e131Clients[universe]['addressData'].length; channel++) {
+        if (e131Clients[universe]['addressData'][channel] !== channelsValues[(channel + 1)] ){
+          changedZero = true;
+          if (channelsValues[(channel + 1)] === undefined || e131Clients[universe]['addressData'][channel] > channelsValues[(channel + 1)]){
+            if (e131Clients[universe]['addressData'][channel] !== 0){
+              e131Clients[universe]['addressData'][channel]--;
+            }
+          } else {
+            e131Clients[universe]['addressData'][channel]++;
+          }
+        }
       }
+      await new Promise(r => setTimeout(r, LXConfig.fadeTime));
     }
   }
 });
 ipcMain.on("fadeAll", async (event, args) =>  {
   if (MAINConfig.deviceLock === "UNLOCKED") {
-    let universes = LXConfig.e131Universes;
     let changedZero = true;
     while(changedZero) {
       changedZero = false;
