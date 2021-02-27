@@ -11,7 +11,7 @@ function lxPresetCard(value){
     '                <input class="form-control" name="enabled" type="checkbox" checked="' + value.enabled + '">\n' +
     '            </div>\n' +
     '            <div class="form-group"><label>Preset Universe</label>\n' +
-    '                <input class="form-control" name="universe" type="number" value="' + value.universe + '">\n' +
+    '                <input class="form-control" name="universe" type="number" min="1" value="' + value.universe + '">\n' +
     '            </div>\n' +
     '            <div class="form-group"><label>Preset Channels</label>\n' +
     '                <textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.setArguments + '</textarea>\n' +
@@ -57,7 +57,7 @@ function sndFaderCard(value){
         '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
         '            </div>\n' +
         '            <div class="form-group"><label>Fader Channel</label>\n' +
-        '                <input class="form-control" name="channel" type="number" value="' + value.channel + '">\n' +
+        '                <input class="form-control" name="channel" type="number" min="1" value="' + value.channel + '">\n' +
         '            </div>\n' +
         (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
         '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +

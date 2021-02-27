@@ -141,6 +141,7 @@ async function initDatabases() {
       table.string('description');
       table.boolean('canEdit').defaultTo(true);
     });
+    await knex('lxConfig').insert({key:"e131FirstUniverse", value:1, name:'First Universe', description:''})
     await knex('lxConfig').insert({key:"e131Universes", value:2,name:'Number of Universes',description:''})
     await knex('lxConfig').insert({key:"e131SourceName", value:"Paradise Pi",name:'sACN Source Name',description:''})
     await knex('lxConfig').insert({key:"e131Priority", value:25,name:'sACN Priority',description:'Higher values take precedence'})
@@ -200,7 +201,6 @@ ipcMain.handle('simpleQueryDB', async (event, data) => {
 //General Setup
 function reboot(reboot) {
   knex.destroy().then(() => {
-    //TODO hang up any listeners for OSC etc.
     if (reboot) {
       app.relaunch();
     }
@@ -279,7 +279,7 @@ var e131Clients = [];
 function setupE131() {
   //sACN = E131
   e131Clients = [];
-  for (var i = 1; i <= LXConfig.e131Universes; i++) {
+  for (var i = parseInt(LXConfig.e131FirstUniverse); i <= parseInt(LXConfig.e131FirstUniverse)+parseInt(LXConfig.e131Universes)-1; i++) {
     e131Clients[i] = {"client": new e131.Client(i)};
     e131Clients[i]['packet'] = e131Clients[i]["client"].createPacket(512);
     e131Clients[i]['addressData'] = e131Clients[i]['packet'].getSlotsData();
@@ -288,7 +288,7 @@ function setupE131() {
     e131Clients[i]['packet'].setPriority(LXConfig.e131Priority);
   }
   if (LXConfig.e131Universes > 0) {
-    for (var universe = 1; universe <= LXConfig.e131Universes; universe++) {
+    for (var universe = parseInt(LXConfig.e131FirstUniverse); universe <= parseInt(LXConfig.e131FirstUniverse)+parseInt(LXConfig.e131Universes)-1; universe++) {
       sendE131(universe);
     }
   }
