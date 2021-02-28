@@ -157,7 +157,7 @@ $(document).ready(function() {
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndFaders"}).then((result) => {
         $.each(result, function (key,value) {
             $("#sndFaders").append('<div class="channel">\n' +
-                '            <label>' + value.name + '</label>\n' +
+                '            <label>' + value.name + '</label><br/>\n' +
                 '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + (value.channel < 10 ? '0'+value.channel : value.channel ) + '" value="0">\n' +
                 '            <button class="channel-toggle" data-channel="' + (value.channel < 10 ? '0'+value.channel : value.channel ) + '" data-status="1">OFF</button>\n' +
                 '          </div>');
