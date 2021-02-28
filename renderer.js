@@ -133,9 +133,9 @@ window.api.receive("fromOSC", (data) => {
     } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "on") {
         //TODO John add your bit here
     } else if (data.address == "/main/st/mix/fader") {
-        //data.args[0]
+        $(".fader[data-channel='master']").val(data.args[0]);
     } else if (data.address == "/main/st/mix/on") {
-
+        $(".channel-toggle[data-channel='master']").html((data.args[0] == 1 ? "ON" : "OFF"));
     }
 });
 
@@ -169,6 +169,11 @@ $(document).ready(function() {
                 '            <button class="channel-toggle" data-channel="' + value.channel + '" data-status="1"  ' + (value.enabled ? '':'disabled') + ' >OFF</button>\n' +
                 '          </div>');
         });
+        $("#sndFaders").append('<div class="channel">\n' +
+            '            <label>Master</label><br/>\n' +
+            '            <input class="fader" type="range" max="1" step="0.01" data-channel="master" disabled value="0">\n' +
+            '            <button class="channel-toggle" data-channel="master" data-status="1" disabled>OFF</button>\n' +
+            '          </div>');
     });
 
     //setup all bindings/handlers
