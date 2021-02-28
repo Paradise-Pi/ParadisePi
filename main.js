@@ -130,8 +130,9 @@ async function initDatabases() {
       table.increments('id').primary();
       table.string('name');
       table.integer('channel');
+      table.boolean('canControl');
     });
-    await knex('sndFaders').insert({name:"CH 01", channel:1})
+    await knex('sndFaders').insert({name:"CH 01", channel:1, canControl:true})
   }
 
   if (!await knex.schema.hasTable('lxConfig')){
@@ -246,6 +247,46 @@ async function toggleLock() {
 var udpPort;
 var lastOSCMessage = 0;
 var udpStatus = false;
+function checkStatusOSC() {
+  currentMillis = +new Date();
+ if (currentMillis-lastOSCMessage > 3000 && udpStatus) {
+    //Now disconnected from the Mixer
+    udpStatus = false;
+    mainWindow.webContents.send("OSCStatus", false);
+  } else if (currentMillis-lastOSCMessage > 500 && udpStatus) {
+    //Send a status request to hope you get something back
+    udpPort.send({address: "/status", args: []});
+  }  else if (!udpStatus) {
+    udpStatus = true;
+    udpPort.send({address:"/info", args:[]});
+    mainWindow.webContents.send("OSCStatus", true);
+    subscribeOSC(false);
+    //When a connection is first opened, want to get the statuses of stuff we've already got
+     knex.select().table('sndFaders').then((data) => {
+       data.forEach(function(entry) {
+         udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/fader", args:[]});
+         udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/on", args:[]});
+       });
+       udpPort.send({address:"/main/st/mix/fader", args:[]});
+       udpPort.send({address:"/main/st/mix/on", args:[]});
+     });
+
+  }
+}
+function subscribeOSC(renew) {
+  if (typeof renew === "undefined") {
+    renew = false;
+  }
+  udpPort.send({address:"/xremote"});
+  /*knex.select().table('sndFaders').then((data) => {
+    data.forEach(function(entry) {
+      udpPort.send({address:(renew ? '/renew' : '/subscribe'), args:["/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/fader"]});
+      udpPort.send({address:(renew ? '/renew' : '/subscribe'), args:["/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/on"]});
+    });
+    udpPort.send({address:(renew ? '/renew' : '/subscribe'), args:["/main/st/mix/fader"]});
+    udpPort.send({address:(renew ? '/renew' : '/subscribe'), args:["/main/st/mix/on"]});
+  });*/
+}
 function setupOSC() {
   udpPort = new oscHandler.UDPPort({
     localAddress: "0.0.0.0",
@@ -259,38 +300,30 @@ function setupOSC() {
   udpPort.on("message", function (oscMessage) {
     console.log(oscMessage);
     lastOSCMessage = +new Date();
+    checkStatusOSC();
     mainWindow.webContents.send("fromOSC", oscMessage);
   });
   udpPort.on("error", function (err) {
     console.log(err);
   });
   udpPort.open();
+
+  //Status Checker function
   setInterval(function () {
-    currentMillis = +new Date();
-    if (currentMillis-lastOSCMessage > 1000 && udpStatus) {
-      //Now disconnected from the Mixer - send a status request to hope you get something back, but most likely we're offline now!
-      udpPort.send({address:"/status", args:[]});
-      udpStatus = false;
-      mainWindow.webContents.send("OSCStatus", false);
-    } else if (!udpStatus) {
-      udpStatus = true;
-      udpPort.send({address:"/info", args:[]});
-      mainWindow.webContents.send("OSCStatus", true);
-    }
-  }, 5000);
+    checkStatusOSC();
+  }, 1000);
+
+  subscribeOSC(false);
+  setInterval(function () {
+    subscribeOSC(true);
+  }, 9000);
 }
 //events
 ipcMain.on("sendOSC", (event, arguments) =>{
   if (MAINConfig.deviceLock === "UNLOCKED"){
     udpPort.send({address: arguments.command, args: arguments.commandArgs});
   }
-
 });
-
-ipcMain.handle("getFader", (event, args) => {
-  udpPort.send({address: "/ch/"+args.id + "/mix/fader", data: {}});
-})
-
 
 
 //LX Setup
@@ -396,7 +429,7 @@ io.on('connection', socket => {
       reboot(true);
     }
   });
-  //update preset when received from site
+  //update preset when received from admin site
   socket.on('updatePreset', async(table, data) => {
     if (["LXPreset", "SNDPreset", "SNDFaders"].includes(table)){
       //rearrange received data for database formatting
@@ -420,9 +453,10 @@ io.on('connection', socket => {
             data: datas.data
           });
         } else if (table === "SNDFaders") {
-          await  knex(table).insert({
+          await knex(table).insert({
             name:datas.name,
-            channel:datas.channel
+            channel:datas.channel,
+            canControl:(datas.canControl == 1 ? true : false)
           })
         }
       } else {

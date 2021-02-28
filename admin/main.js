@@ -59,6 +59,9 @@ function sndFaderCard(value){
         '            <div class="form-group"><label>Fader Channel</label>\n' +
         '                <input class="form-control" name="channel" type="number" min="1" value="' + value.channel + '">\n' +
         '            </div>\n' +
+        '            <div class="form-group"><label>Controllable</label>\n' +
+        '                <input class="form-control" name="canControl" type="checkbox" ' + (value.canControl ? 'checked' : 'unchecked') + '>\n' +
+        '            </div>\n' +
         (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
         '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
         (value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '') +
@@ -178,7 +181,7 @@ $('#sndNew').click( function (){
 //add new fader
 $('#fdrNew').click( function (){
     //empty object
-    const emptyValues = {id:null, name:"", channel:1}
+    const emptyValues = {id:null, name:"", channel:1,canControl:true}
     $("#SNDFaderList").append(sndFaderCard(emptyValues));
 });
 

@@ -114,13 +114,13 @@ window.api.receive("OSCStatus", (status) => {
     }
 });
 window.api.receive("fromOSC", (data) => {
+    //The big old function that parses all data that ever makes it through from the desk
     let addressArray = data.address.split("/")
     //check split address to make sure it's a fader update
-    console.log(addressArray);
-    if (addressArray[1] == "info") {
+    if (data.address == "/info") {
         $("#SNDStatusDetails").html("Sound connected to " + data.args[2] + " " + data.args[3] + " (" + data.args[1] + " - " + data.args[0] + ")");
         $("#SNDStatusIcon").html(data.args[2] + " &#x25cf;");
-    } else if (addressArray[1] == "status") {
+    } else if (data.address == "/status") {
         console.log(data.args);
     } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "fader") {
         $(".fader").each(function(key, value) {
@@ -128,7 +128,12 @@ window.api.receive("fromOSC", (data) => {
                 value.value = data.args[0];
             };
         })
-        //console.log($(".fader[data-channel='" + addressArray[2] + "']").value);// = data.args[0];
+    } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "on") {
+        //TODO John add your bit here
+    } else if (data.address == "/main/st/mix/fader") {
+        data.args[0]
+    } else if (data.address == "/main/st/mix/on") {
+
     }
 });
 
@@ -158,8 +163,8 @@ $(document).ready(function() {
         $.each(result, function (key,value) {
             $("#sndFaders").append('<div class="channel">\n' +
                 '            <label>' + value.name + '</label><br/>\n' +
-                '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + (value.channel < 10 ? '0'+value.channel : value.channel ) + '" value="0">\n' +
-                '            <button class="channel-toggle" data-channel="' + (value.channel < 10 ? '0'+value.channel : value.channel ) + '" data-status="1">OFF</button>\n' +
+                '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" value="0">\n' +
+                '            <button class="channel-toggle" data-channel="' + value.channel + '" data-status="1">OFF</button>\n' +
                 '          </div>');
         });
     });
@@ -193,12 +198,12 @@ $(document).ready(function() {
     //Channel Fader handlimg
     //handle fader movement
     $(document).on('input', '.fader', function() {
-        sendOSC("/ch/" + this.getAttribute("data-channel") + "/mix/fader", {type:"f", value:this.value});
+        sendOSC("/ch/" + String(this.getAttribute("data-channel")).padStart(2, '0') + "/mix/fader", {type:"f", value:this.value});
     });
     //handle button toggle
     $(document).on("click", ".channel-toggle", function () {
         let  status = this.getAttribute("data-status")
-        sendOSC("/ch/" + this.getAttribute("data-channel")+ "/mix/on", {type: "i", value:status});
+        sendOSC("/ch/" + String(this.getAttribute("data-channel")).padStart(2, '0') + "/mix/on", {type: "i", value:status});
         if (status == 1) {
             this.setAttribute("data-status", 0);
             this.innerText = "ON";
@@ -250,27 +255,9 @@ async function sndFadeAll(){
             if (this.value > 0){
                 changedZero = true;
                 this.value -= 0.01;
-                sendOSC("/ch/" + this.getAttribute("data-channel") + "/mix/fader", {type:"f", value:this.value});
+                sendOSC("/ch/" + String(this.getAttribute("data-channel")).padStart(2, '0') + "/mix/fader", {type:"f", value:this.value});
             }
         });
         await new Promise(r => setTimeout(r, 30));
     }
 }
-
-async function getFaderValue(element){
-    let channel = element.getAttribute("data-channel");
-    window.api.asyncSend("getFader", {"id": channel}).then((result) => {
-        console.log(result);
-        //fader.value = result.faderValue;
-    });
-}
-
-function updateFaders(){
-    $(".fader").each(function () {
-        getFaderValue(this);
-    });
-}
-
-setInterval(function (){
-    updateFaders()
-}, 100);
