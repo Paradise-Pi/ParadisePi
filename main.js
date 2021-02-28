@@ -68,7 +68,6 @@ async function createWindow () {
   }
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
-  mainWindow.openDevTools();
 }
 
 // This method will be called when Electron has finished
