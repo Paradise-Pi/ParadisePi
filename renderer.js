@@ -124,7 +124,7 @@ window.api.receive("fromOSC", (data) => {
         console.log(data.args);
     } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "fader") {
         $(".fader").each(function(key, value) {
-            if(value.getAttribute("data-channel") === addressArray[2]) {
+            if( String(this.getAttribute("data-channel")).padStart(2, '0') === addressArray[2]) {
                 value.value = data.args[0];
             };
         })
