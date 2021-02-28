@@ -173,7 +173,6 @@ $(document).on('submit', 'form.preset-form[data-table]', function() {
     if (!setEnabled) {
         data.push({name:"enabled", value: false});
     }
-    console.log(data);
    socket.emit('updatePreset', $(this).data("table"), data);
    return false;
 });

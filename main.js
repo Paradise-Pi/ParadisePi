@@ -298,7 +298,6 @@ function setupOSC() {
     console.log("UDP Socket open and listening");
   });
   udpPort.on("message", function (oscMessage) {
-    console.log(oscMessage);
     lastOSCMessage = +new Date();
     checkStatusOSC();
     mainWindow.webContents.send("fromOSC", oscMessage);
@@ -431,7 +430,6 @@ io.on('connection', socket => {
   });
   //update preset when received from admin site
   socket.on('updatePreset', async(table, data) => {
-    console.log(data);
     if (["LXPreset", "SNDPreset", "SNDFaders"].includes(table)){
       //rearrange received data for database formatting
       datas = {}

@@ -133,7 +133,7 @@ window.api.receive("fromOSC", (data) => {
     } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "on") {
         //TODO John add your bit here
     } else if (data.address == "/main/st/mix/fader") {
-        data.args[0]
+        //data.args[0]
     } else if (data.address == "/main/st/mix/on") {
 
     }
@@ -163,7 +163,6 @@ $(document).ready(function() {
     //create Faders dynamically
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndFaders"}).then((result) => {
         $.each(result, function (key,value) {
-            console.log(value);
             $("#sndFaders").append('<div class="channel">\n' +
                 '            <label>' + value.name + '</label><br/>\n' +
                 '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" ' + (value.enabled ? '':'disabled') + ' value="0">\n' +
