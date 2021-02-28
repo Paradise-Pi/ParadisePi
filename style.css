@@ -159,3 +159,15 @@ Modals
     text-decoration: none;
     cursor: pointer;
 }
+
+.mute{
+    border: red solid 2px;
+    color: red;
+    font-weight: bold;
+}
+
+.unmute{
+    border: black solid 2px;
+    color: black;
+    font-weight: bold;
+}

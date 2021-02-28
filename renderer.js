@@ -125,17 +125,29 @@ window.api.receive("fromOSC", (data) => {
     } else if (data.address == "/status") {
         console.log(data.args);
     } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "fader") {
-        $(".fader").each(function(key, value) {
+        $(".fader").each(function(key, fader) {
             if( String(this.getAttribute("data-channel")).padStart(2, '0') === addressArray[2]) {
-                value.value = data.args[0];
-            };
+                fader.value = data.args[0];
+            }
         })
     } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "on") {
-        //TODO John add your bit here
+        $(".channel-toggle").each(function (key, button) {
+            if(String(this.getAttribute("data-channel")).padStart(2, '0') === addressArray[2]) {
+                console.log(data.args[0]);
+                toggleMute(this, data.args[0]);
+            }
+        });
     } else if (data.address == "/main/st/mix/fader") {
         $(".fader[data-channel='master']").val(data.args[0]);
     } else if (data.address == "/main/st/mix/on") {
-        $(".channel-toggle[data-channel='master']").html((data.args[0] == 1 ? "ON" : "OFF"));
+        let master = $(".channel-toggle[data-channel='master']")
+        if (data.args[0] == 1){
+            master.addClass("unmute");
+            master.removeClass("mute");
+        } else {
+            master.addClass("mute");
+            master.removeClass("unmute");
+        }
     }
 });
 
@@ -166,13 +178,13 @@ $(document).ready(function() {
             $("#sndFaders").append('<div class="channel">\n' +
                 '            <label>' + value.name + '</label><br/>\n' +
                 '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" ' + (value.enabled ? '':'disabled') + ' value="0">\n' +
-                '            <button class="channel-toggle" data-channel="' + value.channel + '" data-status="1"  ' + (value.enabled ? '':'disabled') + ' >OFF</button>\n' +
+                '            <button class="channel-toggle unMuted" data-channel="' + value.channel + '" data-status="1"  ' + (value.enabled ? '':'disabled') + ' >Mute</button>\n' +
                 '          </div>');
         });
         $("#sndFaders").append('<div class="channel">\n' +
             '            <label>Master</label><br/>\n' +
             '            <input class="fader" type="range" max="1" step="0.01" data-channel="master" disabled value="0">\n' +
-            '            <button class="channel-toggle" data-channel="master" data-status="1" disabled>OFF</button>\n' +
+            '            <button class="channel-toggle unmute" data-channel="master" data-status="1" disabled>Mute</button>\n' +
             '          </div>');
     });
 
@@ -211,13 +223,7 @@ $(document).ready(function() {
     $(document).on("click", ".channel-toggle", function () {
         let  status = this.getAttribute("data-status")
         sendOSC("/ch/" + String(this.getAttribute("data-channel")).padStart(2, '0') + "/mix/on", {type: "i", value:status});
-        if (status == 1) {
-            this.setAttribute("data-status", 0);
-            this.innerText = "ON";
-        } else {
-            this.setAttribute("data-status", 1);
-            this.innerText = "OFF";
-        }
+        toggleMute(this, status)
     });
     $(document).on("mousemove", function () {
         timeout["lastMove"] = (new Date()).getTime();
@@ -266,5 +272,17 @@ async function sndFadeAll(){
             }
         });
         await new Promise(r => setTimeout(r, 30));
+    }
+}
+
+function toggleMute(element, status){
+    if (status == 1) {
+        element.setAttribute("data-status", 0);
+        element.classList.add("unmute");
+        element.classList.remove("mute");
+    } else {
+        element.setAttribute("data-status", 1);
+        element.classList.add("mute");
+        element.classList.remove("unmute");
     }
 }
