@@ -130,9 +130,9 @@ async function initDatabases() {
       table.increments('id').primary();
       table.string('name');
       table.integer('channel');
-      table.boolean('canControl');
+      table.boolean('enabled');
     });
-    await knex('sndFaders').insert({name:"CH 01", channel:1, canControl:true})
+    await knex('sndFaders').insert({name:"CH 01", channel:1, enabled:true})
   }
 
   if (!await knex.schema.hasTable('lxConfig')){
@@ -431,6 +431,7 @@ io.on('connection', socket => {
   });
   //update preset when received from admin site
   socket.on('updatePreset', async(table, data) => {
+    console.log(data);
     if (["LXPreset", "SNDPreset", "SNDFaders"].includes(table)){
       //rearrange received data for database formatting
       datas = {}
@@ -439,26 +440,7 @@ io.on('connection', socket => {
       }
       if (datas.id == null){
         //new preset
-        if (table === "LXPreset") {
-          await knex(table).insert({
-            name: datas.name,
-            enabled: datas.enabled,
-            universe: datas.universe,
-            setArguments: datas.setArguments
-          });
-        } else if (table === "SNDPreset") {
-          await knex(table).insert({
-            name: datas.name,
-            enabled: datas.enabled,
-            data: datas.data
-          });
-        } else if (table === "SNDFaders") {
-          await knex(table).insert({
-            name:datas.name,
-            channel:datas.channel,
-            canControl:(datas.canControl == 1 ? true : false)
-          })
-        }
+        await knex(table).insert(datas);
       } else {
         //update preset
         await knex.table(table).where({id:(datas.id)}).update(datas);

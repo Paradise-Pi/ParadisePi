@@ -8,7 +8,7 @@ function lxPresetCard(value, firstUniverse, lastUniverse){
     '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
     '            </div>\n' +
     '            <div class="form-group"><label>Preset Enabled</label>\n' +
-    '                <input class="form-control" name="enabled" type="checkbox" checked="' + value.enabled + '">\n' +
+    '                <input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n' +
     '            </div>\n' +
     '            <div class="form-group"><label>Preset Universe</label>\n' +
     '                <input class="form-control" name="universe" type="number" min="'+ firstUniverse +'" max="'+ lastUniverse +'" value="' + value.universe + '">\n' +
@@ -35,7 +35,7 @@ function sndPresetCard(value){
     '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
     '            </div>\n' +
     '            <div class="form-group"><label>Preset Enabled</label>\n' +
-    '                <input class="form-control" name="enabled" type="checkbox" checked="' + value.enabled + '">\n' +
+    '                <input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n' +
     '            </div>\n' +
     '            <div class="form-group"><label>Preset Data</label>\n' +
     '                <textarea class="form-control" name="data" type="text" rows="10" cols="30">' + value.data + '</textarea>\n' +
@@ -60,7 +60,7 @@ function sndFaderCard(value){
         '                <input class="form-control" name="channel" type="number" min="1" value="' + value.channel + '">\n' +
         '            </div>\n' +
         '            <div class="form-group"><label>Controllable</label>\n' +
-        '                <input class="form-control" name="canControl" type="checkbox" ' + (value.canControl ? 'checked' : 'unchecked') + '>\n' +
+        '                <input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n' +
         '            </div>\n' +
         (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
         '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
@@ -161,8 +161,20 @@ $(document).on('submit','form.settings-form[data-table]',function(){
 });
 
 //update preset
-$(document).on('submit', 'form.preset-form[data-table]', function(){
-   socket.emit('updatePreset', $(this).data("table"), $(this).serializeArray());
+$(document).on('submit', 'form.preset-form[data-table]', function() {
+    var data = $(this).serializeArray();
+    var setEnabled = false;
+    data.forEach(function (row,index,array) {
+        if (row['name'] == "enabled") {
+            array[index]['value'] = (row['value'] == "on");
+            setEnabled = true;
+        }
+    });
+    if (!setEnabled) {
+        data.push({name:"enabled", value: false});
+    }
+    console.log(data);
+   socket.emit('updatePreset', $(this).data("table"), data);
    return false;
 });
 
@@ -181,7 +193,7 @@ $('#sndNew').click( function (){
 //add new fader
 $('#fdrNew').click( function (){
     //empty object
-    const emptyValues = {id:null, name:"", channel:1,canControl:true}
+    const emptyValues = {id:null, name:"", channel:1,enabled:true}
     $("#SNDFaderList").append(sndFaderCard(emptyValues));
 });
 

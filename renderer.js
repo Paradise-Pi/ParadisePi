@@ -88,7 +88,9 @@ function lxPreset (id) {
     window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset","keyName": "id", "value":id}).then((result) => {
         if (result.length == 1) {
             result = result[0];
-            sendACN(result.universe, JSON.parse(result["setArguments"]));
+            if (result.enabled) {
+                sendACN(result.universe, JSON.parse(result["setArguments"]));
+            }
         }
     });
 }
@@ -161,10 +163,11 @@ $(document).ready(function() {
     //create Faders dynamically
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndFaders"}).then((result) => {
         $.each(result, function (key,value) {
+            console.log(value);
             $("#sndFaders").append('<div class="channel">\n' +
                 '            <label>' + value.name + '</label><br/>\n' +
-                '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" ' + (value.canControl ? '':'disabled') + ' value="0">\n' +
-                '            <button class="channel-toggle" data-channel="' + value.channel + '" data-status="1"  ' + (value.canControl ? '':'disabled') + ' >OFF</button>\n' +
+                '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" ' + (value.enabled ? '':'disabled') + ' value="0">\n' +
+                '            <button class="channel-toggle" data-channel="' + value.channel + '" data-status="1"  ' + (value.enabled ? '':'disabled') + ' >OFF</button>\n' +
                 '          </div>');
         });
     });
