@@ -15,7 +15,10 @@
           <td data-tab="1" rowspan="2">Lighting</td>
           <td data-tab="2" rowspan="2">Sound</td>
           <td data-tab="3" rowspan="2">Admin</td>
-          <td class="pad" rowspan="2"><span id="lockIcon">&#128274;</span></td>
+          <td class="pad" rowspan="2">
+            <span id="SNDStatusIcon">Sound &#x25cf;</span>
+            <br/><span id="lockIcon">&#128274;</span>
+          </td>
           <td id="allOff"><b>ALL OFF</b></td>
         </tr>
       </table>
@@ -44,6 +47,7 @@
                   <button type="button" onclick="adminFunctions('exit')">Exit to OS</button>
                   <button type="button" onclick="modalShow('about')">About</button>
                 </div>
+                <div id="SNDStatusDetails"></div>
               </td>
               <td>
                 <h2>Admin Interface</h2>

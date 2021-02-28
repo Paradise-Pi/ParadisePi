@@ -244,26 +244,40 @@ async function toggleLock() {
 
 //OSC Setup
 var udpPort;
+var lastOSCMessage = 0;
+var udpStatus = false;
 function setupOSC() {
   udpPort = new oscHandler.UDPPort({
     localAddress: "0.0.0.0",
     localPort: 57121,
     remotePort: SNDConfig.targetPort,
     remoteAddress: SNDConfig.targetIP,
-    //broadcast: true,
-    multicastMembership: []
   });
   udpPort.on("ready", function () {
     console.log("UDP Socket open and listening");
-    udpPort.send({address:"/info", args:[]});
   });
   udpPort.on("message", function (oscMessage) {
+    console.log(oscMessage);
+    lastOSCMessage = +new Date();
     mainWindow.webContents.send("fromOSC", oscMessage);
   });
   udpPort.on("error", function (err) {
     console.log(err);
   });
   udpPort.open();
+  setInterval(function () {
+    currentMillis = +new Date();
+    if (currentMillis-lastOSCMessage > 1000 && udpStatus) {
+      //Now disconnected from the Mixer - send a status request to hope you get something back, but most likely we're offline now!
+      udpPort.send({address:"/status", args:[]});
+      udpStatus = false;
+      mainWindow.webContents.send("OSCStatus", false);
+    } else if (!udpStatus) {
+      udpStatus = true;
+      udpPort.send({address:"/info", args:[]});
+      mainWindow.webContents.send("OSCStatus", true);
+    }
+  }, 5000);
 }
 //events
 ipcMain.on("sendOSC", (event, arguments) =>{

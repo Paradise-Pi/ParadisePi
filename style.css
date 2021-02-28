@@ -51,6 +51,12 @@ table#menu {
     padding: 10px;
     margin: 5px;
     background-color:black;
+    font-size: 1em;
+    text-align: left;
+    font-weight: normal;
+}
+#SNDStatusIcon {
+    color: black;
 }
 #menu td#allOff {
     border: 4px solid black;

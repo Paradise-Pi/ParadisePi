@@ -106,10 +106,23 @@ function soundPreset (id) {
         }
     });
 }
+window.api.receive("OSCStatus", (status) => {
+    if (status) {
+        $("#SNDStatusIcon").css("color","#6bf76b");
+    } else {
+        $("#SNDStatusIcon").css("color","#f74e4e");
+    }
+});
 window.api.receive("fromOSC", (data) => {
     let addressArray = data.address.split("/")
     //check split address to make sure it's a fader update
-    if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "fader") {
+    console.log(addressArray);
+    if (addressArray[1] == "info") {
+        $("#SNDStatusDetails").html("Sound connected to " + data.args[2] + " " + data.args[3] + " (" + data.args[1] + " - " + data.args[0] + ")");
+        $("#SNDStatusIcon").html(data.args[2] + " &#x25cf;");
+    } else if (addressArray[1] == "status") {
+        console.log(data.args);
+    } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "fader") {
         $(".fader").each(function(key, value) {
             if(value.getAttribute("data-channel") === addressArray[2]) {
                 value.value = data.args[0];
