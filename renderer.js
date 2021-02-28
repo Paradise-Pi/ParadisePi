@@ -163,8 +163,8 @@ $(document).ready(function() {
         $.each(result, function (key,value) {
             $("#sndFaders").append('<div class="channel">\n' +
                 '            <label>' + value.name + '</label><br/>\n' +
-                '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" value="0">\n' +
-                '            <button class="channel-toggle" data-channel="' + value.channel + '" data-status="1">OFF</button>\n' +
+                '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" ' + (value.canControl ? '':'disabled') + ' value="0">\n' +
+                '            <button class="channel-toggle" data-channel="' + value.channel + '" data-status="1"  ' + (value.canControl ? '':'disabled') + ' >OFF</button>\n' +
                 '          </div>');
         });
     });
