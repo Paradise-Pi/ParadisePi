@@ -8,9 +8,9 @@ jQuery.fn.addChild = function(html)
 };
 
 const sndFirstOption = {
-    //"name":["address", startVal, endVal, Step]
-    "Channel":["/ch/",1,16,1],
-    "Mute Group":["/config/mute/", 1,6,1]
+    //"name":["address", startVal, endVal, Step, hasSecondOption]
+    "Channel":["/ch/",1,16,1, true],
+    "Mute Group":["/config/mute/", 1,6,1, false]
 }
 
 const sndSecondOption = {
@@ -53,8 +53,61 @@ function sndPresetCard(presetArea, value){
     form.addChild('<div class="form-group"><label>Preset Name</label>\n<input class="form-control" name="name" type="text" value="' + value.name + '">\n</div>');
     //Enabled
     form.addChild('<div class="form-group"><label>Preset Enabled</label>\n<input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n</div>\n');
-    //Data todo: convert to input Boxes
-    form.addChild('<div class="form-group"><label>Preset Channels</label>\n<textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.data + '</textarea>\n</div>\n');
+    //Existing Data
+    form.addChild('<div class="form-group"><label>Existing Data</label>\n<textarea disabled class="form-control">' + value.data + '</textarea>\n</div>');
+
+    //New Data
+    let oscGroup = form.addChild('<div class="form-group">');
+    oscGroup.addChild('<label>Preset Channels</label>');
+    let presetAddress = oscGroup.addChild('<input class="form-control" type="text" disabled value="{}">')
+
+    //first item
+    let select = oscGroup.addChild('<select class="form-control">');
+    select.addChild('<option disabled selected>Select An Option</option>');
+    $.each(sndFirstOption, function (key, value){
+        select.addChild('<option value="'+ value[0]+'">' + key + '</option>');
+    })
+
+    let div = oscGroup.addChild("<div>") //next info
+    select.change(function (){
+        let options = sndFirstOption[select.find('option:selected')[0].innerText];//get all info
+        //update content of presetAddress
+        presetAddress[0].value = '{"' + options[0] + String(options[1]).padStart(2, '0') + '":{}}';
+        //empty div for any changes
+        div.html("");
+        //create number input based on sndFirstOption array
+        let firstNumber = div.addChild('<input class="form-control" type="number" value="' + options[1] + '" min="' + options[1] + '" max="' + options[2] + '" step="' + options[3] + '">');
+
+        //update content of presetAddress if numbers changed
+        firstNumber.change(function () {
+            presetAddress[0].value = '{"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + '":{}}';
+        });
+
+        if(options[4]){ //if has second options for that channel/bus etc, show that form
+            let secondSelect = div.addChild('<select class="form-control">'); //create another selection
+            secondSelect.addChild('<option disabled selected>Select An Option</option>');
+            $.each(sndSecondOption, function (k, i){
+                secondSelect.addChild('<option value="'+ i[0]+'">' + k + '</option>');
+            });
+
+            let secondDiv = oscGroup.addChild("<div>");
+            secondSelect.change(function () {
+                secondDiv.html("");//clear second div on changes
+                let secondOptions = sndSecondOption[secondSelect.find('option:selected')[0].innerText];
+                presetAddress[0].value = '{"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{}}';
+
+                //create number input based on sndSecondOption array
+                let secondNumber = secondDiv.addChild('<input class="form-control" type="number" value="' + secondOptions[1] + '" min="' + secondOptions[1] + '" max="' + secondOptions[2] + '" step="' + secondOptions[3] + '">');
+                secondNumber.change(function () {
+                    console.log(secondNumber);
+                    presetAddress[0].value = '{"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{"type":' + (secondOptions[3] % 1 === 0 ? '"i"' : '"f"') + ', "value":' + secondNumber[0].value + '}}';
+                });
+            });
+        } else { //otherwise just show a "true/false" num box
+            div.addChild('<input class="form-control" type="number" min="0" max="1">');
+        }
+    })
+
     //Preset id
     if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
     //Buttons
