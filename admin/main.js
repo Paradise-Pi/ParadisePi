@@ -1,73 +1,82 @@
-//generates the lighting card for a given value object
-function lxPresetCard(value, firstUniverse, lastUniverse){
-    return  '<div class="card">\n' +
-    '    <div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n' +
-    '    <div class="card-body">\n' +
-    '        <form class="preset-form" data-table="LXPreset">\n' +
-    '            <div class="form-group"><label>Preset Name</label>\n' +
-    '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
-    '            </div>\n' +
-    '            <div class="form-group"><label>Preset Enabled</label>\n' +
-    '                <input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n' +
-    '            </div>\n' +
-    '            <div class="form-group"><label>Preset Universe</label>\n' +
-    '                <input class="form-control" name="universe" type="number" min="'+ firstUniverse +'" max="'+ lastUniverse +'" value="' + value.universe + '">\n' +
-    '            </div>\n' +
-    '            <div class="form-group"><label>Preset Channels</label>\n' +
-    '                <textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.setArguments + '</textarea>\n' +
-    '            </div>\n' +
-        (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
-    '            <div style="display: inline">\n' +
-    '               <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
-                    (value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '') +
-    '            </div>\n'+
-    '        </form>\n' +
-    '    </div>\n' +
-    '</div>';
-}
-//generates the sound card for a given value object
-function sndPresetCard(value){
-    return '<div class="card">\n' +
-    '    <div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n' +
-    '    <div class="card-body">\n' +
-    '        <form class="preset-form" data-table="SNDPreset">\n' +
-    '            <div class="form-group"><label>Preset Name</label>\n' +
-    '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
-    '            </div>\n' +
-    '            <div class="form-group"><label>Preset Enabled</label>\n' +
-    '                <input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n' +
-    '            </div>\n' +
-    '            <div class="form-group"><label>Preset Data</label>\n' +
-    '                <textarea class="form-control" name="data" type="text" rows="10" cols="30">' + value.data + '</textarea>\n' +
-    '            </div>\n' +
-        (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
-    '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
-        (value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '') +
-    '        </form>\n' +
-    '    </div>\n' +
-    '</div>';
+//JQuery function to add an element and return the created object
+jQuery.fn.addChild = function(html)
+{
+    var target  = $(this[0])
+    var child = $(html);
+    child.appendTo(target);
+    return child;
+};
+
+const sndFirstOption = {
+    //"name":["address", startVal, endVal, Step]
+    "Channel":["/ch/",1,16,1],
+    "Mute Group":["/config/mute/", 1,6,1]
 }
 
-function sndFaderCard(value){
-    return '<div class="card">\n' +
-        '    <div class="card-header">' + (value.id == null ? '<strong>New Fader</strong>' : '<strong>Fader</strong> ' + value.id) + '</div>\n' +
-        '    <div class="card-body">\n' +
-        '        <form class="preset-form" data-table="SNDFaders">\n' +
-        '            <div class="form-group"><label>Fader Name</label>\n' +
-        '                <input class="form-control" name="name" type="text" value="' + value.name + '">\n' +
-        '            </div>\n' +
-        '            <div class="form-group"><label>Fader Channel</label>\n' +
-        '                <input class="form-control" name="channel" type="number" min="1" value="' + value.channel + '">\n' +
-        '            </div>\n' +
-        '            <div class="form-group"><label>Controllable</label>\n' +
-        '                <input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n' +
-        '            </div>\n' +
-        (value.id != null ? '<input type="hidden" name="id" value="'+ value.id + '">\n' : '') +
-        '            <button class="btn btn-sm btn-success" type="submit">Save</button>\n' +
-        (value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '') +
-        '        </form>\n' +
-        '    </div>\n' +
-        '</div>';
+const sndSecondOption = {
+    //"name":["address", startVal, EndVal, Step]
+    "Mute": ["/mix/on", 0,1,1],
+    "Level":["/mix/fader", 0.0, 1.0, 0.01],
+    "Pan":["/mix/pan", 0.0, 1.0, 0.01],
+    "Gain":["/headamp/gain", 0.0, 1.0, 0.01],
+    "+48V":["/headamp/phantom", 0,1,1]
+}
+
+//generates the lighting card for a given value object
+function lxPresetCard(presetArea, value, firstUniverse, lastUniverse){
+    let card = presetArea.addChild("<div class='card'>");
+    //Card Title
+    card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n');
+    //card Body + form
+    var form = card.addChild("<div class='card-body'>").addChild('<form class="preset-form" data-table="LXPreset">');
+    //Name
+    form.addChild('<div class="form-group"><label>Preset Name</label>\n<input class="form-control" name="name" type="text" value="' + value.name + '">\n</div>');
+    //Enabled
+    form.addChild('<div class="form-group"><label>Preset Enabled</label>\n<input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n</div>\n');
+    //Universe
+    form.addChild('<div class="form-group"><label>Preset Universe</label>\n<input class="form-control" name="universe" type="number" min="'+ firstUniverse +'" max="'+ lastUniverse +'" value="' + value.universe + '">\n</div>\n');
+    //Channels todo: convert to table
+    form.addChild('<div class="form-group"><label>Preset Channels</label>\n<textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.setArguments + '</textarea>\n</div>\n');
+    //Preset id
+    if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
+    //Buttons
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
+}
+//generates the sound card for a given value object
+function sndPresetCard(presetArea, value){
+    let card = presetArea.addChild("<div class='card'>");
+    //Card Title
+    card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n');
+    //card Body + form
+    var form = card.addChild("<div class='card-body'>").addChild('<form class="preset-form" data-table="SNDPreset">');
+    //Name
+    form.addChild('<div class="form-group"><label>Preset Name</label>\n<input class="form-control" name="name" type="text" value="' + value.name + '">\n</div>');
+    //Enabled
+    form.addChild('<div class="form-group"><label>Preset Enabled</label>\n<input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n</div>\n');
+    //Data todo: convert to input Boxes
+    form.addChild('<div class="form-group"><label>Preset Channels</label>\n<textarea class="form-control" name="setArguments" type="text" rows="10" cols="30">' + value.data + '</textarea>\n</div>\n');
+    //Preset id
+    if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
+    //Buttons
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
+}
+
+function sndFaderCard(faderArea, value){
+    let card = faderArea.addChild("<div class='card'>");
+    //Card Title
+    card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Fader</strong>' : '<strong>Fader</strong> ' + value.id) + '</div>\n');
+    //Card Body + form
+    var form = card.addChild("<div class='card-body'>").addChild('<form class="preset-form" data-table="SNDFaders">');
+    //Name
+    form.addChild('<div class="form-group"><label>Fader Name</label>\n<input class="form-control" name="name" type="text" value="' + value.name + '">\n</div>');
+    //Channel
+    form.addChild('<div class="form-group"><label>Fader Channel</label>\n<input class="form-control" name="channel" type="number" min="1" value="' + value.channel + '">\n</div>');
+    //Enabled
+    form.addChild('<div class="form-group"><label>Controllable</label>\n<input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n</div>\n');
+    //Fader id
+    if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
+    //Buttons
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
 }
 
 //websocket
@@ -97,7 +106,7 @@ socket.on('fader', (data) => {
         let faderArea = $("#SNDFaderList");
         faderArea.html("");
         $.each(data["SNDFader"], function (key, value){
-           faderArea.append(sndFaderCard(value));
+            sndFaderCard(faderArea, value);
         });
     }
 });
@@ -109,14 +118,14 @@ socket.on('preset', (data) => {
         presetarea.html("");
         $.each(data["LXPreset"], function (key, value){
             //add a card for each preset
-            presetarea.append(lxPresetCard(value, firstUniverse, lastUniverse));
+            lxPresetCard(presetarea, value, firstUniverse, lastUniverse);
         });
     } else if ("SNDPreset" in data) {
         let presetarea = $("#SNDPresetList");
         presetarea.html("");
         $.each(data["SNDPreset"], function (key, value){
             //add a card for each preset
-            presetarea.append(sndPresetCard(value));
+            sndPresetCard(presetarea, value);
         });
     }
 });
@@ -181,22 +190,24 @@ $(document).on('submit', 'form.preset-form[data-table]', function() {
 $('#lxNew').click(function (){
     //an empty object for creating new presets
     const emptyValues = {id:null, name:"", universe:1, enabled:true, setArguments:"" };
-    $("#LXPresetList").append(lxPresetCard(emptyValues, firstUniverse, lastUniverse));
+    lxPresetCard($("#LXPresetList"), emptyValues, firstUniverse, lastUniverse);
 });
 $('#sndNew').click( function (){
     //an empty object for creating new presets
     const emptyValues = {id:null, name:"", enabled:true, data:"" };
-    $("#SNDPresetList").append(sndPresetCard(emptyValues));
+    sndPresetCard($("#SNDPresetList"), emptyValues);
 });
 
 //add new fader
 $('#fdrNew').click( function (){
     //empty object
     const emptyValues = {id:null, name:"", channel:1,enabled:true}
-    $("#SNDFaderList").append(sndFaderCard(emptyValues));
+    sndFaderCard($("#SNDFaderList"), emptyValues);
 });
 
 //remove preset
 function removePreset (button) {
+    console.log(button);
+    console.log(button.form);
     socket.emit('removePreset', button.form.getAttribute('data-table'), {id:button.getAttribute('data-id')});
 }
