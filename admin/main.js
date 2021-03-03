@@ -1,5 +1,5 @@
 //JQuery function to add an element and return the created object
-jQuery.fn.addChild = function(html)
+jQuery.fn.addChild = function(html = "<div class='oscDiv'>")
 {
     var target  = $(this[0])
     var child = $(html);
@@ -59,59 +59,80 @@ function sndPresetCard(presetArea, value){
     //New Data
     let oscGroup = form.addChild('<div class="form-group">');
     oscGroup.addChild('<label>Preset Channels</label>');
-    let presetAddress = oscGroup.addChild('<input class="form-control" type="text" disabled value="{}">')
+    oscGroup.addChild('<button type="button" class="btn btn-primary" style="display: block;" onclick="addAddress(this)">New Address</button><br>');
 
-    //first item
-    let select = oscGroup.addChild('<select class="form-control">');
-    select.addChild('<option disabled selected>Select An Option</option>');
-    $.each(sndFirstOption, function (key, value){
-        select.addChild('<option value="'+ value[0]+'">' + key + '</option>');
-    })
-
-    let div = oscGroup.addChild("<div>") //next info
-    select.change(function (){
-        let options = sndFirstOption[select.find('option:selected')[0].innerText];//get all info
-        //update content of presetAddress
-        presetAddress[0].value = '{"' + options[0] + String(options[1]).padStart(2, '0') + '":{}}';
-        //empty div for any changes
-        div.html("");
-        //create number input based on sndFirstOption array
-        let firstNumber = div.addChild('<input class="form-control" type="number" value="' + options[1] + '" min="' + options[1] + '" max="' + options[2] + '" step="' + options[3] + '">');
-
-        //update content of presetAddress if numbers changed
-        firstNumber.change(function () {
-            presetAddress[0].value = '{"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + '":{}}';
-        });
-
-        if(options[4]){ //if has second options for that channel/bus etc, show that form
-            let secondSelect = div.addChild('<select class="form-control">'); //create another selection
-            secondSelect.addChild('<option disabled selected>Select An Option</option>');
-            $.each(sndSecondOption, function (k, i){
-                secondSelect.addChild('<option value="'+ i[0]+'">' + k + '</option>');
-            });
-
-            let secondDiv = oscGroup.addChild("<div>");
-            secondSelect.change(function () {
-                secondDiv.html("");//clear second div on changes
-                let secondOptions = sndSecondOption[secondSelect.find('option:selected')[0].innerText];
-                presetAddress[0].value = '{"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{}}';
-
-                //create number input based on sndSecondOption array
-                let secondNumber = secondDiv.addChild('<input class="form-control" type="number" value="' + secondOptions[1] + '" min="' + secondOptions[1] + '" max="' + secondOptions[2] + '" step="' + secondOptions[3] + '">');
-                secondNumber.change(function () {
-                    console.log(secondNumber);
-                    presetAddress[0].value = '{"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{"type":' + (secondOptions[3] % 1 === 0 ? '"i"' : '"f"') + ', "value":' + secondNumber[0].value + '}}';
-                });
-            });
-        } else { //otherwise just show a "true/false" num box
-            div.addChild('<input class="form-control" type="number" min="0" max="1">');
-        }
-    })
+    oscAddressInputs(oscGroup.addChild("<div class='oscDiv'>"));
 
     //Preset id
     if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
     //Buttons
     form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
+}
+
+function addAddress(element){
+    let parent = $(element).parent()[0];
+    let child = $("<div class='oscDiv'>");
+
+    oscAddressInputs(child.appendTo(parent));
+}
+
+/**
+ * creates input elements in the given jquery element
+ * @param oscGroup - element
+ */
+function oscAddressInputs(oscGroup){
+    oscGroup.addChild('<button type="button" class="btn btn-danger oscInput oscRemove" onclick="$(this).parent()[0].remove()">Delete</button>');
+    let presetAddress = oscGroup.addChild('<input class="form-control oscInput" name="preset[]" type="text" readonly value="">');
+
+    //first item
+    let select = oscGroup.addChild('<select class="form-control presetOption">');
+    select.addChild('<option disabled selected>Select An Option</option>');
+    $.each(sndFirstOption, function (key, value){
+        select.addChild('<option value="'+ value[0]+'">' + key + '</option>');
+    })
+
+    let div = oscGroup.addChild("<div class='presetDiv'>") //next info
+    let secondDiv = oscGroup.addChild("<div class='presetDiv'>");
+    select.change(function (){
+        let options = sndFirstOption[select.find('option:selected')[0].innerText];//get all info
+        //update content of presetAddress
+        presetAddress[0].value = '"' + options[0] + String(options[1]).padStart(2, '0') + '":{}';
+        //empty div for any changes
+        div.html("");
+        //create number input based on sndFirstOption array
+        let firstNumber = div.addChild('<input class="form-control presetNumber" type="number" value="' + options[1] + '" min="' + options[1] + '" max="' + options[2] + '" step="' + options[3] + '">');
+
+        //update content of presetAddress if numbers changed
+        firstNumber.change(function () {
+            presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + '":{}';
+        });
+
+        if(options[4]){ //if has second options for that channel/bus etc, show that form
+            let secondSelect = div.addChild('<select class="form-control presetOption">'); //create another selection
+            secondSelect.addChild('<option disabled selected>Select An Option</option>');
+            $.each(sndSecondOption, function (k, i){
+                secondSelect.addChild('<option value="'+ i[0]+'">' + k + '</option>');
+            });
+
+            secondSelect.change(function () {
+                secondDiv.html("");//clear second div on changes
+                let secondOptions = sndSecondOption[secondSelect.find('option:selected')[0].innerText];
+                presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{}';
+
+                //create number input based on sndSecondOption array
+                let secondNumber = secondDiv.addChild('<input class="form-control presetNumber" type="number" value="' + secondOptions[1] + '" min="' + secondOptions[1] + '" max="' + secondOptions[2] + '" step="' + secondOptions[3] + '">');
+                secondNumber.change(function () {
+                    presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{"type":' + (secondOptions[3] % 1 === 0 ? '"i"' : '"f"') + ', "value":' + secondNumber[0].value + '}';
+                });
+            });
+        } else { //otherwise just show a "true/false" num box
+            secondDiv.html("");//clear second div on changes
+            let secondNumber = div.addChild('<input class="form-control presetNumber" type="number" min="0" max="1">');
+            secondNumber.change(function () {
+                presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0')  + '":{"type":"i" "value":' + secondNumber[0].value + '}';
+            });
+        }
+    })
 }
 
 function sndFaderCard(faderArea, value){
@@ -223,20 +244,36 @@ $(document).on('submit','form.settings-form[data-table]',function(){
 });
 
 //update preset
-$(document).on('submit', 'form.preset-form[data-table]', function() {
+$(document).on('submit', 'form.preset-form[data-table]', function () {
     var data = $(this).serializeArray();
     var setEnabled = false;
+    let table = this.getAttribute("data-table");
+    let presetData = "{";
     data.forEach(function (row,index,array) {
         if (row['name'] == "enabled") {
             array[index]['value'] = (row['value'] == "on");
             setEnabled = true;
         }
+        if (table === "SNDPreset") {
+            if (row['name'] === "preset[]"){
+                if (array[index]['value'] !== ""){
+                    presetData += array[index]['value'] + ", ";
+                }
+            }
+        }
     });
     if (!setEnabled) {
         data.push({name:"enabled", value: false});
     }
-   socket.emit('updatePreset', $(this).data("table"), data);
-   return false;
+
+    if (table === "SNDPreset") {
+        let finalData = presetData.slice(0,-2);
+        finalData = (finalData !== "" ? finalData + "}" : "");
+        data.push({name:"data", value:finalData});
+        data = data.filter(function (el) {return el.name !== "preset[]"})
+    }
+    socket.emit('updatePreset', $(this).data("table"), data);
+    return false;
 });
 
 //add new preset
@@ -260,7 +297,5 @@ $('#fdrNew').click( function (){
 
 //remove preset
 function removePreset (button) {
-    console.log(button);
-    console.log(button.form);
     socket.emit('removePreset', button.form.getAttribute('data-table'), {id:button.getAttribute('data-id')});
 }

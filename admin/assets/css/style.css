@@ -1,0 +1,30 @@
+.presetOption{
+    width: max-content;
+    display: inline;
+    margin: 0 10px 0 0;
+}
+
+.presetNumber {
+    display: inline;
+    width: 75px;
+    margin: 0 10px 0 0;
+}
+
+.presetDiv{
+    display: inline;
+}
+
+.oscDiv {
+    padding: 5px;
+}
+
+.oscInput {
+    width: 48%;
+    display: inline;
+    margin: 0 10px 0 0;
+    float: right;
+}
+
+.oscRemove {
+    width: 75px !important;
+}
