@@ -249,20 +249,21 @@ var lastOSCMessage = 0;
 var udpStatus = false;
 function checkStatusOSC() {
   currentMillis = +new Date();
- if (currentMillis-lastOSCMessage > 3000 && udpStatus) {
+  if (currentMillis-lastOSCMessage > 3000) {
     //Now disconnected from the Mixer
     udpStatus = false;
     mainWindow.webContents.send("OSCStatus", false);
+    udpPort.send({address: "/status", args: []}); //Keep trying anyway, no harm
  } else if (currentMillis-lastOSCMessage > 500 && udpStatus) {
-    //Send a status request to hope you get something back
+    //Send a status request to hope you get something back - before you decide you're offline
     udpPort.send({address: "/status", args: []});
- } else if (!udpStatus) {
+ } else if (currentMillis-lastOSCMessage < 500 && !udpStatus) {
     //Reconnected
     udpStatus = true;
     udpPort.send({address:"/info", args:[]});
     mainWindow.webContents.send("OSCStatus", true);
     subscribeOSC(false);
-    //When a connection is first opened, want to get the statuses of stuff we've already got
+    //When a connection is first opened, want to get the statuses of stuff we're interested in
      knex.select().table('sndFaders').then((data) => {
        data.forEach(function(entry) {
          udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/fader", args:[]});
@@ -271,6 +272,9 @@ function checkStatusOSC() {
        udpPort.send({address:"/main/st/mix/fader", args:[]});
        udpPort.send({address:"/main/st/mix/on", args:[]});
      });
+  } else if (udpStatus) {
+    //Still connected, just tell the frontend anyway because it's occasionally dozy (mostly on boot tbh)
+    mainWindow.webContents.send("OSCStatus", true);
   }
 }
 function subscribeOSC(renew) {
