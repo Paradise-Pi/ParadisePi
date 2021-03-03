@@ -8,7 +8,8 @@ Made up of an electron app, with a websocket server serving an admin interface
 
 ## Limitations
 
-- Only one network interface can exist on the RaspberryPi. WiFi must be disabled.
+- Only one network interface can exist on the RaspberryPi. WiFi must be disabled
+- Sampling mode is limited to universes 1-64
 
 ## Developing
 
