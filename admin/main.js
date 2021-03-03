@@ -54,14 +54,18 @@ function sndPresetCard(presetArea, value){
     //Enabled
     form.addChild('<div class="form-group"><label>Preset Enabled</label>\n<input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n</div>\n');
     //Existing Data
-    form.addChild('<div class="form-group"><label>Existing Data</label>\n<textarea disabled class="form-control">' + value.data + '</textarea>\n</div>');
+    let existing = form.addChild('<div class="form-group">');
+    existing.addChild('<label>OSC Data</label>');
+    let data = JSON.parse(value.data);
+    for (const [key, value] of Object.entries(data)) {
+        let div = existing.addChild('<div class="form-group">');
+        div.addChild("<input class='form-control' style='width: 48%; display: inline; margin-right: 10px' type='text' readonly name='preset[]' value='\"" + key + '":' + JSON.stringify(value) +"'>");
+        div.addChild('<button type="button" class="btn btn-danger" style="width: 75px; display: inline; margin-top: -5px;" onclick="$(this).parent()[0].remove()">Delete</button>');
+    }
 
     //New Data
     let oscGroup = form.addChild('<div class="form-group">');
-    oscGroup.addChild('<label>Preset Channels</label>');
-    oscGroup.addChild('<button type="button" class="btn btn-primary" style="display: block;" onclick="addAddress(this)">New Address</button><br>');
-
-    oscAddressInputs(oscGroup.addChild("<div class='oscDiv'>"));
+    oscGroup.addChild('<button type="button" class="btn btn-primary" style="display: block;" onclick="addAddress(this)">New OSC call</button><br>');
 
     //Preset id
     if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
