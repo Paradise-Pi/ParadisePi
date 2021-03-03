@@ -253,10 +253,11 @@ function checkStatusOSC() {
     //Now disconnected from the Mixer
     udpStatus = false;
     mainWindow.webContents.send("OSCStatus", false);
-  } else if (currentMillis-lastOSCMessage > 500 && udpStatus) {
+ } else if (currentMillis-lastOSCMessage > 500 && udpStatus) {
     //Send a status request to hope you get something back
     udpPort.send({address: "/status", args: []});
-  }  else if (!udpStatus) {
+ } else if (!udpStatus) {
+    //Reconnected
     udpStatus = true;
     udpPort.send({address:"/info", args:[]});
     mainWindow.webContents.send("OSCStatus", true);
@@ -270,13 +271,9 @@ function checkStatusOSC() {
        udpPort.send({address:"/main/st/mix/fader", args:[]});
        udpPort.send({address:"/main/st/mix/on", args:[]});
      });
-
   }
 }
 function subscribeOSC(renew) {
-  if (typeof renew === "undefined") {
-    renew = false;
-  }
   udpPort.send({address:"/xremote"});
   /*knex.select().table('sndFaders').then((data) => {
     data.forEach(function(entry) {
