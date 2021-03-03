@@ -10,6 +10,7 @@ Made up of an electron app, with a websocket server serving an admin interface
 
 - Only one network interface can exist on the RaspberryPi. WiFi must be disabled
 - Sampling mode is limited to universes 1-64
+- 16bit addresses are supported by sampling mode, but not intended for edit via the admin user interface
 
 ## Developing
 
