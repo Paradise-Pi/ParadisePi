@@ -117,6 +117,7 @@ async function initDatabases() {
       table.boolean('enabled');
       table.string('universe');
       table.json('setArguments');
+      table.integer("fadeTime").defaultTo(null);
     });
     await knex('lxPreset').insert({name: "LX1", enabled: true, universe: 1, setArguments: JSON.stringify({"1":150,"512":25})});
   }
@@ -153,7 +154,7 @@ async function initDatabases() {
     await knex('lxConfig').insert({key:"e131SourceName", value:"Paradise Pi",name:'sACN Source Name',description:''})
     await knex('lxConfig').insert({key:"e131Priority", value:25,name:'sACN Priority',description:'Higher values take precedence'})
     await knex('lxConfig').insert({key:"e131Frequency", value:5,name:'Refresh Rate',description:'',canEdit:false})
-    await knex('lxConfig').insert({key:"fadeTime", value:10,name:'Preset Fade Time',description:'Delay time to fade all levels in ms (0 is not instant)',canEdit:true})
+    await knex('lxConfig').insert({key:"fadeTime", value:5,name:'Preset Fade Time',description:'Delay time to fade presets in (seconds). 0 = Instant',canEdit:true})
     await knex('lxConfig').insert({key:"e131Sampler_time", value:15,name:'Sampler Mode run time',description:'How long should sampler mode sample for (in seconds)',canEdit:true})
     await knex('lxConfig').insert({key:"e131Sampler_effectMode", value:0,name:'Sampler Mode effect mode enable',description:'Set to 1 to store values that are varying when in sample mode, they are normally discarded otherwise',canEdit:true})
 
@@ -381,39 +382,55 @@ ipcMain.on("sendACN", async (event, args) => {
   if (MAINConfig.deviceLock === "UNLOCKED") {
     var universe = args.universe;
     var channelsValues = args.channelsValues; //Format = {53:244,14:34,56:255}
+    var fadeTime = (args.fadeTime !== undefined && args.fadeTime !== null ? args.fadeTime : LXConfig.fadeTime);
     let changedZero = true;
-    while (changedZero) {
-      changedZero = false;
-      for (var channel = 0; channel < e131Clients[universe]['addressData'].length; channel++) {
-        if (e131Clients[universe]['addressData'][channel] !== channelsValues[(channel + 1)] ){
-          changedZero = true;
-          if (channelsValues[(channel + 1)] === undefined || e131Clients[universe]['addressData'][channel] > channelsValues[(channel + 1)]){
-            if (e131Clients[universe]['addressData'][channel] !== 0){
-              e131Clients[universe]['addressData'][channel]--;
+    if (fadeTime != 0) {
+      while (changedZero) {
+        //TODO resolve bug meaning this doesn't work when multiple presets are called at the same time
+        changedZero = false;
+        for (var channel = 0; channel < e131Clients[universe]['addressData'].length; channel++) {
+          if (channelsValues[(channel + 1)] !== undefined && e131Clients[universe]['addressData'][channel] !== channelsValues[(channel + 1)]) {
+            changedZero = true;
+            if (e131Clients[universe]['addressData'][channel] > channelsValues[(channel + 1)] && e131Clients[universe]['addressData'][channel] !== 0) {
+                e131Clients[universe]['addressData'][channel]--;
+            } else if (e131Clients[universe]['addressData'][channel] !== 255) {
+              e131Clients[universe]['addressData'][channel]++;
             }
-          } else {
-            e131Clients[universe]['addressData'][channel]++;
           }
         }
+        await new Promise(r => setTimeout(r, (fadeTime * 1000)/255));
       }
-      await new Promise(r => setTimeout(r, LXConfig.fadeTime));
+    } else {
+      for (var channel = 0; channel < e131Clients[universe]['addressData'].length; channel++) {
+        if (channelsValues[(channel + 1)] !== undefined) {
+          e131Clients[universe]['addressData'][channel] = channelsValues[(channel + 1)]
+        }
+      }
     }
   }
 });
 ipcMain.on("fadeAll", async (event, args) =>  {
   if (MAINConfig.deviceLock === "UNLOCKED") {
     let changedZero = true;
-    while(changedZero) {
-      changedZero = false;
-      for (var channel = 0; channel < 512; channel++) {
-        for (var universe = parseInt(LXConfig.e131FirstUniverse); universe <= parseInt(LXConfig.e131FirstUniverse)+parseInt(LXConfig.e131Universes)-1; universe++){
-          if (e131Clients[universe]['addressData'][channel] > 0){
-            changedZero = true;
-            e131Clients[universe]['addressData'][channel]--;
+    if (LXConfig.fadeTime != 0) {
+      while(changedZero) {
+        changedZero = false;
+        for (var channel = 0; channel < 512; channel++) {
+          for (var universe = parseInt(LXConfig.e131FirstUniverse); universe <= parseInt(LXConfig.e131FirstUniverse)+parseInt(LXConfig.e131Universes)-1; universe++){
+            if (e131Clients[universe]['addressData'][channel] > 0){
+              changedZero = true;
+              e131Clients[universe]['addressData'][channel]--;
+            }
           }
         }
+        await new Promise(r => setTimeout(r, (LXConfig.fadeTime * 1000)/255));
       }
-      await new Promise(r => setTimeout(r, LXConfig.fadeTime));
+    } else {
+      for (var channel = 0; channel < 512; channel++) {
+        for (var universe = parseInt(LXConfig.e131FirstUniverse); universe <= parseInt(LXConfig.e131FirstUniverse)+parseInt(LXConfig.e131Universes)-1; universe++){
+          e131Clients[universe]['addressData'][channel] = 0;
+        }
+      }
     }
   }
 })

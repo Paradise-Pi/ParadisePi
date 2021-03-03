@@ -10,12 +10,12 @@
  * @param universe - int - universe number
  * @param channels - object - channels to update in form {channel:dmxValue}
  */
-function sendACN(universe, channels){
+function sendACN(universe, channels,fadeTime){
     if (locked) {
         modalShow("lockedWarning");
         return false;
     }
-    window.api.send("sendACN", {"universe":universe, "channelsValues": channels})
+    window.api.send("sendACN", {"universe":universe, "channelsValues": channels,"fadeTime":fadeTime})
 }
 /**
  * generic function to send an OSC call
@@ -89,7 +89,7 @@ function lxPreset (id) {
         if (result.length == 1) {
             result = result[0];
             if (result.enabled) {
-                sendACN(result.universe, JSON.parse(result["setArguments"]));
+                sendACN(result.universe, JSON.parse(result["setArguments"]),result.fadeTime);
             }
         }
     });
