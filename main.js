@@ -44,7 +44,7 @@ var LXConfig = {};
 var SNDConfig = {};
 var MAINConfig = {}; //Config variables
 
-async function createWindow () {
+async function createWindow (fileToLoad) {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
@@ -67,7 +67,7 @@ async function createWindow () {
     Menu.setApplicationMenu(null)
   }
   // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile(fileToLoad);
 }
 
 // This method will be called when Electron has finished
@@ -83,15 +83,20 @@ app.whenReady().then(() => {
     copyright: "©2021 James Bithell & John Cherry"
   });
   initDatabases().then(() => {
-    setupOSC();
-    setupE131();
-    createWindow();
-    server.listen(8080);
+    if (process.argv.includes("--e131sampler")) {
+      setupE131Sampler();
+      createWindow('e131sampler.html');
+    } else {
+      setupOSC();
+      setupE131();
+      createWindow('index.html');
+      server.listen(8080);
+    }
   });
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) createWindow('index.html')
   })
 })
 
@@ -148,7 +153,11 @@ async function initDatabases() {
     await knex('lxConfig').insert({key:"e131SourceName", value:"Paradise Pi",name:'sACN Source Name',description:''})
     await knex('lxConfig').insert({key:"e131Priority", value:25,name:'sACN Priority',description:'Higher values take precedence'})
     await knex('lxConfig').insert({key:"e131Frequency", value:5,name:'Refresh Rate',description:'',canEdit:false})
-    await knex('lxConfig').insert({key:"fadeTime", value:10,name:'LX Fade Time',description:'Delay time to fade all levels in ms (0 is not instant)',canEdit:true})
+    await knex('lxConfig').insert({key:"fadeTime", value:10,name:'Preset Fade Time',description:'Delay time to fade all levels in ms (0 is not instant)',canEdit:true})
+    await knex('lxConfig').insert({key:"e131Sampler_time", value:15,name:'Sampler Mode run time',description:'How long should sampler mode sample for (in seconds)',canEdit:true})
+    await knex('lxConfig').insert({key:"e131Sampler_effectMode", value:0,name:'Sampler Mode effect mode enable',description:'Set to 1 to store values that are varying when in sample mode, they are normally discarded otherwise',canEdit:true})
+
+
   }
   if (!await knex.schema.hasTable('sndConfig')) {
     await knex.schema.createTable('sndConfig', table => {
@@ -201,12 +210,28 @@ ipcMain.handle('simpleQueryDB', async (event, data) => {
 });
 
 //General Setup
-function reboot(reboot) {
+function reboot(reboot,force,flagsAdd,flagsRemove) {
+  if (typeof flagsAdd === "undefined") {
+    flagsAdd = [];
+  }
+  if (typeof flagsRemove === "undefined") {
+    flagsRemove = [];
+  }
   knex.destroy().then(() => {
     if (reboot) {
-      app.relaunch();
+      var flags = process.argv.slice(1);
+      flagsRemove.forEach(function (flagRemove) {
+        flags = flags.filter(item => item !== flagRemove);
+      });
+      flags = flags.concat(flagsAdd);
+      app.relaunch({ args: flags });
     }
-    app.exit();
+    if (force || typeof force === "undefined") { //Default to forcing it
+      app.exit(0);
+    } else {
+      app.quit();
+    }
+
   });
 }
 ipcMain.on("reboot", (event, arguments) =>{
@@ -392,6 +417,77 @@ ipcMain.on("fadeAll", async (event, args) =>  {
     }
   }
 })
+function setupE131Sampler() {
+  if (LXConfig["e131Sampler_effectMode"] != 1) {
+    var effectMode = false;
+  } else {
+    var effectMode = true;
+  }
+  var universes = [];
+  for (let i = 1; i <= 64; i++) { //Limit to 64 universes
+    universes.push(i);
+  }
+  var universeData = {};
+  var server = new e131.Server(universes);
+  server.on('listening', function() {
+    setTimeout(() => mainWindow.webContents.send("log", 'Listening on port ' + this.port + '- universes ' + this.universes),1000); //Set timeout needed as often the window isn't quite ready in time
+  });
+  setTimeout(() => mainWindow.webContents.send("log", effectMode ? 'Storing first value of a varying value (EFFECT MODE ON)':'Ignoring varying values (EFFECT MODE OFF)'),1000);//Set timeout needed as often the window isn't quite ready in time
+  server.on('packet', function (packet) {
+    var sourceName = packet.getSourceName().replace(/\0/g, '');
+    var universe = packet.getUniverse();
+    var slotsData = packet.getSlotsData();
+    var priority = packet.getPriority();
+    if (priority != 0) { //For some reason, known only to the developers of this library/sACN (I'm not even sure)........you get some bizarre packets that are just priorities and nothing else from time to time. The only feature of these I can find is that they have no priority, so if you find one without priority just ignore it and hope for the best.
+      if (universeData[sourceName] === undefined) {
+        universeData[sourceName] = {};
+        setTimeout(() => mainWindow.webContents.send("log", "Found new device " + sourceName),1000);//Set timeout needed as often the window isn't quite ready in time
+      }
+      if (universeData[sourceName][universe] === undefined) {
+        universeData[sourceName][universe] = {};
+        setTimeout(() => mainWindow.webContents.send("log", "Found universe " + universe + " for device " + sourceName),1000);//Set timeout needed as often the window isn't quite ready in time
+      }
+      for (let i = 0; i < slotsData.length; i++) {
+        if (universeData[sourceName][universe][i+1] === undefined) {
+          universeData[sourceName][universe][i+1] = slotsData[i];
+        } else if (!effectMode && universeData[sourceName][universe][i+1] === false) {
+          //This has already been marked as jittery - so ignore it
+        } else if (!effectMode && universeData[sourceName][universe][i+1] !== slotsData[i]) {
+          //So we've found data that doesn't match what we had down for it before, so it might be that an effect is running. The best way to deal with this is to mark it as false, which means it won't be saved (on purpose)
+          universeData[sourceName][universe][i+1] = false;
+          setTimeout(() => mainWindow.webContents.send("log", "Discarding data for channel " + i + " due to value change (universe " + universe + " from device " + sourceName + ") - is an effect running?"),1000);//Set timeout needed as often the window isn't quite ready in time
+        }
+      }
+    }
+  });
+  if (LXConfig["e131Sampler_time"] === undefined || LXConfig["e131Sampler_time"] > 300 || LXConfig["e131Sampler_time"] < 5) {
+    var timeoutTimerDuration = 15000; //15 seconds is the default
+  } else {
+    var timeoutTimerDuration = LXConfig["e131Sampler_time"]*1000;
+  }
+  setTimeout((async () => {
+    server.close();
+    for (const [deviceName, device] of Object.entries(universeData)) {
+      for (const [universeID, universeData] of Object.entries(device)) {
+        for(var key in universeData){
+          if(universeData.hasOwnProperty(key) && universeData[key] === false){
+            delete universeData[key]; //Remove false values
+          }
+        }
+        await knex('lxPreset').insert({name: "Universe " + universeID + " sampled from " + deviceName, enabled: true, universe: universeID, setArguments: JSON.stringify(universeData)});
+      }
+    }
+    reboot(true,true, [],["--e131sampler"]);
+  }),timeoutTimerDuration);
+  var timeoutStarted = +new Date();
+
+  setInterval(function () {
+    var currentTime = +new Date();
+    mainWindow.webContents.send("progress", (currentTime-timeoutStarted),timeoutTimerDuration);
+  },500);
+}
+
+
 
 // Socket.io admin site
 io.on('connection', socket => {
@@ -463,6 +559,10 @@ io.on('connection', socket => {
   socket.on('lock', async () => {
     await toggleLock();
   })
+  //Sampling system for e131
+  socket.on('e131sampler', async () => {
+    reboot(true,true,["--e131sampler"],[]);
+  });
 
   socket.on("disconnect", (reason) => {
     console.log("Disconnected: " + reason)

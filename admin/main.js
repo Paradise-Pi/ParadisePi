@@ -264,3 +264,11 @@ function removePreset (button) {
     console.log(button.form);
     socket.emit('removePreset', button.form.getAttribute('data-table'), {id:button.getAttribute('data-id')});
 }
+
+//sample an e131 universe
+$('#lxSampleMode').click( function (){
+    if (confirm("Do you wish to enter sampling mode")) {
+        socket.emit('e131sampler');
+    }
+    $('#lxSampleModeModal').modal('hide');
+});

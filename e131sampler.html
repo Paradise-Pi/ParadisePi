@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; style-src 'self' 'unsafe-inline';">
+    <title>Paradise Pi</title>
+    <style>
+      h2 {
+        margin:0;
+      }
+      progress, pre {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 id="progressText"></h2>
+    <progress id="progress" value="0" max="0"></progress>
+    <pre id="log"></pre>
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="assets/jquery-3.5.1.min.js"></script>
+    <script>if (window.module) module = window.module;</script>
+    <script src="./e131sampler-renderer.js"></script>
+  </body>
+</html>
