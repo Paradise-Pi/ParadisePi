@@ -123,7 +123,7 @@ window.api.receive("fromOSC", (data) => {
         $("#SNDStatusDetails").html("Sound connected to " + data.args[2] + " " + data.args[3] + " (" + data.args[1] + " - " + data.args[0] + ")");
         $("#SNDStatusIcon").html(data.args[2] + " &#x25cf;");
     } else if (data.address == "/status") {
-        console.log(data.args);
+        //i'm still alive!
     } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "fader") {
         $(".fader").each(function(key, fader) {
             if( String(this.getAttribute("data-channel")).padStart(2, '0') === addressArray[2]) {
@@ -133,15 +133,14 @@ window.api.receive("fromOSC", (data) => {
     } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "on") {
         $(".channel-toggle").each(function (key, button) {
             if(String(this.getAttribute("data-channel")).padStart(2, '0') === addressArray[2]) {
-                console.log(data.args[0]);
                 toggleMute(this, data.args[0]);
             }
         });
-    } else if (data.address == "/main/st/mix/fader") {
+    } else if (data.address === "/lr/mix/fader") {
         $(".fader[data-channel='master']").val(data.args[0]);
-    } else if (data.address == "/main/st/mix/on") {
+    } else if (data.address === "/lr/mix/on") {
         let master = $(".channel-toggle[data-channel='master']")
-        if (data.args[0] == 1){
+        if (data.args[0] === 1){
             master.addClass("unmute");
             master.removeClass("mute");
         } else {

@@ -295,8 +295,8 @@ function checkStatusOSC() {
          udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/fader", args:[]});
          udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/on", args:[]});
        });
-       udpPort.send({address:"/main/st/mix/fader", args:[]});
-       udpPort.send({address:"/main/st/mix/on", args:[]});
+       udpPort.send({address:"/lr/mix/fader", args:[]});
+       udpPort.send({address:"/lr/mix/on", args:[]});
      });
   } else if (udpStatus) {
     //Still connected, just tell the frontend anyway because it's occasionally dozy (mostly on boot tbh)
