@@ -257,6 +257,7 @@ socket.on('config', (data) => {
         let section = $("form.settings-form[data-table=" + type + "]");
         section.html("");
         $.each(data[type],function (key,value) {
+            let KeyValue = value.value.replace(/"/g, '&quot;');
             if (type === "SNDConfig" && value.options != null){
                 if (value.key === "mixer") {
                     mixer = value.value;
@@ -268,7 +269,7 @@ socket.on('config', (data) => {
                 });
                 section.append('<div class="form-group"><label>' + value.name + '</label><select class="form-control" name="' + value.key + '" type="text"' + (value.canEdit !== 1 ? 'disabled' : '') +'>' + htmlOptions +'</select><span class="help-block">' + value.description + '</span></div>');
             } else {
-                section.append('<div class="form-group"><label>' + value.name + '</label><input class="form-control" name="' + value.key + '" type="text" value="' + value.value + '" ' + (value.canEdit != 1 ? 'disabled' : '') + '><span class="help-block">' + value.description + '</span></div>');
+                section.append('<div class="form-group"><label>' + value.name + '</label><input class="form-control" name="' + value.key + '" type="text" value="' + KeyValue + '" ' + (value.canEdit != 1 ? 'disabled' : '') + '><span class="help-block">' + value.description + '</span></div>');
             }
         });
         section.append('<button class="btn btn-sm btn-success" type="submit">Save</button>');

@@ -198,6 +198,10 @@ $(document).ready(function() {
         window.api.send("reboot", {});
     });
     window.api.asyncSend("getConfig", {}).then((result) => {
+        //get div section
+        $('#LXInfo').html(result['MAINConfig']['LXInfo']);
+        $('#SNDInfo').html(result['MAINConfig']['SNDInfo'])
+        //check for lock
         locked = (result['MAINConfig']['deviceLock'] === "LOCKED");
         if (locked) {
             $("#lockIcon").show();

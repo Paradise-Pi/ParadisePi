@@ -180,6 +180,8 @@ async function initDatabases() {
     });
     await knex('config').insert({key:"deviceLock", value:"UNLOCKED", name:"Device Lock", description:"Lock the device", canEdit:false});
     await knex('config').insert({key:"timeoutTime", value:5, name:"Device Timeout", description:"How soon should the device be blanked after last interaction (minutes)"});
+    await knex('config').insert({key:"LXInfo", value:"", name:"LX Additional Info", description:"Additional Information for the Lighting page"});
+    await knex('config').insert({key:"SNDInfo", value:"", name:"SND Additional Info", description:"Additional Information for the Sound page"});
 
   }
 
