@@ -7,11 +7,21 @@ jQuery.fn.addChild = function(html = "<div class='oscDiv'>")
     return child;
 };
 
+//sets which mixer type to get info for
+let mixer = "x32";
+
+//"mixer":{"name":["address", startVal, endVal, Step, hasSecondOption]}
 const sndFirstOption = {
-    //"name":["address", startVal, endVal, Step, hasSecondOption]
-    "Channel":["/ch/",1,16,1, true],
-    "Mute Group":["/config/mute/", 1,6,1, false],
-    "Master": ["/lr", false, false, false, true]
+    "xair":{
+        "Channel":["/ch/",1,16,1, true],
+        "Mute Group":["/config/mute/", 1,6,1, false],
+        "Master": ["/lr", false, false, false, true]
+    },
+    "x32":{
+        "Channel":["/ch/",1,16,1, true],
+        "Mute Group":["/config/mute/", 1,6,1, false],
+        "Master": ["/main/st", false, false, false, true]
+    }
 }
 
 const sndSecondOption = {
@@ -92,14 +102,14 @@ function oscAddressInputs(oscGroup){
     //first item
     let select = oscGroup.addChild('<select class="form-control presetOption">');
     select.addChild('<option disabled selected>Select An Option</option>');
-    $.each(sndFirstOption, function (key, value){
+    $.each(sndFirstOption[mixer], function (key, value){
         select.addChild('<option value="'+ value[0]+'">' + key + '</option>');
     })
 
     let div = oscGroup.addChild("<div class='presetDiv'>") //next info
     let secondDiv = oscGroup.addChild("<div class='presetDiv'>");
     select.change(function (){
-        let options = sndFirstOption[select.find('option:selected')[0].innerText];//get all info
+        let options = sndFirstOption[mixer][select.find('option:selected')[0].innerText];//get all info
         //empty next div for any changes
         div.html("");
         let firstNumber;
@@ -244,11 +254,24 @@ socket.on('config', (data) => {
         lastUniverse = firstUniverse + parseInt(data['LXConfig'][1]['value']) - 1;
     }
     if (type) {
-        $("form.settings-form[data-table=" + type + "]").html("");
+        let section = $("form.settings-form[data-table=" + type + "]");
+        section.html("");
         $.each(data[type],function (key,value) {
-            $("form.settings-form[data-table=" + type + "]").append('<div class="form-group"><label>' + value.name + '</label><input class="form-control" name="' + value.key + '" type="text" value="' + value.value + '" ' + (value.canEdit != 1 ? 'disabled' : '') + '><span class="help-block">' + value.description + '</span></div>');
+            if (type === "SNDConfig" && value.options != null){
+                if (value.key === "mixer") {
+                    mixer = value.value;
+                }
+                let options = JSON.parse(value.options);
+                let htmlOptions = "";
+                $.each(options, function (index, item) {
+                    htmlOptions += "<option value='"+ item + "' "+ (value.value === item ? 'selected' : '') +">" + item + "</option>";
+                });
+                section.append('<div class="form-group"><label>' + value.name + '</label><select class="form-control" name="' + value.key + '" type="text"' + (value.canEdit !== 1 ? 'disabled' : '') +'>' + htmlOptions +'</select><span class="help-block">' + value.description + '</span></div>');
+            } else {
+                section.append('<div class="form-group"><label>' + value.name + '</label><input class="form-control" name="' + value.key + '" type="text" value="' + value.value + '" ' + (value.canEdit != 1 ? 'disabled' : '') + '><span class="help-block">' + value.description + '</span></div>');
+            }
         });
-        $("form.settings-form[data-table=" + type + "]").append('<button class="btn btn-sm btn-success" type="submit">Save</button>');
+        section.append('<button class="btn btn-sm btn-success" type="submit">Save</button>');
     }
 });
 

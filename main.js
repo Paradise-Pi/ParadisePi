@@ -157,8 +157,6 @@ async function initDatabases() {
     await knex('lxConfig').insert({key:"fadeTime", value:5,name:'Preset Fade Time',description:'Delay time to fade presets in (seconds). 0 = Instant',canEdit:true})
     await knex('lxConfig').insert({key:"e131Sampler_time", value:15,name:'Sampler Mode run time',description:'How long should sampler mode sample for (in seconds)',canEdit:true})
     await knex('lxConfig').insert({key:"e131Sampler_effectMode", value:0,name:'Sampler Mode effect mode enable',description:'Set to 1 to store values that are varying when in sample mode, they are normally discarded otherwise',canEdit:true})
-
-
   }
   if (!await knex.schema.hasTable('sndConfig')) {
     await knex.schema.createTable('sndConfig', table => {
@@ -166,10 +164,11 @@ async function initDatabases() {
       table.string('value');
       table.string('name');
       table.string('description');
+      table.string('options').nullable();
       table.boolean('canEdit').defaultTo(true);
     })
     await knex('sndConfig').insert({key:"targetIP", value:"192.168.1.143",name:'OSC Target IP',description:''});
-    await knex('sndConfig').insert({key:"targetPort", value:"10023",name:'OSC Target Port',description:''});
+    await knex('sndConfig').insert({key:"mixer", value:"xair", name:'Console Type', description:'Which console?', options:'["xair","x32"]'});
   }
   if (!await knex.schema.hasTable('config')) {
     await knex.schema.createTable('config', table => {
@@ -273,6 +272,9 @@ async function toggleLock() {
 var udpPort;
 var lastOSCMessage = 0;
 var udpStatus = false;
+//mixer specifics
+let oscPort = {"xair":10024, "x32":10023};
+let masterAddress = {"xair":"/lr", "x32":"/main/st"};
 function checkStatusOSC() {
   currentMillis = +new Date();
   if (currentMillis-lastOSCMessage > 3000) {
@@ -295,8 +297,8 @@ function checkStatusOSC() {
          udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/fader", args:[]});
          udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/on", args:[]});
        });
-       udpPort.send({address:"/lr/mix/fader", args:[]});
-       udpPort.send({address:"/lr/mix/on", args:[]});
+       udpPort.send({address:masterAddress[SNDConfig.mixer] + "/mix/fader", args:[]});
+       udpPort.send({address:masterAddress[SNDConfig.mixer] + "/mix/on", args:[]});
      });
   } else if (udpStatus) {
     //Still connected, just tell the frontend anyway because it's occasionally dozy (mostly on boot tbh)
@@ -318,7 +320,7 @@ function setupOSC() {
   udpPort = new oscHandler.UDPPort({
     localAddress: "0.0.0.0",
     localPort: 57121,
-    remotePort: SNDConfig.targetPort,
+    remotePort: oscPort[SNDConfig.mixer],
     remoteAddress: SNDConfig.targetIP,
   });
   udpPort.on("ready", function () {
