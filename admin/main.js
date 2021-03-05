@@ -10,7 +10,8 @@ jQuery.fn.addChild = function(html = "<div class='oscDiv'>")
 const sndFirstOption = {
     //"name":["address", startVal, endVal, Step, hasSecondOption]
     "Channel":["/ch/",1,16,1, true],
-    "Mute Group":["/config/mute/", 1,6,1, false]
+    "Mute Group":["/config/mute/", 1,6,1, false],
+    "Master": ["/lr", false, false, false, true]
 }
 
 const sndSecondOption = {
@@ -99,17 +100,24 @@ function oscAddressInputs(oscGroup){
     let secondDiv = oscGroup.addChild("<div class='presetDiv'>");
     select.change(function (){
         let options = sndFirstOption[select.find('option:selected')[0].innerText];//get all info
-        //update content of presetAddress
-        presetAddress[0].value = '"' + options[0] + String(options[1]).padStart(2, '0') + '":{}';
-        //empty div for any changes
+        //empty next div for any changes
         div.html("");
-        //create number input based on sndFirstOption array
-        let firstNumber = div.addChild('<input class="form-control presetNumber" type="number" value="' + options[1] + '" min="' + options[1] + '" max="' + options[2] + '" step="' + options[3] + '">');
+        let firstNumber;
+        //If the option has a number element (ch, mute grp (not main mix))
+        if (options[1]){
+            //update content of presetAddress
+            presetAddress[0].value = '"' + options[0] + String(options[1]).padStart(2, '0') + '":{}';
+            //create number input based on sndFirstOption array
+            firstNumber = div.addChild('<input class="form-control presetNumber" type="number" value="' + options[1] + '" min="' + options[1] + '" max="' + options[2] + '" step="' + options[3] + '">');
 
-        //update content of presetAddress if numbers changed
-        firstNumber.change(function () {
-            presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + '":{}';
-        });
+            //update content of presetAddress if numbers changed
+            firstNumber.change(function () {
+                presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + '":{}';
+            });
+        } else {
+            presetAddress[0].value = '"' + options[0] + '":{}';
+        }
+
 
         if(options[4]){ //if has second options for that channel/bus etc, show that form
             let secondSelect = div.addChild('<select class="form-control presetOption">'); //create another selection
@@ -121,19 +129,31 @@ function oscAddressInputs(oscGroup){
             secondSelect.change(function () {
                 secondDiv.html("");//clear second div on changes
                 let secondOptions = sndSecondOption[secondSelect.find('option:selected')[0].innerText];
-                presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{}';
+                if (options[1]) {
+                    presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{}';
+                } else {
+                    presetAddress[0].value = '"' + options[0] + secondOptions[0] + '":{}';
+                }
 
                 //create number input based on sndSecondOption array
                 let secondNumber = secondDiv.addChild('<input class="form-control presetNumber" type="number" value="' + secondOptions[1] + '" min="' + secondOptions[1] + '" max="' + secondOptions[2] + '" step="' + secondOptions[3] + '">');
                 secondNumber.change(function () {
-                    presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{"type":' + (secondOptions[3] % 1 === 0 ? '"i"' : '"f"') + ', "value":' + secondNumber[0].value + '}';
+                    if (options[1]) {
+                        presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + secondOptions[0] + '":{"type":' + (secondOptions[3] % 1 === 0 ? '"i"' : '"f"') + ', "value":' + secondNumber[0].value + '}';
+                    } else {
+                        presetAddress[0].value = '"' + options[0] + secondOptions[0] + '":{"type":' + (secondOptions[3] % 1 === 0 ? '"i"' : '"f"') + ', "value":' + secondNumber[0].value + '}';
+                    }
                 });
             });
         } else { //otherwise just show a "true/false" num box
             secondDiv.html("");//clear second div on changes
             let secondNumber = div.addChild('<input class="form-control presetNumber" type="number" min="0" max="1">');
             secondNumber.change(function () {
-                presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0')  + '":{"type":"i" "value":' + secondNumber[0].value + '}';
+                if (options[1]) {
+                    presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + '":{"type":"i" "value":' + secondNumber[0].value + '}';
+                } else {
+                    presetAddress[0].value = '"' + options[0] + '":{"type":"i" "value":' + secondNumber[0].value + '}';
+                }
             });
         }
     })
