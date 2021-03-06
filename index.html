@@ -13,8 +13,8 @@
       <table id="menu">
         <tr>
           <td data-tab="1" rowspan="2">Lighting</td>
-          <td data-tab="2" rowspan="2">Sound</td>
-          <td data-tab="3" rowspan="2">Admin</td>
+          <td data-tab="3" rowspan="2">Sound</td>
+          <td data-tab="4" rowspan="2">Admin</td>
           <td class="pad" rowspan="2">
             <span id="SNDStatusIcon">Sound &#x25cf;</span>
             <br/><span id="lockIcon">&#128274;</span>
@@ -25,11 +25,41 @@
       <div id="container">
         <div class="tab" data-tab="1">
           <div class="button-container" id="lxContainer" >
+            <button type="button" id="keypad-open">LX Keypad</button>
             <div id="LXInfo" class="info"></div>
             <!-- Buttons generated on load -->
           </div>
         </div>
         <div class="tab" data-tab="2">
+          <div class="keypad-container">
+            <input type="text" id="keypad-output" readonly>
+            <button class="keypad-clear">Clear</button>
+            <br>
+            <table class="keypad">
+              <tr>
+                <td><button class="keypad-key" data-key="1">1</button></td>
+                <td><button class="keypad-key" data-key="2">2</button></td>
+                <td><button class="keypad-key" data-key="3">3</button></td>
+              </tr>
+              <tr>
+                <td><button class="keypad-key" data-key="4">4</button></td>
+                <td><button class="keypad-key" data-key="5">5</button></td>
+                <td><button class="keypad-key" data-key="6">6</button></td>
+              </tr>
+              <tr>
+                <td><button class="keypad-key" data-key="7">7</button></td>
+                <td><button class="keypad-key" data-key="8">8</button></td>
+                <td><button class="keypad-key" data-key="9">9</button></td>
+              </tr>
+              <tr>
+                <td><button class="keypad-key" data-key=" @ ">@</button></td>
+                <td><button class="keypad-key" data-key="0">0</button></td>
+                <td><button class="keypad-enter">ENTER</button></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="tab" data-tab="3">
           <div class="button-container" id="sndContainer">
             <div id="SNDInfo" class="info"></div>
             <!-- Buttons generated on load -->
@@ -38,7 +68,7 @@
             <!-- Faders generated on Load -->
           </div>
         </div>
-        <div class="tab" data-tab="3">
+        <div class="tab" data-tab="4">
           <table>
             <tr>
               <td>

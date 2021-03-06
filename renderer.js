@@ -9,6 +9,7 @@
  * generic function to send an sACN call.
  * @param universe - int - universe number
  * @param channels - object - channels to update in form {channel:dmxValue}
+ * @param fadeTime - int - fade time for call
  */
 function sendACN(universe, channels,fadeTime){
     if (locked) {
@@ -185,13 +186,13 @@ $(document).ready(function() {
             $("#sndFaders").append('<div class="channel">\n' +
                 '            <label>' + value.name + '</label><br/>\n' +
                 '            <div class="faderWrapper"><input class="fader" type="range" max="1" step="0.01" data-meter="0" data-channel="' + value.channel + '" ' + (value.enabled ? '':'disabled') + ' value="0"></div>\n' +
-                '            <button class="channel-toggle unMuted" data-channel="' + value.channel + '" data-status="1"  ' + (value.enabled ? '':'disabled') + ' >Mute</button>\n' +
+                '            <button class="channel-toggle" data-channel="' + value.channel + '" data-status="1"  ' + (value.enabled ? '':'disabled') + ' >Mute</button>\n' +
                 '          </div>');
         });
         $("#sndFaders").append('<div class="channel">\n' +
             '            <label>Master</label><br/>\n' +
             '            <div class="faderWrapper"><input class="fader" type="range" max="1" step="0.01" data-meter="0" data-channel="master" disabled value="0"></div>\n' +
-            '            <button class="channel-toggle unmute" data-channel="master" data-status="1" disabled>Mute</button>\n' +
+            '            <button class="channel-toggle" data-channel="master" data-status="1" disabled>Mute</button>\n' +
             '          </div>');
     });
 
@@ -225,7 +226,7 @@ $(document).ready(function() {
         sndFadeAll();
         modalShow("allOffModal");
     });
-    //Channel Fader handlimg
+    //Channel Fader handling
     //handle fader movement
     $(document).on('input', '.fader', function() {
         sendOSC("/ch/" + String(this.getAttribute("data-channel")).padStart(2, '0') + "/mix/fader", {type:"f", value:this.value});
@@ -246,6 +247,14 @@ $(document).ready(function() {
     changeTab(1);
     $(document).on("click", "#menu td[data-tab]", function () {
         changeTab($(this).data("tab"));
+    });
+    //keypad handling
+    $('#keypad-open').click(function () {
+        if (locked) {
+            modalShow("lockedWarning");
+            return false;
+        }
+       changeTab(2);
     });
     window.api.asyncSend("getIP", {}).then((result) => {
         let url = "http://" + result + ":8080"
@@ -296,4 +305,49 @@ function toggleMute(element, status){
         element.classList.add("mute");
         element.classList.remove("unmute");
     }
+}
+
+//Keypad
+let keyOutput = $('#keypad-output');
+$('.keypad-key').click(function () {
+    keyOutput.val(keyOutput.val() + String(this.getAttribute('data-key')));
+    verifyLX(keyOutput);
+});
+
+$('.keypad-enter').click(function () {
+    if (locked) {
+        modalShow("lockedWarning");
+        $('.keypad-clear').click();
+        return false;
+    }
+    if (verifyLX(keyOutput)) {
+        let sections = $('#keypad-output').val().split(" ");
+        let channels = {}
+        channels[sections[0]] = sections[2];
+        sendACN(1, channels, 0);
+        $('.keypad-clear').click();
+    }
+});
+
+$('.keypad-clear').click(function () {
+    keyOutput.removeClass("error");
+    keyOutput.val("");
+
+});
+
+/**
+ * Checks if text in given element is valid
+ * @param element - element to get command from
+ * @returns {boolean} - true if command is valid, false otherwise
+ */
+function verifyLX(element){
+    element.removeClass("error");
+    let command = element.val();
+    let sections = command.split(" ");
+    if ((sections.length !== 3) || (sections[2] === "") || (parseInt(sections[0]) > 512) || (parseInt(sections[2]) > 255)){
+        //invalid command
+        element.addClass("error");
+        return false;
+    }
+    return true;
 }
