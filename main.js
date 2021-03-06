@@ -309,6 +309,7 @@ function checkStatusOSC() {
 }
 function subscribeOSC(renew) {
   udpPort.send({address:"/xremote"});
+  udpPort.send({address:"/meters",args:["/meters/4"]});
   /*knex.select().table('sndFaders').then((data) => {
     data.forEach(function(entry) {
       udpPort.send({address:(renew ? '/renew' : '/subscribe'), args:["/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/fader"]});
