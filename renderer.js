@@ -282,16 +282,22 @@ setInterval(function() {
 async function sndFadeAll(){
     let faders = $(".fader");
     let changedZero = true;
-    while(changedZero){
-        changedZero = false;
+    if (false) {
+        while(changedZero){
+            changedZero = false;
+            faders.each( function (){
+                if (this.value > 0){
+                    changedZero = true;
+                    this.value -= 0.01;
+                    sendOSC("/ch/" + String(this.getAttribute("data-channel")).padStart(2, '0') + "/mix/fader", {type:"f", value:this.value});
+                }
+            });
+            await new Promise(r => setTimeout(r, 30));
+        }
+    } else {
         faders.each( function (){
-            if (this.value > 0){
-                changedZero = true;
-                this.value -= 0.01;
-                sendOSC("/ch/" + String(this.getAttribute("data-channel")).padStart(2, '0') + "/mix/fader", {type:"f", value:this.value});
-            }
+            sendOSC("/ch/" + String(this.getAttribute("data-channel")).padStart(2, '0') + "/mix/fader", {type:"f", value:0});
         });
-        await new Promise(r => setTimeout(r, 30));
     }
 }
 

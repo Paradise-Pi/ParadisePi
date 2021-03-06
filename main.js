@@ -422,7 +422,7 @@ ipcMain.on("sendACN", async (event, args) => {
     var channelsValues = args.channelsValues; //Format = {53:244,14:34,56:255}
     var fadeTime = (args.fadeTime !== undefined && args.fadeTime !== null ? args.fadeTime : LXConfig.fadeTime);
     let changedZero = true;
-    if (fadeTime != 0) {
+    if (false) { //fadeTime != 0
       while (changedZero) {
         //TODO resolve bug meaning this doesn't work when multiple presets are called at the same time
         changedZero = false;
@@ -450,7 +450,7 @@ ipcMain.on("sendACN", async (event, args) => {
 ipcMain.on("fadeAll", async (event, args) =>  {
   if (MAINConfig.deviceLock === "UNLOCKED") {
     let changedZero = true;
-    if (LXConfig.fadeTime != 0) {
+    if (false) { //LXConfig.fadeTime != 0
       while(changedZero) {
         changedZero = false;
         for (var channel = 0; channel < 512; channel++) {
