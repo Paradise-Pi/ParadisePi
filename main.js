@@ -72,7 +72,7 @@ async function createWindow (fileToLoad) {
     height: 480,
     minWidth: 800,
     minHeight: 480,
-    //fullscreen: (os.platform() == "linux"),
+    fullscreen: (os.platform() == "linux"),
     title: "Paradise",
     icon: path.join(__dirname, 'assets/icon/icon.png'),
     webPreferences: {
@@ -422,7 +422,7 @@ ipcMain.on("sendACN", async (event, args) => {
     var channelsValues = args.channelsValues; //Format = {53:244,14:34,56:255}
     var fadeTime = (args.fadeTime !== undefined && args.fadeTime !== null ? args.fadeTime : LXConfig.fadeTime);
     let changedZero = true;
-    if (fadeTime !== 0) {
+    if (fadeTime != 0) {
       while (changedZero) {
         //TODO resolve bug meaning this doesn't work when multiple presets are called at the same time
         changedZero = false;
