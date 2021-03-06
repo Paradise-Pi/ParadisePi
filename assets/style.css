@@ -228,3 +228,320 @@ Modals
     width: 100%;
     padding-bottom: 1em;
 }
+
+
+
+
+
+
+
+
+
+
+
+/*
+    So basically JS doesn't let you set CSS pseudo-element styles easily, so there's quite a few bizarre suggestions on stackoverflow but the cleanest I can come up with is to just pre-generate a style for ever meter value from 0-100% and then set the data attribute accordingly.
+ */
+input[type=range][data-meter="0"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 0%, #000000 0%, #000000 100%);
+}
+input[type=range][data-meter="1"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 1%, #000000 1%, #000000 100%);
+}
+input[type=range][data-meter="2"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 2%, #000000 2%, #000000 100%);
+}
+input[type=range][data-meter="3"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 3%, #000000 3%, #000000 100%);
+}
+input[type=range][data-meter="4"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 4%, #000000 4%, #000000 100%);
+}
+input[type=range][data-meter="5"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 5%, #000000 5%, #000000 100%);
+}
+input[type=range][data-meter="6"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 6%, #000000 6%, #000000 100%);
+}
+input[type=range][data-meter="7"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 7%, #000000 7%, #000000 100%);
+}
+input[type=range][data-meter="8"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 8%, #000000 8%, #000000 100%);
+}
+input[type=range][data-meter="9"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 9%, #000000 9%, #000000 100%);
+}
+input[type=range][data-meter="10"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 10%, #000000 10%, #000000 100%);
+}
+input[type=range][data-meter="11"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 11%, #000000 11%, #000000 100%);
+}
+input[type=range][data-meter="12"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 12%, #000000 12%, #000000 100%);
+}
+input[type=range][data-meter="13"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 13%, #000000 13%, #000000 100%);
+}
+input[type=range][data-meter="14"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 14%, #000000 14%, #000000 100%);
+}
+input[type=range][data-meter="15"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 15%, #000000 15%, #000000 100%);
+}
+input[type=range][data-meter="16"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 16%, #000000 16%, #000000 100%);
+}
+input[type=range][data-meter="17"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 17%, #000000 17%, #000000 100%);
+}
+input[type=range][data-meter="18"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 18%, #000000 18%, #000000 100%);
+}
+input[type=range][data-meter="19"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 19%, #000000 19%, #000000 100%);
+}
+input[type=range][data-meter="20"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 20%, #000000 20%, #000000 100%);
+}
+input[type=range][data-meter="21"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 21%, #000000 21%, #000000 100%);
+}
+input[type=range][data-meter="22"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 22%, #000000 22%, #000000 100%);
+}
+input[type=range][data-meter="23"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 23%, #000000 23%, #000000 100%);
+}
+input[type=range][data-meter="24"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 24%, #000000 24%, #000000 100%);
+}
+input[type=range][data-meter="25"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 25%, #000000 25%, #000000 100%);
+}
+input[type=range][data-meter="26"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 26%, #000000 26%, #000000 100%);
+}
+input[type=range][data-meter="27"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 27%, #000000 27%, #000000 100%);
+}
+input[type=range][data-meter="28"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 28%, #000000 28%, #000000 100%);
+}
+input[type=range][data-meter="29"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 29%, #000000 29%, #000000 100%);
+}
+input[type=range][data-meter="30"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 30%, #000000 30%, #000000 100%);
+}
+input[type=range][data-meter="31"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 31%, #000000 31%, #000000 100%);
+}
+input[type=range][data-meter="32"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 32%, #000000 32%, #000000 100%);
+}
+input[type=range][data-meter="33"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 33%, #000000 33%, #000000 100%);
+}
+input[type=range][data-meter="34"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 34%, #000000 34%, #000000 100%);
+}
+input[type=range][data-meter="35"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 35%, #000000 35%, #000000 100%);
+}
+input[type=range][data-meter="36"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 36%, #000000 36%, #000000 100%);
+}
+input[type=range][data-meter="37"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 37%, #000000 37%, #000000 100%);
+}
+input[type=range][data-meter="38"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 38%, #000000 38%, #000000 100%);
+}
+input[type=range][data-meter="39"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 39%, #000000 39%, #000000 100%);
+}
+input[type=range][data-meter="40"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 40%, #000000 40%, #000000 100%);
+}
+input[type=range][data-meter="41"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 41%, #000000 41%, #000000 100%);
+}
+input[type=range][data-meter="42"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 42%, #000000 42%, #000000 100%);
+}
+input[type=range][data-meter="43"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 43%, #000000 43%, #000000 100%);
+}
+input[type=range][data-meter="44"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 44%, #000000 44%, #000000 100%);
+}
+input[type=range][data-meter="45"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 45%, #000000 45%, #000000 100%);
+}
+input[type=range][data-meter="46"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 46%, #000000 46%, #000000 100%);
+}
+input[type=range][data-meter="47"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 47%, #000000 47%, #000000 100%);
+}
+input[type=range][data-meter="48"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 48%, #000000 48%, #000000 100%);
+}
+input[type=range][data-meter="49"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 49%, #000000 49%, #000000 100%);
+}
+input[type=range][data-meter="50"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 50%, #000000 50%, #000000 100%);
+}
+input[type=range][data-meter="51"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 51%, #000000 51%, #000000 100%);
+}
+input[type=range][data-meter="52"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 52%, #000000 52%, #000000 100%);
+}
+input[type=range][data-meter="53"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 53%, #000000 53%, #000000 100%);
+}
+input[type=range][data-meter="54"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 54%, #000000 54%, #000000 100%);
+}
+input[type=range][data-meter="55"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 55%, #000000 55%, #000000 100%);
+}
+input[type=range][data-meter="56"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 56%, #000000 56%, #000000 100%);
+}
+input[type=range][data-meter="57"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 57%, #000000 57%, #000000 100%);
+}
+input[type=range][data-meter="58"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 58%, #000000 58%, #000000 100%);
+}
+input[type=range][data-meter="59"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 59%, #000000 59%, #000000 100%);
+}
+input[type=range][data-meter="60"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 60%, #000000 60%, #000000 100%);
+}
+input[type=range][data-meter="61"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 61%, #000000 61%, #000000 100%);
+}
+input[type=range][data-meter="62"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 62%, #000000 62%, #000000 100%);
+}
+input[type=range][data-meter="63"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 63%, #000000 63%, #000000 100%);
+}
+input[type=range][data-meter="64"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 64%, #000000 64%, #000000 100%);
+}
+input[type=range][data-meter="65"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 65%, #000000 65%, #000000 100%);
+}
+input[type=range][data-meter="66"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 66%, #000000 66%, #000000 100%);
+}
+input[type=range][data-meter="67"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 67%, #000000 67%, #000000 100%);
+}
+input[type=range][data-meter="68"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 68%, #000000 68%, #000000 100%);
+}
+input[type=range][data-meter="69"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 69%, #000000 69%, #000000 100%);
+}
+input[type=range][data-meter="70"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 70%, #000000 70%, #000000 100%);
+}
+input[type=range][data-meter="71"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 71%, #000000 71%, #000000 100%);
+}
+input[type=range][data-meter="72"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 72%, #000000 72%, #000000 100%);
+}
+input[type=range][data-meter="73"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 73%, #000000 73%, #000000 100%);
+}
+input[type=range][data-meter="74"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 74%, #000000 74%, #000000 100%);
+}
+input[type=range][data-meter="75"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 75%, #000000 75%, #000000 100%);
+}
+input[type=range][data-meter="76"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 76%, #000000 76%, #000000 100%);
+}
+input[type=range][data-meter="77"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 77%, #000000 77%, #000000 100%);
+}
+input[type=range][data-meter="78"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 78%, #000000 78%, #000000 100%);
+}
+input[type=range][data-meter="79"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 79%, #000000 79%, #000000 100%);
+}
+input[type=range][data-meter="80"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 80%, #000000 80%, #000000 100%);
+}
+input[type=range][data-meter="81"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 81%, #000000 81%, #000000 100%);
+}
+input[type=range][data-meter="82"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 82%, #000000 82%, #000000 100%);
+}
+input[type=range][data-meter="83"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 83%, #000000 83%, #000000 100%);
+}
+input[type=range][data-meter="84"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 84%, #000000 84%, #000000 100%);
+}
+input[type=range][data-meter="85"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 85%, #000000 85%, #000000 100%);
+}
+input[type=range][data-meter="86"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 86%, #000000 86%, #000000 100%);
+}
+input[type=range][data-meter="87"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 87%, #000000 87%, #000000 100%);
+}
+input[type=range][data-meter="88"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 88%, #000000 88%, #000000 100%);
+}
+input[type=range][data-meter="89"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 89%, #000000 89%, #000000 100%);
+}
+input[type=range][data-meter="90"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 90%, #000000 90%, #000000 100%);
+}
+input[type=range][data-meter="91"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 91%, #000000 91%, #000000 100%);
+}
+input[type=range][data-meter="92"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 92%, #000000 92%, #000000 100%);
+}
+input[type=range][data-meter="93"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 93%, #000000 93%, #000000 100%);
+}
+input[type=range][data-meter="94"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 94%, #000000 94%, #000000 100%);
+}
+input[type=range][data-meter="95"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 95%, #000000 95%, #000000 100%);
+}
+input[type=range][data-meter="96"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 96%, #000000 96%, #000000 100%);
+}
+input[type=range][data-meter="97"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 97%, #000000 97%, #000000 100%);
+}
+input[type=range][data-meter="98"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 98%, #000000 98%, #000000 100%);
+}
+input[type=range][data-meter="99"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 99%, #000000 99%, #000000 100%);
+}
+input[type=range][data-meter="100"].fader::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #00ff00 0%, #00ff00 100%, #000000 100%, #000000 100%);
+}

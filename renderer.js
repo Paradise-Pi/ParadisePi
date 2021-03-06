@@ -129,7 +129,7 @@ window.api.receive("fromOSC", (data) => {
             if( String(this.getAttribute("data-channel")).padStart(2, '0') === addressArray[2]) {
                 fader.value = data.args[0];
             }
-        })
+        });
     } else if (addressArray[1] === "ch" && addressArray[3] === "mix" && addressArray[4] === "on") {
         $(".channel-toggle").each(function (key, button) {
             if(String(this.getAttribute("data-channel")).padStart(2, '0') === addressArray[2]) {
@@ -147,6 +147,14 @@ window.api.receive("fromOSC", (data) => {
             master.addClass("mute");
             master.removeClass("unmute");
         }
+    } else if (false) {
+        //Fader metering value
+        var level = 50; //Value expressed as a percentage out of 100 please!
+        $(".fader").each(function(key, fader) {
+            if( String(this.getAttribute("data-channel")).padStart(2, '0') === addressArray[2]) {
+                $(this).attr("data-meter",level);
+            }
+        });
     }
 });
 
@@ -176,13 +184,13 @@ $(document).ready(function() {
         $.each(result, function (key,value) {
             $("#sndFaders").append('<div class="channel">\n' +
                 '            <label>' + value.name + '</label><br/>\n' +
-                '            <div class="faderWrapper"><input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" ' + (value.enabled ? '':'disabled') + ' value="0"></div>\n' +
+                '            <div class="faderWrapper"><input class="fader" type="range" max="1" step="0.01" data-meter="0" data-channel="' + value.channel + '" ' + (value.enabled ? '':'disabled') + ' value="0"></div>\n' +
                 '            <button class="channel-toggle unMuted" data-channel="' + value.channel + '" data-status="1"  ' + (value.enabled ? '':'disabled') + ' >Mute</button>\n' +
                 '          </div>');
         });
         $("#sndFaders").append('<div class="channel">\n' +
             '            <label>Master</label><br/>\n' +
-            '            <div class="faderWrapper"><input class="fader" type="range" max="1" step="0.01" data-channel="master" disabled value="0"></div>\n' +
+            '            <div class="faderWrapper"><input class="fader" type="range" max="1" step="0.01" data-meter="0" data-channel="master" disabled value="0"></div>\n' +
             '            <button class="channel-toggle unmute" data-channel="master" data-status="1" disabled>Mute</button>\n' +
             '          </div>');
     });
