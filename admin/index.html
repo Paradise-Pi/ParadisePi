@@ -44,6 +44,8 @@
         <a class="c-header-brand d-lg-none" href="#">
             <ul class="c-header-nav d-md-down-none">
                 <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#settings">Settings</a></li>
+                <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#backuprestore">Backup, Restore &amp; Reset</a></li>
+
             </ul>
             <ul class="c-header-nav ml-auto mr-4">
                 <li class="c-header-nav-item dropdown"><a class="c-header-nav-link" data-toggle="dropdown" href="#"
@@ -140,10 +142,43 @@
                     </div>
                 </div>
                 <hr/>
+                <div id="backuprestore">
+                    <h2>Backup, Restore &amp; Reset</h2>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="card">
+                                <div class="card-header"><strong>Restore</strong> from Backup</div>
+                                <div class="card-body">
+                                    <p>Caution! Ensure you are uploading a valid backup file from Paradise. This file will not be checked before being set as the device config!</p>
+                                    <form action="fileupload" method="post" enctype="multipart/form-data">
+                                        <input class="form-control" type="file" name="filetoupload" accept=".sqlite,.sqlite3">
+                                        <button class="btn btn-sm btn-success" style="margin:10px;" type="submit">Upload</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="card">
+                                <div class="card-header"><strong>Backup</strong></div>
+                                <div class="card-body">
+                                    <a href="database.sqlite">Download Database Backup</a>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header"><strong>Factory</strong> Reset</div>
+                                <div class="card-body">
+                                    <button type="button" class="btn btn-danger btn-sm" id="factoryreset">Restore to Factory Settings</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
                 <div id="status">
                     <h2>Status</h2>
                     <p id="status-textStatus"></p>
                 </div>
+
             </div>
         </main>
         <footer class="c-footer">

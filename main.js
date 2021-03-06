@@ -2,6 +2,8 @@
 const {app, BrowserWindow,ipcMain,Menu,dialog} = require('electron');
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
+const formidable = require('formidable');
 const oscHandler = require("osc");
 const e131 = require('e131');
 const knex = require('knex')({
@@ -14,7 +16,26 @@ const knex = require('knex')({
 const staticServer = require('node-static');
 const staticServerFile = new(staticServer.Server)(__dirname + "/admin", { cache: false, serverInfo: "ParadisePi",indexFile: "index.html" });
 const server = require('http').createServer(function (req, res) {
-  staticServerFile.serve(req, res);
+  if (req.url == '/fileupload') {
+    var form = new formidable.IncomingForm();
+    form.parse(req, function (err, fields, files) {
+      fs.rename(files.filetoupload.path, 'user-uploaded-database.sqlite', function (err) {
+        if (err) throw err;
+        else {
+          knex.destroy().then(() => {
+            fs.rename('user-uploaded-database.sqlite', 'database.sqlite', (err) => {
+              if (err) throw err
+              res.write('System restored from backup. Please now check the device has initiated correctly');
+              res.end();
+              reboot(true);
+            });
+          });
+        }
+      });
+    });
+  } else {
+    staticServerFile.serve(req, res);
+  }
 });
 const io = require('socket.io')(server, {
   cors: {
@@ -82,16 +103,21 @@ app.whenReady().then(() => {
     credits: versions,
     copyright: "©2021 James Bithell & John Cherry"
   });
-  initDatabases().then(() => {
-    if (process.argv.includes("--e131sampler")) {
-      setupE131Sampler();
-      createWindow('e131sampler.html');
-    } else {
-      setupOSC();
-      setupE131();
-      createWindow('index.html');
-      server.listen(8080);
+  fs.copyFile('database.sqlite', 'admin/database.sqlite', (err) => { //Make the database backup on boot
+    if (!err) {
+      console.log('Database was backed up');
     }
+    initDatabases().then(() => {
+      if (process.argv.includes("--e131sampler")) {
+        setupE131Sampler();
+        createWindow('e131sampler.html');
+      } else {
+        setupOSC();
+        setupE131();
+        createWindow('index.html');
+        server.listen(8080);
+      }
+    });
   });
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
@@ -212,6 +238,14 @@ ipcMain.handle('simpleQueryDB', async (event, data) => {
 });
 
 //General Setup
+function factoryReset() { //Drop the database
+  knex.destroy().then(() => {
+    fs.unlink('database.sqlite', (err) => {
+      if (err) throw err
+      reboot(true);
+    });
+  });
+}
 function reboot(reboot,force,flagsAdd,flagsRemove) {
   if (typeof flagsAdd === "undefined") {
     flagsAdd = [];
@@ -233,7 +267,6 @@ function reboot(reboot,force,flagsAdd,flagsRemove) {
     } else {
       app.quit();
     }
-
   });
 }
 ipcMain.on("reboot", (event, arguments) =>{
@@ -585,6 +618,11 @@ io.on('connection', socket => {
   socket.on('e131sampler', async () => {
     reboot(true,true,["--e131sampler"],[]);
   });
+  //Factory Reset
+  socket.on('factoryReset', function () {
+    factoryReset();
+  })
+
 
   socket.on("disconnect", (reason) => {
     console.log("Disconnected: " + reason)

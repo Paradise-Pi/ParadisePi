@@ -355,3 +355,10 @@ $('#lxSampleMode').click( function (){
     }
     $('#lxSampleModeModal').modal('hide');
 });
+
+//factory reset
+$('#factoryreset').click( function (){
+    if (confirm("Do you wish to factory reset the device?")) {
+        socket.emit('factoryReset');
+    }
+});
