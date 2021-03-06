@@ -96,7 +96,10 @@ Main container
 /*
     Individual items
  */
-.button-container > button {
+.button-container > button,
+.keypad-key,
+.keypad-enter,
+.keypad-clear {
     width: 140px;
     height: 60px;
     margin:5px;
@@ -217,8 +220,8 @@ Modals
 }
 
 .mute{
-    border: red solid 2px;
-    color: red;
+    border: red solid 2px !important;
+    color: red !important;
     font-weight: bold;
 }
 
@@ -233,7 +236,36 @@ Modals
     padding-bottom: 1em;
 }
 
+.keypad-container {
+    text-align: center;
+}
 
+.keypad {
+    width: 50%;
+    margin: 0 25%;
+}
+
+.keypad-key,
+.keypad-enter,
+.keypad-clear {
+    width: 100px;
+    height: 40px;
+}
+
+#keypad-output {
+    width: 200px;
+    border: 1px gray solid;
+    border-radius: 0;
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+    font-size: larger;
+}
+
+.error {
+    border: 2px darkred solid !important;
+    color: red;
+}
 
 
 
