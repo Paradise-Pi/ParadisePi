@@ -109,17 +109,69 @@ Main container
     padding: 10px;
     float:left;
     text-align: center;
-}
-input[type=range] {
-    -webkit-appearance: slider-vertical;
-    height: 200px;
-    width: 50px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .channel > button {
-    width: 60%;
-    height: 25px;
+    width: 70px;
+    height: 40px;
+    margin:5px;
+    padding:5px;
+    background-color: #808080;
+    color: white;
+    border: 3px solid white;
+    border-radius: 5px;
+    font-size: 1em;
+}
+div.faderWrapper {
+    width: 47px;
+    margin-left:14.5px;
+    margin-right:18.5px;
+    height: 220px;
+}
+/*
+Faders
+ */
+
+input[type=range].fader {
+    width: 200px;
+    margin: 17.2px 0;
+    background-color: transparent;
+    -webkit-appearance: none;
+
+    margin-top: 100px;
+    transform: rotate(270deg) translateY(-75px);
+}
+input[type=range].fader:focus {
+    outline: none;
+}
+input[type=range].fader::-webkit-slider-runnable-track {
+    background: #000000;
+    border: 2.2px solid #ffffff;
+    border-radius: 6.2px;
+    width: 200px;
+    height: 12.6px;
+    cursor: pointer;
+}
+input[type=range].fader::-webkit-slider-thumb {
+    margin-top: -19.4px;
+    width: 25px;
+    height: 47px;
+    background: #808080;
+    border: 1.1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 50px;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+input[type=range]:disabled.fader::-webkit-slider-thumb {
+    margin-top: -2px;
+    width: 25px;
+    height: 12.6px;
+    background: #808080;
+    border: 1.1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 50px;
+    cursor: pointer;
+    -webkit-appearance: none;
 }
 /*
 Modals

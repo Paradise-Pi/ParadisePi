@@ -176,13 +176,13 @@ $(document).ready(function() {
         $.each(result, function (key,value) {
             $("#sndFaders").append('<div class="channel">\n' +
                 '            <label>' + value.name + '</label><br/>\n' +
-                '            <input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" ' + (value.enabled ? '':'disabled') + ' value="0">\n' +
+                '            <div class="faderWrapper"><input class="fader" type="range" max="1" step="0.01" data-channel="' + value.channel + '" ' + (value.enabled ? '':'disabled') + ' value="0"></div>\n' +
                 '            <button class="channel-toggle unMuted" data-channel="' + value.channel + '" data-status="1"  ' + (value.enabled ? '':'disabled') + ' >Mute</button>\n' +
                 '          </div>');
         });
         $("#sndFaders").append('<div class="channel">\n' +
             '            <label>Master</label><br/>\n' +
-            '            <input class="fader" type="range" max="1" step="0.01" data-channel="master" disabled value="0">\n' +
+            '            <div class="faderWrapper"><input class="fader" type="range" max="1" step="0.01" data-channel="master" disabled value="0"></div>\n' +
             '            <button class="channel-toggle unmute" data-channel="master" data-status="1" disabled>Mute</button>\n' +
             '          </div>');
     });
