@@ -236,8 +236,20 @@ Modals
     padding-bottom: 1em;
 }
 
+.keypad-wrapper{
+    display: flex;
+}
+
+.right-fader{
+    flex: 10px;
+}
+
+#intensityFader{
+    height: 100px;
+}
+
 .keypad-container {
-    text-align: center;
+    flex: 50%;
 }
 
 .keypad {
@@ -266,12 +278,6 @@ Modals
     border: 2px darkred solid !important;
     color: red;
 }
-
-
-
-
-
-
 
 
 

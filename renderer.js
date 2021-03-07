@@ -5,6 +5,9 @@
 // selectively enable features needed in the rendering
 // process.
 
+//global var for which lx universe to use for keypad
+let universe = 1;
+
 /**
  * generic function to send an sACN call.
  * @param universe - int - universe number
@@ -207,6 +210,8 @@ $(document).ready(function() {
         window.api.send("reboot", {});
     });
     window.api.asyncSend("getConfig", {}).then((result) => {
+        //get universe
+        universe = result['LXConfig']['e131FirstUniverse'];
         //get div section
         $('#LXInfo').html(result['MAINConfig']['LXInfo']);
         $('#SNDInfo').html(result['MAINConfig']['SNDInfo'])
@@ -271,6 +276,43 @@ $(document).ready(function() {
     $(document).on("click", "span.close", function () {
         $(this).parents(".modal").hide();
     });
+
+    //Keypad
+    let keyOutput = $('#keypad-output');
+    let keyFader  = $('#intensityFader');
+    $('.keypad-key').click(function () {
+        keyOutput.val(keyOutput.val() + String(this.getAttribute('data-key')));
+        verifyLX(keyOutput, keyFader);
+    });
+
+    $(document).on('input', keyFader, function() {
+        let sections = keyOutput.val().split(" ");
+        if (sections.length === 1){
+            let channels = {}
+            channels[sections[0]] = keyFader.val();
+            sendACN(universe, channels, 0);
+        } else if(sections.length === 3){
+            sendACN(universe, createThruObject(sections, keyFader.val()), 0);
+        }
+    });
+
+    $('.keypad-enter').click(function () {
+        if (verifyLX(keyOutput, keyFader)) {
+            let sections = keyOutput.val().split(" ");
+            let channels = {}
+            channels[sections[0]] = sections[2];
+            sendACN(1, channels, 0);
+            $('.keypad-clear').click();
+        }
+    });
+
+    $('.keypad-clear').click(function () {
+        keyFader.val(0);
+        let sections = keyOutput.val().split(" ");
+        sections.pop();
+        keyOutput.val(sections.join(" "));
+        verifyLX(keyOutput, keyFader);
+    });
 });
 setInterval(function() {
     if (!timeout['timedOut'] && (timeout['lastMove']+timeout['timeoutTime']) <= (new Date()).getTime()) {
@@ -313,47 +355,34 @@ function toggleMute(element, status){
     }
 }
 
-//Keypad
-let keyOutput = $('#keypad-output');
-$('.keypad-key').click(function () {
-    keyOutput.val(keyOutput.val() + String(this.getAttribute('data-key')));
-    verifyLX(keyOutput);
-});
-
-$('.keypad-enter').click(function () {
-    if (locked) {
-        modalShow("lockedWarning");
-        $('.keypad-clear').click();
-        return false;
-    }
-    if (verifyLX(keyOutput)) {
-        let sections = $('#keypad-output').val().split(" ");
-        let channels = {}
-        channels[sections[0]] = sections[2];
-        sendACN(1, channels, 0);
-        $('.keypad-clear').click();
-    }
-});
-
-$('.keypad-clear').click(function () {
-    keyOutput.removeClass("error");
-    keyOutput.val("");
-
-});
-
 /**
  * Checks if text in given element is valid
  * @param element - element to get command from
  * @returns {boolean} - true if command is valid, false otherwise
  */
-function verifyLX(element){
+function verifyLX(element, fader){
     element.removeClass("error");
     let command = element.val();
     let sections = command.split(" ");
-    if ((sections.length !== 3) || (sections[2] === "") || (parseInt(sections[0]) > 512) || (parseInt(sections[2]) > 255)){
+    //correct sections: ["chan1", <" thru ", "chan2">] <optional>
+    if ((sections.length > 3) || (sections.length === 2) || (sections[0] === "") || (sections[2] === "") || (parseInt(sections[0]) > 512) || (parseInt(sections[2]) > 512 ) || (parseInt(sections[2]) < parseInt(sections[0]))){
         //invalid command
         element.addClass("error");
+        fader.prop("disabled", true);
         return false;
+    } else {
+        //is valid
+        if(! locked){
+            fader.prop("disabled", false);
+        }
     }
     return true;
+}
+
+function createThruObject(channelArray, level){
+    let channels = {};
+    for (let i=parseInt(channelArray[0]); i < parseInt(channelArray[2]); i++){
+        channels[i.toString()] = level;
+    }
+    return channels
 }
