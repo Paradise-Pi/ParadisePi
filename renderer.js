@@ -381,7 +381,7 @@ function verifyLX(element, fader){
 
 function createThruObject(channelArray, level){
     let channels = {};
-    for (let i=parseInt(channelArray[0]); i < parseInt(channelArray[2]); i++){
+    for (let i=parseInt(channelArray[0]); i < parseInt(channelArray[2] + 1); i++){
         channels[i.toString()] = level;
     }
     return channels
