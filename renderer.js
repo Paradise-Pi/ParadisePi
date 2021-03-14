@@ -296,21 +296,16 @@ $(document).ready(function() {
         }
     });
 
-    $('.keypad-enter').click(function () {
-        if (verifyLX(keyOutput, keyFader)) {
-            let sections = keyOutput.val().split(" ");
-            let channels = {}
-            channels[sections[0]] = sections[2];
-            sendACN(1, channels, 0);
-            $('.keypad-clear').click();
-        }
-    });
-
     $('.keypad-clear').click(function () {
         keyFader.val(0);
         let sections = keyOutput.val().split(" ");
-        sections.pop();
-        keyOutput.val(sections.join(" "));
+        if (sections[1] === "thru" && sections[2] === "") {
+            keyOutput.val(sections[0]);
+        } else if (sections[1] === "thru"){
+            keyOutput.val(sections[0] + " thru ");
+        } else {
+            keyOutput.val("");
+        }
         verifyLX(keyOutput, keyFader);
     });
 });
@@ -364,7 +359,7 @@ function verifyLX(element, fader){
     element.removeClass("error");
     let command = element.val();
     let sections = command.split(" ");
-    //correct sections: ["chan1", <" thru ", "chan2">] <optional>
+    //correct sections: ["chan1", " thru ", "chan2"] or ["chan1"]
     if ((sections.length > 3) || (sections.length === 2) || (sections[0] === "") || (sections[2] === "") || (parseInt(sections[0]) > 512) || (parseInt(sections[2]) > 512 ) || (parseInt(sections[2]) < parseInt(sections[0]))){
         //invalid command
         element.addClass("error");
@@ -381,7 +376,7 @@ function verifyLX(element, fader){
 
 function createThruObject(channelArray, level){
     let channels = {};
-    for (let i=parseInt(channelArray[0]); i < parseInt(channelArray[2] + 1); i++){
+    for (let i=parseInt(channelArray[0]); i <= parseInt(channelArray[2]); i++){
         channels[i.toString()] = level;
     }
     return channels

@@ -265,12 +265,10 @@ Modals
 }
 
 #keypad-output {
-    width: 200px;
     border: 1px gray solid;
-    border-radius: 0;
+    border-radius: 10px;
     padding: 10px;
     margin-bottom: 10px;
-    margin-right: 5px;
     font-size: larger;
 }
 
