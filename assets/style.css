@@ -270,6 +270,7 @@ Modals
     padding: 10px;
     margin-bottom: 10px;
     font-size: larger;
+    width:90%;
 }
 
 .error {
