@@ -99,6 +99,9 @@ function lxPreset (id) {
     });
 }
 
+/**
+ * button click function for snd
+ */
 function soundPreset (id) {
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndPreset","keyName": "id", "value":id}).then((result) => {
         if (result.length == 1) {
@@ -112,6 +115,9 @@ function soundPreset (id) {
         }
     });
 }
+/**
+ * Status updater for OSC
+ */
 window.api.receive("OSCStatus", (status) => {
     if (status) {
         $("#SNDStatusIcon").css("color","#6bf76b");
@@ -119,6 +125,10 @@ window.api.receive("OSCStatus", (status) => {
         $("#SNDStatusIcon").css("color","#f74e4e");
     }
 });
+
+/**
+ * OSC general parser
+ */
 window.api.receive("fromOSC", (data) => {
     //The big old function that parses all data that ever makes it through from the desk
     let addressArray = data.address.split("/")
@@ -151,14 +161,18 @@ window.api.receive("fromOSC", (data) => {
             master.addClass("mute");
             master.removeClass("unmute");
         }
-    } else if (false) {
+    } else if (data.address == "/meters/1") {
         //Fader metering value
-        var level = 50; //Value expressed as a percentage out of 100 please!
+        let meterData = data.parsed;
         $(".fader").each(function(key, fader) {
-            if( String(this.getAttribute("data-channel")).padStart(2, '0') === addressArray[2]) {
-                $(this).attr("data-meter",level);
+            if(meterData[this.getAttribute("data-channel")] !== undefined) {
+                let value = Math.round(meterData[this.getAttribute("data-channel")]*100);
+                if (!isNaN(value)) $(this).attr("data-meter",value);
             }
         });
+        let masterMeter = (meterData['mainPostL']+meterData['mainPostR'])/2; //Take an average as its stereo
+        masterMeter = Math.round(masterMeter*100)
+        if (!isNaN(masterMeter)) $(".fader[data-channel='master']").attr("data-meter",masterMeter);
     }
 });
 

@@ -43,6 +43,7 @@ const io = require('socket.io')(server, {
   }
 });
 const ip = require('ip');
+const meterFunctions = require('./meterFunctions.js');
 
 if (process.platform === 'darwin') {
   const menu = Menu.buildFromTemplate([{
@@ -354,7 +355,7 @@ function checkStatusOSC() {
 }
 function subscribeOSC(renew) {
   udpPort.send({address:"/xremote"});
-  udpPort.send({address:"/meters",args:["/meters/4"]});
+  udpPort.send({address:"/meters",args:[{ type: "s", value: "/meters/1"}]});
   /*knex.select().table('sndFaders').then((data) => {
     data.forEach(function(entry) {
       udpPort.send({address:(renew ? '/renew' : '/subscribe'), args:["/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/fader"]});
@@ -377,6 +378,10 @@ function setupOSC() {
   udpPort.on("message", function (oscMessage) {
     lastOSCMessage = +new Date();
     checkStatusOSC();
+
+    if (oscMessage.address == "/meters/1") {
+      oscMessage.parsed = meterFunctions.meter1PacketParser(oscMessage.args[0]);
+    }
     try {
       mainWindow.webContents.send("fromOSC", oscMessage);
     } catch(err) {
