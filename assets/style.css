@@ -86,7 +86,7 @@ Main container
     margin: 0 5px 10px;
 }
 .tab {
-    padding: 20px;
+    padding: 10px;
     color:black;
 }
 .button-container {
@@ -109,6 +109,9 @@ Main container
     border: 3px solid white;
     border-radius: 5px;
     font-size: 1em;
+}
+#keypad-open {
+    background-color: #6f757b;
 }
 .channel {
     width: 80px;
