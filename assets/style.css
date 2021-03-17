@@ -113,6 +113,10 @@ Main container
 #keypad-open {
     background-color: #6f757b;
 }
+button:focus {
+    outline: none;
+    box-shadow: none;
+}
 .channel {
     width: 80px;
     height: 100%;
