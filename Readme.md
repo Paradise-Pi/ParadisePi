@@ -12,6 +12,10 @@ Made up of an electron app, with a websocket server serving an admin interface
 - Sampling mode is limited to universes 1-64
 - 16bit addresses are supported by sampling mode, but not intended for edit via the admin user interface
 
+## Demo
+
+https://user-images.githubusercontent.com/8408967/111515042-403cfb00-874a-11eb-8fe7-9bb616f7d0c6.mp4
+
 ## Developing
 
 For the OSC library windows build tools are needed: `npm install --global windows-build-tools`
