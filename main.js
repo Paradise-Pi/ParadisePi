@@ -193,7 +193,7 @@ async function initDatabases() {
       table.string('options').nullable();
       table.boolean('canEdit').defaultTo(true);
     })
-    await knex('sndConfig').insert({key:"targetIP", value:"192.168.1.143",name:'OSC Target IP',description:''});
+    await knex('sndConfig').insert({key:"targetIP", value:"192.168.1.1",name:'OSC Target IP',description:''});
     await knex('sndConfig').insert({key:"mixer", value:"xair", name:'Console Type', description:'Which console?', options:'["xair","x32"]'});
   }
   if (!await knex.schema.hasTable('config')) {
@@ -315,7 +315,11 @@ function checkStatusOSC() {
   if (currentMillis-lastOSCMessage > 3000) {
     //Now disconnected from the Mixer
     udpStatus = false;
-    mainWindow.webContents.send("OSCStatus", false);
+    try {
+      mainWindow.webContents.send("OSCStatus", false);
+    } catch(err) {
+      //Ignore, it's normally because electron has quit but you're still tidying up
+    }
     udpPort.send({address: "/status", args: []}); //Keep trying anyway, no harm
  } else if (currentMillis-lastOSCMessage > 500 && udpStatus) {
     //Send a status request to hope you get something back - before you decide you're offline
@@ -324,7 +328,11 @@ function checkStatusOSC() {
     //Reconnected
     udpStatus = true;
     udpPort.send({address:"/info", args:[]});
-    mainWindow.webContents.send("OSCStatus", true);
+    try {
+      mainWindow.webContents.send("OSCStatus", true);
+    } catch(err) {
+      //Ignore, it's normally because electron has quit but you're still tidying up
+    }
     subscribeOSC(false);
     //When a connection is first opened, want to get the statuses of stuff we're interested in
      knex.select().table('sndFaders').then((data) => {
@@ -337,7 +345,11 @@ function checkStatusOSC() {
      });
   } else if (udpStatus) {
     //Still connected, just tell the frontend anyway because it's occasionally dozy (mostly on boot tbh)
-    mainWindow.webContents.send("OSCStatus", true);
+    try {
+      mainWindow.webContents.send("OSCStatus", true);
+    } catch(err) {
+      //Ignore, it's normally because electron has quit but you're still tidying up
+    }
   }
 }
 function subscribeOSC(renew) {
@@ -365,7 +377,11 @@ function setupOSC() {
   udpPort.on("message", function (oscMessage) {
     lastOSCMessage = +new Date();
     checkStatusOSC();
-    mainWindow.webContents.send("fromOSC", oscMessage);
+    try {
+      mainWindow.webContents.send("fromOSC", oscMessage);
+    } catch(err) {
+      //Ignore, it's normally because electron has quit but you're still tidying up
+    }
   });
   udpPort.on("error", function (err) {
     console.log(err);
