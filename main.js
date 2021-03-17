@@ -336,14 +336,16 @@ function checkStatusOSC() {
     }
     subscribeOSC(false);
     //When a connection is first opened, want to get the statuses of stuff we're interested in
-     knex.select().table('sndFaders').then((data) => {
-       data.forEach(function(entry) {
-         udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/fader", args:[]});
-         udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/on", args:[]});
-       });
-       udpPort.send({address:masterAddress[SNDConfig.mixer] + "/mix/fader", args:[]});
-       udpPort.send({address:masterAddress[SNDConfig.mixer] + "/mix/on", args:[]});
-     });
+    setTimeout(function () { //Timeout is to give the window the chance to have launched, so it doesn't miss the data!
+      knex.select().table('sndFaders').then((data) => {
+        data.forEach(function(entry) {
+          udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/fader", args:[]});
+          udpPort.send({address:"/ch/"+ String(entry.channel).padStart(2, '0') + "/mix/on", args:[]});
+        });
+        udpPort.send({address:masterAddress[SNDConfig.mixer] + "/mix/fader", args:[]});
+        udpPort.send({address:masterAddress[SNDConfig.mixer] + "/mix/on", args:[]});
+      });
+    },1000);
   } else if (udpStatus) {
     //Still connected, just tell the frontend anyway because it's occasionally dozy (mostly on boot tbh)
     try {
