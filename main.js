@@ -502,7 +502,7 @@ function setupE131Sampler() {
     var effectMode = true;
   }
   var universes = [];
-  for (let i = 1; i <= 64; i++) { //Limit to 64 universes
+  for (let i = 1; i <= 20; i++) { //Limit to 20 universes
     universes.push(i);
   }
   var universeData = {};
