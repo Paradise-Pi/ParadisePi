@@ -185,6 +185,15 @@ var tab;
 var modalTimeouts = {};
 var locked = false;
 $(document).ready(function() {
+    $(document).on("mousemove", function () {
+        if (timeout['timedOut'] || $("#page").is(":hidden")) {
+            timeout['timedOut'] = false;
+            $("#page").show();
+        }
+        timeout["lastMove"] = (new Date()).getTime();
+    });
+
+
     //create buttons dynamically
     window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset"}).then((result) => {
         $.each(result, function (key,value) {
@@ -255,13 +264,6 @@ $(document).ready(function() {
         let  status = this.getAttribute("data-status")
         sendOSC("/ch/" + String(this.getAttribute("data-channel")).padStart(2, '0') + "/mix/on", {type: "i", value:status});
         toggleMute(this, status)
-    });
-    $(document).on("mousemove", function () {
-        timeout["lastMove"] = (new Date()).getTime();
-        if (timeout['timedOut']) {
-            timeout['timedOut'] = false;
-            $("#page").show();
-        }
     });
     changeTab(1);
     $(document).on("click", "#menu td[data-tab]", function () {
