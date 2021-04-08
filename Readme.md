@@ -1,5 +1,9 @@
 # ParadisePi
 
+[![Test Build](https://github.com/Jbithell/ParadisePi/actions/workflows/electron-test-build.yml/badge.svg?branch=master)](https://github.com/Jbithell/ParadisePi/actions/workflows/electron-test-build.yml)
+![GitHub repo size](https://img.shields.io/github/repo-size/Jbithell/ParadisePi)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Jbithell/ParadisePi)
+
 ![Logo](assets/icon/icon.jpg)
 
 A facility control panel for sACN & OSC, in Electron.
@@ -11,6 +15,10 @@ Made up of an electron app, with a websocket server serving an admin interface
 - Only one network interface can exist on the RaspberryPi. WiFi must be disabled
 - Sampling mode is limited to universes 1-20, due to memory constraints
 - 16bit addresses are supported by sampling mode, but not intended for edit via the admin user interface
+
+## Installation
+
+Pre-built packages are provided for Windows, MacOS (Intel) and Raspberry Pi (Arm) at the [Latest Release](https://github.com/Jbithell/ParadisePi/releases/latest)
 
 ## Demo
 
@@ -29,9 +37,7 @@ npm install && npm start
 ### Building
 
 ```bash
-npm run package-mac
-npm run package-win
-npm run package-linux
+npm run package
 ```
 
 ## Credits
