@@ -1,6 +1,6 @@
 {
   "name": "ParadisePi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Raspberry Pi based sACN lighting/OSC sound facility control panel",
   "main": "main.js",
   "scripts": {
@@ -36,8 +36,8 @@
   "author": "",
   "license": "GPL-3.0-only",
   "build": {
-    "npmRebuild": true,
-    "buildDependenciesFromSource": true,
+    "npmRebuild": false,
+    "buildDependenciesFromSource": false,
     "appId": "com.jbithell.paradise",
     "productName": "ParadisPi",
     "linux": {
