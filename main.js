@@ -345,7 +345,7 @@ function checkStatusOSC() {
         udpPort.send({address:masterAddress[SNDConfig.mixer] + "/mix/fader", args:[]});
         udpPort.send({address:masterAddress[SNDConfig.mixer] + "/mix/on", args:[]});
       });
-    },1000);
+    },3000);
   } else if (udpStatus) {
     //Still connected, just tell the frontend anyway because it's occasionally dozy (mostly on boot tbh)
     try {
