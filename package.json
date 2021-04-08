@@ -42,7 +42,7 @@
     "productName": "ParadisPi",
     "linux": {
       "category": "Utility",
-      "target": {}
+      "target": []
     },
     "mac": {
       "target": [
