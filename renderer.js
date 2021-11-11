@@ -233,11 +233,22 @@ $(document).ready(function() {
         window.api.send("reboot", {});
     });
     window.api.asyncSend("getConfig", {}).then((result) => {
+        //check if elements are enabled
+        if (result['MAINConfig']['LXEnabled'] == "Hide"){
+            $('#lxTab').hide();
+        }
+        if (result['MAINConfig']['SNDEnabled'] == "Hide"){
+            $('#sndTab').hide();
+            $('#SNDStatusIcon').hide();
+        }
+        if (result['MAINConfig']['AdminEnabled'] == "Hide"){
+            $('#adminTab').hide();
+        }
         //get universe
         universe = result['LXConfig']['e131FirstUniverse'];
         //get div section
         $('#LXInfo').html(result['MAINConfig']['LXInfo']);
-        $('#SNDInfo').html(result['MAINConfig']['SNDInfo'])
+        $('#SNDInfo').html(result['MAINConfig']['SNDInfo']);
         //check for lock
         locked = (result['MAINConfig']['deviceLock'] === "LOCKED");
         if (locked) {

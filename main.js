@@ -203,13 +203,16 @@ async function initDatabases() {
       table.string('value');
       table.string('name');
       table.string('description');
+      table.string('options').nullable();
       table.boolean('canEdit').defaultTo(true);
     });
     await knex('config').insert({key:"deviceLock", value:"UNLOCKED", name:"Device Lock", description:"Lock the device", canEdit:false});
     await knex('config').insert({key:"timeoutTime", value:5, name:"Device Timeout", description:"How soon should the device be blanked after last interaction (minutes)"});
     await knex('config').insert({key:"LXInfo", value:"", name:"LX Additional Info", description:"Additional Information for the Lighting page"});
     await knex('config').insert({key:"SNDInfo", value:"", name:"SND Additional Info", description:"Additional Information for the Sound page"});
-
+    await knex('config').insert({key:"LXEnabled", value:"true", name:'Lighting Page', description:'Show Lighting Page', options:'["Show","Hide"]'});
+    await knex('config').insert({key:"SNDEnabled", value:"true", name:'Sound Page', description:'Show Sound Page', options:'["Show","Hide"]'});
+    await knex('config').insert({key:"AdminEnabled", value:"true", name:'Admin Page', description:'Show Admin Page', options:'["Show","Hide"]'});
   }
 
   await knex.select().table('sndConfig').then((data) => {

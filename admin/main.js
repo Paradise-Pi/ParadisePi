@@ -258,7 +258,7 @@ socket.on('config', (data) => {
         section.html("");
         $.each(data[type],function (key,value) {
             let KeyValue = value.value.replace(/"/g, '&quot;');
-            if (type === "SNDConfig" && value.options != null){
+            if ((type === "SNDConfig" || type === "config") && value.options != null){
                 if (value.key === "mixer") {
                     mixer = value.value;
                 }
