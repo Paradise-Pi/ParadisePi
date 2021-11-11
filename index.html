@@ -13,8 +13,8 @@
       <table id="menu">
         <tr>
           <td data-tab="1" rowspan="2" id="lxTab">Lighting</td>
-          <td data-tab="3" rowspan="2" id="sndTab">Sound</td>
-          <td data-tab="4" rowspan="2" id="adminTab">Admin</td>
+          <td data-tab="4" rowspan="2" id="sndTab">Sound</td>
+          <td data-tab="5" rowspan="2" id="adminTab">Admin</td>
           <td class="pad" rowspan="2">
             <span id="SNDStatusIcon">Sound &#x25cf;</span>
             <br/><img src="assets/lock.png" id="lockIcon" />
@@ -25,9 +25,18 @@
       <div id="container">
         <div class="tab" data-tab="1">
           <div id="LXInfo" class="info"></div>
-          <div class="button-container" id="lxContainer">
-            <button type="button" id="keypad-open">Keypad</button>
-            <!-- Buttons generated on load -->
+          <div class="container">
+            <div class="left">
+              <div class="button-container">
+                <button type="button" id="keypad-open">Keypad</button>
+                <button type="button" id="check-open">Channel Check</button>
+              </div>
+            </div>
+            <div class="right">
+              <div class="button-container" id="lxContainer">
+                <!-- Buttons generated on load -->
+              </div>
+            </div>
           </div>
         </div>
         <div class="tab" data-tab="2">
@@ -63,8 +72,27 @@
               <input id="intensityFader" class="fader" type="range" max="255" value="0" disabled>
             </div>
           </div>
-          </div>
+        </div>
         <div class="tab" data-tab="3">
+          <div class="keypad-wrapper">
+            <div class="keypad-container">
+              <table class="keypad">
+                <tr>
+                  <td><button class="keypad-key" id="check-prev">Previous</button></td>
+                  <td><div class="keypad-output" id="check-text">Off</div></td>
+                  <td><button class="keypad-key" id="check-next">Next</button></td>
+                </tr>
+                <tr>
+                  <td><button class="keypad-key" id="check-off">Off</button></td>
+                  <td></td>
+                  <td><button class="keypad-key" id="check-all">All</button></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          
+        </div>
+        <div class="tab" data-tab="4">
           <div id="SNDInfo" class="info"></div>
           <div class="button-container" id="sndContainer">
             <!-- Buttons generated on load -->
@@ -73,7 +101,7 @@
             <!-- Faders generated on Load -->
           </div>
         </div>
-        <div class="tab" data-tab="4">
+        <div class="tab" data-tab="5">
           <table>
             <tr>
               <td>

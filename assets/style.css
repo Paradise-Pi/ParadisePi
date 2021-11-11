@@ -14,6 +14,16 @@ table {
     width: 100%;
     text-align: center;
 }
+/* layout */
+.container {
+    display: flex;
+}
+.left {
+    flex: 20%;
+}
+.right {
+    flex: 80%;
+}
 /*
 Menu
  */
@@ -110,7 +120,7 @@ Main container
     border-radius: 5px;
     font-size: 1em;
 }
-#keypad-open {
+#keypad-open, #check-open {
     background-color: #6f757b;
 }
 button:focus {
