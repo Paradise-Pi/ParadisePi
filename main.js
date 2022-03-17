@@ -213,6 +213,7 @@ async function initDatabases() {
     await knex('config').insert({key:"LXInfo", value:"", name:"LX Additional Info", description:"Additional Information for the Lighting page"});
     await knex('config').insert({key:"SNDInfo", value:"", name:"SND Additional Info", description:"Additional Information for the Sound page"});
     await knex('config').insert({key:"LXEnabled", value:"true", name:'Lighting Page', description:'Show Lighting Page', options:'["Show","Hide"]'});
+    await knex('config').insert({key:"LXAdditonalMenu", value:"true", name:"Lighting Special Functions", description: "Show additional Lighting options", options:'["Show", "Hide"]'});
     await knex('config').insert({key:"SNDEnabled", value:"true", name:'Sound Page', description:'Show Sound Page', options:'["Show","Hide"]'});
     await knex('config').insert({key:"AdminEnabled", value:"true", name:'Admin Page', description:'Show Admin Page', options:'["Show","Hide"]'});
   }

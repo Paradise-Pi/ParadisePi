@@ -246,6 +246,9 @@ $(document).ready(function() {
         if (result['MAINConfig']['AdminEnabled'] == "Hide"){
             $('#adminTab').hide();
         }
+        if (result['MAINConfig']['LXAdditonalMenu'] == "Hide"){
+            $('#lx-functions').hide();
+        }
         //get universe
         universe = result['LXConfig']['e131FirstUniverse'];
         //get div section
