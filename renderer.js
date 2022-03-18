@@ -87,6 +87,18 @@ function adminFunctions(type) {
             break;
     }
 }
+
+function lxFolder (id) {
+    window.api.asyncSend("lxQuery", {"folderId": id}).then((result) => {
+        $("#lxContainer").empty();
+        let presets = JSON.parse(result[0].presets);
+        console.log(presets);
+        $.each(presets, function (key,value) {
+            $("#lxContainer").append('<button type="button" class="lx" data-preset="'+ (value.id) +'">' + value.name +'</button>');
+        });
+    });
+}
+
 /**
  * button click function for LX
  */
@@ -195,19 +207,18 @@ $(document).ready(function() {
         timeout["lastMove"] = (new Date()).getTime();
     });
 
-
     //create buttons dynamically
-    window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset"}).then((result) => {
-        $.each(result, function (key,value) {
-            $("#lxContainer").append('<button type="button" class="lx" data-preset="'+ (value.id) +'">' + value.name +'</button>');
+    window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders"}).then((result) => {
+        $.each(result, (key,value) => {
+            $("#folderContainer").append('<button type="button" class="folder" data-folder="' + (value.id) + '">' + value.name + '</button>')
         });
+        lxFolder(1);
     });
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndPreset"}).then((result) => {
         $.each(result, function (key,value) {
             $("#sndContainer").append('<button type="button" class="snd" data-preset="' + (value.id) + '">' + value.name +'</button>');
         });
     });
-
     //create Faders dynamically
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndFaders"}).then((result) => {
         $.each(result, function (key,value) {
@@ -231,6 +242,9 @@ $(document).ready(function() {
     $(document).on("click",".lx",function() {
         lxPreset($(this).data("preset"));
     });
+    $(document).on("click",".folder", function(){
+        lxFolder($(this).data("folder"));
+    })
     $(document).on("click",".reboot",function() {
         window.api.send("reboot", {});
     });
