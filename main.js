@@ -595,8 +595,10 @@ io.on('connection', socket => {
   knex.select().table('config').then((data) => {
     socket.emit('config', { "config": data } );
   });
-  knex.select().table('lxPreset').then((data) => {
-    socket.emit('preset', {"LXPreset": data} );
+  knex.select().table('lxPresetFolders').then((folders) => {
+    knex.select().table('lxPreset').then((presets) => {
+      socket.emit('preset', {"LXPreset": {"folders": folders, "presets":presets}} );
+    });
   });
   knex.select().table('sndPreset').then((data) => {
     socket.emit('preset', {"SNDPreset":data});
@@ -625,7 +627,12 @@ io.on('connection', socket => {
       //rearrange received data for database formatting
       datas = {}
       for (const [key, value] of Object.entries(data)) {
-        datas[value.name] = value.value;
+        if (value.value == "null") {
+          datas[value.name] = null;
+        } else {
+          datas[value.name] = value.value;
+        }
+        
       }
       if (datas.id == null){
         //new preset

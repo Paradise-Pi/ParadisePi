@@ -10,6 +10,13 @@ jQuery.fn.addChild = function(html = "<div class='oscDiv'>")
 //sets which mixer type to get info for
 let mixer = "x32";
 
+//store current list of folders
+let folders = [];
+
+//Store universe data
+let firstUniverse = 1;
+let lastUniverse = 2;
+
 //"mixer":{"name":["address", startVal, endVal, Step, hasSecondOption]}
 const sndFirstOption = {
     "xair":{
@@ -34,7 +41,7 @@ const sndSecondOption = {
 }
 
 //generates the lighting card for a given value object
-function lxPresetCard(presetArea, value, firstUniverse, lastUniverse){
+function lxPresetCard(presetArea, value, firstUniverse, lastUniverse, folderList){
     let card = presetArea.addChild("<div class='card'>");
     //Card Title
     card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n');
@@ -42,6 +49,16 @@ function lxPresetCard(presetArea, value, firstUniverse, lastUniverse){
     var form = card.addChild("<div class='card-body'>").addChild('<form class="preset-form" data-table="LXPreset">');
     //Name
     form.addChild('<div class="form-group"><label>Preset Name</label>\n<input class="form-control" name="name" type="text" value="' + value.name + '">\n</div>');
+    //Folder
+    var folderDiv = form.addChild('<div class="form-group">');
+    folderDiv.addChild('<label>Preset Folder</label>');
+    var folderSelect = folderDiv.addChild('<select class="form-control" name="folderId" value="' + value.name + '">');
+    folderSelect.addChild('<option selected value="null">None</option>');
+    if(folderList){
+        folderList.forEach(folderItem => {
+            folderSelect.addChild('<option ' +  (value.folderId == folderItem.id ? 'selected' :'' ) + ' value="' + folderItem.id + '">' + folderItem.name + '</option>');
+        });
+    }
     //Enabled
     form.addChild('<div class="form-group"><label>Preset Enabled</label>\n<input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n</div>\n');
     //Universe
@@ -222,11 +239,12 @@ socket.on('fader', (data) => {
 //Presets section
 socket.on('preset', (data) => {
     if ("LXPreset" in data) {
+        folders = data["LXPreset"].folders;
         let presetarea = $("#LXPresetList");
         presetarea.html("");
-        $.each(data["LXPreset"], function (key, value){
+        $.each(data["LXPreset"].presets, function (key, value){
             //add a card for each preset
-            lxPresetCard(presetarea, value, firstUniverse, lastUniverse);
+            lxPresetCard(presetarea, value, firstUniverse, lastUniverse, folders);
         });
     } else if ("SNDPreset" in data) {
         let presetarea = $("#SNDPresetList");
@@ -237,9 +255,6 @@ socket.on('preset', (data) => {
         });
     }
 });
-
-let firstUniverse = 1;
-let lastUniverse = 2;
 //Settings Section
 socket.on('config', (data) => {
     var type = false;

@@ -31,6 +31,9 @@
         <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#soundPresets">Sound</a></li>
         <li class="c-sidebar-nav-title">Faders</li>
         <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#soundFaders">Sound</a></li>
+        <li class="c-sidebar-nav-title">Settings</li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#settings">General</a></li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#backuprestore">Backup, Restore &amp; Reset</a></li>
         <li class="c-sidebar-nav-item mt-auto"><a class="c-sidebar-nav-link" href="#status" id="status-menuStatus">Connected</a></li>
     </ul>
 </div>
@@ -42,21 +45,10 @@
         </button>
         <a class="c-header-brand d-lg-none" href="#">
             <ul class="c-header-nav d-md-down-none">
+                <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#lightingPresets">Presets</a></li>
+                <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#soundFaders">Faders</a></li>
                 <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#settings">Settings</a></li>
                 <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#backuprestore">Backup, Restore &amp; Reset</a></li>
-
-            </ul>
-            <ul class="c-header-nav ml-auto mr-4">
-                <li class="c-header-nav-item dropdown"><a class="c-header-nav-link" data-toggle="dropdown" href="#"
-                                                          role="button" aria-haspopup="true" aria-expanded="false">
-                    <div class="c-avatar"><i class="fa fa-user"></i>
-                    </div>
-                </a>
-                    <div class="dropdown-menu dropdown-menu-right pt-0">
-                        <a class="dropdown-item" href="#">
-                            Logout</a>
-                    </div>
-                </li>
             </ul>
         </a>
     </header>
@@ -71,7 +63,7 @@
                         Sample from Lighting Desk
                     </button>
                     <br>
-                    <div id="LXPresetList">
+                    <div id="LXPresetList" style="margin-top: 10px;">
 
                     </div>
                     <br>
@@ -81,7 +73,7 @@
                     <hr>
                     <button type="button" class="btn btn-primary" id="sndNew">Add New</button>
                     <br>
-                    <div id="SNDPresetList">
+                    <div id="SNDPresetList" style="margin-top: 10px;">
 
                     </div>
                     <br>
@@ -91,7 +83,7 @@
                     <hr>
                     <button type="button" class="btn btn-primary" id="fdrNew">Add New</button>
                     <br>
-                    <div id="SNDFaderList">
+                    <div id="SNDFaderList" style="margin-top: 10px;">
 
                     </div>
                     <br>
