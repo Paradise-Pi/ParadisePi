@@ -52,7 +52,7 @@ function lxPresetCard(presetArea, value, firstUniverse, lastUniverse, folderList
     //Folder
     var folderDiv = form.addChild('<div class="form-group">');
     folderDiv.addChild('<label>Preset Folder</label>');
-    var folderSelect = folderDiv.addChild('<select class="form-control" name="folderId" value="' + value.name + '">');
+    var folderSelect = folderDiv.addChild('<select class="form-control" name="folderId">');
     folderSelect.addChild('<option selected value="null">None</option>');
     if(folderList){
         folderList.forEach(folderItem => {
@@ -70,6 +70,37 @@ function lxPresetCard(presetArea, value, firstUniverse, lastUniverse, folderList
     //Buttons
     form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
 }
+
+//generates the folder card for a given value object
+function lxPresetFolderCard(presetArea, value, folderList) {
+    let card = presetArea.addChild("<div class='card'>");
+    //Card Title
+    card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Folder</strong>' : '<strong>Folder</strong> ' + value.id) + '</div>\n');
+    //card Body + form
+    var form = card.addChild("<div class='card-body'>").addChild('<form class="preset-form" data-table="lxPresetFolders">');
+    //Name
+    form.addChild('<div class="form-group"><label>Folder Name</label>\n<input class="form-control" name="name" type="text" value="' + value.name + '">\n</div>');
+    //Parent
+    var folderDiv = form.addChild('<div class="form-group">');
+    folderDiv.addChild('<label>Parent Folder</label>');
+    var folderSelect = folderDiv.addChild('<select class="form-control" name="parentFolderId">');
+    folderSelect.addChild('<option selected value="null">None</option>');
+    if(folderList){
+        folderList.forEach(folderItem => {
+            //stop folders being added to themselves, and their direct parent
+            // NB it's still possible to have inaccessible folders, but that's your problem sorry
+            if( value.id !== folderItem.id  && value.id !== folderItem.parentFolderId) {
+                folderSelect.addChild('<option ' +  (value.parentFolderId == folderItem.id ? 'selected' :'' ) + ' value="' + folderItem.id + '">' + folderItem.name + '</option>');
+            }
+        });
+    }
+    //Folder id
+    if(value.id != null){ 
+        form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')
+    }
+    //Buttons
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');}
+
 //generates the sound card for a given value object
 function sndPresetCard(presetArea, value){
     let card = presetArea.addChild("<div class='card'>");
@@ -225,6 +256,17 @@ socket.on('disconnect', (reason) => {
     }
 });
 
+//Folders Section
+socket.on('folder', (data) => {
+    if("lxPresetFolders" in data) {
+        let faderArea = $("#LXPresetFolderList");
+        faderArea.html("");
+        $.each(data["lxPresetFolders"], function (key, value){
+            lxPresetFolderCard(faderArea, value, data["lxPresetFolders"]);
+        });
+    }
+});
+
 //Faders Section
 socket.on('fader', (data) => {
     if ("SNDFader" in data) {
@@ -325,8 +367,10 @@ $(document).on('submit', 'form.preset-form[data-table]', function () {
             }
         }
     });
-    if (!setEnabled) {
-        data.push({name:"enabled", value: false});
+    if (table !== "lxPresetFolders") {
+        if (!setEnabled) {
+            data.push({name:"enabled", value: false});
+        }
     }
 
     if (table === "SNDPreset") {
@@ -340,19 +384,26 @@ $(document).on('submit', 'form.preset-form[data-table]', function () {
 });
 
 //add new preset
-$('#lxNew').click(function (){
+$('#lxNew').on('click', function(){
     //an empty object for creating new presets
     const emptyValues = {id:null, name:"", universe:1, enabled:true, setArguments:"" };
     lxPresetCard($("#LXPresetList"), emptyValues, firstUniverse, lastUniverse);
 });
-$('#sndNew').click( function (){
+$('#sndNew').on('click', function(){
     //an empty object for creating new presets
     const emptyValues = {id:null, name:"", enabled:true, data:"" };
     sndPresetCard($("#SNDPresetList"), emptyValues);
 });
 
+//add new folder
+$('#lxFolderNew').on('click', function(){
+    //an empty object for creating new presets
+    const emptyValues = {id:null, name:"", parentFolderId:null};
+    lxPresetFolderCard($("#LXPresetFolderList"), emptyValues, folders);
+});
+
 //add new fader
-$('#fdrNew').click( function (){
+$('#fdrNew').on('click', function(){
     //empty object
     const emptyValues = {id:null, name:"", channel:1,enabled:true}
     sndFaderCard($("#SNDFaderList"), emptyValues);
@@ -364,7 +415,7 @@ function removePreset (button) {
 }
 
 //sample an e131 universe
-$('#lxSampleMode').click( function (){
+$('#lxSampleMode').on('click', function(){
     if (confirm("Do you wish to enter sampling mode")) {
         socket.emit('e131sampler');
     }
@@ -372,7 +423,7 @@ $('#lxSampleMode').click( function (){
 });
 
 //factory reset
-$('#factoryreset').click( function (){
+$('#factoryreset').on('click', function(){
     if (confirm("Do you wish to factory reset the device?")) {
         socket.emit('factoryReset');
     }

@@ -596,6 +596,9 @@ io.on('connection', socket => {
     socket.emit('config', { "config": data } );
   });
   knex.select().table('lxPresetFolders').then((folders) => {
+    socket.emit('folder', {"lxPresetFolders": folders} );
+  });
+  knex.select().table('lxPresetFolders').then((folders) => {
     knex.select().table('lxPreset').then((presets) => {
       socket.emit('preset', {"LXPreset": {"folders": folders, "presets":presets}} );
     });
@@ -623,7 +626,7 @@ io.on('connection', socket => {
   });
   //update preset when received from admin site
   socket.on('updatePreset', async(table, data) => {
-    if (["LXPreset", "SNDPreset", "SNDFaders"].includes(table)){
+    if (["LXPreset", "SNDPreset", "SNDFaders", "lxPresetFolders"].includes(table)){
       //rearrange received data for database formatting
       datas = {}
       for (const [key, value] of Object.entries(data)) {
@@ -647,7 +650,7 @@ io.on('connection', socket => {
   });
   //remove preset
   socket.on('removePreset', async (table, data) => {
-    if (["LXPreset", "SNDPreset"].includes(table)){
+    if (["LXPreset", "SNDPreset", "lxPresetFolders"].includes(table)){
 
       //remove
       await knex(table).where({ id : data.id }).del();
