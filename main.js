@@ -143,6 +143,7 @@ async function initDatabases() {
     await knex.schema.createTable('lxPresetFolders', table => {
       table.increments('id').primary();
       table.string('name');
+      table.integer('parentFolderId').defaultTo(null);
     });
     await knex('lxPresetFolders').insert({name:"Home"});
   }
@@ -156,7 +157,7 @@ async function initDatabases() {
       table.integer("fadeTime").defaultTo(null);
       table.integer('folderId').defaultTo(1);
     });
-    await knex('lxPreset').insert({name: "LX1", enabled: true, universe: 1, setArguments: JSON.stringify({"1":150,"512":25}), folderId: 1});
+    await knex('lxPreset').insert({name: "LX1", enabled: true, universe: 1, setArguments: JSON.stringify({"1":150,"512":25})});
   }
   if (!await knex.schema.hasTable('sndPreset')){
     await knex.schema.createTable('sndPreset', table => {
@@ -249,26 +250,6 @@ ipcMain.handle('simpleQueryDB', async (event, data) => {
     var result = await knex.select().table(data.tableName).where(data.keyName, data.value);
   } else {
     var result = await knex.select().table(data.tableName);
-  }
-  return result;
-});
-
-//LX query
-
-/**
- * Returns JSON array with objects for each folder of lx presets
- */
-ipcMain.handle('lxQuery', async (event, data) => {
-  var result = [];
-  if (data && "folderId" in data && data.folderId !== null) {
-    result = await knex.select(knex.raw("lxPresetFolders.id, lxPresetFolders.name, json_group_array(json_object('id', lxPreset.id,'name', lxPreset.name,'enabled', lxPreset.enabled,'universe', lxPreset.universe,'setArguments', lxPreset.setArguments,'fadeTime', lxPreset.fadeTime)) as presets"))
-    .from("lxPresetFolders")
-    .join("lxPreset", "lxPresetFolders.id","lxPreset.folderId")
-    .where("lxPresetFolders.id", data.folderId);
-  } else {
-    result = await knex.select(knex.raw("lxPresetFolders.id, lxPresetFolders.name, json_group_array(json_object('id', lxPreset.id,'name', lxPreset.name,'enabled', lxPreset.enabled,'universe', lxPreset.universe,'setArguments', lxPreset.setArguments,'fadeTime', lxPreset.fadeTime)) as presets"))
-    .from("lxPresetFolders")
-    .join("lxPreset", "lxPresetFolders.id","lxPreset.folderId");
   }
   return result;
 });

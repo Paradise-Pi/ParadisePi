@@ -88,14 +88,30 @@ function adminFunctions(type) {
     }
 }
 
-function lxFolder (id) {
-    window.api.asyncSend("lxQuery", {"folderId": id}).then((result) => {
+/**
+ * Update LX Presets and folders
+ * @param {int} id id of folder to open
+ */
+function lxPresetsUpdate (id) {
+    window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders", "keyName": "parentFolderId", "value": id }).then((result) => {
+        $("#folderContainer").empty();
+        //we have folders, do we need a back button?
+        window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders", "keyName": "id", "value": id}).then((backResult) => {
+            if (backResult[0] != null){
+                $("#folderContainer").append('<button type="button" class="folder" data-folder="' + (backResult[0].parentFolderId) + '">\<\-\- Back</button>');
+            }
+            //add buttons now we know if we need a back button
+            $.each(result, function (key,value) {
+                $("#folderContainer").append('<button type="button" class="folder" data-folder="' + (value.id) + '">' + value.name + '</button>');
+            });
+        });    
+    });
+    //Add presets for this folder 
+    window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset", "keyName": "folderId", "value": id }).then((result) => {
         $("#lxContainer").empty();
-        let presets = JSON.parse(result[0].presets);
-        console.log(presets);
-        $.each(presets, function (key,value) {
+        $.each(result, function (key,value) {
             $("#lxContainer").append('<button type="button" class="lx" data-preset="'+ (value.id) +'">' + value.name +'</button>');
-        });
+        });  
     });
 }
 
@@ -208,12 +224,7 @@ $(document).ready(function() {
     });
 
     //create buttons dynamically
-    window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders"}).then((result) => {
-        $.each(result, (key,value) => {
-            $("#folderContainer").append('<button type="button" class="folder" data-folder="' + (value.id) + '">' + value.name + '</button>')
-        });
-        lxFolder(1);
-    });
+    lxPresetsUpdate(null, null);
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndPreset"}).then((result) => {
         $.each(result, function (key,value) {
             $("#sndContainer").append('<button type="button" class="snd" data-preset="' + (value.id) + '">' + value.name +'</button>');
@@ -243,7 +254,7 @@ $(document).ready(function() {
         lxPreset($(this).data("preset"));
     });
     $(document).on("click",".folder", function(){
-        lxFolder($(this).data("folder"));
+        lxPresetsUpdate($(this).data("folder"));
     })
     $(document).on("click",".reboot",function() {
         window.api.send("reboot", {});
