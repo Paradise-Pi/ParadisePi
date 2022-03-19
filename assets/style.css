@@ -118,7 +118,8 @@ Main container
 .button-container > button,
 .keypad-key,
 .keypad-enter,
-.keypad-clear {
+.keypad-clear,
+.check-key {
     width: 140px;
     height: 60px;
     margin:5px;
@@ -305,7 +306,8 @@ Modals
 
 .keypad-key,
 .keypad-enter,
-.keypad-clear {
+.keypad-clear,
+.check-key {
     width: 100px;
     height: 40px;
 }
