@@ -26,36 +26,42 @@
         <h2>Paradise<strong>Pi</strong></h2>
     </div>
     <ul class="c-sidebar-nav">
+        <li class="c-sidebar-nav-title">Folders</li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#lightingfolders-anchor">Lighting</a></li>
         <li class="c-sidebar-nav-title">Presets</li>
-        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#lightingPresets">Lighting</a></li>
-        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#soundPresets">Sound</a></li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#lightingpresets-anchor">Lighting</a></li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#soundpresets-anchor">Sound</a></li>
         <li class="c-sidebar-nav-title">Faders</li>
-        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#soundFaders">Sound</a></li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#soundfaders-anchor">Sound</a></li>
         <li class="c-sidebar-nav-title">Settings</li>
-        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#settings">General</a></li>
-        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#backuprestore">Backup, Restore &amp; Reset</a></li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#settings-anchor">General</a></li>
+        <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#backuprestore-anchor">Backup, Restore &amp; Reset</a></li>
         <li class="c-sidebar-nav-item mt-auto"><a class="c-sidebar-nav-link" href="#status" id="status-menuStatus">Connected</a></li>
     </ul>
 </div>
 <div class="c-wrapper c-fixed-components">
-    <header class="c-header c-header-light c-header-fixed c-header-with-subheader">
+    <header class="c-header c-header-light c-header-fixed c-header-with-subheader" id="statusBar-statusHeader">
         <button class="c-header-toggler c-class-toggler d-lg-none mfe-auto" type="button" data-target="#sidebar"
                 data-class="c-sidebar-show">
             <i class="fa fa-bars"></i>
+            
         </button>
-        <a class="c-header-brand d-lg-none" href="#">
-            <ul class="c-header-nav d-md-down-none">
-                <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#lightingPresets">Presets</a></li>
-                <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#soundFaders">Faders</a></li>
-                <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#settings">Settings</a></li>
-                <li class="c-header-nav-item px-3"><a class="c-header-nav-link" href="#backuprestore">Backup, Restore &amp; Reset</a></li>
-            </ul>
-        </a>
+        <div class="c-header-brand" id="statusBar-statusTextBox">Reboot required to propagate changes <button type="button" id="reboot" class="ml-1 btn btn-secondary btn-sm">Reboot</button></div>
     </header>
     <div class="c-body">
         <main class="c-main">
             <div class="container-fluid">
-                <div id="lightingPresets">
+                <div id="lightingFolders">
+                    <a class="anchor" id="lightingfolders-anchor"></a>
+                    <h2>Lighting Preset Folders</h2>
+                    <hr>
+                    <button type="button" class="btn btn-primary" id="lxFolderNew">Add New</button>
+                    <div id="LXPresetFolderList" style="margin-top: 10px;">
+                    
+                    </div>
+                </div>
+                <div>
+                    <a class="anchor" id="lightingpresets-anchor"></a>
                     <h2>Lighting Presets</h2>
                     <hr>
                     <button type="button" class="btn btn-primary" id="lxNew">Add New</button>
@@ -66,15 +72,8 @@
 
                     </div>
                 </div>
-                <div id="lightingFolders">
-                    <h2>Lighting Preset Folders</h2>
-                    <hr>
-                    <button type="button" class="btn btn-primary" id="lxFolderNew">Add New</button>
-                    <div id="LXPresetFolderList" style="margin-top: 10px;">
-                    
-                    </div>
-                </div>
-                <div id="soundPresets">
+                <div>
+                    <a class="anchor" id="soundpresets-anchor"></a>
                     <h2>Sound Presets</h2>
                     <hr>
                     <button type="button" class="btn btn-primary" id="sndNew">Add New</button>
@@ -84,7 +83,8 @@
                     </div>
                     <br>
                 </div>
-                <div id="soundFaders">
+                <div>
+                    <a class="anchor" id="soundfaders-anchor"></a>
                     <h2>Sound Faders</h2>
                     <hr>
                     <button type="button" class="btn btn-primary" id="fdrNew">Add New</button>
@@ -94,7 +94,8 @@
                     </div>
                     <br>
                 </div>
-                <div id="settings">
+                <div>
+                    <a class="anchor" id="settings-anchor"></a>
                     <h2>Settings</h2>
                     <hr/>
                     <div class="row">
@@ -135,7 +136,8 @@
                     </div>
                 </div>
                 <hr/>
-                <div id="backuprestore">
+                <div>
+                    <a class="anchor" id="backuprestore-anchor"></a>
                     <h2>Backup, Restore &amp; Reset</h2>
                     <div class="row">
                         <div class="col-xs-12 col-sm-6">

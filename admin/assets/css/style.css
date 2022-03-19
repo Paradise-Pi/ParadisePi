@@ -28,3 +28,16 @@
 .oscRemove {
     width: 75px !important;
 }
+
+#statusBar-statusTextBox {
+    padding: 10px;
+    font-size: 1.2em;
+}
+
+
+a.anchor {
+    display: block;
+    position: relative;
+    top: -60px;
+    visibility: hidden;
+}

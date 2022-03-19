@@ -235,24 +235,52 @@ function sndFaderCard(faderArea, value){
     form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
 }
 
+/**
+ * Update the status banner bar at the top
+ */
+let socketStatus = false;
+let socketStatusReason = "";
+let rebootRequired = false;
+function updateStatusBar() {
+    if (socketStatus) {
+        $("#status-textStatus").html("Connected to device");
+        $("#status-menuStatus").addClass("c-sidebar-nav-link-success");
+        $("#status-menuStatus").html("Connected");
+        $("#status-menuStatus").removeClass("c-sidebar-nav-link-danger");
+    } else {
+        $("#status-textStatus").html("Disconnected: " + socketStatusReason);
+        $("#status-menuStatus").removeClass("c-sidebar-nav-link-success");
+        $("#status-menuStatus").html("Disconnected");
+        $("#status-menuStatus").addClass("c-sidebar-nav-link-danger");
+    }
+    if (!rebootRequired) {
+        $("#statusBar-statusHeader").css("background","");
+        $("#statusBar-statusTextBox").css("color","#4f5d73");
+        $("#statusBar-statusTextBox").hide();
+    } else if (socketStatus) {
+        $("#statusBar-statusTextBox").show("Reboot Required");
+        $("#statusBar-statusTextBox").css("color","white");
+        $("#statusBar-statusHeader").css("background","repeating-linear-gradient(45deg,#e60909,#e60909 10px,#bd3c3c 10px,#bd3c3c 20px)");
+    }
+}
+
+
 //websocket
 const socket = io(':8080');
 //Mechanics of the connection
 //updates interface when connection lost/found
 socket.on('connect', () => {
     if (!socket.disconnected) {
-        $("#status-textStatus").html("Connected to device");
-        $("#status-menuStatus").addClass("c-sidebar-nav-link-success");
-        $("#status-menuStatus").html("Connected");
-        $("#status-menuStatus").removeClass("c-sidebar-nav-link-danger");
+        socketStatus = true;
+        socketStatusReason = "";
+        updateStatusBar()
     }
 });
 socket.on('disconnect', (reason) => {
     if (socket.disconnected) {
-        $("#status-textStatus").html("Disconnected: " + reason);
-        $("#status-menuStatus").removeClass("c-sidebar-nav-link-success");
-        $("#status-menuStatus").html("Disconnected");
-        $("#status-menuStatus").addClass("c-sidebar-nav-link-danger");
+        socketStatus = false;
+        socketStatusReason = reason;
+        updateStatusBar()
     }
 });
 
@@ -342,6 +370,12 @@ socket.on('about', (data) => {
     });
 });
 
+// Whether a reboot is needed
+socket.on('rebootRequired', (status) => {
+    rebootRequired = status;
+    updateStatusBar();
+});
+
 //update config
 $(document).on('submit','form.settings-form[data-table]',function(){
     socket.emit('updateConfig', $(this).data("table"), $( this ).serializeArray());
@@ -426,5 +460,12 @@ $('#lxSampleMode').on('click', function(){
 $('#factoryreset').on('click', function(){
     if (confirm("Do you wish to factory reset the device?")) {
         socket.emit('factoryReset');
+    }
+});
+
+//reboot
+$('#reboot').on('click', function(){
+    if (confirm("Do you wish to reboot the device?")) {
+        socket.emit('reboot');
     }
 });

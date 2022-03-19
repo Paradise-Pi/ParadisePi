@@ -65,6 +65,7 @@ let mainWindow;
 var LXConfig = {};
 var SNDConfig = {};
 var MAINConfig = {}; //Config variables
+let rebootRequired = false; //If a reboot is required to update the display
 
 async function createWindow (fileToLoad) {
   // Create the browser window.
@@ -582,10 +583,7 @@ function setupE131Sampler() {
 }
 
 
-
-// Socket.io admin site
-io.on('connection', socket => {
-  //send information from tables
+function sendDataToAdminPortal(socket) {
   knex.select().table('sndConfig').then((data) => {
     socket.emit('config', { "SNDConfig": data } );
   });
@@ -614,6 +612,20 @@ io.on('connection', socket => {
     "npmVersions": process.versions,
     "version": app.getVersion()
   });
+
+  socket.emit('rebootRequired', rebootRequired);
+}
+function requireReboot(socket) {
+  rebootRequired = true;
+  mainWindow.webContents.send("rebootRequired", true);
+  sendDataToAdminPortal(socket);
+}
+
+// Socket.io admin site
+io.on('connection', socket => {
+  //send information from tables
+  sendDataToAdminPortal(socket);
+  
   //update config when received from site
   socket.on('updateConfig', async(table,data) => {
     if (["config","LXConfig","SNDConfig"].includes(table)) {
@@ -621,7 +633,7 @@ io.on('connection', socket => {
         await knex(table).where({ key: value.name }).update({ value: value.value })
       }
       //reboot to update settings on controller
-      reboot(true);
+      requireReboot(socket);
     }
   });
   //update preset when received from admin site
@@ -644,8 +656,7 @@ io.on('connection', socket => {
         //update preset
         await knex.table(table).where({id:(datas.id)}).update(datas);
       }
-      //reboot to update settings on controller
-      reboot(true);
+      requireReboot(socket);
     }
   });
   //remove preset
@@ -655,10 +666,10 @@ io.on('connection', socket => {
       //remove
       await knex(table).where({ id : data.id }).del();
 
-      //reboot to update settings on controller
-      reboot(true);
+      requireReboot(socket);
     }
   });
+
   //Lock mechanism
   socket.on('lock', async () => {
     await toggleLock();
@@ -671,7 +682,10 @@ io.on('connection', socket => {
   socket.on('factoryReset', function () {
     factoryReset();
   })
-
+  //Reboot Reset
+  socket.on('reboot', function () {
+    reboot(true);
+  })
 
   socket.on("disconnect", (reason) => {
     console.log("Disconnected: " + reason)
