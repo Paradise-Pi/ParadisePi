@@ -87,6 +87,31 @@ function adminFunctions(type) {
             break;
     }
 }
+
+/**
+ * Update LX Presets and folders
+ * @param {int} id id of folder to open
+ */
+function lxPresetsUpdate (id) {
+    window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders", "keyName": "parentFolderId", "value": id }).then((result) => {
+        $("#lxContainer").empty();
+        window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders", "keyName": "id", "value": id}).then((backResult) => {
+            if (backResult[0] != null){
+                $("#lxContainer").append(`<button type="button" class="folder backButton" data-folder="${backResult[0].parentFolderId}"><img src="assets/angle-left-solid.png" /></button>`);
+            }
+            $.each(result, function (key,value) {
+                $("#lxContainer").append(`<button type="button" class="folder" data-folder="${value.id}">${value.name}</button>`);
+            });
+        });
+        //Add presets for this folder 
+        window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset", "keyName": "folderId", "value": id }).then((result) => {
+            $.each(result, function (key,value) {
+                $("#lxContainer").append('<button type="button" class="lx" data-preset="'+ (value.id) +'">' + value.name +'</button>');
+            });
+        });
+    });  
+}
+
 /**
  * button click function for LX
  */
@@ -195,19 +220,13 @@ $(document).ready(function() {
         timeout["lastMove"] = (new Date()).getTime();
     });
 
-
     //create buttons dynamically
-    window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset"}).then((result) => {
-        $.each(result, function (key,value) {
-            $("#lxContainer").append('<button type="button" class="lx" data-preset="'+ (value.id) +'">' + value.name +'</button>');
-        });
-    });
+    lxPresetsUpdate(null, null);
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndPreset"}).then((result) => {
         $.each(result, function (key,value) {
             $("#sndContainer").append('<button type="button" class="snd" data-preset="' + (value.id) + '">' + value.name +'</button>');
         });
     });
-
     //create Faders dynamically
     window.api.asyncSend("simpleQueryDB", {"tableName": "sndFaders"}).then((result) => {
         $.each(result, function (key,value) {
@@ -231,6 +250,9 @@ $(document).ready(function() {
     $(document).on("click",".lx",function() {
         lxPreset($(this).data("preset"));
     });
+    $(document).on("click",".folder", function(){
+        lxPresetsUpdate($(this).data("folder"));
+    })
     $(document).on("click",".reboot",function() {
         window.api.send("reboot", {});
     });
@@ -263,6 +285,7 @@ $(document).ready(function() {
             $("#lockIcon").hide();
             $("#deviceLockButton").html('Lock');
         }
+        $("#rebootIcon").hide();
         timeout['timeoutTime'] = result['MAINConfig']['timeoutTime']*60*1000;
     });
     $("#allOff").click(function() {
@@ -461,3 +484,15 @@ function updateChanCheck(){
     channel[currentChannel] = 180;
     sendACN(universe, channel, 0);
 }
+
+
+/**
+ * Status updater for Reboot
+ */
+ window.api.receive("rebootRequired", (rebootRequired) => {
+    if (rebootRequired) {
+        $("#rebootIcon").show();
+    } else {
+        $("#rebootIcon").hide();
+    }
+});

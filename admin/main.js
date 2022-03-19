@@ -10,6 +10,13 @@ jQuery.fn.addChild = function(html = "<div class='oscDiv'>")
 //sets which mixer type to get info for
 let mixer = "x32";
 
+//store current list of folders
+let folders = [];
+
+//Store universe data
+let firstUniverse = 1;
+let lastUniverse = 2;
+
 //"mixer":{"name":["address", startVal, endVal, Step, hasSecondOption]}
 const sndFirstOption = {
     "xair":{
@@ -34,14 +41,24 @@ const sndSecondOption = {
 }
 
 //generates the lighting card for a given value object
-function lxPresetCard(presetArea, value, firstUniverse, lastUniverse){
-    let card = presetArea.addChild("<div class='card'>");
+function lxPresetCard(presetArea, value, firstUniverse, lastUniverse, folderList){
+    let card = presetArea.addChild("<div class='card' style='min-width: 350px;'>");
     //Card Title
     card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n');
     //card Body + form
     var form = card.addChild("<div class='card-body'>").addChild('<form class="preset-form" data-table="LXPreset">');
     //Name
     form.addChild('<div class="form-group"><label>Preset Name</label>\n<input class="form-control" name="name" type="text" value="' + value.name + '">\n</div>');
+    //Folder
+    var folderDiv = form.addChild('<div class="form-group">');
+    folderDiv.addChild('<label>Preset Folder</label>');
+    var folderSelect = folderDiv.addChild('<select class="form-control" name="folderId">');
+    folderSelect.addChild('<option selected value="null"></option>');
+    if(folderList){
+        folderList.forEach(folderItem => {
+            folderSelect.addChild('<option ' +  (value.folderId == folderItem.id ? 'selected' :'' ) + ' value="' + folderItem.id + '">' + folderItem.name + '</option>');
+        });
+    }
     //Enabled
     form.addChild('<div class="form-group"><label>Preset Enabled</label>\n<input class="form-control" name="enabled" type="checkbox" ' + (value.enabled ? 'checked' : '') + '>\n</div>\n');
     //Universe
@@ -51,11 +68,42 @@ function lxPresetCard(presetArea, value, firstUniverse, lastUniverse){
     //Preset id
     if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
     //Buttons
-    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
 }
+
+//generates the folder card for a given value object
+function lxPresetFolderCard(presetArea, value, folderList) {
+    let card = presetArea.addChild("<div class='card'>");
+    //Card Title
+    card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Folder</strong>' : '<strong>Folder</strong> ' + value.id) + '</div>\n');
+    //card Body + form
+    var form = card.addChild("<div class='card-body'>").addChild('<form class="preset-form" data-table="lxPresetFolders">');
+    //Name
+    form.addChild('<div class="form-group"><label>Folder Name</label>\n<input class="form-control" name="name" type="text" value="' + value.name + '">\n</div>');
+    //Parent
+    var folderDiv = form.addChild('<div class="form-group">');
+    folderDiv.addChild('<label>Parent Folder</label>');
+    var folderSelect = folderDiv.addChild('<select class="form-control" name="parentFolderId">');
+    folderSelect.addChild('<option selected value="null"></option>');
+    if(folderList){
+        folderList.forEach(folderItem => {
+            //stop folders being added to themselves, and their direct parent
+            // NB it's still possible to have inaccessible folders, but that's your problem sorry
+            if( value.id !== folderItem.id  && value.id !== folderItem.parentFolderId) {
+                folderSelect.addChild('<option ' +  (value.parentFolderId == folderItem.id ? 'selected' :'' ) + ' value="' + folderItem.id + '">' + folderItem.name + '</option>');
+            }
+        });
+    }
+    //Folder id
+    if(value.id != null){ 
+        form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')
+    }
+    //Buttons
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');}
+
 //generates the sound card for a given value object
 function sndPresetCard(presetArea, value){
-    let card = presetArea.addChild("<div class='card'>");
+    let card = presetArea.addChild("<div class='card' style='min-width: 500px;'>");
     //Card Title
     card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n');
     //card Body + form
@@ -83,7 +131,7 @@ function sndPresetCard(presetArea, value){
     //Preset id
     if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
     //Buttons
-    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
 }
 
 function addAddress(element){
@@ -186,8 +234,38 @@ function sndFaderCard(faderArea, value){
     //Fader id
     if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
     //Buttons
-    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
 }
+
+/**
+ * Update the status banner bar at the top
+ */
+let socketStatus = false;
+let socketStatusReason = "";
+let rebootRequired = false;
+function updateStatusBar() {
+    if (socketStatus) {
+        $("#status-textStatus").html("Connected to device");
+        $("#status-menuStatus").addClass("c-sidebar-nav-link-success");
+        $("#status-menuStatus").html("Connected");
+        $("#status-menuStatus").removeClass("c-sidebar-nav-link-danger");
+    } else {
+        $("#status-textStatus").html("Disconnected: " + socketStatusReason);
+        $("#status-menuStatus").removeClass("c-sidebar-nav-link-success");
+        $("#status-menuStatus").html("Disconnected");
+        $("#status-menuStatus").addClass("c-sidebar-nav-link-danger");
+    }
+    if (!rebootRequired) {
+        $("#statusBar-statusHeader").css("background","");
+        $("#statusBar-statusTextBox").css("color","#4f5d73");
+        $("#statusBar-statusTextBox").hide();
+    } else if (socketStatus) {
+        $("#statusBar-statusTextBox").show("Reboot Required");
+        $("#statusBar-statusTextBox").css("color","white");
+        $("#statusBar-statusHeader").css("background","repeating-linear-gradient(45deg,#e60909,#e60909 10px,#bd3c3c 10px,#bd3c3c 20px)");
+    }
+}
+
 
 //websocket
 const socket = io(':8080');
@@ -195,18 +273,27 @@ const socket = io(':8080');
 //updates interface when connection lost/found
 socket.on('connect', () => {
     if (!socket.disconnected) {
-        $("#status-textStatus").html("Connected to device");
-        $("#status-menuStatus").addClass("c-sidebar-nav-link-success");
-        $("#status-menuStatus").html("Connected");
-        $("#status-menuStatus").removeClass("c-sidebar-nav-link-danger");
+        socketStatus = true;
+        socketStatusReason = "";
+        updateStatusBar()
     }
 });
 socket.on('disconnect', (reason) => {
     if (socket.disconnected) {
-        $("#status-textStatus").html("Disconnected: " + reason);
-        $("#status-menuStatus").removeClass("c-sidebar-nav-link-success");
-        $("#status-menuStatus").html("Disconnected");
-        $("#status-menuStatus").addClass("c-sidebar-nav-link-danger");
+        socketStatus = false;
+        socketStatusReason = reason;
+        updateStatusBar()
+    }
+});
+
+//Folders Section
+socket.on('folder', (data) => {
+    if("lxPresetFolders" in data) {
+        let faderArea = $("#LXPresetFolderList");
+        faderArea.html("");
+        $.each(data["lxPresetFolders"], function (key, value){
+            lxPresetFolderCard(faderArea, value, data["lxPresetFolders"]);
+        });
     }
 });
 
@@ -224,11 +311,12 @@ socket.on('fader', (data) => {
 //Presets section
 socket.on('preset', (data) => {
     if ("LXPreset" in data) {
+        folders = data["LXPreset"].folders;
         let presetarea = $("#LXPresetList");
         presetarea.html("");
-        $.each(data["LXPreset"], function (key, value){
+        $.each(data["LXPreset"].presets, function (key, value){
             //add a card for each preset
-            lxPresetCard(presetarea, value, firstUniverse, lastUniverse);
+            lxPresetCard(presetarea, value, firstUniverse, lastUniverse, folders);
         });
     } else if ("SNDPreset" in data) {
         let presetarea = $("#SNDPresetList");
@@ -239,9 +327,6 @@ socket.on('preset', (data) => {
         });
     }
 });
-
-let firstUniverse = 1;
-let lastUniverse = 2;
 //Settings Section
 socket.on('config', (data) => {
     var type = false;
@@ -274,7 +359,7 @@ socket.on('config', (data) => {
                 section.append('<div class="form-group"><label>' + value.name + '</label><input class="form-control" name="' + value.key + '" type="text" value="' + KeyValue + '" ' + (value.canEdit != 1 ? 'disabled' : '') + '><span class="help-block">' + value.description + '</span></div>');
             }
         });
-        section.append('<button class="btn btn-sm btn-success" type="submit">Save</button>');
+        section.append('<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>');
     }
 });
 
@@ -285,6 +370,12 @@ socket.on('about', (data) => {
     $.each(data["npmVersions"], function (key,value) {
         $("#settings-version-box").append('<div class="form-group row"><label class="col-md-3 col-form-label">' + key + '</label><div class="col-md-9"><input class="form-control" disabled value="' + value + '"></div></div>');
     });
+});
+
+// Whether a reboot is needed
+socket.on('rebootRequired', (status) => {
+    rebootRequired = status;
+    updateStatusBar();
 });
 
 //update config
@@ -312,8 +403,10 @@ $(document).on('submit', 'form.preset-form[data-table]', function () {
             }
         }
     });
-    if (!setEnabled) {
-        data.push({name:"enabled", value: false});
+    if (table !== "lxPresetFolders") {
+        if (!setEnabled) {
+            data.push({name:"enabled", value: false});
+        }
     }
 
     if (table === "SNDPreset") {
@@ -327,19 +420,26 @@ $(document).on('submit', 'form.preset-form[data-table]', function () {
 });
 
 //add new preset
-$('#lxNew').click(function (){
+$('#lxNew').on('click', function(){
     //an empty object for creating new presets
     const emptyValues = {id:null, name:"", universe:1, enabled:true, setArguments:"" };
     lxPresetCard($("#LXPresetList"), emptyValues, firstUniverse, lastUniverse);
 });
-$('#sndNew').click( function (){
+$('#sndNew').on('click', function(){
     //an empty object for creating new presets
     const emptyValues = {id:null, name:"", enabled:true, data:"{}" };
     sndPresetCard($("#SNDPresetList"), emptyValues);
 });
 
+//add new folder
+$('#lxFolderNew').on('click', function(){
+    //an empty object for creating new presets
+    const emptyValues = {id:null, name:"", parentFolderId:null};
+    lxPresetFolderCard($("#LXPresetFolderList"), emptyValues, folders);
+});
+
 //add new fader
-$('#fdrNew').click( function (){
+$('#fdrNew').on('click', function(){
     //empty object
     const emptyValues = {id:null, name:"", channel:1,enabled:true}
     sndFaderCard($("#SNDFaderList"), emptyValues);
@@ -350,8 +450,14 @@ function removePreset (button) {
     socket.emit('removePreset', button.form.getAttribute('data-table'), {id:button.getAttribute('data-id')});
 }
 
+//Make changes to a text box
+$(document).on('input', "input,select,textarea", function() {
+    $(this).closest(".card").find('button:submit').show();
+});
+
+
 //sample an e131 universe
-$('#lxSampleMode').click( function (){
+$('#lxSampleMode').on('click', function(){
     if (confirm("Do you wish to enter sampling mode")) {
         socket.emit('e131sampler');
     }
@@ -359,8 +465,15 @@ $('#lxSampleMode').click( function (){
 });
 
 //factory reset
-$('#factoryreset').click( function (){
+$('#factoryreset').on('click', function(){
     if (confirm("Do you wish to factory reset the device?")) {
         socket.emit('factoryReset');
+    }
+});
+
+//reboot
+$('#reboot').on('click', function(){
+    if (confirm("Do you wish to reboot the device?")) {
+        socket.emit('reboot');
     }
 });

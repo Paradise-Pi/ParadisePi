@@ -65,6 +65,7 @@ let mainWindow;
 var LXConfig = {};
 var SNDConfig = {};
 var MAINConfig = {}; //Config variables
+let rebootRequired = false; //If a reboot is required to update the display
 
 async function createWindow (fileToLoad) {
   // Create the browser window.
@@ -139,6 +140,14 @@ app.on('window-all-closed', function () {
 // Database Handling
 //define db
 async function initDatabases() {
+  if (!await knex.schema.hasTable('lxPresetFolders')) {
+    await knex.schema.createTable('lxPresetFolders', table => {
+      table.increments('id').primary();
+      table.string('name');
+      table.integer('parentFolderId').defaultTo(null);
+    });
+    await knex('lxPresetFolders').insert({name:"Home"});
+  }
   if (!await knex.schema.hasTable('lxPreset')) {
     await knex.schema.createTable('lxPreset', table => {
       table.increments('id').primary();
@@ -147,6 +156,7 @@ async function initDatabases() {
       table.string('universe');
       table.json('setArguments');
       table.integer("fadeTime").defaultTo(null);
+      table.integer('folderId').defaultTo(null);
     });
     await knex('lxPreset').insert({name: "LX1", enabled: true, universe: 1, setArguments: JSON.stringify({"1":150,"512":25})});
   }
@@ -235,6 +245,7 @@ async function initDatabases() {
   });
 }
 
+//Main Database query
 ipcMain.handle('simpleQueryDB', async (event, data) => {
   if ("keyName" in data && data.keyName !== null) {
     var result = await knex.select().table(data.tableName).where(data.keyName, data.value);
@@ -572,10 +583,7 @@ function setupE131Sampler() {
 }
 
 
-
-// Socket.io admin site
-io.on('connection', socket => {
-  //send information from tables
+function sendDataToAdminPortal(socket) {
   knex.select().table('sndConfig').then((data) => {
     socket.emit('config', { "SNDConfig": data } );
   });
@@ -585,8 +593,13 @@ io.on('connection', socket => {
   knex.select().table('config').then((data) => {
     socket.emit('config', { "config": data } );
   });
-  knex.select().table('lxPreset').then((data) => {
-    socket.emit('preset', {"LXPreset": data} );
+  knex.select().table('lxPresetFolders').then((folders) => {
+    socket.emit('folder', {"lxPresetFolders": folders} );
+  });
+  knex.select().table('lxPresetFolders').then((folders) => {
+    knex.select().table('lxPreset').then((presets) => {
+      socket.emit('preset', {"LXPreset": {"folders": folders, "presets":presets}} );
+    });
   });
   knex.select().table('sndPreset').then((data) => {
     socket.emit('preset', {"SNDPreset":data});
@@ -599,6 +612,20 @@ io.on('connection', socket => {
     "npmVersions": process.versions,
     "version": app.getVersion()
   });
+
+  socket.emit('rebootRequired', rebootRequired);
+}
+function requireReboot(socket) {
+  rebootRequired = true;
+  mainWindow.webContents.send("rebootRequired", true);
+  sendDataToAdminPortal(socket);
+}
+
+// Socket.io admin site
+io.on('connection', socket => {
+  //send information from tables
+  sendDataToAdminPortal(socket);
+  
   //update config when received from site
   socket.on('updateConfig', async(table,data) => {
     if (["config","LXConfig","SNDConfig"].includes(table)) {
@@ -606,16 +633,21 @@ io.on('connection', socket => {
         await knex(table).where({ key: value.name }).update({ value: value.value })
       }
       //reboot to update settings on controller
-      reboot(true);
+      requireReboot(socket);
     }
   });
   //update preset when received from admin site
   socket.on('updatePreset', async(table, data) => {
-    if (["LXPreset", "SNDPreset", "SNDFaders"].includes(table)){
+    if (["LXPreset", "SNDPreset", "SNDFaders", "lxPresetFolders"].includes(table)){
       //rearrange received data for database formatting
       datas = {}
       for (const [key, value] of Object.entries(data)) {
-        datas[value.name] = value.value;
+        if (value.value == "null") {
+          datas[value.name] = null;
+        } else {
+          datas[value.name] = value.value;
+        }
+        
       }
       if (datas.id == null){
         //new preset
@@ -624,21 +656,20 @@ io.on('connection', socket => {
         //update preset
         await knex.table(table).where({id:(datas.id)}).update(datas);
       }
-      //reboot to update settings on controller
-      reboot(true);
+      requireReboot(socket);
     }
   });
   //remove preset
   socket.on('removePreset', async (table, data) => {
-    if (["LXPreset", "SNDPreset"].includes(table)){
+    if (["LXPreset", "SNDPreset", "lxPresetFolders"].includes(table)){
 
       //remove
       await knex(table).where({ id : data.id }).del();
 
-      //reboot to update settings on controller
-      reboot(true);
+      requireReboot(socket);
     }
   });
+
   //Lock mechanism
   socket.on('lock', async () => {
     await toggleLock();
@@ -651,7 +682,10 @@ io.on('connection', socket => {
   socket.on('factoryReset', function () {
     factoryReset();
   })
-
+  //Reboot Reset
+  socket.on('reboot', function () {
+    reboot(true);
+  })
 
   socket.on("disconnect", (reason) => {
     console.log("Disconnected: " + reason)
