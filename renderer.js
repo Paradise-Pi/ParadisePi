@@ -98,6 +98,8 @@ function lxPresetsUpdate (id) {
         window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders", "keyName": "id", "value": id}).then((backResult) => {
             if (backResult[0] != null){
                 $("#lxContainer").append(`<button type="button" class="folder backButton" data-folder="${backResult[0].parentFolderId}"><img src="assets/angle-left-solid.png" /></button>`);
+            } else if (!hideAdditionalLXMenu) {
+                $("#lxContainer").append('<button type="button" id="keypad-open" class="folder">Keypad</button><button type="button" id="check-open" class="folder">Channel Test</button>')
             }
             $.each(result, function (key,value) {
                 $("#lxContainer").append(`<button type="button" class="folder" data-folder="${value.id}">${value.name}</button>`);
@@ -211,7 +213,8 @@ var timeout = { //Black the screen after a timeout
 var tab;
 var modalTimeouts = {};
 var locked = false;
-$(document).ready(function() {
+var hideAdditionalLXMenu = true;
+$(function() {
     $(document).on("mousemove", function () {
         if (timeout['timedOut'] || $("#page").is(":hidden")) {
             timeout['timedOut'] = false;
@@ -250,7 +253,7 @@ $(document).ready(function() {
     $(document).on("click",".lx",function() {
         lxPreset($(this).data("preset"));
     });
-    $(document).on("click",".folder", function(){
+    $(document).on("click",".folder[data-folder]", function(){
         lxPresetsUpdate($(this).data("folder"));
     })
     $(document).on("click",".reboot",function() {
@@ -269,7 +272,13 @@ $(document).ready(function() {
             $('#adminTab').hide();
         }
         if (result['MAINConfig']['LXAdditonalMenu'] == "Hide"){
-            $('#lx-functions').hide();
+            hideAdditionalMenu = true;
+            $('#keypad-open').hide();
+            $('#check-open').hide();
+        } else {
+            hideAdditionalLXMenu = false;
+            $('#keypad-open').show();
+            $('#check-open').show();
         }
         //get universe
         universe = result['LXConfig']['e131FirstUniverse'];
@@ -309,14 +318,14 @@ $(document).ready(function() {
         changeTab($(this).data("tab"));
     });
     //keypad handling
-    $('#keypad-open').click(function () {
+    $(document).on("click","#keypad-open",function () {
         if (locked) {
             modalShow("lockedWarning");
             return false;
         }
        changeTab(2);
     });
-    $('#check-open').click(function (){
+    $(document).on("click","#check-open",function () {
         if (locked) {
             modalShow("lockedWarning");
             return false;

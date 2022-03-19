@@ -131,9 +131,6 @@ Main container
     font-size: 1em;
     box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.59);
 }
-#keypad-open, #check-open {
-    background-color: #6f757b;
-}
 button:focus {
     outline: none;
     box-shadow: none;
@@ -153,6 +150,9 @@ button:focus {
     left: 0px;
 }
 .backButton.folder:before {
+    background-color: #4b8a9c;
+}
+#keypad-open:before, #check-open:before {
     background-color: #4b8a9c;
 }
 
@@ -316,7 +316,7 @@ Modals
     padding: 10px;
     margin-bottom: 10px;
     font-size: larger;
-    width:90%;
+    width: 100px;
 }
 
 .error {
