@@ -26,6 +26,6 @@ jobs:
       - run: npm run package
       - uses: actions/upload-artifact@v3
         with:
-          name: package
+          name: package-${{ matrix.os }}
           path: dist/*.*
           retention-days: 20
