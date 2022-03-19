@@ -68,7 +68,7 @@ function lxPresetCard(presetArea, value, firstUniverse, lastUniverse, folderList
     //Preset id
     if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
     //Buttons
-    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
 }
 
 //generates the folder card for a given value object
@@ -99,7 +99,7 @@ function lxPresetFolderCard(presetArea, value, folderList) {
         form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')
     }
     //Buttons
-    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');}
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');}
 
 //generates the sound card for a given value object
 function sndPresetCard(presetArea, value){
@@ -129,7 +129,7 @@ function sndPresetCard(presetArea, value){
     //Preset id
     if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
     //Buttons
-    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
 }
 
 function addAddress(element){
@@ -232,7 +232,7 @@ function sndFaderCard(faderArea, value){
     //Fader id
     if(value.id != null){ form.addChild('<input type="hidden" name="id" value="'+ value.id + '">\n')}
     //Buttons
-    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
+    form.addChild('<div style="display: inline">\n<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>\n'+(value.id != null ? '<button class="btn btn-sm btn-danger" data-id="'+ value.id + '" type="button" onclick="removePreset(this)">Remove</button>\n' : '')+'</div>\n');
 }
 
 /**
@@ -357,7 +357,7 @@ socket.on('config', (data) => {
                 section.append('<div class="form-group"><label>' + value.name + '</label><input class="form-control" name="' + value.key + '" type="text" value="' + KeyValue + '" ' + (value.canEdit != 1 ? 'disabled' : '') + '><span class="help-block">' + value.description + '</span></div>');
             }
         });
-        section.append('<button class="btn btn-sm btn-success" type="submit">Save</button>');
+        section.append('<button class="btn btn-sm btn-success" type="submit" style="display: none">Save</button>');
     }
 });
 
@@ -447,6 +447,12 @@ $('#fdrNew').on('click', function(){
 function removePreset (button) {
     socket.emit('removePreset', button.form.getAttribute('data-table'), {id:button.getAttribute('data-id')});
 }
+
+//Make changes to a text box
+$(document).on('input', "input,select,textarea", function() {
+    $(this).closest(".card").find('button:submit').show();
+});
+
 
 //sample an e131 universe
 $('#lxSampleMode').on('click', function(){

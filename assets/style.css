@@ -80,6 +80,10 @@ table#menu {
     height: 20px;
     margin-top:2px;
 }
+#rebootIcon {
+    height: 20px;
+    margin-top:2px;
+}
 /*
 Main container
  */
