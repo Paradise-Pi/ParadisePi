@@ -24,3 +24,8 @@ jobs:
       - if: matrix.os == 'windows-latest'
         uses: microsoft/setup-msbuild@v1.1
       - run: npm run package
+      - uses: actions/upload-artifact@v3
+        with:
+          name: package
+          path: dist/*.*
+          retention-days: 20
