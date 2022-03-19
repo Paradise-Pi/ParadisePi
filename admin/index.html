@@ -56,7 +56,7 @@
                     <h2>Lighting Preset Folders</h2>
                     <hr>
                     <button type="button" class="btn btn-primary" id="lxFolderNew">Add New</button>
-                    <div id="LXPresetFolderList" style="margin-top: 10px;">
+                    <div id="LXPresetFolderList" class="d-flex flex-fill flex-wrap" style="margin-top: 10px;">
                     
                     </div>
                 </div>
@@ -68,7 +68,7 @@
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#lxSampleModeModal">
                         Sample from Lighting Desk
                     </button>
-                    <div id="LXPresetList" style="margin-top: 10px;">
+                    <div id="LXPresetList" class="d-flex flex-fill flex-wrap" style="margin-top: 10px;">
 
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                     <hr>
                     <button type="button" class="btn btn-primary" id="sndNew">Add New</button>
                     <br>
-                    <div id="SNDPresetList" style="margin-top: 10px;">
+                    <div id="SNDPresetList" class="d-flex flex-fill flex-wrap" style="margin-top: 10px;">
 
                     </div>
                     <br>
@@ -89,7 +89,7 @@
                     <hr>
                     <button type="button" class="btn btn-primary" id="fdrNew">Add New</button>
                     <br>
-                    <div id="SNDFaderList" style="margin-top: 10px;">
+                    <div id="SNDFaderList" class="d-flex flex-fill flex-wrap" style="margin-top: 10px;">
 
                     </div>
                     <br>
@@ -108,14 +108,6 @@
                                     </form>
                                 </div>
                             </div>
-                            <div class="card" id="settings-SNDConfig">
-                                <div class="card-header"><strong>Sound</strong> <small>Settings</small></div>
-                                <div class="card-body">
-                                    <form class="settings-form" data-table="SNDConfig">
-
-                                    </form>
-                                </div>
-                            </div>
                             <div class="card" id="settings-LXConfig">
                                 <div class="card-header"><strong>Lighting</strong> <small>Settings</small></div>
                                 <div class="card-body">
@@ -130,6 +122,14 @@
                                 <div class="card-header"><strong>Version</strong> Information</div>
                                 <div class="card-body" id="settings-version-box">
 
+                                </div>
+                            </div>
+                            <div class="card" id="settings-SNDConfig">
+                                <div class="card-header"><strong>Sound</strong> <small>Settings</small></div>
+                                <div class="card-body">
+                                    <form class="settings-form" data-table="SNDConfig">
+
+                                    </form>
                                 </div>
                             </div>
                         </div>

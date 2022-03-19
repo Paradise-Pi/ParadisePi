@@ -42,7 +42,7 @@ const sndSecondOption = {
 
 //generates the lighting card for a given value object
 function lxPresetCard(presetArea, value, firstUniverse, lastUniverse, folderList){
-    let card = presetArea.addChild("<div class='card'>");
+    let card = presetArea.addChild("<div class='card' style='min-width: 350px;'>");
     //Card Title
     card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n');
     //card Body + form
@@ -103,7 +103,7 @@ function lxPresetFolderCard(presetArea, value, folderList) {
 
 //generates the sound card for a given value object
 function sndPresetCard(presetArea, value){
-    let card = presetArea.addChild("<div class='card'>");
+    let card = presetArea.addChild("<div class='card' style='min-width: 500px;'>");
     //Card Title
     card.addChild('<div class="card-header">' + (value.id == null ? '<strong>New Preset</strong>' : '<strong>Preset</strong> ' + value.id) + '</div>\n');
     //card Body + form
