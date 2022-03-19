@@ -1,0 +1,11 @@
+version: '2.1'
+networks: {}
+volumes:
+  resin-data: {}
+services:
+  main:
+    build:
+      context: .
+    privileged: true
+    restart: always
+    network_mode: host
