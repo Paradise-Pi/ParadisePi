@@ -5,7 +5,10 @@ on:
     branches:
       - main
   push:
+    branches:
+      - main
   workflow_dispatch:
+
 jobs:
   build:
     name: Build
@@ -15,17 +18,14 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
-      - name: Setup NodeJs
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm install
+      - if: matrix.os == 'windows-latest'
+        uses: microsoft/setup-msbuild@v1.1
+      - run: npm run package
+      - uses: actions/upload-artifact@v3
         with:
-          node-version: '12.x'
-      - name: Install dependencies
-        run: npm install
-      - name: patch node gyp on windows to support Visual Studio 2019
-        shell: powershell
-        if: startsWith(matrix.os,'windows')
-        run: |
-          npm install --global node-gyp@latest
-          npm prefix -g | % {npm config set node_gyp "$_\node_modules\node-gyp\bin\node-gyp.js"}
-      - name: Geneate a build
-        run: npm run package
+          name: package-${{ matrix.os }}
+          path: dist/*.*
+          retention-days: 20

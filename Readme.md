@@ -26,7 +26,7 @@ https://user-images.githubusercontent.com/8408967/111515042-403cfb00-874a-11eb-8
 
 ## Developing
 
-For the OSC library windows build tools are needed: `npm install --global windows-build-tools`
+For the OSC library windows build tools are needed. See the instructions here: https://github.com/nodejs/node-gyp#on-windows
 
 ### Debugging 
 
