@@ -155,7 +155,7 @@ async function initDatabases() {
       table.string('universe');
       table.json('setArguments');
       table.integer("fadeTime").defaultTo(null);
-      table.integer('folderId').defaultTo(1);
+      table.integer('folderId').defaultTo(null);
     });
     await knex('lxPreset').insert({name: "LX1", enabled: true, universe: 1, setArguments: JSON.stringify({"1":150,"512":25})});
   }
