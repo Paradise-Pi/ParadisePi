@@ -12,9 +12,11 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/workflows/build
-        with:
-          os: ${{ matrix.os }}
+      - uses: actions/setup-node@v2
+      - run: npm install
+      - if: matrix.os == 'windows-latest'
+        uses: microsoft/setup-msbuild@v1.1
+      - run: npm run package
       - name: Upload builds to release
         uses: softprops/action-gh-release@v1
         with:
