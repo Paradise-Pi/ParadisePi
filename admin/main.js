@@ -53,7 +53,7 @@ function lxPresetCard(presetArea, value, firstUniverse, lastUniverse, folderList
     var folderDiv = form.addChild('<div class="form-group">');
     folderDiv.addChild('<label>Preset Folder</label>');
     var folderSelect = folderDiv.addChild('<select class="form-control" name="folderId">');
-    folderSelect.addChild('<option selected value="null">None</option>');
+    folderSelect.addChild('<option selected value="null"></option>');
     if(folderList){
         folderList.forEach(folderItem => {
             folderSelect.addChild('<option ' +  (value.folderId == folderItem.id ? 'selected' :'' ) + ' value="' + folderItem.id + '">' + folderItem.name + '</option>');
@@ -84,7 +84,7 @@ function lxPresetFolderCard(presetArea, value, folderList) {
     var folderDiv = form.addChild('<div class="form-group">');
     folderDiv.addChild('<label>Parent Folder</label>');
     var folderSelect = folderDiv.addChild('<select class="form-control" name="parentFolderId">');
-    folderSelect.addChild('<option selected value="null">None</option>');
+    folderSelect.addChild('<option selected value="null"></option>');
     if(folderList){
         folderList.forEach(folderItem => {
             //stop folders being added to themselves, and their direct parent
