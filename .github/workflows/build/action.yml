@@ -1,17 +1,13 @@
 name: Build
-on:
-  workflow_call:
-    inputs:
-      os:
-        required: true
-        type: string
-jobs:
-  build:
-    name: Build
-    runs-on: os
-    steps:
-      - uses: actions/setup-node@v2
-      - run: npm install
-      - if: os == 'windows-latest'
-        uses: microsoft/setup-msbuild@v1.1
-      - run: npm run package
+inputs:
+  os:
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v2
+    - run: npm install
+    - if: os == 'windows-latest'
+      uses: microsoft/setup-msbuild@v1.1
+    - run: npm run package
