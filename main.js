@@ -1,5 +1,6 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow,ipcMain,Menu,dialog} = require('electron');
+const { Buffer } = require('buffer');
 const path = require('path');
 const os = require('os');
 const fs = require('fs');
@@ -434,6 +435,10 @@ ipcMain.on("sendOSC", (event, arguments) =>{
 var e131Clients = [];
 function setupE131() {
   //sACN = E131
+  //Get a unique ID to set as the CID
+  let interfaces = require('os').networkInterfaces();
+  let uCID = Buffer.from(interfaces[Object.keys(interfaces)[0]][0].mac);
+
   e131Clients = [];
   for (var i = parseInt(LXConfig.e131FirstUniverse); i <= parseInt(LXConfig.e131FirstUniverse)+parseInt(LXConfig.e131Universes)-1; i++) {
     e131Clients[i] = {"client": new e131.Client(i)};
@@ -442,6 +447,7 @@ function setupE131() {
     e131Clients[i]['packet'].setSourceName(LXConfig.e131SourceName);
     e131Clients[i]['packet'].setUniverse(i);
     e131Clients[i]['packet'].setPriority(LXConfig.e131Priority);
+    e131Clients[i]['packet'].setCID(uCID);
   }
   if (LXConfig.e131Universes > 0) {
     for (var universe = parseInt(LXConfig.e131FirstUniverse); universe <= parseInt(LXConfig.e131FirstUniverse)+parseInt(LXConfig.e131Universes)-1; universe++) {
