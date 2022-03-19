@@ -436,7 +436,7 @@ var e131Clients = [];
 function setupE131() {
   //sACN = E131
   //Get a unique ID to set as the CID
-  let interfaces = require('os').networkInterfaces();
+  let interfaces = os.networkInterfaces();
   let uCID = Buffer.from(interfaces[Object.keys(interfaces)[0]][0].mac);
 
   e131Clients = [];
