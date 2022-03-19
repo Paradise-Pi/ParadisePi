@@ -17,18 +17,6 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup NodeJs
-        uses: actions/setup-node@v2
+      - uses: ./.github/workflows/build
         with:
-          node-version: '12.x'
-      - name: Install dependencies
-        run: npm install
-      - name: patch node gyp on windows to support Visual Studio 2019
-        shell: powershell
-        if: startsWith(matrix.os,'windows')
-        run: |
-          npm install --global node-gyp@latest
-          npm prefix -g | % {npm config set node_gyp "$_\node_modules\node-gyp\bin\node-gyp.js"}
-      - name: Geneate a build
-        run: npm run package
+          os: ${{ matrix.os }}
