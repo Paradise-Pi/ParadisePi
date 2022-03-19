@@ -98,7 +98,7 @@ function lxPresetsUpdate (id) {
         //we have folders, do we need a back button?
         window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders", "keyName": "id", "value": id}).then((backResult) => {
             if (backResult[0] != null){
-                $("#folderContainer").append('<button type="button" class="folder" data-folder="' + (backResult[0].parentFolderId) + '">\<\-\- Back</button>');
+                $("#folderContainer").append('<button type="button" class="folder" data-folder="' + (backResult[0].parentFolderId) + '">&#8592; Back</button>');
             }
             //add buttons now we know if we need a back button
             $.each(result, function (key,value) {
