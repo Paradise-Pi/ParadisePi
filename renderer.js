@@ -94,25 +94,22 @@ function adminFunctions(type) {
  */
 function lxPresetsUpdate (id) {
     window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders", "keyName": "parentFolderId", "value": id }).then((result) => {
-        $("#folderContainer").empty();
-        //we have folders, do we need a back button?
+        $("#lxContainer").empty();
         window.api.asyncSend("simpleQueryDB", {"tableName": "lxPresetFolders", "keyName": "id", "value": id}).then((backResult) => {
             if (backResult[0] != null){
-                $("#folderContainer").append('<button type="button" class="folder" data-folder="' + (backResult[0].parentFolderId) + '">&#8592; Back</button>');
+                $("#lxContainer").append(`<button type="button" class="folder backButton" data-folder="${backResult[0].parentFolderId}"><img src="assets/angle-left-solid.png" /></button>`);
             }
-            //add buttons now we know if we need a back button
             $.each(result, function (key,value) {
-                $("#folderContainer").append('<button type="button" class="folder" data-folder="' + (value.id) + '">' + value.name + '</button>');
+                $("#lxContainer").append(`<button type="button" class="folder" data-folder="${value.id}">${value.name}</button>`);
             });
-        });    
-    });
-    //Add presets for this folder 
-    window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset", "keyName": "folderId", "value": id }).then((result) => {
-        $("#lxContainer").empty();
-        $.each(result, function (key,value) {
-            $("#lxContainer").append('<button type="button" class="lx" data-preset="'+ (value.id) +'">' + value.name +'</button>');
-        });  
-    });
+        });
+        //Add presets for this folder 
+        window.api.asyncSend("simpleQueryDB", {"tableName": "lxPreset", "keyName": "folderId", "value": id }).then((result) => {
+            $.each(result, function (key,value) {
+                $("#lxContainer").append('<button type="button" class="lx" data-preset="'+ (value.id) +'">' + value.name +'</button>');
+            });
+        });
+    });  
 }
 
 /**
@@ -288,6 +285,7 @@ $(document).ready(function() {
             $("#lockIcon").hide();
             $("#deviceLockButton").html('Lock');
         }
+        $("#rebootIcon").hide();
         timeout['timeoutTime'] = result['MAINConfig']['timeoutTime']*60*1000;
     });
     $("#allOff").click(function() {
@@ -486,3 +484,15 @@ function updateChanCheck(){
     channel[currentChannel] = 180;
     sendACN(universe, channel, 0);
 }
+
+
+/**
+ * Status updater for Reboot
+ */
+ window.api.receive("rebootRequired", (rebootRequired) => {
+    if (rebootRequired) {
+        $("#rebootIcon").show();
+    } else {
+        $("#rebootIcon").hide();
+    }
+});

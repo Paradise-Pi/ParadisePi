@@ -7,7 +7,7 @@ body {
 body {
     background-color: black;
     color: whitesmoke;
-    font-family: system, -apple-system, '.SFNSText-Regular', 'SF UI Text', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+    font-family: 'Helvetica', system, -apple-system, '.SFNSText-Regular', 'SF UI Text', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
     margin: 0;
 }
 table {
@@ -84,6 +84,10 @@ table#menu {
     height: 20px;
     margin-top:2px;
 }
+.backButton > img {
+    padding: 10px;
+    height: 35px;
+}
 /*
 Main container
  */
@@ -118,6 +122,7 @@ Main container
     width: 140px;
     height: 60px;
     margin:5px;
+    margin-top: 13px;
     padding:5px;
     background-color: #154d7d;
     color: white;
@@ -133,6 +138,24 @@ button:focus {
     outline: none;
     box-shadow: none;
 }
+.folder {
+    position: relative;
+    border-radius: 0 6px 6px 6px !important;
+}
+.folder:before {
+    content: '';
+    width: 50%;
+    height: 12px;
+    border-radius: 0 20px 0 0;
+    background-color: #154d7dad;
+    position: absolute;
+    top: -12px;
+    left: 0px;
+}
+.backButton.folder:before {
+    background-color: #4b8a9c;
+}
+
 .channel {
     width: 80px;
     height: 100%;
@@ -305,24 +328,6 @@ Modals
 h4 {
     text-align: center;
     margin: 10px auto;
-}
-
-.folder {
-    margin-top: 50px !important;
-    position: relative;
-    border-radius: 0 6px 6px 6px !important;
-    line-height: 60px;
-}
-
-.folder:before {
-    content: '';
-    width: 50%;
-    height: 12px;
-    border-radius: 0 20px 0 0;
-    background-color: #154d7dad;
-    position: absolute;
-    top: -12px;
-    left: 0px;
 }
 
 
