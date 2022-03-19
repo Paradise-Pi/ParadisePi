@@ -67,11 +67,13 @@ function sndPresetCard(presetArea, value){
     //Existing Data
     let existing = form.addChild('<div class="form-group">');
     existing.addChild('<label>OSC Data</label>');
-    let data = JSON.parse(value.data);
-    for (const [key, value] of Object.entries(data)) {
-        let div = existing.addChild('<div class="form-group">');
-        div.addChild("<input class='form-control' style='width: 48%; display: inline; margin-right: 10px' type='text' readonly name='preset[]' value='\"" + key + '":' + JSON.stringify(value) +"'>");
-        div.addChild('<button type="button" class="btn btn-danger" style="width: 75px; display: inline; margin-top: -5px;" onclick="$(this).parent()[0].remove()">Delete</button>');
+    if (value.data != ""){
+        let data = JSON.parse(value.data);
+        for (const [key, value] of Object.entries(data)) {
+            let div = existing.addChild('<div class="form-group">');
+            div.addChild("<input class='form-control' style='width: 48%; display: inline; margin-right: 10px' type='text' readonly name='preset[]' value='\"" + key + '":' + JSON.stringify(value) +"'>");
+            div.addChild('<button type="button" class="btn btn-danger" style="width: 75px; display: inline; margin-top: -5px;" onclick="$(this).parent()[0].remove()">Delete</button>');
+        }
     }
 
     //New Data
@@ -332,7 +334,7 @@ $('#lxNew').click(function (){
 });
 $('#sndNew').click( function (){
     //an empty object for creating new presets
-    const emptyValues = {id:null, name:"", enabled:true, data:"" };
+    const emptyValues = {id:null, name:"", enabled:true, data:"{}" };
     sndPresetCard($("#SNDPresetList"), emptyValues);
 });
 
