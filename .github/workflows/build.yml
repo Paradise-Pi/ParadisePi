@@ -14,5 +14,5 @@ jobs:
       - uses: actions/setup-node@v2
       - run: npm install
       - if: os == 'windows-latest'
-        uses: microsoft/setup-msbuild@v1.0.0
+        uses: microsoft/setup-msbuild@v1.1
       - run: npm run package
