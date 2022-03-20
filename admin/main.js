@@ -17,17 +17,21 @@ let folders = [];
 let firstUniverse = 1;
 let lastUniverse = 2;
 
-//"mixer":{"name":["address", startVal, endVal, Step, hasSecondOption]}
+//"mixer":{"name":["address", startVal, endVal, Step, hasSecondOption, valIsEncode]}
 const sndFirstOption = {
     "xair":{
-        "Channel":["/ch/",1,16,1, true],
-        "Mute Group":["/config/mute/", 1,6,1, false],
-        "Master": ["/lr", false, false, false, true]
+        "Channel":["/ch/",1,16,1, true, false],
+        "Mute Group":["/config/mute/", 1,6,1, false, false],
+        "Master": ["/lr", false, false, false, true, false],
+        "Load Snapshot": ["/-snap/load", 1, 64, 1, false, true]
     },
     "x32":{
-        "Channel":["/ch/",1,16,1, true],
-        "Mute Group":["/config/mute/", 1,6,1, false],
-        "Master": ["/main/st", false, false, false, true]
+        "Channel":["/ch/",1,16,1, true, false],
+        "Mute Group":["/config/mute/", 1,6,1, false, false],
+        "Master": ["/main/st", false, false, false, true, false],
+        "Load Cue": ["/‐action/gocue", 0, 99, 1, false, true],
+        "Load Scene": ["/‐action/goscene", 0, 99, 1, false, true],
+        "Load Snippet": ["/‐action/gosnippet", 0, 99, 1, false, true]
     }
 }
 
@@ -163,8 +167,8 @@ function oscAddressInputs(oscGroup){
         //empty next div for any changes
         div.html("");
         let firstNumber;
-        //If the option has a number element (ch, mute grp (not main mix))
-        if (options[1]){
+        //If the option has a number element (ch, mute grp (not main mix)), and number element doesn't have to be encoded
+        if (options[1] && !options[5]){
             //update content of presetAddress
             presetAddress[0].value = '"' + options[0] + String(options[1]).padStart(2, '0') + '":{}';
             //create number input based on sndFirstOption array
@@ -205,6 +209,12 @@ function oscAddressInputs(oscGroup){
                     }
                 });
             });
+        } else if (options[5]){ //number element has to be encoded as an integer
+            secondDiv.html("");//clear second div on changes
+            let secondNumber = div.addChild('<input class="form-control presetNumber" type="number" value="' + options[1] + '" min="' + options[1] + '" max="' + options[2] + '" step="' + options[3] + '">');
+            secondNumber.change(function () {
+                presetAddress[0].value = '"' + options[0] + '":{"type":"i", "value":' + secondNumber[0].value + '}';
+            });
         } else { //otherwise just show a "true/false" num box
             secondDiv.html("");//clear second div on changes
             let secondNumber = div.addChild('<input class="form-control presetNumber" type="number" min="0" max="1">');
@@ -212,7 +222,7 @@ function oscAddressInputs(oscGroup){
                 if (options[1]) {
                     presetAddress[0].value = '"' + options[0] + String(firstNumber[0].value).padStart(2, '0') + '":{"type":"i" "value":' + secondNumber[0].value + '}';
                 } else {
-                    presetAddress[0].value = '"' + options[0] + '":{"type":"i" "value":' + secondNumber[0].value + '}';
+                    presetAddress[0].value = '"' + options[0] + '":{"type":"i", "value":' + secondNumber[0].value + '}';
                 }
             });
         }
