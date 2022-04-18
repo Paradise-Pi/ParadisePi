@@ -28,5 +28,6 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ matrix.os }}
-          path: out/make/*.*
+          path: out/make/**/*.*
           retention-days: 20
+          if-no-files-found: error
