@@ -4,7 +4,8 @@ module.exports = {
     {
       'name': '@electron-forge/maker-squirrel',
       'config': {
-        'name': 'paradisepi',
+        'icon': 'assets/icon/favicon.ico',
+        'title': 'Paradise Pi',
       },
     },
     {
@@ -16,12 +17,17 @@ module.exports = {
         'options': {
           'maintainer': 'James Bithell',
           'homepage': 'https://github.com/Jbithell/ParadisePi',
+          'icon': 'assets/icon/favicon.ico',
+          'name': 'Paradise Pi',
         },
       },
     },
     {
       'name': '@electron-forge/maker-dmg',
-      'config': {},
+      'config': {
+        'icon': 'assets/icon/favicon.ico',
+        'name': 'Paradise Pi',
+      },
     },
   ],
   'publishers': [
