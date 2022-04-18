@@ -1,6 +1,6 @@
 {
   "name": "ParadisePi",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Raspberry Pi based sACN lighting/OSC sound facility control panel",
   "main": "main.js",
   "scripts": {
