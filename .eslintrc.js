@@ -14,6 +14,7 @@ module.exports = {
     'require-jsdoc': ['off'],
     'valid-jsdoc': ['off'],
     'max-len': ['off'],
+    'linebreak-style': ['off'],
   },
   'ignorePatterns': ['node_modules/', '.vscode/', 'assets/'],
 };

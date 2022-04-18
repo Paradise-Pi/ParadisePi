@@ -5,10 +5,10 @@
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
-    "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "package": "electron-forge package"
   },
   "keywords": [],
   "repository": {
@@ -25,33 +25,7 @@
   },
   "license": "GPL-3.0-only",
   "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "paradisepi"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip"
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {
-            "options": {
-              "maintainer": "James Bithell",
-              "homepage": "https://github.com/Jbithell/ParadisePi"
-            }
-          }
-        },
-        {
-          "name": "@electron-forge/maker-dmg",
-          "config": {}
-        }
-      ]
-    }
+    "forge": "./forge.config.js"
   },
   "dependencies": {
     "better-sqlite3": "^7.5.1",
