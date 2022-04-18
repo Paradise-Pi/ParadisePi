@@ -18,7 +18,7 @@ Made up of an electron app, with a websocket server serving an admin interface
 
 ## Installation
 
-Pre-built packages are provided for Windows, MacOS (Intel) and Raspberry Pi (Arm) at the [Latest Release](https://github.com/Jbithell/ParadisePi/releases/latest)
+Pre-built packages are provided for Windows, MacOS (Intel) and Linux at the [Latest Release](https://github.com/Jbithell/ParadisePi/releases/latest)
 
 ## Demo
 
@@ -37,8 +37,12 @@ npm install && npm start
 ### Building
 
 ```bash
-npm run package
+npm run make
 ```
+
+## Releases
+
+Releases are automatically generated whenever a tag is pushed to the main branch. Once checked, they can then be published in the github dashboard.
 
 ## Credits
 

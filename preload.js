@@ -1,12 +1,12 @@
 const {
   contextBridge,
-  ipcRenderer
-} = require("electron");
+  ipcRenderer,
+} = require('electron');
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld(
-    "api", {
+    'api', {
       send: (channel, data) => {
         ipcRenderer.send(channel, data);
       },
@@ -15,6 +15,6 @@ contextBridge.exposeInMainWorld(
       },
       asyncSend: async (channel, data) => {
         return await ipcRenderer.invoke(channel, data);
-      }
-    }
+      },
+    },
 );
