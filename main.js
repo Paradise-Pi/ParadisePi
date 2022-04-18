@@ -8,12 +8,19 @@ const formidable = require('formidable');
 const oscHandler = require("osc");
 const e131 = require('e131');
 const knex = require('knex')({
-  client: 'sqlite3',
+  client: 'better-sqlite3',
   connection: {
     filename: path.join(__dirname, 'database.sqlite'),
   },
   useNullAsDefault: true,
 });
+
+// Handle creating/removing shortcuts on Windows when installing/uninstalling.
+if (require('electron-squirrel-startup')) {
+  // eslint-disable-line global-require
+  app.quit();
+}
+
 const staticServer = require('node-static');
 const staticServerFile = new(staticServer.Server)(__dirname + "/admin", { cache: false, serverInfo: "ParadisePi",indexFile: "index.html" });
 const server = require('http').createServer(function (req, res) {

@@ -4,69 +4,73 @@
   "description": "Raspberry Pi based sACN lighting/OSC sound facility control panel",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "package": "electron-builder"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\""
   },
-  "engines" : { 
-    "npm" : ">=8.0.0",
-    "node" : ">=16.0.0"
-  },
-  "dependencies": {
-    "e131": "^1.1.3",
-    "formidable": "^1.2.3",
-    "ip": "^1.1.5",
-    "jquery": "^3.6.0",
-    "knex": "^1.0.4",
-    "@mapbox/node-pre-gyp": "^1.0.8",
-    "node-static": "^0.7.11",
-    "osc": "^2.4.2",
-    "socket.io": "3.1.2",
-    "@vscode/sqlite3": "^5.0.7"
-  },
-  "devDependencies": {
-    "electron": "^17.1.2",
-    "electron-builder": "^22.14.13",
-    "electron-rebuild": "^3.2.7"
-  },
+  "keywords": [],
   "repository": {
     "type": "git",
     "url": "git@github.com:Jbithell/ParadisePi"
   },
-  "optionalDependencies": {
-    "bufferutil": "^4.0.3",
-    "utf-8-validate": "^5.0.4"
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
   },
-  "author": "",
+  "author": {
+    "name": "James Bithell",
+    "email": "Jbithell@users.noreply.github.com"
+  },
   "license": "GPL-3.0-only",
-  "build": {
-    "npmRebuild": false,
-    "buildDependenciesFromSource": false,
-    "appId": "com.jbithell.paradise",
-    "productName": "ParadisPi",
-    "linux": {
-      "category": "Utility",
-      "target": []
-    },
-    "mac": {
-      "target": [
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
         {
-          "target": "dmg",
-          "arch": "x64"
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "paradisepi"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip"
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "options": {
+              "maintainer": "James Bithell",
+              "homepage": "https://github.com/Jbithell/ParadisePi"
+            }
+          }
+        },
+        {
+          "name": "@electron-forge/maker-dmg",
+          "config": {}
         }
       ]
-    },
-    "win": {
-      "asar": true,
-      "target": [
-        {
-          "target": "portable",
-          "arch": "x64"
-        }
-      ]
-    },
-    "deb": {},
-    "artifactName": "Paradise_${os}${arch}_${version}.${ext}",
-    "forceCodeSigning": false,
-    "publish": null
+    }
+  },
+  "dependencies": {
+    "better-sqlite3": "^7.5.1",
+    "e131": "^1.1.3",
+    "electron-squirrel-startup": "^1.0.0",
+    "formidable": "^1.2.3",
+    "ip": "^1.1.5",
+    "jquery": "^3.6.0",
+    "knex": "^1.0.4",
+    "osc": "^2.4.2",
+    "socket.io": "3.1.2",
+    "node-static": "^0.7.11"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.63",
+    "@electron-forge/maker-deb": "^6.0.0-beta.63",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.63",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
+    "@electron-forge/maker-zip": "^6.0.0-beta.63",
+    "electron": "18.0.4"
   }
 }
