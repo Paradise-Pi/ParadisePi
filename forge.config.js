@@ -29,8 +29,8 @@ module.exports = {
       'name': '@electron-forge/publisher-github',
       'config': {
         'repository': {
-          'owner': '${{ GITHUB_REPOSITORY_OWNER }}',
-          'name': '${{ github.event.repository.name }}',
+          'owner': 'Jbithell',
+          'name': 'ParadisePi',
         },
         'draft': true,
       },

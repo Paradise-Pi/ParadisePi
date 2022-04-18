@@ -28,5 +28,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: package-${{ matrix.os }}
-          path: dist/*.*
+          path: out/make/*.*
           retention-days: 20
