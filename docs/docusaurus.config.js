@@ -4,13 +4,16 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
+const production = process.env.CONTEXT === 'production'; //Netlify/Cloudflare Pages set environment variable "CONTEXT" to "production"/"deploy-preview"
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'ParadisePi',
   tagline: 'Facility control panel for sACN & OSC, in Electron.',
   url: 'https://paradisepi.pages.dev',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  noIndex: !production,
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'Paradise-Pi', // Usually your GitHub org/user name.
@@ -25,6 +28,14 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl: 'https://github.com/Paradise-Pi/ParadisePi',
+          editCurrentVersion: true,
+          showLastUpdateTime: true,
+          showLastUpdateAuthor: true,
+          versions: {
+            current: {
+              "label": "v2"
+            }
+          },
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -37,20 +48,31 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'My Site',
+        title: 'ParadisePi',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'ParadisePi Logo',
           src: 'img/logo.svg',
         },
         items: [
           {
             type: 'doc',
-            docId: 'intro',
+            docId: 'user-guide/intro',
             position: 'left',
-            label: 'Tutorial',
+            label: 'User Guide',
           },
           {
-            href: 'https://github.com/facebook/docusaurus',
+            type: 'doc',
+            docId: 'repo-docs/intro',
+            position: 'left',
+            label: 'Developer Guide',
+          },
+          {
+            href: 'https://github.com/Paradise-Pi/ParadisePi/releases/latest',
+            label: 'Download',
+            position: 'right',
+          },
+          {
+            href: 'https://github.com/Paradise-Pi/ParadisePi',
             label: 'GitHub',
             position: 'right',
           },
@@ -58,49 +80,21 @@ const config = {
       },
       footer: {
         style: 'dark',
-        links: [
-          {
-            title: 'Docs',
-            items: [
-              {
-                label: 'Tutorial',
-                to: '/docs/intro',
-              },
-            ],
-          },
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
-              },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
-              {
-                label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
-              },
-            ],
-          },
-        ],
-        copyright: `Copyright © ${new Date().getFullYear()}. Built with Docusaurus.`,
+        links: [],
+        copyright: `©2020-${new Date().getFullYear()} James Bithell & John Cherry`,
       },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      ...(!production) && { announcementBar: {
+        id: 'dev_build', // Any value that will identify this message.
+        content:
+          'This is a draft version of our website',
+        backgroundColor: '#fafbfc', // Defaults to `#fff`.
+        textColor: '#091E42', // Defaults to `#000`.
+        isCloseable: false
+      } },
     }),
 };
 
