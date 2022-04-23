@@ -33,8 +33,7 @@ export default (): void => {
   } else {
     Menu.setApplicationMenu(null);
   }
-
-  // and load the index.html of the app.
+  
   window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
