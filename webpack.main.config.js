@@ -11,5 +11,6 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
   },
-  externals: ['sqlite3']
+  externals: [],
+  cache: false
 };
