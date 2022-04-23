@@ -8,7 +8,8 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint .",
-    "package": "electron-forge package"
+    "package": "electron-forge package",
+    "typeorm": "typeorm-ts-node-commonjs -d src/database/dataSource.ts"
   },
   "keywords": [],
   "repository": {
@@ -30,23 +31,23 @@
     "formidable": "^1.2.3",
     "ip": "^1.1.5",
     "jquery": "^3.6.0",
-    "knex": "^1.0.4",
     "node-static": "^0.7.11",
     "osc": "^2.4.2",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "reflect-metadata": "^0.1.13",
-    "socket.io": "3.1.2"
+    "socket.io": "3.1.2",
+    "typeorm": "^0.3.6"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",
     "@electron-forge/maker-deb": "^6.0.0-beta.63",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.63",
     "@electron-forge/maker-rpm": "^6.0.0-beta.63",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
-    "@electron-forge/maker-dmg": "^6.0.0-beta.63",
-    "@electron-forge/publisher-github": "^6.0.0-beta.63",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.63",
+    "@electron-forge/publisher-github": "^6.0.0-beta.63",
     "@types/node": "^17.0.24",
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.1",
