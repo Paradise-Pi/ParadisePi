@@ -8,13 +8,13 @@ const dataSource = new DataSource({
   synchronize: false,
   migrationsRun: true,
   entities: [
-      "src/database/model/**/*{.js,.ts}"
+      path.join(__dirname, 'model/', '**', '*{.js,.ts}"')
   ],
   migrations: [
-      "src/database/migrations/**/*{.js,.ts}"
+    path.join(__dirname, 'migration/', '**', '*{.js,.ts}"')
   ],
   subscribers: [
-      "src/database/subscriber/**/*{.js,.ts}"
+    path.join(__dirname, 'subscriber/', '**', '*{.js,.ts}"')
   ]
 });
 
