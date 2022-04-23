@@ -92,5 +92,5 @@ dist/
 # Project
 
 .idea/
-/database.sqlite
+/database.sqlite*
 release-builds/
