@@ -15,11 +15,6 @@ const knex = require('knex')({
   useNullAsDefault: true,
 });
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  // eslint-disable-line global-require
-  app.quit();
-}
 
 const staticServer = require('node-static');
 const staticServerFile = new(staticServer.Server)(__dirname + '/admin', {cache: false, serverInfo: 'ParadisePi', indexFile: 'index.html'});
@@ -53,19 +48,6 @@ const io = require('socket.io')(server, {
 const ip = require('ip');
 const meterFunctions = require('./meterFunctions.js');
 
-if (process.platform === 'darwin') {
-  const menu = Menu.buildFromTemplate([{
-    label: app.getName(),
-    submenu: [
-      {role: 'hide'},
-      {role: 'hideothers'},
-      {role: 'unhide'},
-      {type: 'separator'},
-      {role: 'quit'},
-    ],
-  }]);
-}
-
 
 // Main Window
 let mainWindow;
@@ -73,34 +55,6 @@ const LXConfig = {};
 const SNDConfig = {};
 const MAINConfig = {}; // Config variables
 let rebootRequired = false; // If a reboot is required to update the display
-
-async function createWindow(fileToLoad) {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 480,
-    minWidth: 800,
-    minHeight: 480,
-    fullscreen: (os.platform() == 'linux'),
-    title: 'Paradise',
-    icon: path.join(__dirname, 'assets/icon/icon.png'),
-    webPreferences: {
-      nodeIntegration: false, // is default value after Electron v5
-      contextIsolation: true, // protect against prototype pollution
-      enableRemoteModule: false, // turn off remote
-      preload: path.join(__dirname, 'preload.js'),
-    },
-  });
-  if (process.platform === 'darwin') {
-    Menu.setApplicationMenu(menu);
-  } else {
-    Menu.setApplicationMenu(null);
-  }
-  // and load the index.html of the app.
-  mainWindow.loadFile(fileToLoad);
-  // Debug
-  // mainWindow.webContents.openDevTools()
-}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -125,24 +79,13 @@ app.whenReady().then(() => {
       } else {
         setupOSC();
         setupE131();
-        createWindow('index.html');
+        createWindow(MAIN_WINDOW_WEBPACK_ENTRY);
         server.listen(8080);
       }
     });
   });
-  app.on('activate', function() {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow('index.html');
-  });
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', function() {
-  if (process.platform !== 'darwin') app.quit();
-});
 
 // Database Handling
 // define db
