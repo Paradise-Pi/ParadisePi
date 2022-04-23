@@ -24,6 +24,10 @@
   "config": {
     "forge": "./forge.config.js"
   },
+  "author": {
+    "name": "James Bithell & John Cherry",
+    "email": "Jbithell@users.noreply.github.com"
+  },
   "dependencies": {
     "better-sqlite3": "^7.5.1",
     "e131": "^1.1.3",
