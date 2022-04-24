@@ -1,6 +1,6 @@
 import { networkInterfaces } from 'os';
 import e131Lib from 'e131';
-import { LxConfigRepository } from './../../database/repositories/config';
+import { LxConfigRepository } from '../../database/repository/config';
 
 export default class E131 { // sACN = E131
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -12,7 +12,7 @@ Made up of an electron app, with a websocket server serving an admin interface
 
 ## Stack
 
- - [Electron](https://github.com/electron/electron)
+ - [Electron](https://github.com/electron/electron) (with [Electron Forge](https://www.electronforge.io/) and [Webpack](https://webpack.js.org/))
  - Framework: [React](https://github.com/facebook/react)
  - Styling: [Mantine](https://github.com/mantinedev/mantine)
  - Logging: [Winston](https://github.com/winstonjs/winston)

@@ -1,10 +1,10 @@
 import { app, BrowserWindow } from 'electron';
 import "reflect-metadata";
-import createMainWindow from './createMainWindow';
+import createMainWindow from './electron/createMainWindow';
 import dataSource from './database/dataSource';
 import fs from 'fs';
 import { AdminServer } from './admin-server';
-import { LxConfigRepository } from './database/repositories/config';
+import { LxConfigRepository } from './database/repository/config';
 import E131 from './output/e131';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -28,6 +28,7 @@ app.whenReady().then(() => {
     copyright: '©2021-22 James Bithell & John Cherry',
   });
   // Backup the database on boot
+  console.log("Copying database");
   fs.copyFile('database.sqlite', 'admin/database.sqlite', (err) => {
     if (!err) {
       console.log('Database was backed up');
@@ -41,11 +42,13 @@ app.whenReady().then(() => {
         if (LxConfigRepository.getItem("e131Enabled")) {
           globalThis.e131 = new E131(); // Have a single version of the class because it locks the network output
         }
-        createMainWindow();
+
+        globalThis.mainBrowserWindow = createMainWindow();
         const adminServer = new AdminServer();
       }
       
     }).catch((err) => {
+      // Error during Data Source initialization Error: Cannot find module 'undefinedbuild/Release/better_sqlite3.node'  =  https://github.com/electron-userland/electron-forge/issues/2412
       // TODO handle with a popup to user
       console.error("Error during Data Source initialization", err)
     })

@@ -1,6 +1,6 @@
 import { BrowserWindow, session, Menu } from 'electron';
 import "reflect-metadata";
-import { mainWindowTemplate } from './menuBar';
+import { mainWindowTemplate } from '../menuBar';
 import path from 'path';
 import os from 'os';
 
@@ -10,7 +10,8 @@ import os from 'os';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string; 
 
-export default (): void => {
+export default (): BrowserWindow => {
+  
   const window = new BrowserWindow({
     height: 480,
     width: 800,
@@ -33,7 +34,7 @@ export default (): void => {
   } else {
     Menu.setApplicationMenu(null);
   }
-  
+
   window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
@@ -47,4 +48,6 @@ export default (): void => {
       }
     });
   });
+  
+  return window;
 };
