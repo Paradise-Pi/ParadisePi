@@ -36,14 +36,14 @@ app.whenReady().then(() => {
     dataSource.initialize().then(() => {
       if (process.argv.includes('--e131sampler')) {
         //setupE131Sampler();
-        //createWindow('e131sampler.html');
+        createMainWindow("/e131sampler");
       } else {
         //setupOSC();
         if (LxConfigRepository.getItem("e131Enabled")) {
           globalThis.e131 = new E131(); // Have a single version of the class because it locks the network output
         }
 
-        globalThis.mainBrowserWindow = createMainWindow();
+        globalThis.mainBrowserWindow = createMainWindow("/main");
         const adminServer = new AdminServer();
       }
       
@@ -55,7 +55,7 @@ app.whenReady().then(() => {
   });
   
   app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createMainWindow("/main");
   });
 });
 
@@ -72,6 +72,6 @@ app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createMainWindow();
+    createMainWindow("/main");
   }
 });

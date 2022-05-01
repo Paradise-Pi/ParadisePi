@@ -10,11 +10,11 @@ import os from 'os';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string; 
 
-export default (): BrowserWindow => {
+export default (startPath: string): BrowserWindow => {
   
   const window = new BrowserWindow({
-    height: 480,
-    width: 800,
+    height: 519, // Equates to 480 when you knock off the menu bar
+    width: 816, // Equates to 800 when you knock off the menu bar
     minWidth: 800,
     minHeight: 480,
     fullscreen: (os.platform() == 'linux'),
@@ -35,7 +35,7 @@ export default (): BrowserWindow => {
     Menu.setApplicationMenu(null);
   }
 
-  window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+  window.loadURL(MAIN_WINDOW_WEBPACK_ENTRY + '#' + startPath);
 
   // Open the DevTools.
   window.webContents.openDevTools();
