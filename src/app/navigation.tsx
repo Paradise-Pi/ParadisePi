@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { createStyles, Navbar, Group, Code, Text } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
 import { FaRegLightbulb, FaQuestion, FaCog, FaVolumeUp, FaVideo } from "react-icons/fa";
@@ -69,16 +69,14 @@ const useStyles = createStyles((theme, _params, getRef) => {
 });
 
 
-const NavbarItem = ({link, label, Icon }: {link: string, label: string, Icon: IconType}) => {
+const NavbarItem = ({link, label, Icon, active, setActive }: {link: string, label: string, Icon: IconType, active: string, setActive: Dispatch<SetStateAction<string>>}) => {
   const { classes, cx } = useStyles();
-  const [active, setActive] = useState('Billing');
   return (
     <Link
       className={cx(classes.link, { [classes.linkActive]: label === active })}
       to={link}
       key={label}
       onClick={(event) => {
-        event.preventDefault();
         setActive(label);
       }}
     >
@@ -90,6 +88,7 @@ const NavbarItem = ({link, label, Icon }: {link: string, label: string, Icon: Ic
 export function NavbarSimpleColored() {
   const { classes } = useStyles();
   const { height } = useViewportSize();
+  const [active, setActive] = useState('Help'); // Default page of help
   return (
     <Navbar height={height} width={{ sm: 200 }} p="md" className={classes.navbar}>
       <Navbar.Section grow>
@@ -97,13 +96,13 @@ export function NavbarSimpleColored() {
           <Text className={classes.text}>ParadisePi</Text>
           <Code className={classes.version}>v3.1.2</Code>
         </Group>
-        <NavbarItem link="projector" label="Projector" Icon={FaVideo} />
-        <NavbarItem link="sound" label="Sound" Icon={FaVolumeUp} />
-        <NavbarItem link="lighting" label="Lighting" Icon={FaRegLightbulb} />
+        <NavbarItem link="projector" label="Projector" Icon={FaVideo} active={active} setActive={setActive} />
+        <NavbarItem link="sound" label="Sound" Icon={FaVolumeUp} active={active} setActive={setActive}  />
+        <NavbarItem link="lighting" label="Lighting" Icon={FaRegLightbulb} active={active} setActive={setActive}  />
       </Navbar.Section>
       <Navbar.Section className={classes.footer}>
-        <NavbarItem link="help" label="Help" Icon={FaQuestion} />
-        <NavbarItem link="about" label="About" Icon={FaCog} />
+        <NavbarItem link="help" label="Help" Icon={FaQuestion} active={active} setActive={setActive}  />
+        <NavbarItem link="about" label="About" Icon={FaCog} active={active} setActive={setActive}  />
       </Navbar.Section>
     </Navbar>
   );
