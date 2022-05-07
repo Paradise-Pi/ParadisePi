@@ -1,8 +1,10 @@
 
 import React from "react";
 import {HashRouter, Routes, Route, Outlet, Link } from "react-router-dom";
-import { AppShell } from '@mantine/core';
-import { NavbarSimpleColored } from "./navigation";
+import { AppShell, Container, ScrollArea } from '@mantine/core';
+import { useViewportSize } from '@mantine/hooks';
+import { NavbarSimpleColored } from "./Navigation";
+import { LightingPage } from "./Pages/Lighting";
 
 function Router() {
   return (
@@ -12,7 +14,7 @@ function Router() {
         <Route path="main" element={<MainNav />}>
           <Route path="projector" element={<div>Proj</div>} />
           <Route path="sound" element={<div>Sound</div>} />
-          <Route path="lighting" element={<div>Lighting</div>} />
+          <Route path="lighting" element={<LightingPage />} />
           <Route path="help" element={<div>Help</div>} />
           <Route path="about" element={<div>About</div>} />
         </Route>
@@ -22,12 +24,17 @@ function Router() {
   );
 }
 function MainNav() {
+  const { height, width } = useViewportSize();
   return (
     <AppShell
       navbar={<NavbarSimpleColored />}
-      padding="md"
+      padding={0}
     >
-      <Outlet />
+      <ScrollArea style={{ height }} type="auto" offsetScrollbars scrollbarSize={20}>
+        <Container fluid px={"md"} py="md">
+          <Outlet />
+        </Container>
+      </ScrollArea>
     </AppShell>
   )
 }

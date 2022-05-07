@@ -20,6 +20,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
     text: {
       color: theme.white,
       fontWeight: 700,
+      fontSize: '2rem',
     },
 
     header: {
@@ -55,6 +56,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
       color: theme.white,
       opacity: 0.75,
       marginRight: theme.spacing.sm,
+      fontSize: '2rem',
     },
 
     linkActive: {
@@ -90,7 +92,7 @@ export function NavbarSimpleColored() {
   const { height } = useViewportSize();
   const [active, setActive] = useState('Help'); // Default page of help
   return (
-    <Navbar height={height} width={{ sm: 200 }} p="md" className={classes.navbar}>
+    <Navbar height={height} width={{ sm: 200, md: 200 }} p="md" className={classes.navbar}>
       <Navbar.Section grow>
         <Group className={classes.header} position="apart">
           <Text className={classes.text}>ParadisePi</Text>
