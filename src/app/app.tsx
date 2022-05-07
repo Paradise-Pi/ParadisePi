@@ -15,6 +15,7 @@ root.render(
         colorScheme: 'dark',
         primaryColor: 'dark',
       }}
+      withGlobalStyles
     >
       <Router />
     </MantineProvider>
