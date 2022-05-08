@@ -12,7 +12,6 @@ function Router() {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" element={<div>App Error - no route found</div>} />
         <Route path="main" element={<MainNav />}>
           <Route path="projector" element={<div>Proj</div>} />
           <Route path="sound" element={<div>Sound</div>} />
@@ -21,6 +20,10 @@ function Router() {
           <Route path="about" element={<AboutPage />} />
         </Route>
         <Route path="e131sampler" element={<div>Sampling e131</div>} />
+        <Route path="admin" element={<MainNav />}>
+          <Route path="home" element={<div>Admin</div>} />
+        </Route>
+        <Route path="*" element={<div>Landing Page</div>} />
       </Routes>
     </HashRouter>
   );

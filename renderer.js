@@ -333,7 +333,7 @@ $(function() {
     changeTab(3);
   });
   window.api.asyncSend('getIP', {}).then((result) => {
-    const url = 'http://' + result + ':8080';
+    const url = 'http://' + result + ':80';
     new QRCode(document.getElementById('adminQRCode'), {
       text: url,
       width: 200,

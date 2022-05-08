@@ -10,9 +10,9 @@ import path from 'path';
 export class AdminServer {
   private rebootRequired: boolean;
   constructor() {
-    const staticFileServer = new staticServer.Server(__dirname + '/admin', {
+    const staticFileServer = new staticServer.Server(__dirname + '/../renderer/', {
       cache: false,
-      indexFile: 'index.html'
+      indexFile: 'main_window/index.html'
     });
     const server = http.createServer(function(req, res) {
       if (req.url == '/fileupload') {
@@ -33,7 +33,17 @@ export class AdminServer {
           });
         });
       } else {
-        staticFileServer.serve(req, res);
+        staticFileServer.serve(req, res, function (e: Error) {
+            if (e) {
+                if (e.message == "Not Found") {
+                  staticFileServer.serveFile('/main_window/index.html', 200, {}, req, res);
+                } else {
+                  res.writeHead(500, {'Content-Type': 'text/html'});
+                  res.write(e.message);
+                  res.end();
+                }
+            }
+        });
       }
     });
     const io = new Server(server, {
@@ -41,8 +51,7 @@ export class AdminServer {
         origin: '*',
       },
     });
-    server.listen(8080)
-
+    server.listen(80)
     /*
     // Socket.io admin site
     io.on('connection', (socket) => {
