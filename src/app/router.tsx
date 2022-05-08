@@ -6,6 +6,7 @@ import { useViewportSize } from '@mantine/hooks';
 import { NavbarSimpleColored } from "./navigation";
 import { LightingPage } from "./Pages/Lighting";
 import { AboutPage } from "./Pages/About";
+import { HelpPage } from "./Pages/Help";
 
 function Router() {
   return (
@@ -16,8 +17,8 @@ function Router() {
           <Route path="projector" element={<div>Proj</div>} />
           <Route path="sound" element={<div>Sound</div>} />
           <Route path="lighting" element={<LightingPage />} />
-          <Route path="help" element={<AboutPage />} />
-          <Route path="about" element={<div>About</div>} />
+          <Route path="help" element={<HelpPage />} />
+          <Route path="about" element={<AboutPage />} />
         </Route>
         <Route path="e131sampler" element={<div>Sampling e131</div>} />
       </Routes>
