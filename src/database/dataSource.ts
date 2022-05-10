@@ -13,7 +13,6 @@ import { SndConfig } from "./model/SndConfig";
 import { SndFaders } from "./model/SndFaders";
 import { SndPreset } from "./model/SndPreset";
 import { Initial1650709558593 } from "./migration/1650709558593-Initial";
-import { RelationshipTweaks1650710231368 } from "./migration/1650710231368-RelationshipTweaks";
 import { InsertConfig1650710286405 } from "./migration/1650710286405-InsertConfig";
 
 const dataSource = new DataSource({
@@ -32,7 +31,6 @@ const dataSource = new DataSource({
   ],
   migrations: [
       Initial1650709558593,
-      RelationshipTweaks1650710231368,
       InsertConfig1650710286405
   ],
   subscribers: []
