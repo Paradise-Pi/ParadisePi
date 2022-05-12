@@ -4,7 +4,7 @@ module.exports = {
     {
       'name': '@electron-forge/maker-squirrel',
       'config': {
-        'icon': 'assets/icon/favicon.ico',
+        'icon': 'icon/favicon.ico',
         'title': 'Paradise Pi',
       },
     },
@@ -17,7 +17,7 @@ module.exports = {
         'options': {
           'maintainer': 'James Bithell',
           'homepage': 'https://github.com/Jbithell/ParadisePi',
-          'icon': 'assets/icon/favicon.ico',
+          'icon': 'icon/favicon.ico',
           'name': 'Paradise Pi',
         },
       },
@@ -25,7 +25,7 @@ module.exports = {
     {
       'name': '@electron-forge/maker-dmg',
       'config': {
-        'icon': 'assets/icon/favicon.ico',
+        'icon': 'icon/favicon.ico',
         'name': 'Paradise Pi',
       },
     },
