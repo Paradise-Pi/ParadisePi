@@ -1,4 +1,4 @@
-import { Grid, Paper, SimpleGrid, Text } from "@mantine/core";
+import { Paper, Text } from "@mantine/core";
 import React from "react";
 
 export const HelpPage = () => {

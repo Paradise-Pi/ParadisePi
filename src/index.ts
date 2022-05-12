@@ -43,7 +43,7 @@ app.whenReady().then(() => {
           globalThis.e131 = new E131(); // Have a single version of the class because it locks the network output
         }
 
-        globalThis.mainBrowserWindow = createMainWindow("/main/help");
+        globalThis.mainBrowserWindow = createMainWindow("/controlPanel/help");
         const adminServer = new AdminServer();
       }
       
@@ -55,7 +55,7 @@ app.whenReady().then(() => {
   });
   
   app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createMainWindow("/main/help");
+    if (BrowserWindow.getAllWindows().length === 0) createMainWindow("/controlPanel/help");
   });
 });
 
@@ -72,6 +72,6 @@ app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createMainWindow("/main/help");
+    createMainWindow("/controlPanel/help");
   }
 });
