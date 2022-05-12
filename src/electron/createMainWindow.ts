@@ -19,7 +19,7 @@ export default (startPath: string): BrowserWindow => {
     minHeight: 480,
     fullscreen: (os.platform() == 'linux'),
     title: 'Paradise',
-    icon: path.join(__dirname, 'icon/icon.png'),
+    icon: path.join(__dirname, '/../../icon/icon.png'),
     webPreferences: {
       nodeIntegration: false, // is default value after Electron v5
       contextIsolation: true, // protect against prototype pollution
