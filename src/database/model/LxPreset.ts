@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn, Entity, ManyToOne } from 'typeorm'
+import { Column, Entity, ManyToOne } from 'typeorm'
 import { PresetType } from './Preset'
 import { LxPresetFolders } from './LxPresetFolders'
 @Entity('lxPreset')

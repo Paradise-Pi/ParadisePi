@@ -133,7 +133,7 @@ export class InsertConfig1650710286405 implements MigrationInterface {
 		})
 	}
 
-	public async down(queryRunner: QueryRunner): Promise<void> {
+	public async down(): Promise<void> {
 		// Not much need to roll this one back
 	}
 }

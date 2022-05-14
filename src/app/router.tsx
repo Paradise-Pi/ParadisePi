@@ -7,6 +7,7 @@ import { AboutPage } from './Pages/ControlPanel/About'
 import { HelpPage } from './Pages/ControlPanel/Help'
 import { ControlPanelNavigation } from './Navigation/ControlPanelNavigation'
 import { AdminNavigation } from './Navigation/AdminNavigation'
+import { LandingPage } from './Pages/Landing'
 
 function Router() {
 	return (
@@ -31,7 +32,7 @@ function Router() {
 				>
 					<Route path="home" element={<div>Admin</div>} />
 				</Route>
-				<Route path="*" element={<div>Landing Page</div>} />
+				<Route path="*" element={<LandingPage />} />
 			</Routes>
 		</HashRouter>
 	)

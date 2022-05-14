@@ -20,7 +20,7 @@ export default (startPath: string): BrowserWindow => {
 		title: 'Paradise',
 		icon: path.join(__dirname, '/../../icon/icon.png'),
 		webPreferences: {
-			nodeIntegration: false, // is default value after Electron v5
+			nodeIntegration: false, // disabled node.js on the frontend
 			contextIsolation: true, // protect against prototype pollution
 			preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
 		},

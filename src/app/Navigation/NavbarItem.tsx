@@ -24,7 +24,7 @@ export const NavbarItem = ({
 			})}
 			to={link}
 			key={label}
-			onClick={event => {
+			onClick={() => {
 				setActive(label)
 			}}
 		>

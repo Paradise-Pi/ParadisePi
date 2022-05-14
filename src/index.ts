@@ -1,11 +1,14 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain, IpcMainEvent } from 'electron'
 import 'reflect-metadata'
 import createMainWindow from './electron/createMainWindow'
 import dataSource from './database/dataSource'
 import fs from 'fs'
-import { AdminServer } from './admin-server'
+import { WebServer } from './webServer'
 import { LxConfigRepository } from './database/repository/config'
+
 import E131 from './output/e131'
+import { routeRequest } from './api/router'
+import { IpcRequest } from './api/ipc'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -29,7 +32,8 @@ app.whenReady().then(() => {
 	})
 	// Backup the database on boot
 	console.log('Copying database')
-	fs.copyFile('database.sqlite', 'admin/database.sqlite', err => {
+	fs.copyFile('database.sqlite', 'database-backup.sqlite', err => {
+		//TODO remove this as we don't need it anymore, we no longer need to backup the database as we pull it live when we use it
 		if (!err) {
 			console.log('Database was backed up')
 		}
@@ -46,8 +50,8 @@ app.whenReady().then(() => {
 					}
 
 					globalThis.mainBrowserWindow =
-					createMainWindow('/controlPanel/help')
-					const adminServer = new AdminServer()
+						createMainWindow('/controlPanel/help')
+					new WebServer()
 				}
 			})
 			.catch(err => {
@@ -77,5 +81,18 @@ app.on('activate', () => {
 	// dock icon is clicked and there are no other windows open.
 	if (BrowserWindow.getAllWindows().length === 0) {
 		createMainWindow('/controlPanel/help')
+	}
+})
+
+ipcMain.handle('apiCall', async (event: IpcMainEvent, args: IpcRequest) => {
+	try {
+		const response = await routeRequest(
+			args.path,
+			args.method,
+			args.payload
+		)
+		return { success: true, response, errorMessage: null }
+	} catch (error) {
+		return { success: false, response: null, errorMessage: error.message }
 	}
 })

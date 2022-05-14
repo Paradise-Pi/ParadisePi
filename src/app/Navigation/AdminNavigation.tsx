@@ -1,19 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navbar, Group, Code, Text } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
-import {
-	FaRegLightbulb,
-	FaQuestion,
-	FaCog,
-	FaVolumeUp,
-	FaVideo,
-} from 'react-icons/fa'
+import { FaQuestion, FaCog } from 'react-icons/fa'
 import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
+import { ApiCall } from '../Apis/wrapper'
 
 export function AdminNavigation() {
 	const { classes } = useStyles()
 	const { height } = useViewportSize()
+	const [time, setTime] = useState(0)
+	useEffect(() => {
+		ApiCall.get('/ping', {}).then(res => {
+			console.log('I called')
+			setTime(res.time)
+		})
+	}, [])
+
 	const [active, setActive] = useState('Help') // Default page of help
 	return (
 		<Navbar
@@ -25,7 +28,7 @@ export function AdminNavigation() {
 			<Navbar.Section grow>
 				<Group className={classes.header} position="apart">
 					<Text className={classes.text}>ParadisePi Admin</Text>
-					<Code className={classes.version}>v3.1.2</Code>
+					<Code className={classes.version}>{time}</Code>
 				</Group>
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>

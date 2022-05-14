@@ -1,4 +1,4 @@
-import { Paper, Text } from '@mantine/core'
+import { Paper, Text, Button } from '@mantine/core'
 import { QRCodeSVG } from 'qrcode.react'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -15,7 +15,9 @@ export const AboutPage = () => {
 				bgColor="#000000"
 				fgColor="#FFFFFF"
 			/>
-			<Link to="/admin/home">Admin</Link>
+			<Link to="/">
+				<Button variant="default">Exit to Shell</Button>
+			</Link>
 		</>
 	)
 }
