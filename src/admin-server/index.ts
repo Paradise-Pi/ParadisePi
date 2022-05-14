@@ -1,58 +1,73 @@
-import staticServer from 'node-static';
-import http from 'http';
-import { IncomingForm } from 'formidable';
-import fs from 'fs';
-import { Server, Socket } from 'socket.io';
-import dataSource from '../database/dataSource';
-import { factoryReset, reboot } from '../electron/windowUtilities';
-import path from 'path';
+import staticServer from 'node-static'
+import http from 'http'
+import { IncomingForm } from 'formidable'
+import fs from 'fs'
+import { Server, Socket } from 'socket.io'
+import dataSource from '../database/dataSource'
+import { factoryReset, reboot } from '../electron/windowUtilities'
+import path from 'path'
 
 export class AdminServer {
-  private rebootRequired: boolean;
-  constructor() {
-    const staticFileServer = new staticServer.Server(__dirname + '/../renderer/', {
-      cache: false,
-      indexFile: 'main_window/index.html'
-    });
-    const server = http.createServer(function(req, res) {
-      if (req.url == '/fileupload') {
-        const form = new IncomingForm({
-          filename: () => 'user-uploaded-database.sqlite',
-          uploadDir: path.join(__dirname, '../../'),
-          maxFiles: 1
-        });
-        form.parse(req, function(err, fields, files) {
-          if (err) throw err;
-          dataSource.destroy().then(() => {
-            fs.rename('user-uploaded-database.sqlite', 'database.sqlite', (err) => {
-              if (err) throw err;
-              res.write('System restored from backup. Please now check the device has initiated correctly');
-              res.end();
-              reboot(true);
-            });
-          });
-        });
-      } else {
-        staticFileServer.serve(req, res, function (e: Error) {
-            if (e) {
-                if (e.message == "Not Found") {
-                  staticFileServer.serveFile('/main_window/index.html', 200, {}, req, res);
-                } else {
-                  res.writeHead(500, {'Content-Type': 'text/html'});
-                  res.write(e.message);
-                  res.end();
-                }
-            }
-        });
-      }
-    });
-    const io = new Server(server, {
-      cors: {
-        origin: '*',
-      },
-    });
-    server.listen(80)
-    /*
+	private rebootRequired: boolean
+	constructor() {
+		const staticFileServer = new staticServer.Server(
+			__dirname + '/../renderer/',
+			{
+				cache: false,
+				indexFile: 'main_window/index.html',
+			}
+		)
+		const server = http.createServer(function (req, res) {
+			if (req.url == '/fileupload') {
+				const form = new IncomingForm({
+					filename: () => 'user-uploaded-database.sqlite',
+					uploadDir: path.join(__dirname, '../../'),
+					maxFiles: 1,
+				})
+				form.parse(req, function (err, fields, files) {
+					if (err) throw err
+					dataSource.destroy().then(() => {
+						fs.rename(
+							'user-uploaded-database.sqlite',
+							'database.sqlite',
+							err => {
+								if (err) throw err
+								res.write(
+									'System restored from backup. Please now check the device has initiated correctly'
+								)
+								res.end()
+								reboot(true)
+							}
+						)
+					})
+				})
+			} else {
+				staticFileServer.serve(req, res, function (e: Error) {
+					if (e) {
+						if (e.message == 'Not Found') {
+							staticFileServer.serveFile(
+								'/main_window/index.html',
+								200,
+								{},
+								req,
+								res
+							)
+						} else {
+							res.writeHead(500, { 'Content-Type': 'text/html' })
+							res.write(e.message)
+							res.end()
+						}
+					}
+				})
+			}
+		})
+		const io = new Server(server, {
+			cors: {
+				origin: '*',
+			},
+		})
+		server.listen(80)
+		/*
     // Socket.io admin site
     io.on('connection', (socket) => {
       this.sendDataToAdminPortal(socket); // send information from tables to populate admin connected
@@ -162,6 +177,5 @@ export class AdminServer {
       requireReboot(socket);
     }
       */
-  }
-
+	}
 }

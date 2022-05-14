@@ -1,26 +1,35 @@
 {
-  "env": {
-    "browser": true,
-    "es6": true,
-    "node": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:import/recommended",
-    "plugin:import/electron",
-    "plugin:import/typescript"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": "latest"
-  },
-  "rules": {
-    "require-jsdoc": ["off"],
-    "valid-jsdoc": ["off"],
-    "max-len": ["off"],
-    "linebreak-style": ["off"]
-  },
-  "ignorePatterns": ["node_modules/", ".vscode/", "assets/"]
+	"env": {
+		"browser": true,
+		"es6": true,
+		"node": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:import/recommended",
+		"plugin:import/electron",
+		"plugin:import/typescript",
+		"plugin:react/recommended",
+		"plugin:react-hooks/recommended",
+		"plugin:prettier/recommended"
+	],
+	"plugins": ["unused-imports"],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": "latest"
+	},
+	"rules": {
+		"require-jsdoc": ["off"],
+		"valid-jsdoc": ["off"],
+		"max-len": ["off"],
+		"linebreak-style": ["off"]
+	},
+	"settings": {
+		"react": {
+			"version": "detect"
+		}
+	},
+	"ignorePatterns": ["node_modules/", ".vscode/", "assets/", "dist/"]
 }

@@ -1,13 +1,9 @@
 {
-  "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-  },
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-    "typescriptreact"
-  ],
-  "cSpell.words": [
-    "Mantine"
-  ]
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true,
+		"editor.formatOnSave": true
+	},
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"eslint.validate": ["javascript", "typescript", "typescriptreact"],
+	"cSpell.words": ["Mantine"]
 }

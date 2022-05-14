@@ -1,7 +1,5 @@
-import { Entity } from "typeorm";
-import { ConfigType } from "./Config";
+import { Entity } from 'typeorm'
+import { ConfigType } from './Config'
 
-@Entity("sndConfig")
-export class SndConfig extends ConfigType {
-
-}
+@Entity('sndConfig')
+export class SndConfig extends ConfigType {}

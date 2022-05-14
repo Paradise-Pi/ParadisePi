@@ -1,16 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity("sndFaders")
+@Entity('sndFaders')
 export class SndFaders {
-  @PrimaryGeneratedColumn()
-  id: number;
+	@PrimaryGeneratedColumn()
+	id: number
 
-  @Column("text")
-  name: string;
+	@Column('text')
+	name: string
 
-  @Column("integer", { nullable: true })
-  channel: number | null;
+	@Column('integer', { nullable: true })
+	channel: number | null
 
-  @Column("boolean")
-  enabled: boolean;
+	@Column('boolean')
+	enabled: boolean
 }

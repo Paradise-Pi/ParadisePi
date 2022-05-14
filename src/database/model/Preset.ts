@@ -1,15 +1,14 @@
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { Column, PrimaryGeneratedColumn } from 'typeorm'
 
 export abstract class PresetType {
-  @PrimaryGeneratedColumn()
-  id: number;
+	@PrimaryGeneratedColumn()
+	id: number
 
-  @Column("text")
-  name: string;
+	@Column('text')
+	name: string
 
-  @Column("boolean", {
-    default: true
-  })
-  enabled: boolean;
-
+	@Column('boolean', {
+		default: true,
+	})
+	enabled: boolean
 }
