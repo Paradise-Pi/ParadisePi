@@ -3,7 +3,11 @@
  * Docs for this file are at https://socket.io/docs/v4/typescript/
  */
 
-export interface ServerToClientEvents {}
+import { Database } from './database'
+
+export interface ServerToClientEvents {
+	refreshDatabase: (database: Database) => void
+}
 
 export interface ClientToServerEvents {
 	apiCall: (

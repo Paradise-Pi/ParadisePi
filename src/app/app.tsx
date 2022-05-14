@@ -1,13 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
-import './app.css'
 import { MantineProvider } from '@mantine/core'
+import { Provider } from 'react-redux'
+import './app.css'
+import store, { useAppDispatch } from './Apis/mainStore'
 import Router from './router'
+import { getFromAPI, setFromNode } from './Apis/databaseSlice'
+import { Database } from '../api/database'
+import { runningInElectron } from './Apis/version'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
-root.render(
-	<React.StrictMode>
+const App = () => {
+	/**
+	 * Initialize the database from node
+	 */
+	const dispatch = useAppDispatch()
+	useEffect(() => {
+		dispatch(getFromAPI())
+	}, [dispatch])
+
+	return (
 		<MantineProvider
 			theme={{
 				// Override any other properties from default theme
@@ -18,5 +31,18 @@ root.render(
 		>
 			<Router />
 		</MantineProvider>
+	)
+}
+root.render(
+	<React.StrictMode>
+		<Provider store={store}>
+			<App />
+		</Provider>
 	</React.StrictMode>
 )
+
+if (runningInElectron()) {
+	window.ipcApi.receive('refreshDatabase', (data: Database) => {
+		store.dispatch(setFromNode(data))
+	})
+}

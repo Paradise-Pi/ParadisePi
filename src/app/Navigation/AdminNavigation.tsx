@@ -5,17 +5,14 @@ import { FaQuestion, FaCog } from 'react-icons/fa'
 import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
 import { ApiCall } from '../Apis/wrapper'
-
+import { useAppSelector } from '../Apis/mainStore'
+function getMe() {
+	ApiCall.put('/refreshDatabase', {})
+}
 export function AdminNavigation() {
 	const { classes } = useStyles()
 	const { height } = useViewportSize()
-	const [time, setTime] = useState(0)
-	useEffect(() => {
-		ApiCall.get('/ping', {}).then(res => {
-			console.log('I called')
-			setTime(res.time)
-		})
-	}, [])
+	const database = useAppSelector(state => state.database)
 
 	const [active, setActive] = useState('Help') // Default page of help
 	return (
@@ -28,7 +25,9 @@ export function AdminNavigation() {
 			<Navbar.Section grow>
 				<Group className={classes.header} position="apart">
 					<Text className={classes.text}>ParadisePi Admin</Text>
-					<Code className={classes.version}>{time}</Code>
+					<Code className={classes.version} onClick={() => getMe()}>
+						{database.message}
+					</Code>
 				</Group>
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>

@@ -109,6 +109,7 @@ export class WebServer {
 					})
 			})
 			socket.on('disconnect', (reason: string) => {
+				//TODO remove - not needed
 				console.log('Disconnected: ' + reason)
 			})
 		})

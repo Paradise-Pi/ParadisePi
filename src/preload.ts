@@ -1,5 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
+import { Database } from './api/database'
 import { IpcRequest } from './api/ipc'
+import { setFromNode } from './app/Apis/databaseSlice'
+import store from './app/Apis/mainStore'
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
@@ -19,5 +22,11 @@ contextBridge.exposeInMainWorld('ipcApi', {
 			.then(result => {
 				callback(result.success, result.response, result.errorMessage)
 			})
+	},
+	receive: (channel: string, func: any) => {
+		const validChannels = ['refreshDatabase']
+		if (validChannels.includes(channel)) {
+			ipcRenderer.on(channel, (event, ...args) => func(...args))
+		}
 	},
 })

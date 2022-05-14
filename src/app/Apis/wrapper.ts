@@ -1,6 +1,6 @@
 import { showNotification } from '@mantine/notifications'
 import { SocketConnection } from './socketIo'
-import { RunningInElectron } from './version'
+import { runningInElectron } from './version'
 
 declare global {
 	interface Window {
@@ -15,6 +15,7 @@ declare global {
 					errorMessage: string | null
 				) => void
 			) => void
+			receive: (channel: string, func: any) => void
 		}
 	}
 }
@@ -30,7 +31,7 @@ export class ApiCall {
 		payload: object
 	): Promise<object> {
 		return new Promise((resolve, reject) => {
-			if (RunningInElectron()) {
+			if (runningInElectron()) {
 				window.ipcApi.send(
 					path,
 					method,

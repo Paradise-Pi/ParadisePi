@@ -2,7 +2,7 @@ import { Button, Stack, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { RunningInElectron } from '../Apis/version'
+import { runningInElectron } from '../Apis/version'
 
 export const LandingPage = () => {
 	const { height, width } = useViewportSize()
@@ -25,7 +25,7 @@ export const LandingPage = () => {
 						Control Panel
 					</Button>
 				</Link>
-				{RunningInElectron() ? ( //TODO implement	quit function
+				{runningInElectron() ? ( //TODO implement	quit function
 					<Button variant="default" size="xl">
 						Quit
 					</Button>
