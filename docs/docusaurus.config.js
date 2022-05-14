@@ -1,8 +1,9 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-import lightCodeTheme from 'prism-react-renderer/themes/github'
-import darkCodeTheme from 'prism-react-renderer/themes/dracula'
+const lightCodeTheme = require('prism-react-renderer/themes/github')
+const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
 const production = process.env.CONTEXT === 'production' //Netlify/Cloudflare Pages set environment variable "CONTEXT" to "production"/"deploy-preview"
 
@@ -99,4 +100,4 @@ const config = {
 		}),
 }
 
-export default config
+module.exports = config
