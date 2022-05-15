@@ -29,8 +29,8 @@ export class SocketConnection {
 					store.dispatch(setFromNode(database))
 				}
 			)
-			SocketConnection.socket.on('disconnect', () => {
-				console.log('Socket disconnected')
+			SocketConnection.socket.on('disconnect', (reason: string) => {
+				console.log('Socket disconnected' + reason)
 			})
 		}
 

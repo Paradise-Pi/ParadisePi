@@ -65,7 +65,6 @@ export class ApiCall {
 						response: apiObject,
 						errorMessage: string | null
 					) => {
-						console.log(response)
 						if (success) {
 							resolve(response)
 						} else {

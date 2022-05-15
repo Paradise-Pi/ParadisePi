@@ -4,11 +4,11 @@ export const useStyles = createStyles((theme, _params, getRef) => {
 	const icon = getRef('icon')
 	return {
 		navbar: {
-			backgroundColor: theme.colors[theme.primaryColor][6],
+			backgroundColor: theme.colors.dark[6],
 		},
 
 		version: {
-			backgroundColor: theme.colors[theme.primaryColor][7],
+			backgroundColor: theme.colors.dark[7],
 			color: theme.white,
 			fontWeight: 700,
 		},
@@ -22,13 +22,13 @@ export const useStyles = createStyles((theme, _params, getRef) => {
 		header: {
 			paddingBottom: theme.spacing.md,
 			marginBottom: theme.spacing.md * 1.5,
-			borderBottom: `1px solid ${theme.colors[theme.primaryColor][7]}`,
+			borderBottom: `1px solid ${theme.colors.dark[7]}`,
 		},
 
 		footer: {
 			paddingTop: theme.spacing.md,
 			marginTop: theme.spacing.md,
-			borderTop: `1px solid ${theme.colors[theme.primaryColor][7]}`,
+			borderTop: `1px solid ${theme.colors.dark[7]}`,
 		},
 
 		link: {
@@ -43,7 +43,7 @@ export const useStyles = createStyles((theme, _params, getRef) => {
 			fontWeight: 500,
 
 			'&:hover': {
-				backgroundColor: theme.colors[theme.primaryColor][5],
+				backgroundColor: theme.colors.dark[5],
 			},
 		},
 
@@ -57,7 +57,7 @@ export const useStyles = createStyles((theme, _params, getRef) => {
 
 		linkActive: {
 			'&, &:hover': {
-				backgroundColor: theme.colors[theme.primaryColor][7],
+				backgroundColor: theme.colors.dark[7],
 				[`& .${icon}`]: {
 					opacity: 0.9,
 				},

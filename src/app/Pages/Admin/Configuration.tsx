@@ -8,7 +8,7 @@ import { OSCModuleConfigurationPage } from './ModuleConfiguration/osc'
 
 export const ConfigurationPage = () => {
 	return (
-		<Tabs color="pink" grow>
+		<Tabs grow>
 			<Tabs.Tab label="General" icon={<FaTools />}>
 				<GeneralConfigurationPage />
 			</Tabs.Tab>

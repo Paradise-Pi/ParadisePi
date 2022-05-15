@@ -6,7 +6,7 @@ import { ApiCall } from './wrapper'
 const initialState: Database | null = null
 const getFromAPIFatActionCreator = (): void => {
 	// https://redux.js.org/faq/code-structure/#how-should-i-split-my-logic-between-reducers-and-action-creators-where-should-my-business-logic-go
-	ApiCall.get('/getDatabase', {}).then(response => {
+	ApiCall.get('/database', {}).then(response => {
 		store.dispatch(storeManually(response as Database))
 	})
 }

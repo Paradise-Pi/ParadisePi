@@ -8,6 +8,7 @@ import Router from './router'
 import { getFromAPI, setFromNode } from './Apis/databaseSlice'
 import { Database } from '../api/database'
 import { runningInElectron } from './Apis/version'
+import { ModalsProvider } from '@mantine/modals'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -25,11 +26,13 @@ const App = () => {
 			theme={{
 				// Override any other properties from default theme
 				colorScheme: 'dark',
-				primaryColor: 'dark',
+				primaryColor: 'pink',
 			}}
 			withGlobalStyles
 		>
-			<Router />
+			<ModalsProvider>
+				<Router />
+			</ModalsProvider>
 		</MantineProvider>
 	)
 }

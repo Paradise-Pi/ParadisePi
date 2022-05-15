@@ -18,14 +18,7 @@ export const routeRequest = (
 					time: Date.now(),
 				})
 				break
-			case 'refreshDatabase':
-				//TODO remove - this is just a POC
-				sendDatabaseObject(
-					createDatabaseObject('from the refresh command')
-				)
-				resolve({})
-				break
-			case 'getDatabase':
+			case 'database':
 				resolve(createDatabaseObject('from the getDatabase command'))
 				break
 			case 'about':
