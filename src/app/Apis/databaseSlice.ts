@@ -3,18 +3,18 @@ import { Database } from '../../api/database'
 import store from './mainStore'
 import { ApiCall } from './wrapper'
 
-const initialState: Database = {}
+const initialState: Database | null = null
 const getFromAPIFatActionCreator = (): void => {
 	// https://redux.js.org/faq/code-structure/#how-should-i-split-my-logic-between-reducers-and-action-creators-where-should-my-business-logic-go
 	ApiCall.get('/getDatabase', {}).then(response => {
-		store.dispatch(storeManually(response))
+		store.dispatch(storeManually(response as Database))
 	})
 }
 export const databaseSlice = createSlice({
 	name: 'database',
 	initialState,
 	reducers: {
-		getFromAPI: state => {
+		getFromAPI: () => {
 			getFromAPIFatActionCreator()
 		},
 		storeManually: (state, action: PayloadAction<Database>) => {

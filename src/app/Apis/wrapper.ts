@@ -8,13 +8,14 @@ declare global {
 			send: (
 				path: string,
 				method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-				payload: object,
+				payload: apiObject,
 				callback: (
 					success: boolean,
-					response: object,
+					response: apiObject,
 					errorMessage: string | null
 				) => void
 			) => void
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			receive: (channel: string, func: any) => void
 		}
 	}
@@ -28,8 +29,8 @@ export class ApiCall {
 	private static handler(
 		path: string,
 		method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-		payload: object
-	): Promise<object> {
+		payload: apiObject
+	): Promise<apiObject> {
 		return new Promise((resolve, reject) => {
 			if (runningInElectron()) {
 				window.ipcApi.send(
@@ -38,7 +39,7 @@ export class ApiCall {
 					payload,
 					(
 						success: boolean,
-						response: object,
+						response: apiObject,
 						errorMessage: string | null
 					) => {
 						if (success) {
@@ -61,9 +62,10 @@ export class ApiCall {
 					payload,
 					(
 						success: boolean,
-						response: object,
+						response: apiObject,
 						errorMessage: string | null
 					) => {
+						console.log(response)
 						if (success) {
 							resolve(response)
 						} else {
@@ -79,18 +81,18 @@ export class ApiCall {
 			}
 		})
 	}
-	static get(path: string, payload: object): Promise<ApiResponseObject> {
+	static get(path: string, payload: apiObject): Promise<ApiResponseObject> {
 		return ApiCall.handler(path, 'GET', payload)
 	}
-	static post(path: string, payload: object): Promise<boolean> {
+	static post(path: string, payload: apiObject): Promise<boolean> {
 		return ApiCall.handler(path, 'POST', payload)
 			.then(() => true)
 			.catch(() => false)
 	}
-	static put(path: string, payload: object): Promise<ApiResponseObject> {
+	static put(path: string, payload: apiObject): Promise<ApiResponseObject> {
 		return ApiCall.handler(path, 'PUT', payload)
 	}
-	static delete(path: string, payload: object): Promise<boolean> {
+	static delete(path: string, payload: apiObject): Promise<boolean> {
 		return ApiCall.handler(path, 'DELETE', payload)
 			.then(() => true)
 			.catch(() => false)

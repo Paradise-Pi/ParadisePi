@@ -15,8 +15,8 @@ export const AboutPage = () => {
 				bgColor="#000000"
 				fgColor="#FFFFFF"
 			/>
-			<Link to="/">
-				<Button variant="default">Exit to Shell</Button>
+			<Link to="/admin/controls">
+				<Button variant="default">Exit to Admin</Button>
 			</Link>
 		</>
 	)

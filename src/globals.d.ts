@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-var */
 /**
  * Setup the global scope variables
@@ -12,4 +13,7 @@ declare global {
 	var e131: E131
 	var mainBrowserWindow: BrowserWindow
 	var app: App
+	interface apiObject {
+		[key: string]: any
+	}
 }

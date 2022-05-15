@@ -8,6 +8,13 @@ import { HelpPage } from './Pages/ControlPanel/Help'
 import { ControlPanelNavigation } from './Navigation/ControlPanelNavigation'
 import { AdminNavigation } from './Navigation/AdminNavigation'
 import { LandingPage } from './Pages/Landing'
+import { ConfigurationPage } from './Pages/Admin/Configuration'
+import { MenusConfigurationPage } from './Pages/Admin/Menus'
+import { FoldersConfigurationPage } from './Pages/Admin/Folders'
+import { PresetsConfigurationPage } from './Pages/Admin/Presets'
+import { FadersConfigurationPage } from './Pages/Admin/Faders'
+import { SortingConfigurationPage } from './Pages/Admin/Sorting'
+import { ControlsConfigurationPage } from './Pages/Admin/Controls'
 
 function Router() {
 	return (
@@ -30,7 +37,31 @@ function Router() {
 					path="admin"
 					element={<MainNav navigation={<AdminNavigation />} />}
 				>
-					<Route path="home" element={<div>Admin</div>} />
+					<Route
+						path="configuration"
+						element={<ConfigurationPage />}
+					/>
+					<Route path="menus" element={<MenusConfigurationPage />} />
+					<Route
+						path="folders"
+						element={<FoldersConfigurationPage />}
+					/>
+					<Route
+						path="presets"
+						element={<PresetsConfigurationPage />}
+					/>
+					<Route
+						path="faders"
+						element={<FadersConfigurationPage />}
+					/>
+					<Route
+						path="sorting"
+						element={<SortingConfigurationPage />}
+					/>
+					<Route
+						path="controls"
+						element={<ControlsConfigurationPage />}
+					/>
 				</Route>
 				<Route path="*" element={<LandingPage />} />
 			</Routes>

@@ -1,10 +1,11 @@
+import { aboutRouter } from './about/router'
 import { sendDatabaseObject, createDatabaseObject } from './database'
 
 export const routeRequest = (
 	path: string,
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-	payload: object
-): Promise<object> => {
+	payload: apiObject
+): Promise<apiObject> => {
 	return new Promise((resolve, reject) => {
 		const pathArr = path.split('/').filter(e => e)
 		if (pathArr.length === 0) reject(new Error('Invalid path'))
@@ -18,6 +19,7 @@ export const routeRequest = (
 				})
 				break
 			case 'refreshDatabase':
+				//TODO remove - this is just a POC
 				sendDatabaseObject(
 					createDatabaseObject('from the refresh command')
 				)
@@ -25,6 +27,9 @@ export const routeRequest = (
 				break
 			case 'getDatabase':
 				resolve(createDatabaseObject('from the getDatabase command'))
+				break
+			case 'about':
+				resolve(aboutRouter(pathArr.slice(1), method, payload))
 				break
 		}
 		reject(new Error('Path not found'))

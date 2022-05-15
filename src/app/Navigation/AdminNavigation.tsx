@@ -1,7 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { Navbar, Group, Code, Text } from '@mantine/core'
+import React, { useState } from 'react'
+import { Navbar, Group, Code, Text, ScrollArea } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
-import { FaQuestion, FaCog } from 'react-icons/fa'
+
+import {
+	FaCogs,
+	FaSort,
+	FaLevelUpAlt,
+	FaRegFolder,
+	FaRegSave,
+	FaDatabase,
+	FaBars,
+} from 'react-icons/fa'
 import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
 import { ApiCall } from '../Apis/wrapper'
@@ -12,36 +21,73 @@ function getMe() {
 export function AdminNavigation() {
 	const { classes } = useStyles()
 	const { height } = useViewportSize()
-	const database = useAppSelector(state => state.database)
+	const database = useAppSelector(state =>
+		state.database ? state.database.message : ''
+	)
 
 	const [active, setActive] = useState('Help') // Default page of help
 	return (
 		<Navbar
 			height={height}
-			width={{ sm: 200, md: 200 }}
+			width={{ xs: 200, sm: 200, md: 200 }}
 			p="md"
 			className={classes.navbar}
 		>
-			<Navbar.Section grow>
+			<Navbar.Section grow component={ScrollArea}>
 				<Group className={classes.header} position="apart">
 					<Text className={classes.text}>ParadisePi Admin</Text>
 					<Code className={classes.version} onClick={() => getMe()}>
-						{database.message}
+						{database}
 					</Code>
 				</Group>
-			</Navbar.Section>
-			<Navbar.Section className={classes.footer}>
 				<NavbarItem
-					link="help"
-					label="Help"
-					Icon={FaQuestion}
+					link="configuration"
+					label="Configuration"
+					Icon={FaDatabase}
 					active={active}
 					setActive={setActive}
 				/>
 				<NavbarItem
-					link="about"
-					label="About"
-					Icon={FaCog}
+					link="menus"
+					label="Menus"
+					Icon={FaBars}
+					active={active}
+					setActive={setActive}
+				/>
+				<NavbarItem
+					link="folders"
+					label="Folders"
+					Icon={FaRegFolder}
+					active={active}
+					setActive={setActive}
+				/>
+				<NavbarItem
+					link="presets"
+					label="Presets"
+					Icon={FaRegSave}
+					active={active}
+					setActive={setActive}
+				/>
+				<NavbarItem
+					link="faders"
+					label="Faders"
+					Icon={FaLevelUpAlt}
+					active={active}
+					setActive={setActive}
+				/>
+				<NavbarItem
+					link="sorting"
+					label="Sorting"
+					Icon={FaSort}
+					active={active}
+					setActive={setActive}
+				/>
+			</Navbar.Section>
+			<Navbar.Section className={classes.footer}>
+				<NavbarItem
+					link="controls"
+					label="Controls"
+					Icon={FaCogs}
 					active={active}
 					setActive={setActive}
 				/>

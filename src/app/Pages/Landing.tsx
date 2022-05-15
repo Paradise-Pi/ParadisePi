@@ -15,7 +15,7 @@ export const LandingPage = () => {
 				justify="center"
 			>
 				<Title order={1}>ParadisePi</Title>
-				<Link to="/admin">
+				<Link to="/admin/controls">
 					<Button variant="default" color="dark" size="xl">
 						Administration
 					</Button>

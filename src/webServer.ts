@@ -96,6 +96,7 @@ export class WebServer {
 				origin: '*',
 			},
 		})
+		// TODO catch port 80 not being available and discontinue boot
 		WebServer.server.listen(80)
 		WebServer.socketIo.on('connection', socket => {
 			// This allows the frontend to make requests to the api via socket.io, using the same router as the IPC
@@ -107,10 +108,6 @@ export class WebServer {
 					.catch(error => {
 						callback(false, {}, error.message)
 					})
-			})
-			socket.on('disconnect', (reason: string) => {
-				//TODO remove - not needed
-				console.log('Disconnected: ' + reason)
 			})
 		})
 		console.log('Web & Socket server running')
