@@ -1,5 +1,5 @@
-import { Button, Divider, Group, Modal, SimpleGrid, Text } from '@mantine/core'
-import React, { useEffect, useState } from 'react'
+import { Button, Divider, Group, Text } from '@mantine/core'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { useAppSelector } from './../../Apis/mainStore'

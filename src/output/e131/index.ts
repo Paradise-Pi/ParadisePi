@@ -1,6 +1,6 @@
 import { networkInterfaces } from 'os'
 import e131Lib from 'e131'
-import { LxConfigRepository } from '../../database/repository/config'
+import { ConfigRepository } from '../../database/repository/config'
 
 export default class E131 {
 	// sACN = E131
@@ -13,12 +13,12 @@ export default class E131 {
 	private frequency: number
 	constructor() {
 		this.firstUniverse = parseInt(
-			LxConfigRepository.getItem('e131FirstUniverse')
+			ConfigRepository.getItem('e131FirstUniverse')
 		)
-		this.universes = parseInt(LxConfigRepository.getItem('e131Universes'))
-		this.sourceName = LxConfigRepository.getItem('e131SourceName')
-		this.priority = parseInt(LxConfigRepository.getItem('e131Priority'))
-		this.frequency = parseInt(LxConfigRepository.getItem('e131Frequency'))
+		this.universes = parseInt(ConfigRepository.getItem('e131Universes'))
+		this.sourceName = ConfigRepository.getItem('e131SourceName')
+		this.priority = parseInt(ConfigRepository.getItem('e131Priority'))
+		this.frequency = parseInt(ConfigRepository.getItem('e131Frequency'))
 		this.setupUniverses()
 		this.initSending()
 	}

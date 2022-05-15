@@ -11,7 +11,7 @@ export class Initial1650709558593 implements MigrationInterface {
 			`CREATE TABLE IF NOT EXISTS "lxConfig" ("key" text PRIMARY KEY NOT NULL, "value" text NOT NULL, "name" text NOT NULL, "description" text, "canEdit" boolean NOT NULL DEFAULT (1), "options" text, CONSTRAINT "UQ_acb62d59ac774aa66e3eb124501" UNIQUE ("key"))`
 		)
 		await queryRunner.query(
-			`CREATE TABLE IF NOT EXISTS "lxPresetFolders" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" text NOT NULL, "parentId" integer)`
+			`CREATE TABLE IF NOT EXISTS "lxPresetFolders" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" text NOT NULL, "parentFolderId" integer)`
 		)
 		await queryRunner.query(
 			`CREATE TABLE IF NOT EXISTS "lxPreset" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" text NOT NULL, "enabled" boolean NOT NULL DEFAULT (1), "universe" text NOT NULL, "setArguments" text, "fadeTime" integer DEFAULT (0), "folderId" integer)`
@@ -120,7 +120,7 @@ export class Initial1650709558593 implements MigrationInterface {
 			`CREATE TABLE "temporary_lxPresetFolders" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" text NOT NULL, "parentId" integer, CONSTRAINT "FK_cf72e37bb51ca0282f32be47bb6" FOREIGN KEY ("parentId") REFERENCES "lxPresetFolders" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION)`
 		)
 		await queryRunner.query(
-			`INSERT INTO "temporary_lxPresetFolders"("id", "name", "parentId") SELECT "id", "name", "parentId" FROM "lxPresetFolders"`
+			`INSERT INTO "temporary_lxPresetFolders"("id", "name", "parentId") SELECT "id", "name", "parentFolderId" FROM "lxPresetFolders"`
 		)
 		await queryRunner.query(`DROP TABLE IF EXISTS "lxPresetFolders"`)
 		await queryRunner.query(

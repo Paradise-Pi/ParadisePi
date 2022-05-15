@@ -6,30 +6,38 @@ import path from 'path'
  * Manually import each of the models/migrations because otherwise Webpack doesn't spot them
  */
 import { Config } from './model/Config'
-import { LxConfig } from './model/LxConfig'
-import { LxPreset } from './model/LxPreset'
-import { LxPresetFolders } from './model/LxPresetFolders'
-import { SndConfig } from './model/SndConfig'
-import { SndFaders } from './model/SndFaders'
-import { SndPreset } from './model/SndPreset'
+import { Preset } from './model/Preset'
+import { PresetFolders } from './model/PresetFolders'
 import { Initial1650709558593 } from './migration/1650709558593-Initial'
 import { InsertConfig1650710286405 } from './migration/1650710286405-InsertConfig'
+import { SimplifyConfig1652626978152 } from './migration/1652626978152-SimplifyConfig'
+import { ConsolidateConfigTables1652627450654 } from './migration/1652627450654-ConsolidateConfigTables'
+import { NewPresetTables1652628740334 } from './migration/1652628740334-NewPresetTables'
+import { MovePresetsAcross1652628929444 } from './migration/1652628929444-MovePresetsAcross'
+import { Fader } from './model/Faders'
+import { NewFaderTable1652632044135 } from './migration/1652632044135-NewFaderTable'
+import { AddSort1652632118557 } from './migration/1652632118557-AddSort'
+import { MoveFaders1652632675036 } from './migration/1652632675036-MoveFaders'
+import { DropTables1652632685655 } from './migration/1652632685655-DropTables'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
 	database: path.join(__dirname, '../../database.sqlite'),
 	synchronize: false,
 	migrationsRun: true,
-	entities: [
-		Config,
-		LxConfig,
-		LxPreset,
-		LxPresetFolders,
-		SndConfig,
-		SndFaders,
-		SndPreset,
+	entities: [Config, Preset, PresetFolders, Preset, Fader],
+	migrations: [
+		Initial1650709558593,
+		InsertConfig1650710286405,
+		SimplifyConfig1652626978152,
+		ConsolidateConfigTables1652627450654,
+		NewPresetTables1652628740334,
+		MovePresetsAcross1652628929444,
+		NewFaderTable1652632044135,
+		AddSort1652632118557,
+		MoveFaders1652632675036,
+		DropTables1652632685655,
 	],
-	migrations: [Initial1650709558593, InsertConfig1650710286405],
 	subscribers: [],
 })
 export default dataSource

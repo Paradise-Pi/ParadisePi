@@ -1,5 +1,5 @@
 import { aboutRouter } from './about/router'
-import { sendDatabaseObject, createDatabaseObject } from './database'
+import { createDatabaseObject } from './database'
 
 export const routeRequest = (
 	path: string,

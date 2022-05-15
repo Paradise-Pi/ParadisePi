@@ -4,11 +4,11 @@ import createMainWindow from './electron/createMainWindow'
 import dataSource from './database/dataSource'
 import fs from 'fs'
 import { WebServer } from './webServer'
-import { LxConfigRepository } from './database/repository/config'
 
 import E131 from './output/e131'
 import { routeRequest } from './api/router'
 import { IpcRequest } from './api/ipc'
+import { ConfigRepository } from './database/repository/config'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -45,7 +45,7 @@ app.whenReady().then(() => {
 					createMainWindow('/e131sampler')
 				} else {
 					//setupOSC();
-					if (LxConfigRepository.getItem('e131Enabled')) {
+					if (ConfigRepository.getItem('e131Enabled')) {
 						globalThis.e131 = new E131() // Have a single version of the class because it locks the network output
 					}
 

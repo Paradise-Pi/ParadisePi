@@ -3,29 +3,35 @@ import {
 	Column,
 	CreateDateColumn,
 	Entity,
+	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 	VersionColumn,
 } from 'typeorm'
 
-export abstract class ConfigType {
-	@Column('text', {
-		primary: true,
-		unique: true,
-	})
-	key: string
+@Entity('faders')
+export class Fader {
+	@PrimaryGeneratedColumn()
+	id: number
 
 	@Column('text')
-	value: string
+	name: string
 
-	@Column('simple-json', {
-		nullable: true,
-		default: () => {
-			null
-		},
-	})
-	json: {
+	@Column('integer', { nullable: true })
+	channel: number | null
+
+	@Column('boolean')
+	enabled: boolean
+
+	@Column('simple-json', { nullable: true })
+	data: {
 		[key: string]: any
 	}
+
+	@Column('text')
+	type: string
+
+	@Column('integer')
+	sort: number
 
 	@CreateDateColumn({ nullable: true })
 	createdAt: Date
@@ -36,6 +42,3 @@ export abstract class ConfigType {
 	@VersionColumn({ nullable: true })
 	version: number
 }
-
-@Entity('config')
-export class Config extends ConfigType {}
