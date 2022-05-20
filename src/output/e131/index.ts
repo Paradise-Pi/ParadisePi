@@ -11,6 +11,7 @@ export default class E131 {
 	private sourceName: string
 	private priority: number
 	private frequency: number
+
 	constructor() {
 		this.firstUniverse = parseInt(
 			ConfigRepository.getItem('e131FirstUniverse')
@@ -56,6 +57,7 @@ export default class E131 {
 			}
 		}
 	}
+	//Keep e131 alive by regularly transmitting state.
 	send(universe: number) {
 		this.e131Clients[universe]['client'].send(
 			this.e131Clients[universe]['packet'],
@@ -65,5 +67,51 @@ export default class E131 {
 				}, 1000 / this.frequency)
 			}
 		)
+	}
+	/**
+	 * Update a given universe's channel levels
+	 * @param universe [Integer] universe number between 1 and 63999
+	 * @param channelData [Array<number>] - ["channel Number" => new level]
+	 * @param fadeTime Fade time in ms
+	 */
+	update(universe: number, channelData: Array<number>, fadeTime: number) {
+		if (fadeTime) {
+			const startLevel = this.e131Clients[universe]['addressData']
+			this.fade(universe, startLevel, channelData, fadeTime, 0)
+		} else {
+			this.snap(universe, channelData)
+		}
+	}
+
+	//update channels instantly
+	private snap(universe: number, channelData: Array<number>) {
+		for (const [channel, value] of Object.entries(channelData)) {
+			//                            channels are 1 indexed, array is 0 indexed :(
+			this.e131Clients[universe]['addressData'][+channel - 1] = value
+		}
+	}
+
+	//update channel level over given fadeTime
+	private fade(
+		universe: number,
+		startLevel: Buffer, //full buffer of initial levels
+		targetLevel: Array<number>, //array of target channel levels
+		fadeTime: number, //time in ms
+		currentTime: number //current time in ms
+	) {
+		const fadePercent = currentTime / fadeTime
+
+		for (const [channel, value] of Object.entries(targetLevel)) {
+			const levelDifference = value - startLevel[+channel - 1]
+			const levelStep = levelDifference * fadePercent
+			this.e131Clients[universe]['addressData'][+channel - 1] =
+				startLevel[+channel - 1] + levelStep
+		}
+
+		if (fadePercent < 1) {
+			setTimeout(function () {
+				this.fade(startLevel, targetLevel, fadeTime, currentTime + 500)
+			}, 500)
+		}
 	}
 }
