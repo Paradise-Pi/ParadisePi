@@ -1,1 +1,1 @@
-declare module 'e131'
+declare module '@paradise-pi/e131'
