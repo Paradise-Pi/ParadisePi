@@ -2,10 +2,25 @@ import { networkInterfaces } from 'os'
 import e131Lib from '@paradise-pi/e131'
 import { ConfigRepository } from '../../database/repository/config'
 
+interface channelData {
+	channel: number
+	level: number
+}
+
+interface channelFade {
+	channel: number
+	universe: number
+	fadeFrom: number
+	fadeTo: number
+	fadeFromTimestamp: number
+	fadeToTimestamp: number
+}
+
 export default class E131 {
 	// sACN = E131
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public e131Clients: Array<any> // Bit cheeky, but disabling the check because there are no typings for the lib
+	private fades: Array<channelFade>
 	private firstUniverse: number
 	private universes: number
 	private sourceName: string
@@ -29,6 +44,7 @@ export default class E131 {
 	}
 	setupUniverses() {
 		this.e131Clients = []
+		this.fades = []
 		for (
 			let i = this.firstUniverse;
 			i <= this.firstUniverse + this.universes - 1;
@@ -59,59 +75,86 @@ export default class E131 {
 	}
 	//Keep e131 alive by regularly transmitting state.
 	send(universe: number) {
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		const self = this
+		//every cycle, check whether anything is fading
+		this.checkForFades()
 		this.e131Clients[universe]['client'].send(
 			this.e131Clients[universe]['packet'],
 			function () {
 				setTimeout(function () {
-					this.send(universe)
-				}, 1000 / this.frequency)
+					self.send(universe)
+				}, 1000 / self.frequency)
 			}
 		)
 	}
+
+	checkForFades() {
+		const timeNow = +new Date()
+		//fades is the array of current fades
+		for (const channel of this.fades) {
+			if (channel.fadeToTimestamp >= timeNow) {
+				//how far through time period are we
+				let fadePercent = 1
+				if (channel.fadeFromTimestamp != channel.fadeToTimestamp) {
+					fadePercent =
+						(timeNow - channel.fadeFromTimestamp) /
+						(channel.fadeToTimestamp - channel.fadeFromTimestamp)
+				}
+				//update channel to that level
+				this.e131Clients[channel.universe]['addressData'][
+					channel.channel - 1
+				] =
+					channel.fadeFrom +
+					(channel.fadeTo - channel.fadeFrom) * fadePercent
+
+				//time is finished so remove from array
+			} else {
+				this.fades.splice(
+					this.fades.findIndex(
+						item => item.channel === channel.channel
+					),
+					1
+				)
+			}
+		}
+	}
+
 	/**
 	 * Update a given universe's channel levels
-	 * @param universe [Integer] universe number between 1 and 63999
-	 * @param channelData [Array<number>] - ["channel Number" => new level]
-	 * @param fadeTime Fade time in ms
+	 * @param universe universe number between 1 and 63999
+	 * @param channelData  - [channel:number, level:number]
+	 * @param fadeTime (optional) Fade time in ms
 	 */
-	update(universe: number, channelData: Array<number>, fadeTime: number) {
-		if (fadeTime) {
-			const startLevel = this.e131Clients[universe]['addressData']
-			this.fade(universe, startLevel, channelData, fadeTime, 0)
-		} else {
-			this.snap(universe, channelData)
-		}
-	}
-
-	//update channels instantly
-	private snap(universe: number, channelData: Array<number>) {
-		for (const [channel, value] of Object.entries(channelData)) {
-			//                            channels are 1 indexed, array is 0 indexed :(
-			this.e131Clients[universe]['addressData'][+channel - 1] = value
-		}
-	}
-
-	//update channel level over given fadeTime
-	private fade(
-		universe: number,
-		startLevel: Buffer, //full buffer of initial levels
-		targetLevel: Array<number>, //array of target channel levels
-		fadeTime: number, //time in ms
-		currentTime: number //current time in ms
+	update(
+		thisUniverse: number,
+		channelData: Array<channelData>,
+		fadeTime = 0
 	) {
-		const fadePercent = currentTime / fadeTime
+		const dateNow = new Date()
+		for (const thisChannel of channelData) {
+			const thisFade = {
+				channel: thisChannel.channel,
+				universe: thisUniverse,
+				fadeFrom:
+					// eslint-disable-next-line prettier/prettier
+					this.e131Clients[thisUniverse]['addressData'][thisChannel.channel - 1],
+				fadeTo: thisChannel.level,
+				fadeFromTimestamp: +dateNow,
+				fadeToTimestamp: +new Date(dateNow.getTime() + fadeTime) + 1, //fadetime + 1 allows final value to be set
+			}
 
-		for (const [channel, value] of Object.entries(targetLevel)) {
-			const levelDifference = value - startLevel[+channel - 1]
-			const levelStep = levelDifference * fadePercent
-			this.e131Clients[universe]['addressData'][+channel - 1] =
-				startLevel[+channel - 1] + levelStep
-		}
-
-		if (fadePercent < 1) {
-			setTimeout(function () {
-				this.fade(startLevel, targetLevel, fadeTime, currentTime + 500)
-			}, 500)
+			//remove existing fade from array
+			const currentIndex = this.fades.findIndex(
+				item => item.channel == thisChannel.channel
+			)
+			//if >-1, channel already exists in array
+			if (currentIndex > -1) {
+				//remove the old fade
+				this.fades.splice(currentIndex, 1)
+			}
+			//always add new fade
+			this.fades.push(thisFade)
 		}
 	}
 }

@@ -93,6 +93,10 @@ ipcMain.handle('apiCall', async (event: IpcMainEvent, args: IpcRequest) => {
 		)
 		return { success: true, response, errorMessage: null }
 	} catch (error) {
-		return { success: false, response: null, errorMessage: error.message }
+		return {
+			success: false,
+			response: null,
+			errorMessage: error.message,
+		}
 	}
 })
