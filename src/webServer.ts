@@ -5,12 +5,7 @@ import fs from 'fs'
 import dataSource from './database/dataSource'
 import { reboot } from './electron/windowUtilities'
 import path from 'path'
-import {
-	ClientToServerEvents,
-	InterServerEvents,
-	ServerToClientEvents,
-	SocketData,
-} from './api/socketIo'
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './api/socketIo'
 import { routeRequest } from './api/router'
 import { Server } from 'socket.io'
 
@@ -19,13 +14,10 @@ export class WebServer {
 	static server: http.Server
 	static socketIo: Server
 	constructor() {
-		WebServer.staticFileServer = new staticServer.Server(
-			__dirname + '/../renderer/',
-			{
-				cache: false,
-				indexFile: 'main_window/index.html',
-			}
-		)
+		WebServer.staticFileServer = new staticServer.Server(__dirname + '/../renderer/', {
+			cache: false,
+			indexFile: 'main_window/index.html',
+		})
 		WebServer.server = http.createServer(function (req, res) {
 			if (req.url == '/database/upload') {
 				// Allow uploading of the database
@@ -37,18 +29,14 @@ export class WebServer {
 				form.parse(req, function (err) {
 					if (err) throw err
 					dataSource.destroy().then(() => {
-						fs.rename(
-							'user-uploaded-database.sqlite',
-							'database.sqlite',
-							err => {
-								if (err) throw err
-								res.write(
-									'System restored from backup. Please now check the device has initiated correctly'
-								)
-								res.end()
-								reboot(true)
-							}
-						)
+						fs.rename('user-uploaded-database.sqlite', 'database.sqlite', err => {
+							if (err) throw err
+							res.write(
+								'System restored from backup. Please now check the device has initiated correctly'
+							)
+							res.end()
+							reboot(true)
+						})
 					})
 				})
 			} else if (req.url == '/database/download') {
@@ -86,16 +74,14 @@ export class WebServer {
 				})
 			}
 		})
-		WebServer.socketIo = new Server<
-			ClientToServerEvents,
-			ServerToClientEvents,
-			InterServerEvents,
-			SocketData
-		>(WebServer.server, {
-			cors: {
-				origin: '*',
-			},
-		})
+		WebServer.socketIo = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(
+			WebServer.server,
+			{
+				cors: {
+					origin: '*',
+				},
+			}
+		)
 		// TODO catch port 80 not being available and discontinue boot
 		WebServer.server.listen(80)
 		WebServer.socketIo.on('connection', socket => {

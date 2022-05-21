@@ -10,7 +10,12 @@ import {
 } from 'typeorm'
 import { Preset } from './Preset'
 
-@Entity('presetFolders')
+@Entity('presetFolders', {
+	orderBy: {
+		sort: 'ASC',
+		name: 'ASC',
+	},
+})
 export class PresetFolders {
 	@PrimaryGeneratedColumn()
 	id: number
@@ -25,6 +30,14 @@ export class PresetFolders {
 
 	@Column('integer', { default: 1 })
 	sort: number
+
+	@Column('text', {
+		nullable: true,
+		default: (): string => {
+			return null
+		},
+	})
+	icon: string | null
 
 	@OneToMany(() => Preset, Preset => Preset.folder)
 	presets: Preset[]

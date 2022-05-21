@@ -1,5 +1,6 @@
+import { DatabasePreset, PresetRepository } from './../database/repository/preset'
 import { aboutRouter } from './about/router'
-import { createDatabaseObject } from './database'
+import { createDatabaseObject, Database, sendDatabaseObject } from './database'
 
 export const routeRequest = (
 	path: string,
@@ -19,11 +20,25 @@ export const routeRequest = (
 				})
 				break
 			case 'database':
-				resolve(createDatabaseObject('from the getDatabase command'))
+				return createDatabaseObject('GET database api call').then(response => {
+					resolve(response)
+				})
 				break
 			case 'about':
 				resolve(aboutRouter(pathArr.slice(1), method, payload))
 				break
+			case 'presets':
+				if (method === 'PUT') {
+					return PresetRepository.setAll(payload as Array<DatabasePreset>)
+						.then(() => {
+							return createDatabaseObject('updating all presets in bulk')
+						})
+						.then((response: Database) => {
+							sendDatabaseObject(response)
+							resolve({})
+						})
+					break
+				}
 		}
 		reject(new Error('Path not found'))
 	})

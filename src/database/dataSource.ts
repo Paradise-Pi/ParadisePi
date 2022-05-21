@@ -19,6 +19,8 @@ import { NewFaderTable1652632044135 } from './migration/1652632044135-NewFaderTa
 import { AddSort1652632118557 } from './migration/1652632118557-AddSort'
 import { MoveFaders1652632675036 } from './migration/1652632675036-MoveFaders'
 import { DropTables1652632685655 } from './migration/1652632685655-DropTables'
+import { AddIcons1653145460118 } from './migration/1653145460118-AddIcons'
+import { AddColorColumn1653147200134 } from './migration/1653147200134-AddColorColumn'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -37,6 +39,8 @@ const dataSource = new DataSource({
 		AddSort1652632118557,
 		MoveFaders1652632675036,
 		DropTables1652632685655,
+		AddIcons1653145460118,
+		AddColorColumn1653147200134,
 	],
 	subscribers: [],
 })

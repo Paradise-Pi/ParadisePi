@@ -7,12 +7,9 @@ module.exports = [
 	{
 		// https://github.com/electron-userland/electron-forge/issues/2412#issuecomment-1013740102
 		apply(compiler) {
-			compiler.hooks.compilation.tap(
-				'webpack-asset-relocator-loader',
-				compilation => {
-					relocateLoader.initAssetCache(compilation, 'native_modules')
-				}
-			)
+			compiler.hooks.compilation.tap('webpack-asset-relocator-loader', compilation => {
+				relocateLoader.initAssetCache(compilation, 'native_modules')
+			})
 		},
 	},
 ]

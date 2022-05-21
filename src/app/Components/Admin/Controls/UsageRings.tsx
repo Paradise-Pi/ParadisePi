@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-	RingProgress,
-	Text,
-	Button,
-	Group,
-	Modal,
-	Skeleton,
-} from '@mantine/core'
+import { RingProgress, Text, Button, Group, Modal, Skeleton } from '@mantine/core'
 import * as timeago from 'timeago.js'
 import { Prism } from '@mantine/prism'
 import { ApiCall } from '../../../Apis/wrapper'
@@ -16,11 +9,9 @@ export const UsageRings = () => {
 	const [usageData, setUsageData] = useState<apiObject>({})
 	useEffect(() => {
 		const getOSUsageTimer = setInterval(() => {
-			ApiCall.get('/about/operatingSystemUsage', {}).then(
-				(data: apiObject) => {
-					setUsageData(data)
-				}
-			)
+			ApiCall.get('/about/operatingSystemUsage', {}).then((data: apiObject) => {
+				setUsageData(data)
+			})
 		}, 1000)
 		return () => {
 			clearInterval(getOSUsageTimer)
@@ -69,10 +60,7 @@ export const UsageRings = () => {
 					<Text color="white" align="center" size="md">
 						RAM
 						<br />
-						{Math.round(
-							usageData.memory.usedMemPercentage as number
-						)}
-						%
+						{Math.round(usageData.memory.usedMemPercentage as number)}%
 					</Text>
 				}
 			></RingProgress>
@@ -104,14 +92,7 @@ export const UsageRings = () => {
 					</Text>
 				}
 			></RingProgress>
-			<Button
-				color="pink"
-				onClick={() => setusageModalOpened(true)}
-				variant="default"
-				size="sm"
-				mx="xs"
-				my="xs"
-			>
+			<Button color="pink" onClick={() => setusageModalOpened(true)} variant="default" size="sm" mx="xs" my="xs">
 				View System Resource Usage
 			</Button>
 			<Modal

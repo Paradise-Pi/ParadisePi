@@ -10,7 +10,12 @@ import {
 } from 'typeorm'
 import { PresetFolders } from './PresetFolders'
 
-@Entity('presets')
+@Entity('presets', {
+	orderBy: {
+		sort: 'ASC',
+		name: 'ASC',
+	},
+})
 export class Preset {
 	@PrimaryGeneratedColumn()
 	id: number
@@ -18,6 +23,7 @@ export class Preset {
 	@Column('text')
 	name: string
 
+	// Enabled is taken to mean visible - macros can still trigger the preset but it is hidden
 	@Column('boolean', {
 		default: true,
 	})
@@ -29,6 +35,9 @@ export class Preset {
 	@Column('text', { nullable: true })
 	universe: string | null
 
+	@Column('text', { nullable: true })
+	color: string | null
+
 	@Column('integer', {
 		default: 0,
 		nullable: true,
@@ -36,7 +45,7 @@ export class Preset {
 	fadeTime: number
 
 	@ManyToOne(() => PresetFolders, PresetFolders => PresetFolders.presets, {
-		nullable: true,
+		eager: true,
 	})
 	folder: PresetFolders
 

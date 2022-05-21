@@ -10,11 +10,7 @@ export const AboutPage = () => {
 				<Text>ParadisePi</Text>
 				<Text>Facility control panel for sACN & OSC, in Electron.</Text>
 			</Paper>
-			<QRCodeSVG
-				value="https://google.com/"
-				bgColor="#000000"
-				fgColor="#FFFFFF"
-			/>
+			<QRCodeSVG value="https://google.com/" bgColor="#000000" fgColor="#FFFFFF" />
 			<Link to="/admin/controls">
 				<Button variant="default">Exit to Admin</Button>
 			</Link>

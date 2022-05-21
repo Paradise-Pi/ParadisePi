@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-	Column,
-	CreateDateColumn,
-	Entity,
-	UpdateDateColumn,
-	VersionColumn,
-} from 'typeorm'
+import { Column, CreateDateColumn, Entity, UpdateDateColumn, VersionColumn } from 'typeorm'
 
 export abstract class ConfigType {
 	@Column('text', {

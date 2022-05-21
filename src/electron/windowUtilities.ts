@@ -2,12 +2,7 @@ import dataSource from '../database/dataSource'
 import { app } from 'electron'
 import fs from 'fs'
 
-export const reboot = (
-	reboot?: boolean,
-	force?: boolean,
-	flagsAdd?: Array<string>,
-	flagsRemove?: Array<string>
-) => {
+export const reboot = (reboot?: boolean, force?: boolean, flagsAdd?: Array<string>, flagsRemove?: Array<string>) => {
 	if (!flagsAdd) {
 		flagsAdd = []
 	}

@@ -8,17 +8,11 @@ contextBridge.exposeInMainWorld('ipcApi', {
 		path: string,
 		method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 		payload: apiObject,
-		callback: (
-			success: boolean,
-			response: apiObject,
-			errorMessage: string | null
-		) => void
+		callback: (success: boolean, response: apiObject, errorMessage: string | null) => void
 	) => {
-		ipcRenderer
-			.invoke('apiCall', { path, method, payload } as IpcRequest)
-			.then(result => {
-				callback(result.success, result.response, result.errorMessage)
-			})
+		ipcRenderer.invoke('apiCall', { path, method, payload } as IpcRequest).then(result => {
+			callback(result.success, result.response, result.errorMessage)
+		})
 	},
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	receive: (channel: string, func: any) => {

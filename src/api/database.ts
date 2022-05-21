@@ -1,3 +1,5 @@
+import { DatabasePreset, PresetRepository } from './../database/repository/preset'
+import { DatabasePresetFolder, PresetFolderRepository } from './../database/repository/presetFolder'
 import { WebServer } from './../webServer'
 import { getOperatingSystemName } from './about/operatingSystem/info'
 
@@ -9,9 +11,11 @@ export interface Database {
 			name: string
 		}
 	}
+	presets: Array<DatabasePreset>
+	presetFolders: Array<DatabasePresetFolder>
 }
 
-export const createDatabaseObject = (message: string): Database => {
+export const createDatabaseObject = async (message: string): Promise<Database> => {
 	return {
 		message,
 		about: {
@@ -19,6 +23,8 @@ export const createDatabaseObject = (message: string): Database => {
 				name: getOperatingSystemName(),
 			},
 		},
+		presets: await PresetRepository.getAll(),
+		presetFolders: await PresetFolderRepository.getAll(),
 	}
 }
 

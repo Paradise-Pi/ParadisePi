@@ -36,12 +36,11 @@ const App = () => {
 		</MantineProvider>
 	)
 }
+// Strict mode disabled - see https://github.com/atlassian/react-beautiful-dnd/issues/2399
 root.render(
-	<React.StrictMode>
-		<Provider store={store}>
-			<App />
-		</Provider>
-	</React.StrictMode>
+	<Provider store={store}>
+		<App />
+	</Provider>
 )
 
 if (runningInElectron()) {

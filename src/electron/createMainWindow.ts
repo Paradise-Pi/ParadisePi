@@ -43,9 +43,7 @@ export default (startPath: string): BrowserWindow => {
 		callback({
 			responseHeaders: {
 				...details.responseHeaders,
-				'Content-Security-Policy': [
-					"default-src 'self' 'unsafe-eval' 'unsafe-inline';",
-				],
+				'Content-Security-Policy': ["default-src 'self' 'unsafe-eval' 'unsafe-inline';"],
 			},
 		})
 	})

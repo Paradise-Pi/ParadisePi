@@ -49,8 +49,7 @@ app.whenReady().then(() => {
 						globalThis.e131 = new E131() // Have a single version of the class because it locks the network output
 					}
 
-					globalThis.mainBrowserWindow =
-						createMainWindow('/controlPanel/help')
+					globalThis.mainBrowserWindow = createMainWindow('/controlPanel/help')
 					new WebServer()
 				}
 			})
@@ -62,8 +61,7 @@ app.whenReady().then(() => {
 	})
 
 	app.on('activate', function () {
-		if (BrowserWindow.getAllWindows().length === 0)
-			createMainWindow('/controlPanel/help')
+		if (BrowserWindow.getAllWindows().length === 0) createMainWindow('/controlPanel/help')
 	})
 })
 
@@ -86,11 +84,7 @@ app.on('activate', () => {
 
 ipcMain.handle('apiCall', async (event: IpcMainEvent, args: IpcRequest) => {
 	try {
-		const response = await routeRequest(
-			args.path,
-			args.method,
-			args.payload
-		)
+		const response = await routeRequest(args.path, args.method, args.payload)
 		return { success: true, response, errorMessage: null }
 	} catch (error) {
 		return {

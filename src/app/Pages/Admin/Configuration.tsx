@@ -12,7 +12,7 @@ export const ConfigurationPage = () => {
 			<Tabs.Tab label="General" icon={<FaTools />}>
 				<GeneralConfigurationPage />
 			</Tabs.Tab>
-			<Tabs.Tab label="e131 (sACN)" icon={<FaLightbulb />}>
+			<Tabs.Tab label="sACN (E1.31)" icon={<FaLightbulb />}>
 				<E131ModuleConfigurationPage />
 			</Tabs.Tab>
 			<Tabs.Tab label="HTTP" icon={<FaNetworkWired />} disabled>

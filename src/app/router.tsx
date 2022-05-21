@@ -20,12 +20,7 @@ function Router() {
 	return (
 		<HashRouter>
 			<Routes>
-				<Route
-					path="controlPanel"
-					element={
-						<MainNav navigation={<ControlPanelNavigation />} />
-					}
-				>
+				<Route path="controlPanel" element={<MainNav navigation={<ControlPanelNavigation />} />}>
 					<Route path="projector" element={<div>Proj</div>} />
 					<Route path="sound" element={<div>Sound</div>} />
 					<Route path="lighting" element={<LightingPage />} />
@@ -33,35 +28,14 @@ function Router() {
 					<Route path="about" element={<AboutPage />} />
 				</Route>
 				<Route path="e131sampler" element={<div>Sampling e131</div>} />
-				<Route
-					path="admin"
-					element={<MainNav navigation={<AdminNavigation />} />}
-				>
-					<Route
-						path="configuration"
-						element={<ConfigurationPage />}
-					/>
+				<Route path="admin" element={<MainNav navigation={<AdminNavigation />} />}>
+					<Route path="configuration" element={<ConfigurationPage />} />
 					<Route path="menus" element={<MenusConfigurationPage />} />
-					<Route
-						path="folders"
-						element={<FoldersConfigurationPage />}
-					/>
-					<Route
-						path="presets"
-						element={<PresetsConfigurationPage />}
-					/>
-					<Route
-						path="faders"
-						element={<FadersConfigurationPage />}
-					/>
-					<Route
-						path="sorting"
-						element={<SortingConfigurationPage />}
-					/>
-					<Route
-						path="controls"
-						element={<ControlsConfigurationPage />}
-					/>
+					<Route path="folders" element={<FoldersConfigurationPage />} />
+					<Route path="presets" element={<PresetsConfigurationPage />} />
+					<Route path="faders" element={<FadersConfigurationPage />} />
+					<Route path="sorting" element={<SortingConfigurationPage />} />
+					<Route path="controls" element={<ControlsConfigurationPage />} />
 				</Route>
 				<Route path="*" element={<LandingPage />} />
 			</Routes>
@@ -72,12 +46,7 @@ const MainNav = ({ navigation }: { navigation: ReactElement }) => {
 	const { height } = useViewportSize()
 	return (
 		<AppShell navbar={navigation} padding={0}>
-			<ScrollArea
-				style={{ height }}
-				type="auto"
-				offsetScrollbars
-				scrollbarSize={20}
-			>
+			<ScrollArea style={{ height }} type="auto" offsetScrollbars scrollbarSize={20}>
 				<Container fluid px={'md'} py="md">
 					<Outlet />
 				</Container>

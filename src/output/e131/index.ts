@@ -28,9 +28,7 @@ export default class E131 {
 	private frequency: number
 
 	constructor() {
-		this.firstUniverse = parseInt(
-			ConfigRepository.getItem('e131FirstUniverse')
-		)
+		this.firstUniverse = parseInt(ConfigRepository.getItem('e131FirstUniverse'))
 		this.universes = parseInt(ConfigRepository.getItem('e131Universes'))
 		this.sourceName = ConfigRepository.getItem('e131SourceName')
 		this.priority = parseInt(ConfigRepository.getItem('e131Priority'))
@@ -45,16 +43,10 @@ export default class E131 {
 	setupUniverses() {
 		this.e131Clients = []
 		this.fades = []
-		for (
-			let i = this.firstUniverse;
-			i <= this.firstUniverse + this.universes - 1;
-			i++
-		) {
+		for (let i = this.firstUniverse; i <= this.firstUniverse + this.universes - 1; i++) {
 			this.e131Clients[i] = { client: new e131Lib.Client(i) }
-			this.e131Clients[i]['packet'] =
-				this.e131Clients[i]['client'].createPacket(512)
-			this.e131Clients[i]['addressData'] =
-				this.e131Clients[i]['packet'].getSlotsData()
+			this.e131Clients[i]['packet'] = this.e131Clients[i]['client'].createPacket(512)
+			this.e131Clients[i]['addressData'] = this.e131Clients[i]['packet'].getSlotsData()
 			this.e131Clients[i]['packet'].setSourceName(this.sourceName)
 			this.e131Clients[i]['packet'].setUniverse(i)
 			this.e131Clients[i]['packet'].setPriority(this.priority)
@@ -64,11 +56,7 @@ export default class E131 {
 	initSending() {
 		//Start sending out data to the universes specified
 		if (this.universes > 0) {
-			for (
-				let universe = this.firstUniverse;
-				universe <= this.firstUniverse + this.universes - 1;
-				universe++
-			) {
+			for (let universe = this.firstUniverse; universe <= this.firstUniverse + this.universes - 1; universe++) {
 				this.send(universe)
 			}
 		}
@@ -79,14 +67,11 @@ export default class E131 {
 		const self = this
 		//every cycle, check whether anything is fading
 		this.checkForFades()
-		this.e131Clients[universe]['client'].send(
-			this.e131Clients[universe]['packet'],
-			function () {
-				setTimeout(function () {
-					self.send(universe)
-				}, 1000 / self.frequency)
-			}
-		)
+		this.e131Clients[universe]['client'].send(this.e131Clients[universe]['packet'], function () {
+			setTimeout(function () {
+				self.send(universe)
+			}, 1000 / self.frequency)
+		})
 	}
 
 	checkForFades() {
@@ -98,22 +83,16 @@ export default class E131 {
 				let fadePercent = 1
 				if (channel.fadeFromTimestamp != channel.fadeToTimestamp) {
 					fadePercent =
-						(timeNow - channel.fadeFromTimestamp) /
-						(channel.fadeToTimestamp - channel.fadeFromTimestamp)
+						(timeNow - channel.fadeFromTimestamp) / (channel.fadeToTimestamp - channel.fadeFromTimestamp)
 				}
 				//update channel to that level
-				this.e131Clients[channel.universe]['addressData'][
-					channel.channel - 1
-				] =
-					channel.fadeFrom +
-					(channel.fadeTo - channel.fadeFrom) * fadePercent
+				this.e131Clients[channel.universe]['addressData'][channel.channel - 1] =
+					channel.fadeFrom + (channel.fadeTo - channel.fadeFrom) * fadePercent
 
 				//time is finished so remove from array
 			} else {
 				this.fades.splice(
-					this.fades.findIndex(
-						item => item.channel === channel.channel
-					),
+					this.fades.findIndex(item => item.channel === channel.channel),
 					1
 				)
 			}
@@ -126,11 +105,7 @@ export default class E131 {
 	 * @param channelData  - [channel:number, level:number]
 	 * @param fadeTime (optional) Fade time in ms
 	 */
-	update(
-		thisUniverse: number,
-		channelData: Array<channelData>,
-		fadeTime = 0
-	) {
+	update(thisUniverse: number, channelData: Array<channelData>, fadeTime = 0) {
 		const dateNow = new Date()
 		for (const thisChannel of channelData) {
 			const thisFade = {
@@ -145,9 +120,7 @@ export default class E131 {
 			}
 
 			//remove existing fade from array
-			const currentIndex = this.fades.findIndex(
-				item => item.channel == thisChannel.channel
-			)
+			const currentIndex = this.fades.findIndex(item => item.channel == thisChannel.channel)
 			//if >-1, channel already exists in array
 			if (currentIndex > -1) {
 				//remove the old fade

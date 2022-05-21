@@ -8,12 +8,7 @@ export const LandingPage = () => {
 	const { height, width } = useViewportSize()
 	return (
 		<>
-			<Stack
-				style={{ width, height }}
-				align="center"
-				spacing="lg"
-				justify="center"
-			>
+			<Stack style={{ width, height }} align="center" spacing="lg" justify="center">
 				<Title order={1}>ParadisePi</Title>
 				<Link to="/admin/controls">
 					<Button variant="default" color="dark" size="xl">

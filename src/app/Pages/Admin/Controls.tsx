@@ -7,19 +7,9 @@ import { runningInElectron } from './../../Apis/version'
 import { UsageRings } from '../../Components/Admin/Controls/UsageRings'
 import { useModals } from '@mantine/modals'
 
-const PanelButton = (props: {
-	children: React.ReactNode
-	onClick?: React.MouseEventHandler<HTMLButtonElement>
-}) => {
+const PanelButton = (props: { children: React.ReactNode; onClick?: React.MouseEventHandler<HTMLButtonElement> }) => {
 	return (
-		<Button
-			variant="default"
-			color="dark"
-			size="md"
-			mx="xs"
-			my="xs"
-			onClick={props.onClick}
-		>
+		<Button variant="default" color="dark" size="md" mx="xs" my="xs" onClick={props.onClick}>
 			{props.children}
 		</Button>
 	)
@@ -53,8 +43,7 @@ export const ControlsConfigurationPage = () => {
 				<Text size="sm">
 					Are you sure you want to reboot this computer?
 					<br />
-					This may result in loss of lighting/sound/video whilst the
-					reboot takes place
+					This may result in loss of lighting/sound/video whilst the reboot takes place
 				</Text>
 			),
 			labels: { confirm: 'Quit', cancel: 'Cancel' },
@@ -69,9 +58,7 @@ export const ControlsConfigurationPage = () => {
 				</Link>
 				<PanelButton onClick={openRebootModal}>Reboot</PanelButton>
 				{runningInElectron() ? (
-					<PanelButton onClick={openQuitModal}>
-						Quit to {operatingSystem}
-					</PanelButton>
+					<PanelButton onClick={openQuitModal}>Quit to {operatingSystem}</PanelButton>
 				) : (
 					<a href="/database/download" target="_blank">
 						<PanelButton>Download Database Backup</PanelButton>

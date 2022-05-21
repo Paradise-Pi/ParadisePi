@@ -9,11 +9,7 @@ declare global {
 				path: string,
 				method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 				payload: apiObject,
-				callback: (
-					success: boolean,
-					response: apiObject,
-					errorMessage: string | null
-				) => void
+				callback: (success: boolean, response: apiObject, errorMessage: string | null) => void
 			) => void
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			receive: (channel: string, func: any) => void
@@ -37,11 +33,7 @@ export class ApiCall {
 					path,
 					method,
 					payload,
-					(
-						success: boolean,
-						response: apiObject,
-						errorMessage: string | null
-					) => {
+					(success: boolean, response: apiObject, errorMessage: string | null) => {
 						if (success) {
 							resolve(response)
 						} else {
@@ -60,11 +52,7 @@ export class ApiCall {
 					path,
 					method,
 					payload,
-					(
-						success: boolean,
-						response: apiObject,
-						errorMessage: string | null
-					) => {
+					(success: boolean, response: apiObject, errorMessage: string | null) => {
 						if (success) {
 							resolve(response)
 						} else {

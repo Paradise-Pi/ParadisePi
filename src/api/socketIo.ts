@@ -14,11 +14,7 @@ export interface ClientToServerEvents {
 		path: string,
 		method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 		payload: apiObject,
-		callback: (
-			success: boolean,
-			response: apiObject,
-			errorMessage: string | null
-		) => void
+		callback: (success: boolean, response: apiObject, errorMessage: string | null) => void
 	) => void
 }
 
