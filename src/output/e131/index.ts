@@ -1,5 +1,5 @@
 import { networkInterfaces } from 'os'
-import e131Lib from 'e131'
+import e131Lib from '@paradise-pi/e131'
 import { ConfigRepository } from '../../database/repository/config'
 
 export default class E131 {
