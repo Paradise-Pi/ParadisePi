@@ -48,7 +48,7 @@ export const PresetsConfigurationPage = () => {
 		},
 	})
 	useEffect(() => {
-		form.setValues({ presets: formList(presets) })
+		form.setValues({ presets: formList(presets.map(item => ({ ...item }))) }) // Make a copy of the presets using map because the object is not extensible 
 		setLoadingOverlayVisible(false)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [presets])
