@@ -20,15 +20,15 @@ export const useStyles = createStyles((theme, _params, getRef) => {
 		},
 
 		header: {
-			paddingBottom: theme.spacing.md,
-			marginBottom: theme.spacing.md * 1.5,
-			borderBottom: `1px solid ${theme.colors.dark[7]}`,
+			paddingBottom: theme.spacing.xs,
+			marginBottom: theme.spacing.xs,
+			borderBottom: `1px solid ${theme.colors.dark[4]}`,
 		},
 
 		footer: {
 			paddingTop: theme.spacing.md,
 			marginTop: theme.spacing.md,
-			borderTop: `1px solid ${theme.colors.dark[7]}`,
+			borderTop: `1px solid ${theme.colors.dark[4]}`,
 		},
 
 		link: {

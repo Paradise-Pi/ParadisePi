@@ -53,7 +53,7 @@ export const ControlsConfigurationPage = () => {
 	return (
 		<div>
 			<Group position="center" spacing={0}>
-				<Link to="/controlPanel/about">
+				<Link to="/controlPanel/help">
 					<PanelButton>Control Panel</PanelButton>
 				</Link>
 				<PanelButton onClick={openRebootModal}>Reboot</PanelButton>

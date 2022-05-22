@@ -15,7 +15,7 @@ export const LandingPage = () => {
 						Administration
 					</Button>
 				</Link>
-				<Link to="/controlPanel">
+				<Link to="/controlPanel/help">
 					<Button variant="default" color="dark" size="xl">
 						Control Panel
 					</Button>

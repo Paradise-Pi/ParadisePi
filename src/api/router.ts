@@ -1,3 +1,4 @@
+import { DatabasePresetFolder, PresetFolderRepository } from './../database/repository/presetFolder'
 import { DatabasePreset, PresetRepository } from './../database/repository/preset'
 import { aboutRouter } from './about/router'
 import { createDatabaseObject, Database, sendDatabaseObject } from './database'
@@ -37,6 +38,19 @@ export const routeRequest = (
 							sendDatabaseObject(response)
 							resolve({})
 						})
+					break
+				} else {
+					break
+				}
+			case 'presetFolders':
+				if (method === 'GET') {
+					return PresetFolderRepository.getOne(payload['presetFolderId']).then(
+						(response: DatabasePresetFolder) => {
+							resolve({
+								data: response,
+							})
+						}
+					)
 					break
 				}
 		}

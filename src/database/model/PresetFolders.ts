@@ -25,8 +25,12 @@ export class PresetFolders {
 
 	@ManyToOne(() => PresetFolders, PresetFolders => PresetFolders.id, {
 		nullable: true,
+		createForeignKeyConstraints: false,
 	})
 	parent: PresetFolders
+
+	@OneToMany(() => PresetFolders, presetFolder => presetFolder.parent)
+	childFolders: PresetFolders[]
 
 	@Column('integer', { default: 1 })
 	sort: number

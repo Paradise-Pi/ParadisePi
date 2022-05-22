@@ -45,6 +45,7 @@ export class Preset {
 	fadeTime: number
 
 	@ManyToOne(() => PresetFolders, PresetFolders => PresetFolders.presets, {
+		createForeignKeyConstraints: false,
 		eager: true,
 	})
 	folder: PresetFolders

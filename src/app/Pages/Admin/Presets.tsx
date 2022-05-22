@@ -33,8 +33,8 @@ interface FormValues {
 export const PresetsConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
-	const presets = useAppSelector(state => (state.database ? state.database.presets : []))
-	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : []))
+	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
+	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
 	const form = useForm<FormValues>({
 		initialValues: {
 			presets: formList([]),
@@ -48,8 +48,8 @@ export const PresetsConfigurationPage = () => {
 		},
 	})
 	useEffect(() => {
-		form.setValues({ presets: formList(presets.map(item => ({ ...item }))) }) // Make a copy of the presets using map because the object is not extensible 
-		setLoadingOverlayVisible(false)
+		if (presets !== false) form.setValues({ presets: formList(presets.map(item => ({ ...item }))) }) // Make a copy of the presets using map because the object is not extensible
+		if (loadingOverlayVisible) setLoadingOverlayVisible(false)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [presets])
 	const handleSubmit = (values: typeof form.values) => {
@@ -69,12 +69,16 @@ export const PresetsConfigurationPage = () => {
 						icon={<FaFolder />}
 						// form.values.presets[index].folderId
 						{...form.getListInputProps('presets', index, 'folderId')}
-						data={presetFolders.map((item: DatabasePresetFolder) => {
-							return {
-								value: item.id.toString(),
-								label: item.name,
-							}
-						})}
+						data={
+							presetFolders !== false
+								? presetFolders.map((item: DatabasePresetFolder) => {
+										return {
+											value: item.id.toString(),
+											label: item.name,
+										}
+								  })
+								: []
+						}
 					/>
 					<ColorInput
 						format="hex"
@@ -144,49 +148,50 @@ export const PresetsConfigurationPage = () => {
 		<Box mx="lg">
 			<div style={{ position: 'relative' }}>
 				<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-				<form onSubmit={form.onSubmit(handleSubmit)}>
-					<Group position="left" mt="md">
-						<Button
-							onClick={() =>
-								form.addListItem('presets', {
-									name: '',
-									enabled: true,
-									type: 'e131',
-									universe: null,
-									fadeTime: 0,
-									data: null,
-									folderId: '0',
-									color: '#2C2E33',
+				{presets !== false && presetFolders !== false ? (
+					<form onSubmit={form.onSubmit(handleSubmit)}>
+						<Group position="left" mt="md">
+							<Button
+								onClick={() =>
+									form.addListItem('presets', {
+										id: 0,
+										name: '',
+										enabled: true,
+										type: 'e131',
+										universe: null,
+										fadeTime: 0,
+										data: null,
+										folderId: '0',
+										color: '#2C2E33',
+									})
+								}
+							>
+								Add preset
+							</Button>
+							<Button type="submit">Save</Button>
+						</Group>
+						<DragDropContext
+							onDragEnd={({ destination, source }) =>
+								form.reorderListItem('presets', {
+									from: source.index,
+									to: destination.index,
 								})
 							}
 						>
-							Add preset
-						</Button>
-						<Button type="submit">Save</Button>
-					</Group>
-					<DragDropContext
-						onDragEnd={({ destination, source }) =>
-							form.reorderListItem('presets', {
-								from: source.index,
-								to: destination.index,
-							})
-						}
-					>
-						<Droppable droppableId="dnd-list" direction="vertical">
-							{provided => (
-								<div {...provided.droppableProps} ref={provided.innerRef}>
-									{fields}
-									{provided.placeholder}
-								</div>
-							)}
-						</Droppable>
-					</DragDropContext>
-				</form>
-				<Text size="sm" weight={500} mt="md">
-					Form values:
-				</Text>
-				<Code block>{JSON.stringify(form.values, null, 2)}</Code>
-				{/* ...other content */}
+							<Droppable droppableId="dnd-list" direction="vertical">
+								{provided => (
+									<div {...provided.droppableProps} ref={provided.innerRef}>
+										{fields}
+										{provided.placeholder}
+									</div>
+								)}
+							</Droppable>
+						</DragDropContext>
+					</form>
+				) : (
+					'Loading'
+				)}
+				{/*<Code block>{JSON.stringify(form.values, null, 2)}</Code>*/}
 			</div>
 		</Box>
 	)

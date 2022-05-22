@@ -21,6 +21,8 @@ import { MoveFaders1652632675036 } from './migration/1652632675036-MoveFaders'
 import { DropTables1652632685655 } from './migration/1652632685655-DropTables'
 import { AddIcons1653145460118 } from './migration/1653145460118-AddIcons'
 import { AddColorColumn1653147200134 } from './migration/1653147200134-AddColorColumn'
+import { FolderRelations1653221239013 } from './migration/1653221239013-FolderRelations'
+import { MyCustomLogger } from './logger'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -41,7 +43,9 @@ const dataSource = new DataSource({
 		DropTables1652632685655,
 		AddIcons1653145460118,
 		AddColorColumn1653147200134,
+		FolderRelations1653221239013,
 	],
 	subscribers: [],
+	logger: new MyCustomLogger(),
 })
 export default dataSource

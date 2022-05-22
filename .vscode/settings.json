@@ -4,5 +4,7 @@
     "editor.formatOnSave": true
   },
   "eslint.validate": ["javascript", "typescript", "typescriptreact"],
-  "cSpell.words": ["Mantine"]
+  "cSpell.words": [
+    "Mantine",
+  ]
 }
