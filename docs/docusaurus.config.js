@@ -63,7 +63,7 @@ const config = {
 					},
 					{
 						type: 'doc',
-						docId: 'repo-docs/intro',
+						docId: 'repo-docs/index',
 						position: 'left',
 						label: 'Developer Guide',
 					},
@@ -97,6 +97,12 @@ const config = {
 					isCloseable: false,
 				},
 			}),
+			docs: {
+				sidebar: {
+					hideable: true,
+					autoCollapseCategories: false,
+				},
+			},
 		}),
 	plugins: [
 		[

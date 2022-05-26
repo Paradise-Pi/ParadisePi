@@ -1,5 +1,5 @@
 /* eslint-disable */
-const { copyFileSync, existsSync, mkdirSync } = require('fs')
+const { copyFileSync, existsSync, mkdirSync, rmSync } = require('fs')
 const path = require('path')
 const { resolve } = require('path')
 const { readdir } = require('fs').promises
@@ -20,13 +20,18 @@ async function* getFiles(dir) {
 	}
 }
 console.log('Copying docs from Markdown folder over to docs folder for docusaurus')
+if (existsSync(path.join(__dirname, '/docs/repo-docs'))) {
+  // Remove existing folder, as it might be that this is populated with old docs
+	console.log('Cleaning old docs')
+  rmSync(path.join(__dirname, '/docs/repo-docs/'), { recursive: true, force: true });
+}
 ;(async () => {
 	for await (const f of getFiles(path.join(__dirname, '/../src/'))) {
 		if (path.basename(f).endsWith('.md') || path.basename(f) === '_category_.yml') {
+			let newPath = f.replace(path.join(__dirname, '/../src/'), path.join(__dirname, '/docs/repo-docs/'))
 			if (path.basename(f).toLowerCase() === 'readme.md') {
-				f.replace(path.basename(f), 'index.md')
+				newPath = newPath.replace(path.basename(newPath), 'index.md')
 			}
-			const newPath = f.replace(path.join(__dirname, '/../src/'), path.join(__dirname, '/docs/repo-docs/'))
 			if (!existsSync(path.dirname(newPath))) {
 				mkdirSync(path.dirname(newPath), { recursive: true })
 			}
@@ -35,4 +40,3 @@ console.log('Copying docs from Markdown folder over to docs folder for docusauru
 		}
 	}
 })()
-console.log('Completed copying docs')

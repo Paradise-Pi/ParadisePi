@@ -20,13 +20,50 @@ Made up of an electron app, with a websocket server serving an admin interface
  - Database: [Sqlite3](https://sqlite.org)
  - Admin Theme - [CoreUI](https://github.com/coreui)
 
+## Installation
+
+Pre-built packages are provided for Windows, MacOS (Intel) and Linux at the [Latest Release](https://github.com/Jbithell/ParadisePi/releases/latest)
+
 ## Docs 
 
-Please see [the website](https://paradisepi.pages.dev/docs/repo-docs/intro) (*or*, if running locally, [docs.md](./docs/docs/repo-docs/intro.md)) for more info, and how to use it
+Please see [the website](https://paradisepi.pages.dev/docs/repo-docs/) (*or*, the Markdown files in each code directory) for complete documentation of how to develop it.
 
-## Demo
+These markdown files (along with the `_category_.yml` files) are used to generate the website docs.
 
-https://user-images.githubusercontent.com/8408967/111515042-403cfb00-874a-11eb-8fe7-9bb616f7d0c6.mp4
+## Architecture 
+
+```mermaid
+flowchart TB
+    subgraph ElectronProcess ["Electron Main Process (node.js)"]
+    db[(Database)]-->repo([Database Repository])-->rt[Router]
+    rt-->repo-->db
+    models([Database Models])-->repo
+    rt-->osc{{OSC Output}} & e131{{"sACN (E1.31) Output"}} & http{{"HTTP Output"}}
+    samp{{sACN Sampler}}-->repo
+    end
+    subgraph Clients ["Clients"]
+      subgraph ElectronWindow ["Electron Window"]
+      react1(React)-.->rd1 & apiCall1
+      rd1(Redux) & apiCall1(Api Call Function)-->wrap1{API Wrapper}
+      end
+   
+      subgraph BrowserWindow ["Browser Window (e.g. over Wifi)"]
+      react2(React)-.->rd2 & apiCall2
+      rd2(Redux) & apiCall2(Api Call Function)-->wrap2{API Wrapper}
+      end
+    end
+    
+      wrap2-->socket>Socket.io]-->rt
+      socket-- Callback -->wrap2
+      repo-->socket-- Push -->rd2
+
+      wrap1-->ipc>IPC Channel]-->rt
+      ipc-- Callback -->wrap1
+      repo-->ipc-- Push -->rd1
+      
+    ElectronProcess --> ElectronWindow
+    ElectronProcess --> ws>Webserver] --> BrowserWindow
+```
 
 ## Licence
 
