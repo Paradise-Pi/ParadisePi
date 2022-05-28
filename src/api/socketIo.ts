@@ -7,6 +7,8 @@ import { Database } from './database'
 
 export interface ServerToClientEvents {
 	refreshDatabase: (database: Database) => void
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	logging: (message: { [key: string]: any }) => void
 }
 
 export interface ClientToServerEvents {

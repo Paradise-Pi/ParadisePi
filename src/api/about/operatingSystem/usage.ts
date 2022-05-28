@@ -33,6 +33,11 @@ const operatingSystemUsageFactory = (): OperatingSystemUsage => {
 		},
 	}
 }
+/**
+ * Get the resource usage of the OS being run.
+ * @returns Details of the current resource usage of the operating system running
+ * @remarks This is a wrapper around the node-os-utils library. Accuracy will likely be limited in containerized environments
+ */
 export const getOperatingSystemUsage = (): Promise<OperatingSystemUsage> => {
 	return new Promise(resolve => {
 		const usage = operatingSystemUsageFactory()

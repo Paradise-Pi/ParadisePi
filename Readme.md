@@ -16,11 +16,11 @@ Made up of an electron app, with a websocket server serving an admin interface
 ## Stack
 
  - [Electron](https://github.com/electron/electron) (with [Electron Forge](https://www.electronforge.io/) and [Webpack](https://webpack.js.org/))
- - Framework: [React](https://github.com/facebook/react)
+ - Framework: [React](https://github.com/facebook/react) with [Redux](https://github.com/reduxjs/redux)
  - Styling: [Mantine](https://github.com/mantinedev/mantine)
  - Logging: [Winston](https://github.com/winstonjs/winston)
- - ORM: [Typeorm](https://github.com/typeorm/typeorm) 
- - Database: [Sqlite3](https://sqlite.org)
+ - ORM: [Typeorm](https://github.com/typeorm/typeorm)
+ - Database: [Sqlite3](https://sqlite.org) with [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) driver
  - Admin Theme - [CoreUI](https://github.com/coreui)
  - Website - [Docusaurus 2](https://github.com/facebook/docusaurus)
 
@@ -46,7 +46,7 @@ For the OSC library windows build tools are needed. See the instructions here: h
 npm install
 npm start
 ```
-To restart the app (hot reloading doesn't work for the main process itself, only the rendered output) type `rs` into the command line opened by the start command
+To restart the app (hot reloading doesn't work for the preload process itself, only the rendered output) type `rs` into the command line opened by the start command. Hot reloading also doesn't work for the main process, you need to restart it fully.
 
 You can access the rendered output of the app in a browser as well (if helpful) by visiting [http://localhost:9001/main_window/#/main/help](http://localhost:9001/main_window/#/main/help). This doesn't work in production builds. 
 

@@ -23,7 +23,7 @@ const Router = () => {
 					<Route path="help" element={<HelpPage />} />
 					<Route path="about" element={<AboutPage />} />
 				</Route>
-				<Route path="e131sampler" element={<div>Sampling e131</div>} />
+				<Route path="e131sampler" element={<div>Sampling E1.31</div>} />
 				<Route path="admin" element={<MainNav navigation={<AdminNavigation />} />}>
 					<Route path="configuration" element={<ConfigurationPage />} />
 					<Route path="folders" element={<FoldersConfigurationPage />} />

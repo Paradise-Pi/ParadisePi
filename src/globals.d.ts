@@ -7,12 +7,12 @@
  */
 
 import { App, BrowserWindow } from 'electron'
-import E131 from './output/e131'
+import { Logger } from 'winston'
 
 declare global {
-	var e131: E131
 	var mainBrowserWindow: BrowserWindow
 	var app: App
+	var logger: Logger
 	interface apiObject {
 		[key: string]: any
 	}

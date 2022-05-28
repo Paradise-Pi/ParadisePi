@@ -54,6 +54,19 @@ export class WebServer {
 				})
 				res.write(fileRead)
 				res.end()
+			} else if (req.url == '/logs') {
+				// Allow backup of database
+				console.log(path.join(__dirname, 'logs/log.log'))
+				const filePath = path.join(__dirname, 'logs/log.log')
+				const fileStat = fs.statSync(filePath)
+				const fileRead = fs.readFileSync(filePath)
+				res.writeHead(200, {
+					'Content-Type': 'application/octet-stream',
+					'Content-Disposition': `attachment;filename="paradiselogs-${Date.now()}.txt"`,
+					'Content-Length': fileStat.size,
+				})
+				res.write(fileRead)
+				res.end()
 			} else {
 				// Serve the react app
 				WebServer.staticFileServer.serve(req, res, (e: Error) => {
@@ -99,6 +112,6 @@ export class WebServer {
 					})
 			})
 		})
-		console.log('Web & Socket server running')
+		logger.info('Web & Socket server running')
 	}
 }

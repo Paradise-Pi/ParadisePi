@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { IpcRequest } from './api/ipc'
+import { IpcRequest } from './../api/ipc'
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld('ipcApi', {
 	},
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	receive: (channel: string, func: any) => {
-		const validChannels = ['refreshDatabase']
+		const validChannels = ['refreshDatabase', 'logging']
 		if (validChannels.includes(channel)) {
 			ipcRenderer.on(channel, (event, ...args) => func(...args))
 		}

@@ -19,7 +19,11 @@ export interface Database {
 		topLevelFolders: Array<DatabasePresetFolder>
 	}
 }
-
+/**
+ * Create a new database object for monitoring by redux
+ * @param message - The message to log alongside the database request - this is useful for debugging
+ * @returns A promise that resolves to the database
+ */
 export const createDatabaseObject = async (message: string): Promise<Database> => {
 	return {
 		message,
@@ -36,7 +40,10 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 		},
 	}
 }
-
+/**
+ * Sends the database object over both channels to notify all clients of an update
+ * @param database - The database object to send
+ */
 export const sendDatabaseObject = (database: Database): void => {
 	mainBrowserWindow.webContents.send('refreshDatabase', database)
 	WebServer.socketIo.emit('refreshDatabase', database)

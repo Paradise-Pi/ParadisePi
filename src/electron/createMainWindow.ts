@@ -1,6 +1,6 @@
 import { BrowserWindow, session, Menu } from 'electron'
 import 'reflect-metadata'
-import { mainWindowTemplate } from '../menuBar'
+import { mainWindowTemplate } from './menuBar'
 import path from 'path'
 import os from 'os'
 

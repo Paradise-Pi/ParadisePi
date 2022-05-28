@@ -1,5 +1,4 @@
 import { io, Socket } from 'socket.io-client'
-import { Database } from '../../api/database'
 import { ClientToServerEvents, ServerToClientEvents } from '../../api/socketIo'
 import { setFromNode } from './databaseSlice'
 import store from './mainStore'
@@ -17,10 +16,13 @@ export class SocketConnection {
 			SocketConnection.socket = io({
 				autoConnect: true,
 			})
-			SocketConnection.socket.on('refreshDatabase', (database: Database) => {
+			SocketConnection.socket.on('refreshDatabase', database => {
 				store.dispatch(setFromNode(database))
 			})
-			SocketConnection.socket.on('disconnect', (reason: string) => {
+			SocketConnection.socket.on('logging', message => {
+				console.log(message)
+			})
+			SocketConnection.socket.on('disconnect', reason => {
 				console.log('Socket disconnected' + reason)
 			})
 		}

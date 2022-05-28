@@ -17,7 +17,7 @@ interface channelFade {
 }
 
 export default class E131 {
-	// sACN = E131
+	// sACN = E1.31
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	public e131Clients: Array<any> // Bit cheeky, but disabling the check because there are no typings for the lib
 	private fades: Array<channelFade>
