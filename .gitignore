@@ -95,5 +95,3 @@ dist/
 *.sqlite*
 release-builds/
 /admin/database.sqlite*
-
-/docs/docs/repo-docs/

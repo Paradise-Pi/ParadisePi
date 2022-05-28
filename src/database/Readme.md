@@ -1,11 +1,8 @@
----
-sidebar_position: 1
-title: Database
----
+# Database
 
 The database is an SQLite3 database which is used to store all user settings and data. 
 
-It can be imported and exported using the [admin panel](../user-guide/admin/importExport).
+It can be imported and exported using the admin panel
 
 ## Migrations
 

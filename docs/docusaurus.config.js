@@ -63,12 +63,6 @@ const config = {
 						label: 'User Guide',
 					},
 					{
-						type: 'doc',
-						docId: 'repo-docs/index',
-						position: 'left',
-						label: 'Developer Guide',
-					},
-					{
 						href: 'https://github.com/Paradise-Pi/ParadisePi/releases/latest',
 						label: 'Download',
 						position: 'right',

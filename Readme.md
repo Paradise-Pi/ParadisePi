@@ -10,6 +10,9 @@ A facility control panel for sACN & OSC, in Electron.
 
 Made up of an electron app, with a websocket server serving an admin interface
 
+> **Warning**
+> This is version 2 which is currently in development
+
 ## Stack
 
  - [Electron](https://github.com/electron/electron) (with [Electron Forge](https://www.electronforge.io/) and [Webpack](https://webpack.js.org/))
@@ -19,16 +22,44 @@ Made up of an electron app, with a websocket server serving an admin interface
  - ORM: [Typeorm](https://github.com/typeorm/typeorm) 
  - Database: [Sqlite3](https://sqlite.org)
  - Admin Theme - [CoreUI](https://github.com/coreui)
+ - Website - [Docusaurus 2](https://github.com/facebook/docusaurus)
 
 ## Installation
 
 Pre-built packages are provided for Windows, MacOS (Intel) and Linux at the [Latest Release](https://github.com/Paradise-Pi/ParadisePi/releases/latest)
 
-## Docs 
+---
 
-Please see [the website](https://paradisepi.pages.dev/docs/repo-docs/) (*or*, the Markdown files in each code directory) for complete documentation of how to develop it.
+## Developing
 
-These markdown files (along with the `_category_.yml` files) are used to generate the website docs.
+### Docs 
+
+Documentation is provided (style is [TSDoc](https://tsdoc.org)) throughout the codebase. Some markdown files are provided in directors where it might be helpful. 
+
+The Paradise website is hosted on Cloudflare Pages, and is built using Docusaurus. The source is in the `/docs` directory.
+
+### Running locally
+
+For the OSC library windows build tools are needed. See the instructions here: https://github.com/nodejs/node-gyp#on-windows
+
+```bash
+npm install
+npm start
+```
+To restart the app (hot reloading doesn't work for the main process itself, only the rendered output) type `rs` into the command line opened by the start command
+
+You can access the rendered output of the app in a browser as well (if helpful) by visiting [http://localhost:9001/main_window/#/main/help](http://localhost:9001/main_window/#/main/help). This doesn't work in production builds. 
+
+### Building Releases
+
+```bash
+npm run make
+```
+
+### Releasing
+
+Releases are automatically generated whenever a tag is pushed to the main branch. You can them check them over and publish them.
+
 
 ## Architecture 
 
