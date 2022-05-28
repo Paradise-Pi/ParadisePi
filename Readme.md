@@ -1,8 +1,8 @@
 # ParadisePi
 
 [![Test Build](https://github.com/Paradise-Pi/ParadisePi/actions/workflows/electron-test-build.yml/badge.svg)](https://github.com/Paradise-Pi/ParadisePi/actions/workflows/electron-test-build.yml)
-![GitHub repo size](https://img.shields.io/github/repo-size/Jbithell/ParadisePi)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/Jbithell/ParadisePi)
+![GitHub repo size](https://img.shields.io/github/repo-size/Paradise-Pi/ParadisePi)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Paradise-Pi/ParadisePi)
 
 ![Logo](icon/icon.jpg)
 
@@ -22,7 +22,7 @@ Made up of an electron app, with a websocket server serving an admin interface
 
 ## Installation
 
-Pre-built packages are provided for Windows, MacOS (Intel) and Linux at the [Latest Release](https://github.com/Jbithell/ParadisePi/releases/latest)
+Pre-built packages are provided for Windows, MacOS (Intel) and Linux at the [Latest Release](https://github.com/Paradise-Pi/ParadisePi/releases/latest)
 
 ## Docs 
 
