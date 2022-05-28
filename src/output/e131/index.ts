@@ -67,8 +67,8 @@ export default class E131 {
 		const self = this
 		//every cycle, check whether anything is fading
 		this.checkForFades()
-		this.e131Clients[universe]['client'].send(this.e131Clients[universe]['packet'], function () {
-			setTimeout(function () {
+		this.e131Clients[universe]['client'].send(this.e131Clients[universe]['packet'], () => {
+			setTimeout(() => {
 				self.send(universe)
 			}, 1000 / self.frequency)
 		})
@@ -101,7 +101,9 @@ export default class E131 {
 
 	/**
 	 * Update a given universe's channel levels
+	 *
 	 * @param universe universe number between 1 and 63999
+	 * @param thisUniverse
 	 * @param channelData  - [channel:number, level:number]
 	 * @param fadeTime (optional) Fade time in ms
 	 */

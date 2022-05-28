@@ -8,7 +8,10 @@ import path from 'path'
 import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './api/socketIo'
 import { routeRequest } from './api/router'
 import { Server } from 'socket.io'
-
+/**
+ * The webserver is responsible for serving requests from other devices on the network that might want to connect.
+ * This includes devices such as iPads who want to use the remote interface, a web browser which wants to
+ */
 export class WebServer {
 	static staticFileServer: staticServer.Server
 	static server: http.Server
@@ -18,7 +21,7 @@ export class WebServer {
 			cache: false,
 			indexFile: 'main_window/index.html',
 		})
-		WebServer.server = http.createServer(function (req, res) {
+		WebServer.server = http.createServer((req, res) => {
 			if (req.url == '/database/upload') {
 				// Allow uploading of the database
 				const form = new IncomingForm({
@@ -26,7 +29,7 @@ export class WebServer {
 					uploadDir: path.join(__dirname, '../../'),
 					maxFiles: 1,
 				})
-				form.parse(req, function (err) {
+				form.parse(req, err => {
 					if (err) throw err
 					dataSource.destroy().then(() => {
 						fs.rename('user-uploaded-database.sqlite', 'database.sqlite', err => {
@@ -53,7 +56,7 @@ export class WebServer {
 				res.end()
 			} else {
 				// Serve the react app
-				WebServer.staticFileServer.serve(req, res, function (e: Error) {
+				WebServer.staticFileServer.serve(req, res, (e: Error) => {
 					if (e) {
 						if (e.message == 'Not Found') {
 							WebServer.staticFileServer.serveFile(

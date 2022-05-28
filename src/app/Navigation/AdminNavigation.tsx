@@ -7,7 +7,8 @@ import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
 import { useAppSelector } from '../Apis/mainStore'
 import { runningInElectron } from '../Apis/version'
-export function AdminNavigation() {
+
+export const AdminNavigation = () => {
 	const { classes, cx } = useStyles()
 	const { height } = useViewportSize()
 	const version = useAppSelector(state => (state.database ? state.database.about.version : ''))

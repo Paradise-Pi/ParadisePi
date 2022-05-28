@@ -15,6 +15,7 @@ export interface DatabasePresetFolder {
 export const PresetFolderRepository = dataSource.getRepository(PresetFolders).extend({
 	/**
 	 * Get a list of all folders, in a simple way. Used for selecting the folder a preset belongs to
+	 *
 	 * @returns A list of preset folders
 	 */
 	async getAll(): Promise<Array<DatabasePresetFolder>> {
@@ -28,6 +29,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	},
 	/**
 	 * Used to set the left menu bar with all the top level folders
+	 *
 	 * @returns Get all folders that are not a child of another folder
 	 */
 	async getTopLevelFolders(): Promise<Array<DatabasePresetFolder>> {
@@ -42,12 +44,20 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	},
 	/**
 	 * Get a particular folder by id
+	 *
+	 * @param id
 	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
 	async getOne(id: number): Promise<DatabasePresetFolder> {
 		const item = await this.findOneOrFail({
 			where: {
 				id,
+			},
+			orderBy: {
+				sort: 'ASC',
+				presets: {
+					sort: 'ASC', // TODO get sorting working
+				},
 			},
 			relations: {
 				childFolders: true,

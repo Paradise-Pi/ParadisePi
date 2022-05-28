@@ -1,6 +1,7 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable tsdoc/syntax */
 
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
@@ -11,7 +12,7 @@ const production = process.env.CONTEXT === 'production' //Netlify/Cloudflare Pag
 const config = {
 	title: 'ParadisePi',
 	tagline: 'Facility control panel for sACN & OSC, in Electron.',
-	url: 'https://paradisepi.pages.dev',
+	url: process.env.CF_PAGES_URL ?? '',
 	baseUrl: '/',
 	noIndex: !production,
 	onBrokenLinks: production ? 'warn' : 'throw',

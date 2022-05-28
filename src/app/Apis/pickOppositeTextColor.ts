@@ -1,5 +1,6 @@
 /**
  * Takes a given color and returns the most suitable opposite color for text. This is used to make the text readable against a user's choice of background color
+ *
  * @param bgColor Background hex color (including the hash)
  * @param lightColor Suggested light text hex color (including the hash)
  * @param darkColor  Suggested dark text hex color (including the hash)

@@ -60,7 +60,7 @@ app.whenReady().then(() => {
 			})
 	})
 
-	app.on('activate', function () {
+	app.on('activate', () => {
 		if (BrowserWindow.getAllWindows().length === 0) createMainWindow('/controlPanel/help')
 	})
 })

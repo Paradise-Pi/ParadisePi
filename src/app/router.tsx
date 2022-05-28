@@ -14,7 +14,7 @@ import { PresetsConfigurationPage } from './Pages/Admin/Presets'
 import { FadersConfigurationPage } from './Pages/Admin/Faders'
 import { ControlsConfigurationPage } from './Pages/Admin/Controls'
 
-function Router() {
+const Router = () => {
 	return (
 		<HashRouter>
 			<Routes>

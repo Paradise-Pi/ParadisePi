@@ -39,7 +39,7 @@ const TopLevelPresetFolders = ({
 		</>
 	)
 }
-export function ControlPanelNavigation() {
+export const ControlPanelNavigation = () => {
 	const { classes } = useStyles()
 	const { height } = useViewportSize()
 	const [active, setActive] = useState('Help') // Default page of help
