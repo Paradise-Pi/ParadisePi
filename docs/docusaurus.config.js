@@ -12,7 +12,7 @@ const production = process.env.CONTEXT === 'production' //Netlify/Cloudflare Pag
 const config = {
 	title: 'ParadisePi',
 	tagline: 'Facility control panel for sACN & OSC, in Electron.',
-	url: process.env.CF_PAGES_URL ?? '',
+	url: process.env.CF_PAGES_URL ?? 'http://localhost',
 	baseUrl: '/',
 	noIndex: !production,
 	onBrokenLinks: production ? 'warn' : 'throw',
