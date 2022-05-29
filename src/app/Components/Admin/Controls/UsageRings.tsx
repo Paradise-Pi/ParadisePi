@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { RingProgress, Text, Button, Group, Modal, Skeleton } from '@mantine/core'
 import * as timeago from 'timeago.js'
 import { Prism } from '@mantine/prism'
-import { ApiCall } from '../../../Apis/wrapper'
+import { ApiCall } from '../../../apis/wrapper'
 
 export const UsageRings = () => {
 	const [usageModalOpened, setusageModalOpened] = useState(false)

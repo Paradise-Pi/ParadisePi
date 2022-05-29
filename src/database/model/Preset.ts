@@ -13,7 +13,6 @@ import { PresetFolders } from './PresetFolders'
 @Entity('presets', {
 	orderBy: {
 		sort: 'ASC',
-		name: 'ASC',
 	},
 })
 export class Preset {

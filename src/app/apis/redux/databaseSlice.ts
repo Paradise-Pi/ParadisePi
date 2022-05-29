@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Database } from '../../api/database'
+import { Database } from '../../../api/database'
 import store from './mainStore'
-import { ApiCall } from './wrapper'
+import { ApiCall } from '../wrapper'
 
 const initialState: Database | null = null
 const getFromAPIFatActionCreator = (): void => {

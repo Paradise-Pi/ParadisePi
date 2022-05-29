@@ -10,13 +10,13 @@ import os from 'os'
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 
-export default (startPath: string): BrowserWindow => {
+export default (startPath: string, fullscreen?: boolean): BrowserWindow => {
 	const window = new BrowserWindow({
 		height: 519, // Equates to 480 when you knock off the menu bar
 		width: 816, // Equates to 800 when you knock off the menu bar
 		minWidth: 800,
 		minHeight: 480,
-		fullscreen: os.platform() == 'linux',
+		fullscreen: fullscreen ?? false,
 		title: 'Paradise',
 		icon: path.join(__dirname, '/../../icon/icon.png'),
 		webPreferences: {

@@ -2,8 +2,8 @@ import { Button, Divider, Group, Text } from '@mantine/core'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { useAppSelector } from './../../Apis/mainStore'
-import { runningInElectron } from './../../Apis/version'
+import { useAppSelector } from '../../apis/redux/mainStore'
+import { runningInElectron } from '../../apis/utilities/version'
 import { UsageRings } from '../../Components/Admin/Controls/UsageRings'
 import { useModals } from '@mantine/modals'
 
@@ -60,9 +60,14 @@ export const ControlsConfigurationPage = () => {
 				{runningInElectron() ? (
 					<PanelButton onClick={openQuitModal}>Quit to {operatingSystem}</PanelButton>
 				) : (
-					<a href="/database/download" target="_blank">
-						<PanelButton>Download Database Backup</PanelButton>
-					</a>
+					<>
+						<a href="/database/download" target="_blank">
+							<PanelButton>Download Database Backup</PanelButton>
+						</a>
+						<a href="/logs" target="_blank">
+							<PanelButton>Download Logs</PanelButton>
+						</a>
+					</>
 				)}
 			</Group>
 			<Divider my="sm" />

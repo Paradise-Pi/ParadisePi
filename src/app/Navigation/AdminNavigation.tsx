@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 import { FaCogs, FaLevelUpAlt, FaRegFolder, FaDatabase, FaRegPlayCircle, FaWindowClose } from 'react-icons/fa'
 import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
-import { useAppSelector } from '../Apis/mainStore'
-import { runningInElectron } from '../Apis/version'
+import { useAppSelector } from '../apis/redux/mainStore'
+import { runningInElectron } from '../apis/utilities/version'
 
 export const AdminNavigation = () => {
 	const { classes, cx } = useStyles()

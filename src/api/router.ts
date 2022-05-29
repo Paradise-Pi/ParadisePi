@@ -21,15 +21,6 @@ export const routeRequest = (
 		const pathArr = path.split('/').filter(e => e)
 		if (pathArr.length === 0) reject(new Error('Invalid path'))
 		switch (pathArr[0]) {
-			case 'ping':
-				// Route is used for debugging
-				resolve({
-					...payload,
-					message: 'pong',
-					method,
-					time: Date.now(),
-				})
-				break
 			case 'database':
 				// Route is used at first load to get the database object
 				return createDatabaseObject('GET database api call').then(response => {

@@ -4,7 +4,7 @@ import { useViewportSize } from '@mantine/hooks'
 import { FaRegLightbulb, FaQuestion, FaCog, FaVolumeUp, FaVideo } from 'react-icons/fa'
 import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
-import { useAppSelector } from '../Apis/mainStore'
+import { useAppSelector } from '../apis/redux/mainStore'
 import { DatabasePresetFolder } from './../../database/repository/presetFolder'
 import { PresetFolderIcon } from '../Components/ControlPanel/PresetFolderIcon'
 

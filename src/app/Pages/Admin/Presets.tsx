@@ -22,10 +22,10 @@ import { useForm, formList } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { FaFolder, FaGripVertical, FaInfoCircle, FaRegClock, FaTrash, FaPencilAlt } from 'react-icons/fa'
 import { FormList } from '@mantine/form/lib/form-list/form-list'
-import { useAppSelector } from './../../Apis/mainStore'
+import { useAppSelector } from '../../apis/redux/mainStore'
 import { DatabasePreset } from './../../../database/repository/preset'
 import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
-import { ApiCall } from './../../Apis/wrapper'
+import { ApiCall } from '../../apis/wrapper'
 
 interface FormValues {
 	presets: FormList<DatabasePreset>

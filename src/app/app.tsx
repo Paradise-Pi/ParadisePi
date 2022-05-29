@@ -3,12 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { MantineProvider } from '@mantine/core'
 import { Provider } from 'react-redux'
 import './app.css'
-import store, { useAppDispatch } from './Apis/mainStore'
+import store, { useAppDispatch } from './apis/redux/mainStore'
 import Router from './router'
-import { getFromAPI, setFromNode } from './Apis/databaseSlice'
+import { getFromAPI, setFromNode } from './apis/redux/databaseSlice'
 import { Database } from '../api/database'
-import { runningInElectron } from './Apis/version'
+import { runningInElectron } from './apis/utilities/version'
 import { ModalsProvider } from '@mantine/modals'
+import { ScreenSaver } from './Components/ScreenSaver'
+import { ConnectionLost } from './Components/ConnectionLost'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -31,7 +33,11 @@ const App = () => {
 			withGlobalStyles
 		>
 			<ModalsProvider>
-				<Router />
+				<ScreenSaver>
+					<ConnectionLost>
+						<Router />
+					</ConnectionLost>
+				</ScreenSaver>
 			</ModalsProvider>
 		</MantineProvider>
 	)

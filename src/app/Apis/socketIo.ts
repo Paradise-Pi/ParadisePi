@@ -1,7 +1,8 @@
 import { io, Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from '../../api/socketIo'
-import { setFromNode } from './databaseSlice'
-import store from './mainStore'
+import { setFromNode } from './redux/databaseSlice'
+import store from './redux/mainStore'
+import { setSocketStatusConnection } from './redux/statusSlice'
 
 export class SocketConnection {
 	private static socket: Socket<ServerToClientEvents, ClientToServerEvents> | false = false
@@ -22,8 +23,12 @@ export class SocketConnection {
 			SocketConnection.socket.on('logging', message => {
 				console.log(message)
 			})
+			SocketConnection.socket.on('connect', () => {
+				store.dispatch(setSocketStatusConnection(true))
+			})
 			SocketConnection.socket.on('disconnect', reason => {
-				console.log('Socket disconnected' + reason)
+				store.dispatch(setSocketStatusConnection(false))
+				console.log('Socket disconnected = ' + reason)
 			})
 		}
 
