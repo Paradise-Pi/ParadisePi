@@ -1,4 +1,4 @@
-import dataSource from '../database/dataSource'
+import dataSource from './../database/dataSource'
 import { app } from 'electron'
 import fs from 'fs'
 

@@ -1,6 +1,6 @@
-import dataSource from '../dataSource'
-import { Preset } from '../model/Preset'
-import { PresetFolders } from '../model/PresetFolders'
+import dataSource from './../dataSource'
+import { Preset } from './../model/Preset'
+import { PresetFolders } from './../model/PresetFolders'
 import { DatabasePreset } from './preset'
 
 export interface DatabasePresetFolder {
@@ -16,7 +16,6 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	/**
 	 * Get all folders and their contents
 	 *
-	 * @param id
 	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
 	async getAll(): Promise<{ [key: number]: DatabasePresetFolder }> {

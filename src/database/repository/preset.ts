@@ -1,5 +1,5 @@
-import dataSource from '../dataSource'
-import { Preset } from '../model/Preset'
+import dataSource from './../dataSource'
+import { Preset } from './../model/Preset'
 
 export interface DatabasePreset {
 	id?: number

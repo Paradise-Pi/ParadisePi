@@ -1,5 +1,5 @@
+import { broadcast } from './../api/broadcast'
 import Transport from 'winston-transport'
-import { WebServer } from './../webServer'
 /**
  * Custom transport for Winston that sends logs to the frontend using either the socket or the IPC
  */
@@ -14,8 +14,7 @@ export class BroadcastTransport extends Transport {
 			this.emit('logged', info)
 		})
 
-		mainBrowserWindow.webContents.send('logging', info)
-		WebServer.socketIo.emit('logging', info)
+		broadcast('logging', { logLine: info })
 
 		callback()
 	}

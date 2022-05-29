@@ -1,4 +1,3 @@
-import React, { ElementType, ReactElement } from 'react'
 import { IconType } from 'react-icons'
 import {
 	FaVideo,

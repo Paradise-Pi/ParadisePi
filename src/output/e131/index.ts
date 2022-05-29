@@ -1,6 +1,6 @@
 import { networkInterfaces } from 'os'
 import e131Lib from '@paradise-pi/e131'
-import { ConfigRepository } from '../../database/repository/config'
+import { ConfigRepository } from './../../database/repository/config'
 
 interface channelData {
 	channel: number
@@ -102,10 +102,10 @@ export default class E131 {
 	/**
 	 * Update a given universe's channel levels
 	 *
-	 * @param universe universe number between 1 and 63999
-	 * @param thisUniverse
+	 * @param universe - universe number between 1 and 63999
+	 * @param thisUniverse -
 	 * @param channelData  - [channel:number, level:number]
-	 * @param fadeTime (optional) Fade time in ms
+	 * @param fadeTime - (optional) Fade time in ms
 	 */
 	update(thisUniverse: number, channelData: Array<channelData>, fadeTime = 0) {
 		const dateNow = new Date()

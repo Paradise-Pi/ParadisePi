@@ -2,9 +2,9 @@ import { Button, Divider, Group, Text } from '@mantine/core'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { useAppSelector } from '../../apis/redux/mainStore'
-import { runningInElectron } from '../../apis/utilities/version'
-import { UsageRings } from '../../Components/Admin/Controls/UsageRings'
+import { useAppSelector } from './../../apis/redux/mainStore'
+import { runningInElectron } from './../../apis/utilities/version'
+import { UsageRings } from './../../Components/Admin/Controls/UsageRings'
 import { useModals } from '@mantine/modals'
 
 const PanelButton = (props: { children: React.ReactNode; onClick?: React.MouseEventHandler<HTMLButtonElement> }) => {

@@ -1,8 +1,9 @@
 import { io, Socket } from 'socket.io-client'
-import { ClientToServerEvents, ServerToClientEvents } from '../../api/socketIo'
+import { ClientToServerEvents, ServerToClientEvents } from './../../api/socketIo'
 import { setFromNode } from './redux/databaseSlice'
 import store from './redux/mainStore'
 import { setSocketStatusConnection } from './redux/statusSlice'
+import { getOS } from './utilities/os'
 
 export class SocketConnection {
 	private static socket: Socket<ServerToClientEvents, ClientToServerEvents> | false = false
@@ -16,6 +17,9 @@ export class SocketConnection {
 			console.log('Opening socket connection')
 			SocketConnection.socket = io({
 				autoConnect: true,
+				query: {
+					os: getOS(),
+				},
 			})
 			SocketConnection.socket.on('refreshDatabase', database => {
 				store.dispatch(setFromNode(database))

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Logger } from 'typeorm'
 import { QueryRunner } from 'typeorm/query-runner/QueryRunner'
 

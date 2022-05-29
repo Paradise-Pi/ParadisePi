@@ -1,8 +1,8 @@
 import { DatabasePreset, PresetRepository } from './../database/repository/preset'
 import { DatabasePresetFolder, PresetFolderRepository } from './../database/repository/presetFolder'
-import { WebServer } from './../webServer'
 import { getOperatingSystemName } from './about/operatingSystem/info'
 import { version } from './../../package.json'
+import { broadcast } from './broadcast'
 
 export interface Database {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,6 +41,5 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
  * @param database - The database object to send
  */
 export const sendDatabaseObject = (database: Database): void => {
-	mainBrowserWindow.webContents.send('refreshDatabase', database)
-	WebServer.socketIo.emit('refreshDatabase', database)
+	broadcast('refreshDatabase', database)
 }

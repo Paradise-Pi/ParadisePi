@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ApiCall } from '../../apis/wrapper'
 import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
 import { Button } from '@mantine/core'
 import { FaLevelUpAlt, FaFolder } from 'react-icons/fa'
-import { pickTextColorBasedOnBgColor } from '../../apis/utilities/pickOppositeTextColor'
-import { useAppSelector } from '../../apis/redux/mainStore'
+import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
+import { useAppSelector } from './../../apis/redux/mainStore'
 const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
 	return (
 		<Button

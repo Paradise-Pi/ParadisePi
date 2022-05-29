@@ -4,7 +4,7 @@ import { useElementSize, useIdle, useViewportSize } from '@mantine/hooks'
 
 const ScreensaverView = () => {
 	/**
-	 * When in screensaver state, shuffle the message up and down the screen to create a screensaver effect. The idea is to 
+	 * When in screensaver state, shuffle the message up and down the screen to create a screensaver effect. The idea is to
 	 */
 	const viewportSize = useViewportSize()
 	const { ref, height } = useElementSize()
