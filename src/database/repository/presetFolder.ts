@@ -21,10 +21,33 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	 */
 	async getAll(): Promise<{ [key: number]: DatabasePresetFolder }> {
 		const item = await this.find({
-			orderBy: {
+			select: {
+				name: true,
+				id: true,
+				icon: true,
+				childFolders: {
+					name: true,
+					id: true,
+				},
+				parent: {
+					name: true,
+					id: true,
+					icon: true,
+				},
+				presets: {
+					id: true,
+					name: true,
+					enabled: true,
+					color: true,
+				},
+			},
+			order: {
 				sort: 'ASC',
 				presets: {
-					sort: 'ASC', // TODO get sorting working
+					sort: 'ASC',
+				},
+				childFolders: {
+					sort: 'ASC',
 				},
 			},
 			relations: {
