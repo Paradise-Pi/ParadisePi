@@ -57,4 +57,8 @@ if (runningInElectron()) {
 	window.ipcApi.receive('logging', (logLine: { [key: string]: any }) => {
 		console.log(logLine)
 	})
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	window.ipcApi.receive('logging', (socketClients: { [key: string]: any }) => {
+		console.log(socketClients)
+	})
 }

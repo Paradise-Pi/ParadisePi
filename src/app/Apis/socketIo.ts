@@ -34,6 +34,9 @@ export class SocketConnection {
 				store.dispatch(setSocketStatusConnection(false))
 				console.log('Socket disconnected = ' + reason)
 			})
+			SocketConnection.socket.on('socketClients', clients => {
+				console.log(clients)
+			})
 		}
 
 		SocketConnection.socket.emit('apiCall', path, method, payload, callback)

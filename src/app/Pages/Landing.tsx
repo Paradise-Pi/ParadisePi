@@ -2,7 +2,7 @@ import { Button, Stack, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { runningInElectron } from './../apis/utilities/version'
+import { runningInElectron } from '../apis/utilities/version'
 
 export const LandingPage = () => {
 	const { height, width } = useViewportSize()

@@ -8,6 +8,7 @@ import path from 'path'
 import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './api/socketIo'
 import { routeRequest } from './api/router'
 import { Server } from 'socket.io'
+import { broadcast } from './api/broadcast'
 /**
  * The webserver is responsible for serving requests from other devices on the network that might want to connect.
  * This includes devices such as iPads who want to use the remote interface, a web browser which wants to
@@ -16,6 +17,11 @@ export class WebServer {
 	static staticFileServer: staticServer.Server
 	static server: http.Server
 	static socketIo: Server
+	static socketIoClients: {
+		[key: string]: {
+			os: string
+		}
+	}
 	constructor() {
 		WebServer.staticFileServer = new staticServer.Server(__dirname + '/../renderer/', {
 			cache: false,
@@ -100,7 +106,17 @@ export class WebServer {
 		)
 		// TODO catch port 80 not being available and discontinue boot
 		WebServer.server.listen(80)
+		WebServer.socketIoClients = {}
 		WebServer.socketIo.on('connection', socket => {
+			const os = socket.handshake.query ? (socket.handshake.query.os as string) : 'unknown'
+			console.log(socket.id)
+			console.log(os)
+			WebServer.socketIoClients[socket.id] = {
+				os,
+			}
+			console.log(WebServer.socketIoClients)
+			broadcast('socketClients', WebServer.socketIoClients)
+
 			// This allows the frontend to make requests to the api via socket.io, using the same router as the IPC
 			socket.on('apiCall', (path, method, payload, callback) => {
 				routeRequest(path, method, payload)
@@ -110,6 +126,10 @@ export class WebServer {
 					.catch(error => {
 						callback(false, {}, error.message)
 					})
+			})
+			socket.on('disconnect', () => {
+				delete WebServer.socketIoClients[socket.id]
+				broadcast('socketClients', WebServer.socketIoClients)
 			})
 		})
 		logger.info('Web & Socket server running')

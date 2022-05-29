@@ -2,7 +2,7 @@ import { Loader, Stack, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import React from 'react'
 import { useAppSelector } from './../apis/redux/mainStore'
-import { runningInElectron } from './../apis/utilities/version'
+import { runningInElectron } from '../apis/utilities/version'
 
 export const ConnectionLost = (props: { children: React.ReactNode }) => {
 	const viewportSize = useViewportSize()

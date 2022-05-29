@@ -6,7 +6,7 @@ import { FaCogs, FaLevelUpAlt, FaRegFolder, FaDatabase, FaRegPlayCircle, FaWindo
 import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
 import { useAppSelector } from './../apis/redux/mainStore'
-import { runningInElectron } from './../apis/utilities/version'
+import { runningInElectron } from '../apis/utilities/version'
 
 export const AdminNavigation = () => {
 	const { classes, cx } = useStyles()

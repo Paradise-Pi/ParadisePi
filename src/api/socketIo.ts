@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /**
  * Docs for this file are at https://socket.io/docs/v4/typescript/
@@ -7,8 +8,8 @@ import { Database } from './database'
 
 export interface ServerToClientEvents {
 	refreshDatabase: (database: Database) => void
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	logging: (message: { [key: string]: any }) => void
+	socketClients: (message: { [key: string]: any }) => void
 }
 
 export interface ClientToServerEvents {
