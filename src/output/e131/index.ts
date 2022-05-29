@@ -113,9 +113,7 @@ export default class E131 {
 			const thisFade = {
 				channel: thisChannel.channel,
 				universe: thisUniverse,
-				fadeFrom:
-					// eslint-disable-next-line prettier/prettier
-					this.e131Clients[thisUniverse]['addressData'][thisChannel.channel - 1],
+				fadeFrom: this.e131Clients[thisUniverse]['addressData'][thisChannel.channel - 1],
 				fadeTo: thisChannel.level,
 				fadeFromTimestamp: +dateNow,
 				fadeToTimestamp: +new Date(dateNow.getTime() + fadeTime) + 1, //fadetime + 1 allows final value to be set

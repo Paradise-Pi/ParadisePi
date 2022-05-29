@@ -14,9 +14,8 @@ export interface Database {
 		version: string
 	}
 	presets: Array<DatabasePreset>
-	presetFolders: Array<DatabasePresetFolder>
-	folders: {
-		topLevelFolders: Array<DatabasePresetFolder>
+	presetFolders: {
+		[key: number]: DatabasePresetFolder
 	}
 }
 /**
@@ -35,9 +34,6 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 		},
 		presets: await PresetRepository.getAll(),
 		presetFolders: await PresetFolderRepository.getAll(),
-		folders: {
-			topLevelFolders: await PresetFolderRepository.getTopLevelFolders(),
-		},
 	}
 }
 /**

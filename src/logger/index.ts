@@ -30,7 +30,8 @@ export const winstonTransports = {
 	}),
 	file: new transports.File({
 		// It's quite important to keep file logging to a minimum to avoid stress on the disk (especially a Pi SD card)
-		level: 'warn',
+		//level: 'warn',
+		level: 'silly',
 		filename: 'log.log',
 		dirname: logDir,
 		tailable: true,
@@ -59,4 +60,3 @@ const logger = createLogger({
 })
 
 export default logger
-//logger.profile('test', { level: 'debug' });

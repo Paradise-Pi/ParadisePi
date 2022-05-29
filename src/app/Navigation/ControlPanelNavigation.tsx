@@ -15,18 +15,22 @@ const TopLevelPresetFolders = ({
 	active: string
 	setActive: Dispatch<SetStateAction<string>>
 }) => {
-	const topLevelPresetFolders = useAppSelector(state =>
-		state.database ? state.database.folders.topLevelFolders : []
-	)
-	const [topLevelPresetFolderItems, setTopLevelPresetFolderItems] = useState<Array<DatabasePresetFolder>>([])
-	useEffect(() => {
-		if (topLevelPresetFolders.length > 0)
-			setTopLevelPresetFolderItems(topLevelPresetFolders.map(item => ({ ...item }))) // Make a copy of the presets using map because the object is not extensible
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [topLevelPresetFolders])
+	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
+	const topLevelPresetFolders: Array<DatabasePresetFolder> = []
+	if (presetFolders !== false) {
+		Object.entries(presetFolders).forEach(([key, value]) => {
+			if (value.parent === null) {
+				topLevelPresetFolders.push({
+					name: value.name,
+					id: value.id,
+					icon: value.icon,
+				})
+			}
+		})
+	}
 	return (
 		<>
-			{topLevelPresetFolderItems.map(item => (
+			{topLevelPresetFolders.map(item => (
 				<NavbarItem
 					key={item.id}
 					link={'presetFolder/' + item.id.toString()}

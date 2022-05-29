@@ -14,33 +14,55 @@ export interface DatabasePresetFolder {
 
 export const PresetFolderRepository = dataSource.getRepository(PresetFolders).extend({
 	/**
-	 * Get a list of all folders, in a simple way. Used for selecting the folder a preset belongs to
+	 * Get all folders and their contents
 	 *
-	 * @returns A list of preset folders
+	 * @param id
+	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
-	async getAll(): Promise<Array<DatabasePresetFolder>> {
-		const items = await this.find()
-		return items.map((item: PresetFolders) => {
-			return {
-				name: item.name,
-				id: item.id,
-			}
+	async getAll(): Promise<{ [key: number]: DatabasePresetFolder }> {
+		const item = await this.find({
+			orderBy: {
+				sort: 'ASC',
+				presets: {
+					sort: 'ASC', // TODO get sorting working
+				},
+			},
+			relations: {
+				childFolders: true,
+				parent: true,
+				presets: true,
+			},
 		})
-	},
-	/**
-	 * Used to set the left menu bar with all the top level folders
-	 *
-	 * @returns Get all folders that are not a child of another folder
-	 */
-	async getTopLevelFolders(): Promise<Array<DatabasePresetFolder>> {
-		const items = await this.createQueryBuilder('presetFolders').where('parentId IS NULL').getMany()
-		return items.map((item: PresetFolders) => {
-			return {
+		const returnItem: { [key: number]: DatabasePresetFolder } = {}
+		item.forEach((item: PresetFolders) => {
+			returnItem[item.id] = {
 				name: item.name,
 				id: item.id,
 				icon: item.icon,
+				children: item.childFolders.map((child: PresetFolders) => {
+					return {
+						name: child.name,
+						id: child.id,
+					}
+				}),
+				parent: item.parent
+					? {
+							name: item.parent.name,
+							id: item.parent.id,
+							icon: item.parent.icon,
+					  }
+					: null,
+				presets: item.presets.map((preset: Preset) => {
+					return {
+						id: preset.id,
+						name: preset.name,
+						enabled: preset.enabled,
+						color: preset.color !== null ? preset.color : '#2C2E33',
+					}
+				}),
 			}
 		})
+		return returnItem
 	},
 	/**
 	 * Get a particular folder by id
@@ -49,7 +71,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
 	async getOne(id: number): Promise<DatabasePresetFolder> {
-		const item = await this.findOneOrFail({
+		const item = await this.find({
 			where: {
 				id,
 			},

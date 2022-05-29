@@ -5,6 +5,7 @@ import { DatabasePresetFolder } from './../../../database/repository/presetFolde
 import { Button } from '@mantine/core'
 import { FaLevelUpAlt, FaFolder } from 'react-icons/fa'
 import { pickTextColorBasedOnBgColor } from './../../Apis/pickOppositeTextColor'
+import { useAppSelector } from './../../Apis/mainStore'
 const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
 	return (
 		<Button
@@ -47,13 +48,12 @@ const PresetFolderButton = ({
 	)
 }
 export const PresetPage = () => {
-	const { folderId } = useParams()
-	const [presetFolder, setPresetFolder] = useState<DatabasePresetFolder | false>(false)
-	useEffect(() => {
-		ApiCall.get(`/presetFolders`, { presetFolderId: folderId }).then(response => {
-			setPresetFolder(response.data)
-		})
-	}, [folderId])
+	const { folderId } = useParams<{ folderId?: string }>()
+	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
+	let presetFolder: DatabasePresetFolder | false = false
+	if (presetFolders !== false) {
+		presetFolder = presetFolders[parseInt(folderId)]
+	}
 	return (
 		<>
 			{presetFolder && presetFolder.parent !== null ? (
