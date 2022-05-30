@@ -3,6 +3,7 @@ import { DatabasePresetFolder, PresetFolderRepository } from './../database/repo
 import { getOperatingSystemName } from './about/operatingSystem/info'
 import { version } from './../../package.json'
 import { broadcast } from './broadcast'
+import ip from 'ip'
 
 export interface Database {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,6 +13,8 @@ export interface Database {
 			name: string
 		}
 		version: string
+		ipAddress: string
+		port: number
 	}
 	presets: Array<DatabasePreset>
 	presetFolders: {
@@ -31,6 +34,8 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 				name: getOperatingSystemName(),
 			},
 			version: version,
+			ipAddress: ip.address(),
+			port: 80, // TODO allow port changing
 		},
 		presets: await PresetRepository.getAll(),
 		presetFolders: await PresetFolderRepository.getAll(),

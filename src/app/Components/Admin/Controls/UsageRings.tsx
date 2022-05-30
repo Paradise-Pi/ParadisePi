@@ -5,7 +5,7 @@ import { Prism } from '@mantine/prism'
 import { ApiCall } from './../../../apis/wrapper'
 
 export const UsageRings = () => {
-	const [usageModalOpened, setusageModalOpened] = useState(false)
+	const [usageModalOpened, setUsageModalOpened] = useState(false)
 	const [usageData, setUsageData] = useState<apiObject>({})
 	useEffect(() => {
 		const getOSUsageTimer = setInterval(() => {
@@ -92,7 +92,7 @@ export const UsageRings = () => {
 					</Text>
 				}
 			></RingProgress>
-			<Button color="pink" onClick={() => setusageModalOpened(true)} variant="default" size="sm" mx="xs">
+			<Button color="pink" onClick={() => setUsageModalOpened(true)} variant="default" size="sm" mx="xs">
 				View System Resource Usage
 			</Button>
 			<Modal
@@ -100,7 +100,7 @@ export const UsageRings = () => {
 				size="lg"
 				overflow="inside"
 				opened={usageModalOpened}
-				onClose={() => setusageModalOpened(false)}
+				onClose={() => setUsageModalOpened(false)}
 				title="System Resource Usage"
 			>
 				<Prism language="json" noCopy>

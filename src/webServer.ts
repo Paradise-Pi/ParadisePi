@@ -110,13 +110,10 @@ export class WebServer {
 		WebServer.socketIoClients = {}
 		WebServer.socketIo.on('connection', socket => {
 			const os = socket.handshake.query ? (socket.handshake.query.os as string) : 'unknown'
-			console.log(socket.id)
-			console.log(os)
 			WebServer.socketIoClients[socket.id] = {
 				os,
 				ip: socket.conn.remoteAddress,
 			}
-			console.log(WebServer.socketIoClients)
 			broadcast('socketClients', WebServer.socketIoClients)
 
 			// This allows the frontend to make requests to the api via socket.io, using the same router as the IPC
