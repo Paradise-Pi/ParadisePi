@@ -5,7 +5,10 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 module.exports = [
 	new ForkTsCheckerWebpackPlugin(),
-	new BundleAnalyzerPlugin(),
+	new BundleAnalyzerPlugin({
+		generateStatsFile: false,
+		analyzerMode: 'disabled',
+	}),
 	{
 		// https://github.com/electron-userland/electron-forge/issues/2412#issuecomment-1013740102
 		apply(compiler) {
