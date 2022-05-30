@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { UnstyledButton, UnstyledButtonProps, Group, Avatar, Text, createStyles } from '@mantine/core'
 import { useAppSelector } from './../../../apis/redux/mainStore'
-import { FaWindows } from 'react-icons/fa'
+import { FaWindows } from '@react-icons/all-files/fa/FaWindows'
 
 export const SocketClients = () => {
 	const clientsList = useAppSelector(state => state.status.socketClients)

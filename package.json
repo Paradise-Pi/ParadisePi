@@ -36,6 +36,7 @@
     "@mantine/notifications": "^4.2.5",
     "@mantine/prism": "^4.2.5",
     "@paradise-pi/e131": "^1.2.1",
+    "@react-icons/all-files": "^4.1.0",
     "@reduxjs/toolkit": "^1.8.1",
     "@types/node-os-utils": "^1.2.0",
     "@types/react-beautiful-dnd": "^13.1.2",
