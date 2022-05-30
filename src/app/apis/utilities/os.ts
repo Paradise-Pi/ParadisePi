@@ -1,3 +1,4 @@
+import React from 'react'
 export const getOS = () => {
 	const { userAgent } = window.navigator
 	const macosPlatforms = /(Macintosh)|(MacIntel)|(MacPPC)|(Mac68K)/i
@@ -5,20 +6,23 @@ export const getOS = () => {
 	const iosPlatforms = /(iPhone)|(iPad)|(iPod)/i
 
 	if (macosPlatforms.test(userAgent)) {
-		return 'macos'
+		return 'MacOS'
 	}
 	if (iosPlatforms.test(userAgent)) {
-		return 'ios'
+		return 'iOS'
 	}
 	if (windowsPlatforms.test(userAgent)) {
-		return 'windows'
+		return 'Windows'
 	}
 	if (/Android/i.test(userAgent)) {
-		return 'android'
+		return 'Android'
 	}
 	if (/Linux/i.test(userAgent)) {
-		return 'linux'
+		return 'Linux'
 	}
 
-	return 'undetermined'
+	return 'Undetermined'
+}
+export const getOSIcon = (os: string) => {
+	
 }

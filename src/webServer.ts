@@ -20,6 +20,7 @@ export class WebServer {
 	static socketIoClients: {
 		[key: string]: {
 			os: string
+			ip: string
 		}
 	}
 	constructor() {
@@ -113,6 +114,7 @@ export class WebServer {
 			console.log(os)
 			WebServer.socketIoClients[socket.id] = {
 				os,
+				ip: socket.conn.remoteAddress,
 			}
 			console.log(WebServer.socketIoClients)
 			broadcast('socketClients', WebServer.socketIoClients)

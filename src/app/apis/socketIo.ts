@@ -2,7 +2,7 @@ import { io, Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from './../../api/socketIo'
 import { setFromNode } from './redux/databaseSlice'
 import store from './redux/mainStore'
-import { setSocketStatusConnection } from './redux/statusSlice'
+import { setSocketClients, setSocketStatusConnection } from './redux/statusSlice'
 import { getOS } from './utilities/os'
 
 export class SocketConnection {
@@ -35,7 +35,7 @@ export class SocketConnection {
 				console.log('Socket disconnected = ' + reason)
 			})
 			SocketConnection.socket.on('socketClients', clients => {
-				console.log(clients)
+				store.dispatch(setSocketClients(clients))
 			})
 		}
 

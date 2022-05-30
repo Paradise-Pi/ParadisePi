@@ -92,7 +92,7 @@ export const UsageRings = () => {
 					</Text>
 				}
 			></RingProgress>
-			<Button color="pink" onClick={() => setusageModalOpened(true)} variant="default" size="sm" mx="xs" my="xs">
+			<Button color="pink" onClick={() => setusageModalOpened(true)} variant="default" size="sm" mx="xs">
 				View System Resource Usage
 			</Button>
 			<Modal

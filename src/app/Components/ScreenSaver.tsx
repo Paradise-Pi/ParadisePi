@@ -41,7 +41,7 @@ const ScreensaverView = () => {
 	)
 }
 export const ScreenSaver = (props: { children: React.ReactNode }) => {
-	const timeoutTime = 10 * 1000 // TODO use a config value for timeout time
+	const timeoutTime = 2 * 60 * 1000 // TODO use a config value for timeout time
 	const showScreensaver = useIdle(timeoutTime, { initialState: false })
 	return <div>{showScreensaver ? <ScreensaverView /> : props.children}</div>
 }

@@ -11,6 +11,7 @@ import { runningInElectron } from './apis/utilities/version'
 import { ModalsProvider } from '@mantine/modals'
 import { ScreenSaver } from './Components/ScreenSaver'
 import { ConnectionLost } from './Components/ConnectionLost'
+import { setSocketClients } from './apis/redux/statusSlice'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -58,7 +59,7 @@ if (runningInElectron()) {
 		console.log(logLine)
 	})
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	window.ipcApi.receive('logging', (socketClients: { [key: string]: any }) => {
-		console.log(socketClients)
+	window.ipcApi.receive('socketClients', (clients: { [key: string]: any }) => {
+		store.dispatch(setSocketClients(clients))
 	})
 }
