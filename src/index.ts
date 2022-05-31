@@ -30,30 +30,25 @@ app.whenReady().then(() => {
 		copyright: '©2021-22 James Bithell & John Cherry',
 	})
 	// Backup the database on boot
-	fs.copyFile('database.sqlite', 'database-backup.sqlite', err => {
-		//TODO remove this as we don't need it anymore, we no longer need to backup the database as we pull it live when we use it
-		if (err) throw err
-
-		dataSource
-			.initialize()
-			.then(() => {
-				if (process.argv.includes('--e131sampler')) {
-					// TODO remove this and do it whilst the app is running
-					//setupE131Sampler();
-					createMainWindow('/e131sampler')
-				} else {
-					globalThis.mainBrowserWindow = createMainWindow('/controlPanel/help')
-					new WebServer()
-					logger.add(winstonTransports.broadcast) // You can only add the broadcast transport once the webserver has started
-					logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
-				}
-			})
-			.catch(err => {
-				// Error during Data Source initialization Error: Cannot find module 'undefinedbuild/Release/better_sqlite3.node'  =  https://github.com/electron-userland/electron-forge/issues/2412
-				// TODO handle with a popup to user
-				console.error('Error during Data Source initialization', err)
-			})
-	})
+	dataSource
+		.initialize()
+		.then(() => {
+			if (process.argv.includes('--e131sampler')) {
+				// TODO remove this and do it whilst the app is running
+				//setupE131Sampler();
+				createMainWindow('/e131sampler')
+			} else {
+				globalThis.mainBrowserWindow = createMainWindow('/controlPanel/help')
+				new WebServer()
+				logger.add(winstonTransports.broadcast) // You can only add the broadcast transport once the webserver has started
+				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
+			}
+		})
+		.catch(err => {
+			// Error during Data Source initialization Error: Cannot find module 'undefinedbuild/Release/better_sqlite3.node'  =  https://github.com/electron-userland/electron-forge/issues/2412
+			// TODO handle with a popup to user
+			console.error('Error during Data Source initialization', err)
+		})
 
 	app.on('activate', () => {
 		if (BrowserWindow.getAllWindows().length === 0) createMainWindow('/controlPanel/help')
