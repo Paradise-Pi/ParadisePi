@@ -2,6 +2,7 @@ import { aboutRouter } from './about/aboutRouter'
 import { createDatabaseObject } from './database'
 import { presetRouter } from './preset/presetRouter'
 import { presetFolderRouter } from './presetFolder/presetFolderRouter'
+import { configRouter } from './config/configRouter'
 /**
  * This is a REST router that triages all requests and sends them to relevant routers
  * @param path - The path requested by the requestor
@@ -37,6 +38,10 @@ export const routeRequest = (
 			case 'presetFolders':
 				// {@link presetFolderRouter} - this router handles all about requests for the /presetFolders path
 				resolve(presetFolderRouter(pathArr.slice(1), method, payload))
+				break
+			case 'config':
+				// {@link configRouter} - this router handles all about requests for the /config path
+				resolve(configRouter(pathArr.slice(1), method, payload))
 				break
 		}
 		reject(new Error('Path not found'))

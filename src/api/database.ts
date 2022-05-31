@@ -1,5 +1,6 @@
 import { DatabasePreset, PresetRepository } from './../database/repository/preset'
 import { DatabasePresetFolder, PresetFolderRepository } from './../database/repository/presetFolder'
+import { ConfigRepository } from './../database/repository/config'
 import { getOperatingSystemName } from './about/operatingSystem/info'
 import { version } from './../../package.json'
 import { broadcast } from './broadcast'
@@ -15,6 +16,14 @@ export interface Database {
 		version: string
 		ipAddress: string
 		port: number
+	}
+	config: {
+		general: {
+			deviceLock: boolean
+			timeoutTime: number
+			helpText: string
+			adminLinkFromControlPanel: boolean
+		}
 	}
 	presets: Array<DatabasePreset>
 	presetFolders: {
@@ -36,6 +45,14 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 			version: version,
 			ipAddress: ip.address(),
 			port: 80, // TODO allow port changing
+		},
+		config: {
+			general: {
+				deviceLock: (await ConfigRepository.getItem('deviceLock')) === 'LOCKED',
+				timeoutTime: parseInt(await ConfigRepository.getItem('timeoutTime')) * 1000,
+				helpText: await ConfigRepository.getItem('helpText'),
+				adminLinkFromControlPanel: (await ConfigRepository.getItem('adminLinkFromControlPanel')) === 'true',
+			},
 		},
 		presets: await PresetRepository.getAll(),
 		presetFolders: await PresetFolderRepository.getAll(),

@@ -1,6 +1,7 @@
 import { Stack, Title, Space } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import { useElementSize, useIdle, useViewportSize } from '@mantine/hooks'
+import { useAppSelector } from '../apis/redux/mainStore'
 
 const ScreensaverView = () => {
 	/**
@@ -41,7 +42,11 @@ const ScreensaverView = () => {
 	)
 }
 export const ScreenSaver = (props: { children: React.ReactNode }) => {
-	const timeoutTime = 2 * 60 * 1000 // TODO use a config value for timeout time
+	const defaultTimeoutTime = 2 * 60 * 1000 // 2 minutes
+	let timeoutTime = useAppSelector(state =>
+		state.database ? state.database.config.general.timeoutTime : defaultTimeoutTime
+	)
+	if (timeoutTime < 3000) timeoutTime = 3000 //Set a lower limit of 3 seconds otherwise it all gets a bit silly really
 	const showScreensaver = useIdle(timeoutTime, { initialState: false })
 	return <div>{showScreensaver ? <ScreensaverView /> : props.children}</div>
 }

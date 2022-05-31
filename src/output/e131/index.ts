@@ -28,13 +28,13 @@ export default class E131 {
 	private frequency: number
 
 	constructor() {
-		this.firstUniverse = parseInt(ConfigRepository.getItem('e131FirstUniverse'))
-		this.universes = parseInt(ConfigRepository.getItem('e131Universes'))
-		this.sourceName = ConfigRepository.getItem('e131SourceName')
-		this.priority = parseInt(ConfigRepository.getItem('e131Priority'))
-		this.frequency = parseInt(ConfigRepository.getItem('e131Frequency'))
+		/*this.firstUniverse = parseInt(await ConfigRepository.getItem('e131FirstUniverse'))
+		this.universes = parseInt(await ConfigRepository.getItem('e131Universes'))
+		this.sourceName = await ConfigRepository.getItem('e131SourceName')
+		this.priority = parseInt(await ConfigRepository.getItem('e131Priority'))
+		this.frequency = parseInt(await ConfigRepository.getItem('e131Frequency'))
 		this.setupUniverses()
-		this.initSending()
+		this.initSending()*/
 	}
 	getUniqueId() {
 		const interfaces = networkInterfaces()
