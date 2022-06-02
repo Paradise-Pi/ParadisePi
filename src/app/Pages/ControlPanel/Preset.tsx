@@ -6,6 +6,7 @@ import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
 import { useAppSelector } from './../../apis/redux/mainStore'
+import { ApiCall } from './../../apis/wrapper'
 const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
 	return (
 		<Button
@@ -15,6 +16,9 @@ const PresetButton = ({ text, presetId, color }: { text: string; presetId: numbe
 				'&:hover': { backgroundColor: color },
 				color: pickTextColorBasedOnBgColor(color),
 			})}
+			onClick={() => {
+				ApiCall.get('/presets/recall/' + presetId, {})
+			}}
 			size="xl"
 			mx="xs"
 			my="xs"

@@ -1,5 +1,5 @@
 import { ConfigRepository } from './../../database/repository/config'
-import { DatabasePreset, PresetRepository } from './../../database/repository/preset'
+import { createE131 } from './../../output/e131/constructor'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
 /**
  * This is a REST router for the preset API.
@@ -30,6 +30,11 @@ export const configRouter = (
 				})
 				.then((response: Database) => {
 					sendDatabaseObject(response)
+					return e131.terminate()
+				})
+				.then(() => {
+					console.log('E131 terminated')
+					createE131()
 					resolve({})
 				})
 		} else reject(new Error('Path not found'))

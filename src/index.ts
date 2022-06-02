@@ -2,11 +2,11 @@ import { app, BrowserWindow, ipcMain, IpcMainEvent } from 'electron'
 import 'reflect-metadata'
 import createMainWindow from './electron/createMainWindow'
 import dataSource from './database/dataSource'
-import fs from 'fs'
 import { WebServer } from './webServer'
 import { routeRequest } from './api/router'
 import { IpcRequest } from './api/ipc'
 import logger, { winstonTransports } from './logger/index'
+import { createE131 } from './output/e131/constructor'
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
 	// eslint-disable-line global-require
@@ -33,6 +33,7 @@ app.whenReady().then(() => {
 	dataSource
 		.initialize()
 		.then(() => {
+			createE131()
 			if (process.argv.includes('--e131sampler')) {
 				// TODO remove this and do it whilst the app is running
 				//setupE131Sampler();

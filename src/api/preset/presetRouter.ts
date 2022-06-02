@@ -1,3 +1,4 @@
+import { Preset } from './../../database/model/Preset'
 import { DatabasePreset, PresetRepository } from './../../database/repository/preset'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
 /**
@@ -15,7 +16,19 @@ export const presetRouter = (
 ): Promise<apiObject> => {
 	logger.debug('Preset router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
-		if (method === 'PUT') {
+		if (method === 'GET' && path[0] === 'recall') {
+			return PresetRepository.findOneOrFail({ where: { id: parseInt(path[1]) } }).then((value: Preset) => {
+				logger.verbose('Preset recalled', { value })
+				if (value.type === 'e131') {
+					e131.update(
+						parseInt(value.universe),
+						e131.convertObjectToChannelData(value.data),
+						value.fadeTime * 1000
+					)
+				}
+				resolve({})
+			})
+		} else if (method === 'PUT') {
 			return PresetRepository.setAll(payload as Array<DatabasePreset>)
 				.then(() => {
 					return createDatabaseObject('updating all presets in bulk')
