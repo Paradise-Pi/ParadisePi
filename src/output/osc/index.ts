@@ -12,16 +12,18 @@ export default class osc {
 	private udpPort: any
 	private lastOSCMessage: number
 	private udpStatus: boolean
-	private targetMixer: string
-	private targetAddress: string
+	private consoleAddress: string
 
 	//mixer config
-	private static oscPort: mixerConfig = { xair: 10024, x32: 10023 }
-	private static masterAddress: mixerConfig = { xair: 10024, x32: 10023 }
+	//osc port of 
+	private static oscPort: number
+	//master fader osc string
+	private static masterOscString: string
 
-	constructor() {
-		this.targetMixer = ConfigRepository.getItem('oscMixer')
-		this.targetAddress = ConfigRepository.getItem('oscAddress')
+	constructor(port:number, master:string) {
+		this.consoleAddress = ConfigRepository.getItem('oscAddress')
+		this.oscPort = port
+		this.masterOscString = master
 	}
 
 	/**
@@ -73,8 +75,8 @@ export default class osc {
 							args: [],
 						})
 					})
-					this.udpPort.send({ address: osc.masterAddress[this.targetMixer] + '/mix/fader', args: [] })
-					this.udpPort.send({ address: osc.masterAddress[this.targetMixer] + '/mix/on', args: [] })
+					this.udpPort.send({ address: this.masterOscString + '/mix/fader', args: [] })
+					this.udpPort.send({ address: this.masterOscString + '/mix/on', args: [] })
 				})
 			}, 3000)
 		} else if (this.udpStatus) {
@@ -94,8 +96,8 @@ export default class osc {
 		this.udpPort = new oscHandler.UDPPort({
 			localAddress: '0.0.0.0',
 			localPort: 57121,
-			remotePort: osc.oscPort[this.targetMixer],
-			remoteAddress: this.targetAddress,
+			remotePort: this.oscPort,
+			remoteAddress: this.consoleAddress,
 		})
 
 		this.udpPort.on('ready', function () {
