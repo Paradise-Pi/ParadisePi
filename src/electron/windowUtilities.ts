@@ -1,4 +1,4 @@
-import dataSource from '../database/dataSource'
+import dataSource from './../database/dataSource'
 import { app } from 'electron'
 import fs from 'fs'
 
@@ -12,7 +12,7 @@ export const reboot = (reboot?: boolean, force?: boolean, flagsAdd?: Array<strin
 	dataSource.destroy().then(() => {
 		if (reboot) {
 			let flags = process.argv.slice(1)
-			flagsRemove.forEach(function (flagRemove) {
+			flagsRemove.forEach(flagRemove => {
 				flags = flags.filter(item => item !== flagRemove)
 			})
 			flags = flags.concat(flagsAdd)

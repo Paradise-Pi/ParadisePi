@@ -16,14 +16,13 @@
     "plugin:react-hooks/recommended",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["unused-imports"],
+  "plugins": ["unused-imports", "@typescript-eslint/eslint-plugin", "eslint-plugin-tsdoc"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest"
   },
   "rules": {
-    "require-jsdoc": ["off"],
-    "valid-jsdoc": ["off"],
+    "tsdoc/syntax": "warn",
     "max-len": ["off"],
     "linebreak-style": ["off"],
     "prettier/prettier": [

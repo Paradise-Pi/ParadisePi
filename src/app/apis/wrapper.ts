@@ -1,6 +1,6 @@
 import { showNotification } from '@mantine/notifications'
 import { SocketConnection } from './socketIo'
-import { runningInElectron } from './version'
+import { runningInElectron } from './utilities/version'
 
 declare global {
 	interface Window {

@@ -1,18 +1,15 @@
-import React, { ElementType, ReactElement } from 'react'
 import { IconType } from 'react-icons'
-import {
-	FaVideo,
-	FaLightbulb,
-	FaRegLightbulb,
-	FaVolumeDown,
-	FaVolumeMute,
-	FaVolumeOff,
-	FaVolumeUp,
-	FaPhoneVolume,
-	FaMicrophone,
-	FaMicrophoneAlt,
-	FaFolder,
-} from 'react-icons/fa'
+import { FaVideo } from '@react-icons/all-files/fa/FaVideo'
+import { FaLightbulb } from '@react-icons/all-files/fa/FaLightbulb'
+import { FaRegLightbulb } from '@react-icons/all-files/fa/FaRegLightbulb'
+import { FaVolumeDown } from '@react-icons/all-files/fa/FaVolumeDown'
+import { FaVolumeMute } from '@react-icons/all-files/fa/FaVolumeMute'
+import { FaVolumeOff } from '@react-icons/all-files/fa/FaVolumeOff'
+import { FaVolumeUp } from '@react-icons/all-files/fa/FaVolumeUp'
+import { FaPhoneVolume } from '@react-icons/all-files/fa/FaPhoneVolume'
+import { FaMicrophone } from '@react-icons/all-files/fa/FaMicrophone'
+import { FaMicrophoneAlt } from '@react-icons/all-files/fa/FaMicrophoneAlt'
+import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 
 const Icons: {
 	[key: string]: IconType

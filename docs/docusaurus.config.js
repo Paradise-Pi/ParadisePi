@@ -1,6 +1,7 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable tsdoc/syntax */
 
 const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
@@ -11,14 +12,15 @@ const production = process.env.CONTEXT === 'production' //Netlify/Cloudflare Pag
 const config = {
 	title: 'ParadisePi',
 	tagline: 'Facility control panel for sACN & OSC, in Electron.',
-	url: 'https://paradisepi.pages.dev',
+	url: process.env.CF_PAGES_URL ?? 'http://localhost',
 	baseUrl: '/',
 	noIndex: !production,
-	onBrokenLinks: 'warn',
-	onBrokenMarkdownLinks: 'warn',
+	onBrokenLinks: production ? 'warn' : 'throw',
+	onBrokenMarkdownLinks: production ? 'warn' : 'throw',
+	onDuplicateRoutes: production ? 'warn' : 'throw',
 	favicon: 'img/favicon.ico',
-	organizationName: 'Paradise-Pi', // Usually your GitHub org/user name.
-	projectName: 'ParadisePi', // Usually your repo name.
+	organizationName: 'Paradise-Pi',
+	projectName: 'ParadisePi',
 
 	presets: [
 		[
@@ -27,7 +29,6 @@ const config = {
 			({
 				docs: {
 					sidebarPath: require.resolve('./sidebars.js'),
-					// Please change this to your repo.
 					editUrl: 'https://github.com/Paradise-Pi/ParadisePi',
 					editCurrentVersion: true,
 					showLastUpdateTime: true,
@@ -62,12 +63,6 @@ const config = {
 						label: 'User Guide',
 					},
 					{
-						type: 'doc',
-						docId: 'repo-docs/intro',
-						position: 'left',
-						label: 'Developer Guide',
-					},
-					{
 						href: 'https://github.com/Paradise-Pi/ParadisePi/releases/latest',
 						label: 'Download',
 						position: 'right',
@@ -97,7 +92,39 @@ const config = {
 					isCloseable: false,
 				},
 			}),
+			docs: {
+				sidebar: {
+					hideable: true,
+					autoCollapseCategories: false,
+				},
+			},
 		}),
+	plugins: [
+		[
+			'@docusaurus/plugin-pwa',
+			{
+				debug: !production,
+				offlineModeActivationStrategies: ['standalone', 'queryString'],
+				pwaHead: [
+					{
+						tagName: 'link',
+						rel: 'icon',
+						href: '/img/docusaurus.png',
+					},
+					{
+						tagName: 'link',
+						rel: 'manifest',
+						href: '/manifest.json', // your PWA manifest
+					},
+					{
+						tagName: 'meta',
+						name: 'theme-color',
+						content: 'rgb(37, 194, 160)',
+					},
+				],
+			},
+		],
+	],
 }
 
 module.exports = config

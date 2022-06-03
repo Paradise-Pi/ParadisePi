@@ -1,12 +1,13 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { Navbar, Group, Code, Text, ScrollArea } from '@mantine/core'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { Navbar, ScrollArea } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
-import { FaRegLightbulb, FaQuestion, FaCog, FaVolumeUp, FaVideo } from 'react-icons/fa'
+import { FaQuestion } from '@react-icons/all-files/fa/FaQuestion'
+import { FaCog } from '@react-icons/all-files/fa/FaCog'
 import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
-import { useAppSelector } from '../Apis/mainStore'
+import { useAppSelector } from './../apis/redux/mainStore'
 import { DatabasePresetFolder } from './../../database/repository/presetFolder'
-import { PresetFolderIcon } from '../Components/ControlPanel/PresetFolderIcon'
+import { PresetFolderIcon } from './../Components/ControlPanel/PresetFolderIcon'
 
 const TopLevelPresetFolders = ({
 	active,
@@ -15,18 +16,22 @@ const TopLevelPresetFolders = ({
 	active: string
 	setActive: Dispatch<SetStateAction<string>>
 }) => {
-	const topLevelPresetFolders = useAppSelector(state =>
-		state.database ? state.database.folders.topLevelFolders : []
-	)
-	const [topLevelPresetFolderItems, setTopLevelPresetFolderItems] = useState<Array<DatabasePresetFolder>>([])
-	useEffect(() => {
-		if (topLevelPresetFolders.length > 0)
-			setTopLevelPresetFolderItems(topLevelPresetFolders.map(item => ({ ...item }))) // Make a copy of the presets using map because the object is not extensible
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [topLevelPresetFolders])
+	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
+	const topLevelPresetFolders: Array<DatabasePresetFolder> = []
+	if (presetFolders !== false) {
+		Object.entries(presetFolders).forEach(([key, value]) => {
+			if (value.parent === null) {
+				topLevelPresetFolders.push({
+					name: value.name,
+					id: value.id,
+					icon: value.icon,
+				})
+			}
+		})
+	}
 	return (
 		<>
-			{topLevelPresetFolderItems.map(item => (
+			{topLevelPresetFolders.map(item => (
 				<NavbarItem
 					key={item.id}
 					link={'presetFolder/' + item.id.toString()}
@@ -39,7 +44,7 @@ const TopLevelPresetFolders = ({
 		</>
 	)
 }
-export function ControlPanelNavigation() {
+export const ControlPanelNavigation = () => {
 	const { classes } = useStyles()
 	const { height } = useViewportSize()
 	const [active, setActive] = useState('Help') // Default page of help

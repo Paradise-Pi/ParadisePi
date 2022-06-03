@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import databaseReducer from './databaseSlice'
+import databaseSliceReducer from './databaseSlice'
+import statusSliceReducer from './statusSlice'
 
 const store = configureStore({
 	reducer: {
-		database: databaseReducer,
+		database: databaseSliceReducer,
+		status: statusSliceReducer,
 	},
 })
 

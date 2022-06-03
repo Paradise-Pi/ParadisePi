@@ -13,17 +13,25 @@ import { FoldersConfigurationPage } from './Pages/Admin/Folders'
 import { PresetsConfigurationPage } from './Pages/Admin/Presets'
 import { FadersConfigurationPage } from './Pages/Admin/Faders'
 import { ControlsConfigurationPage } from './Pages/Admin/Controls'
+import { Locked } from './Components/Locked'
 
-function Router() {
+const Router = () => {
 	return (
 		<HashRouter>
 			<Routes>
-				<Route path="controlPanel" element={<MainNav navigation={<ControlPanelNavigation />} />}>
+				<Route
+					path="controlPanel"
+					element={
+						<Locked>
+							<MainNav navigation={<ControlPanelNavigation />} />
+						</Locked>
+					}
+				>
 					<Route path="presetFolder/:folderId" element={<PresetPage />} />
 					<Route path="help" element={<HelpPage />} />
 					<Route path="about" element={<AboutPage />} />
 				</Route>
-				<Route path="e131sampler" element={<div>Sampling e131</div>} />
+				<Route path="e131sampler" element={<div>Sampling E1.31</div>} />
 				<Route path="admin" element={<MainNav navigation={<AdminNavigation />} />}>
 					<Route path="configuration" element={<ConfigurationPage />} />
 					<Route path="folders" element={<FoldersConfigurationPage />} />

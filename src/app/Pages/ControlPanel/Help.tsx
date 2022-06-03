@@ -1,13 +1,12 @@
-import { Paper, Text } from '@mantine/core'
 import React from 'react'
+import { DangerouslySetHTML } from './../../Components/DangerouslySetHTML'
+import { useAppSelector } from './../../apis/redux/mainStore'
 
 export const HelpPage = () => {
+	const helpText = useAppSelector(state => (state.database ? state.database.config.general.helpText : ''))
 	return (
 		<>
-			<Paper shadow="xl" p="lg" withBorder>
-				<Text>Help</Text>
-				<Text>Facility control panel for sACN & OSC, in Electron.</Text>
-			</Paper>
+			<DangerouslySetHTML html={helpText} />
 		</>
 	)
 }

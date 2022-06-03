@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ApiCall } from './../../Apis/wrapper'
 import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
 import { Button } from '@mantine/core'
-import { FaLevelUpAlt, FaFolder } from 'react-icons/fa'
-import { pickTextColorBasedOnBgColor } from './../../Apis/pickOppositeTextColor'
+import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
+import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
+import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
+import { useAppSelector } from './../../apis/redux/mainStore'
+import { ApiCall } from './../../apis/wrapper'
 const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
 	return (
 		<Button
@@ -14,6 +16,9 @@ const PresetButton = ({ text, presetId, color }: { text: string; presetId: numbe
 				'&:hover': { backgroundColor: color },
 				color: pickTextColorBasedOnBgColor(color),
 			})}
+			onClick={() => {
+				ApiCall.get('/presets/recall/' + presetId, {})
+			}}
 			size="xl"
 			mx="xs"
 			my="xs"
@@ -47,13 +52,12 @@ const PresetFolderButton = ({
 	)
 }
 export const PresetPage = () => {
-	const { folderId } = useParams()
-	const [presetFolder, setPresetFolder] = useState<DatabasePresetFolder | false>(false)
-	useEffect(() => {
-		ApiCall.get(`/presetFolders`, { presetFolderId: folderId }).then(response => {
-			setPresetFolder(response.data)
-		})
-	}, [folderId])
+	const { folderId } = useParams<{ folderId?: string }>()
+	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
+	let presetFolder: DatabasePresetFolder | false = false
+	if (presetFolders !== false) {
+		presetFolder = presetFolders[parseInt(folderId)]
+	}
 	return (
 		<>
 			{presetFolder && presetFolder.parent !== null ? (

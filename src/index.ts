@@ -2,14 +2,11 @@ import { app, BrowserWindow, ipcMain, IpcMainEvent } from 'electron'
 import 'reflect-metadata'
 import createMainWindow from './electron/createMainWindow'
 import dataSource from './database/dataSource'
-import fs from 'fs'
 import { WebServer } from './webServer'
-
-import E131 from './output/e131'
 import { routeRequest } from './api/router'
 import { IpcRequest } from './api/ipc'
-import { ConfigRepository } from './database/repository/config'
-
+import logger, { winstonTransports } from './logger/index'
+import { createE131 } from './output/e131/constructor'
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
 	// eslint-disable-line global-require
@@ -19,8 +16,10 @@ if (require('electron-squirrel-startup')) {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-
+globalThis.logger = logger
+logger.profile('boot')
 app.whenReady().then(() => {
+	if (!app.isPackaged) logger.add(winstonTransports.console) // Turn on console logging if not in production
 	// Populate the about info
 	const versions = JSON.stringify(process.versions)
 	app.setAboutPanelOptions({
@@ -31,43 +30,33 @@ app.whenReady().then(() => {
 		copyright: '©2021-22 James Bithell & John Cherry',
 	})
 	// Backup the database on boot
-	console.log('Copying database')
-	fs.copyFile('database.sqlite', 'database-backup.sqlite', err => {
-		//TODO remove this as we don't need it anymore, we no longer need to backup the database as we pull it live when we use it
-		if (!err) {
-			console.log('Database was backed up')
-		}
-		dataSource
-			.initialize()
-			.then(() => {
-				if (process.argv.includes('--e131sampler')) {
-					//setupE131Sampler();
-					createMainWindow('/e131sampler')
-				} else {
-					//setupOSC();
-					if (ConfigRepository.getItem('e131Enabled')) {
-						globalThis.e131 = new E131() // Have a single version of the class because it locks the network output
-					}
+	dataSource
+		.initialize()
+		.then(() => {
+			createE131()
+			if (process.argv.includes('--e131sampler')) {
+				// TODO remove this and do it whilst the app is running
+				//setupE131Sampler();
+				createMainWindow('/e131sampler')
+			} else {
+				globalThis.mainBrowserWindow = createMainWindow('/controlPanel/help')
+				new WebServer()
+				logger.add(winstonTransports.broadcast) // You can only add the broadcast transport once the webserver has started
+				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
+			}
+		})
+		.catch(err => {
+			// Error during Data Source initialization Error: Cannot find module 'undefinedbuild/Release/better_sqlite3.node'  =  https://github.com/electron-userland/electron-forge/issues/2412
+			// TODO handle with a popup to user
+			console.error('Error during Data Source initialization', err)
+		})
 
-					globalThis.mainBrowserWindow = createMainWindow('/controlPanel/help')
-					new WebServer()
-				}
-			})
-			.catch(err => {
-				// Error during Data Source initialization Error: Cannot find module 'undefinedbuild/Release/better_sqlite3.node'  =  https://github.com/electron-userland/electron-forge/issues/2412
-				// TODO handle with a popup to user
-				console.error('Error during Data Source initialization', err)
-			})
-	})
-
-	app.on('activate', function () {
+	app.on('activate', () => {
 		if (BrowserWindow.getAllWindows().length === 0) createMainWindow('/controlPanel/help')
 	})
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+// Quit when all windows are closed, except on macOS. There, it's common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit()

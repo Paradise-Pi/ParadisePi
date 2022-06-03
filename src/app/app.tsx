@@ -3,12 +3,15 @@ import { createRoot } from 'react-dom/client'
 import { MantineProvider } from '@mantine/core'
 import { Provider } from 'react-redux'
 import './app.css'
-import store, { useAppDispatch } from './Apis/mainStore'
+import store, { useAppDispatch } from './apis/redux/mainStore'
 import Router from './router'
-import { getFromAPI, setFromNode } from './Apis/databaseSlice'
-import { Database } from '../api/database'
-import { runningInElectron } from './Apis/version'
+import { getFromAPI, setFromNode } from './apis/redux/databaseSlice'
+import { Database } from './../api/database'
+import { runningInElectron } from './apis/utilities/version'
 import { ModalsProvider } from '@mantine/modals'
+import { ScreenSaver } from './Components/ScreenSaver'
+import { ConnectionLost } from './Components/ConnectionLost'
+import { setSocketClients } from './apis/redux/statusSlice'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -31,7 +34,11 @@ const App = () => {
 			withGlobalStyles
 		>
 			<ModalsProvider>
-				<Router />
+				<ScreenSaver>
+					<ConnectionLost>
+						<Router />
+					</ConnectionLost>
+				</ScreenSaver>
 			</ModalsProvider>
 		</MantineProvider>
 	)
@@ -46,5 +53,13 @@ root.render(
 if (runningInElectron()) {
 	window.ipcApi.receive('refreshDatabase', (data: Database) => {
 		store.dispatch(setFromNode(data))
+	})
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	window.ipcApi.receive('logging', (logLine: { [key: string]: any }) => {
+		console.log(logLine)
+	})
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	window.ipcApi.receive('socketClients', (clients: { [key: string]: any }) => {
+		store.dispatch(setSocketClients(clients))
 	})
 }

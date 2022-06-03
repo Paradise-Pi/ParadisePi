@@ -3,8 +3,6 @@ import {
 	Group,
 	TextInput,
 	Box,
-	Text,
-	Code,
 	Button,
 	Center,
 	ActionIcon,
@@ -16,15 +14,20 @@ import {
 	Modal,
 	JsonInput,
 	Tabs,
+	SelectItem,
 } from '@mantine/core'
 import { useForm, formList } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { FaFolder, FaGripVertical, FaInfoCircle, FaRegClock, FaTrash, FaPencilAlt } from 'react-icons/fa'
+import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
+import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
+import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle'
+import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
+import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { FormList } from '@mantine/form/lib/form-list/form-list'
-import { useAppSelector } from './../../Apis/mainStore'
+import { useAppSelector } from './../../apis/redux/mainStore'
 import { DatabasePreset } from './../../../database/repository/preset'
-import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
-import { ApiCall } from './../../Apis/wrapper'
+import { ApiCall } from './../../apis/wrapper'
 
 interface FormValues {
 	presets: FormList<DatabasePreset>
@@ -35,6 +38,17 @@ export const PresetsConfigurationPage = () => {
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
 	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
+	const presetFoldersForSelect: Array<SelectItem> = []
+	// Prepare preset folders list for select dropdown
+	if (presetFolders !== false) {
+		Object.entries(presetFolders).forEach(([key, value]) => {
+			presetFoldersForSelect.push({
+				value: value.id.toString(),
+				label: value.name,
+			})
+		})
+	}
+	// Setup the form
 	const form = useForm<FormValues>({
 		initialValues: {
 			presets: formList([]),
@@ -52,10 +66,12 @@ export const PresetsConfigurationPage = () => {
 		if (loadingOverlayVisible) setLoadingOverlayVisible(false)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [presets])
+	// Handle the submit button
 	const handleSubmit = (values: typeof form.values) => {
 		setLoadingOverlayVisible(true)
 		ApiCall.put('/presets', values.presets)
 	}
+
 	const fields = form.values.presets.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
@@ -69,16 +85,7 @@ export const PresetsConfigurationPage = () => {
 						icon={<FaFolder />}
 						// form.values.presets[index].folderId
 						{...form.getListInputProps('presets', index, 'folderId')}
-						data={
-							presetFolders !== false
-								? presetFolders.map((item: DatabasePresetFolder) => {
-										return {
-											value: item.id.toString(),
-											label: item.name,
-										}
-								  })
-								: []
-						}
+						data={presetFoldersForSelect}
 					/>
 					<ColorInput
 						format="hex"
