@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import oscHandler from 'osc'
-import { ConfigRepository } from '../../database/repository/config'
 import { DatabaseFader, FaderRepository } from '../../database/repository/fader'
 import meterFunctions from './meterFunctions'
 
@@ -8,7 +7,8 @@ interface mixerConfig {
 	[key: string]: any
 }
 
-export default class osc {
+//This class cannot be called directly, create a child osc class for each console
+export default abstract class osc {
 	private udpPort: any
 	private lastOSCMessage: number
 	private udpStatus: boolean
@@ -16,20 +16,27 @@ export default class osc {
 
 	//mixer config
 	//osc port of 
-	private static oscPort: number
+	private oscPort: number
 	//master fader osc string
-	private static masterOscString: string
+	private masterOscString: string
 
-	constructor(port:number, master:string) {
-		this.consoleAddress = ConfigRepository.getItem('oscAddress')
+	/**
+	 * Create a new osc object, and setup connection
+	 * @param address - ip address of console
+	 * @param port - osc port of console
+	 * @param master - string address of master fader of the console (eg "/lr" for xair)
+	 */
+	constructor(address:string, port:number, master:string) {
+		this.consoleAddress = address
 		this.oscPort = port
 		this.masterOscString = master
+		this.setupOSC()
 	}
 
 	/**
 	 * Send required addresses to get basic info about the mixer
 	 */
-	subscribeOSC() {
+	private subscribeOSC() {
 		this.udpPort.send({ address: '/xremote' })
 		this.udpPort.send({ address: '/meters', args: [{ type: 's', value: '/meters/1' }] })
 	}
@@ -37,7 +44,7 @@ export default class osc {
 	/**
 	 * Check we're actually connected, and try to reconnect if not
 	 */
-	checkStatusOSC() {
+	private checkStatusOSC() {
 		const currentMillis = +new Date()
 		if (currentMillis - this.lastOSCMessage > 3000) {
 			// Now disconnected from the Mixer
@@ -56,6 +63,7 @@ export default class osc {
 			this.udpStatus = true
 			this.udpPort.send({ address: '/info', args: [] })
 			try {
+
 				//TODO: Convert this ->mainWindow.webContents.send('OSCStatus', true)
 			} catch (err) {
 				// Ignore, it's normally because electron has quit but you're still tidying up
@@ -92,7 +100,7 @@ export default class osc {
 	/**
 	 * Setup actual osc handling
 	 */
-	setupOSC() {
+	private setupOSC() {
 		this.udpPort = new oscHandler.UDPPort({
 			localAddress: '0.0.0.0',
 			localPort: 57121,
@@ -101,8 +109,9 @@ export default class osc {
 		})
 
 		this.udpPort.on('ready', function () {
-			console.log('UDP Socket open and listening')
+			logger.log('info','[OSC] UDP Socket open and listening')
 		})
+
 		this.udpPort.on('message', function (oscMessage: { address: string; parsed: any; args: any[] }) {
 			this.lastOSCMessage = +new Date()
 			this.checkStatusOSC()
@@ -117,8 +126,9 @@ export default class osc {
 			}
 		})
 		this.udpPort.on('error', function (err: any) {
-			console.log(err)
+			logger.log('error', err)
 		})
+
 		//actually open the content
 		this.udpPort.open()
 	}
@@ -128,7 +138,8 @@ export default class osc {
 	 * @param address OSC address
 	 * @param args OSC arguments
 	 */
-	send(address: string, args: any) {
+	public send(address: string, args: any) {
+		logger.verbose("args", args)
 		this.udpPort.send({ address: address, args: args })
 	}
 }

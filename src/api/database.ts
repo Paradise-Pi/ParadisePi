@@ -24,6 +24,10 @@ export interface Database {
 			helpText: string
 			adminLinkFromControlPanel: boolean
 		}
+		osc: {
+			OSCTargetIP: string
+			OSCMixerType: string
+		}
 	}
 	presets: Array<DatabasePreset>
 	presetFolders: {
@@ -53,6 +57,10 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 				helpText: await ConfigRepository.getItem('helpText'),
 				adminLinkFromControlPanel: (await ConfigRepository.getItem('adminLinkFromControlPanel')) === 'true',
 			},
+			osc: {
+				OSCTargetIP: await ConfigRepository.getItem('OSCTargetIP'),
+				OSCMixerType: await ConfigRepository.getItem('OSCMixerType'),
+			}
 		},
 		presets: await PresetRepository.getAll(),
 		presetFolders: await PresetFolderRepository.getAll(),

@@ -1,8 +1,8 @@
 import osc from ".";
 
-export default class behrX32 extends osc {
+export default class behrXAir extends osc {
 
-    constructor() {
-        super(10024, '/lr')
+    constructor(address:string) {
+        super(address, 10024, '/lr');
     }
 }
