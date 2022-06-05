@@ -17,7 +17,7 @@ declare global {
 	var logger: Logger
 	var e131: E131
 	var osc: osc
-	
+
 	interface apiObject {
 		[key: string]: any
 	}

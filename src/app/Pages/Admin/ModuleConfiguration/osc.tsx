@@ -41,9 +41,9 @@ export const OSCModuleConfigurationPage = () => {
 	if (!true) return <Loader variant="bars" />
 	return (
 		<StrictMode>
-			<Box sx={{ maxWidth: 400}} mx="auto">
+			<Box sx={{ maxWidth: 400 }} mx="auto">
 				<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-				<form onSubmit={form.onSubmit(handleSubmit)} >
+				<form onSubmit={form.onSubmit(handleSubmit)}>
 					<Button type="submit">Save</Button>
 					<Divider my="sm" />
 					<TextInput
@@ -53,12 +53,7 @@ export const OSCModuleConfigurationPage = () => {
 						{...form.getInputProps('oscTargetIP')}
 					/>
 					<Divider my="sm" />
-					<NativeSelect
-						required
-						placeholder="Select a Console"
-						label="Console Type"
-						data={[]}
-					/>
+					<NativeSelect required placeholder="Select a Console" label="Console Type" data={[]} />
 				</form>
 			</Box>
 		</StrictMode>

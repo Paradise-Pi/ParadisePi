@@ -60,7 +60,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 			osc: {
 				OSCTargetIP: await ConfigRepository.getItem('OSCTargetIP'),
 				OSCMixerType: await ConfigRepository.getItem('OSCMixerType'),
-			}
+			},
 		},
 		presets: await PresetRepository.getAll(),
 		presetFolders: await PresetFolderRepository.getAll(),

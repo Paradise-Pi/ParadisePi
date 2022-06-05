@@ -25,7 +25,7 @@ export const presetRouter = (
 						e131.convertObjectToChannelData(value.data),
 						value.fadeTime * 1000
 					)
-				}else if (value.type === 'osc') {
+				} else if (value.type === 'osc') {
 					Object.entries(value.data).forEach(([address, args]) => {
 						osc.send(address, args)
 					})

@@ -34,7 +34,7 @@
         "arrowParens": "avoid",
         "tabWidth": 4,
         "useTabs": true,
-        "endOfLine": "lf",
+        "endOfLine": "crlf",
         "printWidth": 120
       }
     ]

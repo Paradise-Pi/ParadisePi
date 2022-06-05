@@ -15,7 +15,7 @@ export default abstract class osc {
 	private consoleAddress: string
 
 	//mixer config
-	//osc port of 
+	//osc port of
 	private oscPort: number
 	//master fader osc string
 	private masterOscString: string
@@ -26,7 +26,7 @@ export default abstract class osc {
 	 * @param port - osc port of console
 	 * @param master - string address of master fader of the console (eg "/lr" for xair)
 	 */
-	constructor(address:string, port:number, master:string) {
+	constructor(address: string, port: number, master: string) {
 		this.consoleAddress = address
 		this.oscPort = port
 		this.masterOscString = master
@@ -63,7 +63,6 @@ export default abstract class osc {
 			this.udpStatus = true
 			this.udpPort.send({ address: '/info', args: [] })
 			try {
-
 				//TODO: Convert this ->mainWindow.webContents.send('OSCStatus', true)
 			} catch (err) {
 				// Ignore, it's normally because electron has quit but you're still tidying up
@@ -109,7 +108,7 @@ export default abstract class osc {
 		})
 
 		this.udpPort.on('ready', function () {
-			logger.log('info','[OSC] UDP Socket open and listening')
+			logger.log('info', '[OSC] UDP Socket open and listening')
 		})
 
 		this.udpPort.on('message', function (oscMessage: { address: string; parsed: any; args: any[] }) {
@@ -139,7 +138,7 @@ export default abstract class osc {
 	 * @param args OSC arguments
 	 */
 	public send(address: string, args: any) {
-		logger.verbose("args", args)
+		logger.verbose('args', args)
 		this.udpPort.send({ address: address, args: args })
 	}
 }
