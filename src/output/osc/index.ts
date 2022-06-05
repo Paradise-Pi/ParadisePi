@@ -1,24 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import oscHandler from 'osc'
+import { broadcast } from './../../api/broadcast'
 import { DatabaseFader, FaderRepository } from '../../database/repository/fader'
 import meterFunctions from './meterFunctions'
 
-interface mixerConfig {
-	[key: string]: any
-}
-
-//This class cannot be called directly, create a child osc class for each console
-export default abstract class osc {
+/**
+ * OSC Controller class
+ * Cannot be called directly - create a child class for each device type (see devices subdirectory)
+ */
+export default abstract class OSC {
 	private udpPort: any
 	private lastOSCMessage: number
 	private udpStatus: boolean
 	private consoleAddress: string
-
-	//mixer config
-	//osc port of
-	private oscPort: number
-	//master fader osc string
-	private masterOscString: string
+	private oscPort: number //osc port of device
+	private masterOscString: string //master fader osc string - this is how you access that master fader from the console
 
 	/**
 	 * Create a new osc object, and setup connection
@@ -34,7 +30,7 @@ export default abstract class osc {
 	}
 
 	/**
-	 * Send required addresses to get basic info about the mixer
+	 * Send required addresses to get basic info about the device
 	 */
 	private subscribeOSC() {
 		this.udpPort.send({ address: '/xremote' })
@@ -44,34 +40,25 @@ export default abstract class osc {
 	/**
 	 * Check we're actually connected, and try to reconnect if not
 	 */
-	private checkStatusOSC() {
+	private checkStatusOSC(): void {
 		const currentMillis = +new Date()
 		if (currentMillis - this.lastOSCMessage > 3000) {
-			// Now disconnected from the Mixer
-			this.udpStatus = false
-			try {
-				//TODO: Convert this ->mainWindow.webContents.send('OSCStatus', false)
-			} catch (err) {
-				// Ignore, it's normally because electron has quit but you're still tidying up
-			}
+			// Now disconnected from the Device
+			this.setUDPStatus(false)
 			this.udpPort.send({ address: '/status', args: [] }) // Keep trying anyway, no harm
 		} else if (currentMillis - this.lastOSCMessage > 500 && this.udpStatus) {
 			// Send a status request to hope you get something back - before you decide you're offline
 			this.udpPort.send({ address: '/status', args: [] })
 		} else if (currentMillis - this.lastOSCMessage < 500 && !this.udpStatus) {
 			// Reconnected
-			this.udpStatus = true
 			this.udpPort.send({ address: '/info', args: [] })
-			try {
-				//TODO: Convert this ->mainWindow.webContents.send('OSCStatus', true)
-			} catch (err) {
-				// Ignore, it's normally because electron has quit but you're still tidying up
-			}
+			this.setUDPStatus(true)
 			this.subscribeOSC()
 			// When a connection is first opened, want to get the statuses of stuff we're interested in
 			setTimeout(async () => {
 				// Timeout is to give the window the chance to have launched, so it doesn't miss the data!
 				await FaderRepository.getAll().then((faders: DatabaseFader[]) => {
+					// TODO what's actually happening here sorry?
 					faders.forEach(entry => {
 						this.udpPort.send({
 							address: '/ch/' + String(entry.channel).padStart(2, '0') + '/mix/fader',
@@ -87,13 +74,17 @@ export default abstract class osc {
 				})
 			}, 3000)
 		} else if (this.udpStatus) {
-			// Still connected, just tell the frontend anyway because it's occasionally dozy (mostly on boot tbh)
-			try {
-				//TODO: Convert this -> mainWindow.webContents.send('OSCStatus', true)
-			} catch (err) {
-				// Ignore, it's normally because electron has quit but you're still tidying up
-			}
+			this.setUDPStatus(true)
 		}
+	}
+
+	/**
+	 * Set the status of the connection to the device
+	 * @param status - true if connected, false if not
+	 */
+	private setUDPStatus(status: boolean) {
+		this.udpStatus = status
+		broadcast('oscMessage', { status })
 	}
 
 	/**
@@ -107,24 +98,20 @@ export default abstract class osc {
 			remoteAddress: this.consoleAddress,
 		})
 
-		this.udpPort.on('ready', function () {
+		this.udpPort.on('ready', () => {
 			logger.log('info', '[OSC] UDP Socket open and listening')
 		})
 
-		this.udpPort.on('message', function (oscMessage: { address: string; parsed: any; args: any[] }) {
+		this.udpPort.on('message', (oscMessage: { address: string; parsed: any; args: any[] }) => {
 			this.lastOSCMessage = +new Date()
 			this.checkStatusOSC()
 
 			if (oscMessage.address == '/meters/1') {
 				oscMessage.parsed = meterFunctions.meter1PacketParser(oscMessage.args[0])
 			}
-			try {
-				//TODO: Convert this ->mainWindow.webContents.send('fromOSC', oscMessage)
-			} catch (err) {
-				// Ignore, it's normally because electron has quit but you're still tidying up
-			}
+			broadcast('oscMessage', { oscMessage })
 		})
-		this.udpPort.on('error', function (err: any) {
+		this.udpPort.on('error', (err: any) => {
 			logger.log('error', err)
 		})
 
@@ -133,12 +120,20 @@ export default abstract class osc {
 	}
 
 	/**
+	 * Close the connection and the port
+	 */
+	private terminate() {
+		this.udpPort.close()
+		logger.info('Terminating UPD Port for OSC')
+	}
+
+	/**
 	 * Main sending handler
-	 * @param address OSC address
-	 * @param args OSC arguments
+	 * @param address - OSC address
+	 * @param args - OSC arguments
 	 */
 	public send(address: string, args: any) {
-		logger.verbose('args', args)
+		logger.verbose('Sending OSC Packet to address ' + address, { args })
 		this.udpPort.send({ address: address, args: args })
 	}
 }

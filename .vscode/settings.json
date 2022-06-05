@@ -6,6 +6,7 @@
   "eslint.validate": ["javascript", "typescript", "typescriptreact"],
   "cSpell.words": [
     "Behringer",
-    "Mantine"
+    "Mantine",
+    "xair"
   ]
 }

@@ -27,6 +27,18 @@ export interface Database {
 		osc: {
 			OSCTargetIP: string
 			OSCMixerType: string
+			OSCEnabled: boolean
+		}
+		e131: {
+			e131Enabled: boolean
+			e131FirstUniverse: number
+			e131Universes: number
+			e131SourceName: string
+			e131Priority: number
+			e131Frequency: number
+			e131FadeTime: number
+			e131Sampler_time: number
+			e131Sampler_effectMode: number
 		}
 	}
 	presets: Array<DatabasePreset>
@@ -60,6 +72,18 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 			osc: {
 				OSCTargetIP: await ConfigRepository.getItem('OSCTargetIP'),
 				OSCMixerType: await ConfigRepository.getItem('OSCMixerType'),
+				OSCEnabled: (await ConfigRepository.getItem('OSCEnabled')) === 'true',
+			},
+			e131: {
+				e131Enabled: (await ConfigRepository.getItem('e131Enabled')) === 'true',
+				e131FirstUniverse: parseInt(await ConfigRepository.getItem('e131FirstUniverse')),
+				e131Universes: parseInt(await ConfigRepository.getItem('e131Universes')),
+				e131SourceName: await ConfigRepository.getItem('e131SourceName'),
+				e131Priority: parseInt(await ConfigRepository.getItem('e131Priority')),
+				e131Frequency: parseInt(await ConfigRepository.getItem('e131Frequency')),
+				e131FadeTime: parseInt(await ConfigRepository.getItem('e131FadeTime')),
+				e131Sampler_time: parseInt(await ConfigRepository.getItem('e131Sampler_time')),
+				e131Sampler_effectMode: parseInt(await ConfigRepository.getItem('e131Sampler_effectMode')),
 			},
 		},
 		presets: await PresetRepository.getAll(),

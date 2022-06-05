@@ -12,7 +12,13 @@ export const createE131 = async () => {
 		globalThis.e131 = new E131(firstUniverse, universes, sourceName, priority, frequency)
 	}
 }
-export const destroyE131 = () => {
-	e131.terminate()
-	delete globalThis.e131
+export const destroyE131 = (): Promise<void> => {
+	return new Promise(resolve => {
+		if (globalThis.e131) {
+			e131.terminate().then(() => {
+				delete globalThis.e131
+				resolve()
+			})
+		} else resolve()
+	})
 }

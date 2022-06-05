@@ -1,3 +1,4 @@
+/* eslint-disable tsdoc/syntax */
 // @ts-check
 
 /** @type {import('@docusaurus/plugin-content-docs').SidebarsConfig} */

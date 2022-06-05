@@ -1,10 +1,10 @@
-import React, { StrictMode, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from '@mantine/form'
-import { Checkbox, Button, Box, Divider, Loader, NumberInput, LoadingOverlay, Header, Title, Text } from '@mantine/core'
-import { useAppSelector } from './../../../apis/redux/mainStore'
+import { Checkbox, Button, Box, Divider, Loader, NumberInput, LoadingOverlay, Title, Text } from '@mantine/core'
+import { useAppSelector } from '../../../apis/redux/mainStore'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
-import { ApiCall } from './../../../apis/wrapper'
-import { runningInElectron } from './../../../apis/utilities/version'
+import { ApiCall } from '../../../apis/wrapper'
+import { runningInElectron } from '../../../apis/utilities/version'
 import { RichTextEditor } from '@mantine/rte'
 
 export const GeneralConfigurationPage = () => {
@@ -51,59 +51,57 @@ export const GeneralConfigurationPage = () => {
 	}
 	if (!generalConfig) return <Loader variant="bars" />
 	return (
-		<StrictMode>
-			<Box sx={{ maxWidth: 400 }} mx="auto">
-				<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-				<form onSubmit={form.onSubmit(handleSubmit)}>
-					<Button type="submit">Save</Button>
-					<Divider my="sm" />
-					<Checkbox
-						mt="md"
-						size="lg"
-						label="Lock the control panel"
-						{...form.getInputProps('deviceLock', { type: 'checkbox' })}
-						disabled={runningInElectron()}
-					/>
-					{/* You can't set the lock whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
-					<Divider my="sm" />
-					<Checkbox
-						mt="md"
-						my="md"
-						size="lg"
-						label="Show admin button in Control Panel"
-						{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
-					/>
-					<NumberInput
-						required
-						label="Screensaver Time"
-						description="How long to wait in seconds before showing the screensaver"
-						size="lg"
-						placeholder="120 seconds"
-						min={3}
-						icon={<FaRegClock />}
-						{...form.getInputProps('timeoutTime')}
-					/>
-					<Divider my="sm" />
-					<Title order={5}>Help Page</Title>
-					<Text my="md">Text to display on the help page</Text>
-					{
-						generalConfig ? (
-							<RichTextEditor
-								value={generalConfig.helpText}
-								onChange={form.getInputProps('helpText').onChange}
-								controls={[
-									['bold', 'italic', 'underline', 'strike'],
-									['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-									['unorderedList', 'orderedList'],
-									['sup', 'sub', 'blockquote', 'clean'],
-									['alignLeft', 'alignCenter', 'alignRight'],
-								]}
-								sticky={true}
-							/>
-						) : null /* Slight hack because the RichTextEditor doesn't accept value changes - only the one given when rendered */
-					}
-				</form>
-			</Box>
-		</StrictMode>
+		<Box sx={{ maxWidth: 400 }} mx="auto">
+			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
+			<form onSubmit={form.onSubmit(handleSubmit)}>
+				<Button type="submit">Save</Button>
+				<Divider my="sm" />
+				<Checkbox
+					mt="md"
+					size="lg"
+					label="Lock the control panel"
+					{...form.getInputProps('deviceLock', { type: 'checkbox' })}
+					disabled={runningInElectron()}
+				/>
+				{/* You can't set the lock whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
+				<Divider my="sm" />
+				<Checkbox
+					mt="md"
+					my="md"
+					size="lg"
+					label="Show admin button in Control Panel"
+					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
+				/>
+				<NumberInput
+					required
+					label="Screensaver Time"
+					description="How long to wait in seconds before showing the screensaver"
+					size="lg"
+					placeholder="120 seconds"
+					min={3}
+					icon={<FaRegClock />}
+					{...form.getInputProps('timeoutTime')}
+				/>
+				<Divider my="sm" />
+				<Title order={5}>Help Page</Title>
+				<Text my="md">Text to display on the help page</Text>
+				{
+					generalConfig ? (
+						<RichTextEditor
+							value={generalConfig.helpText}
+							onChange={form.getInputProps('helpText').onChange}
+							controls={[
+								['bold', 'italic', 'underline', 'strike'],
+								['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+								['unorderedList', 'orderedList'],
+								['sup', 'sub', 'blockquote', 'clean'],
+								['alignLeft', 'alignCenter', 'alignRight'],
+							]}
+							sticky={true}
+						/>
+					) : null /* Slight hack because the RichTextEditor doesn't accept value changes - only the one given when rendered */
+				}
+			</form>
+		</Box>
 	)
 }

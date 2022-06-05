@@ -41,7 +41,7 @@ export const PresetsConfigurationPage = () => {
 	const presetFoldersForSelect: Array<SelectItem> = []
 	// Prepare preset folders list for select dropdown
 	if (presetFolders !== false) {
-		Object.entries(presetFolders).forEach(([key, value]) => {
+		Object.entries(presetFolders).forEach(([, value]) => {
 			presetFoldersForSelect.push({
 				value: value.id.toString(),
 				label: value.name,

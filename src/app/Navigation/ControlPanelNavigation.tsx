@@ -19,7 +19,7 @@ const TopLevelPresetFolders = ({
 	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
 	const topLevelPresetFolders: Array<DatabasePresetFolder> = []
 	if (presetFolders !== false) {
-		Object.entries(presetFolders).forEach(([key, value]) => {
+		Object.entries(presetFolders).forEach(([, value]) => {
 			if (value.parent === null) {
 				topLevelPresetFolders.push({
 					name: value.name,

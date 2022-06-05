@@ -11,7 +11,7 @@ const PresetButton = ({ text, presetId, color }: { text: string; presetId: numbe
 	return (
 		<Button
 			variant="default"
-			sx={theme => ({
+			sx={() => ({
 				backgroundColor: color,
 				'&:hover': { backgroundColor: color },
 				color: pickTextColorBasedOnBgColor(color),

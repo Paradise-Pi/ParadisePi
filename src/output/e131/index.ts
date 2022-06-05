@@ -86,24 +86,33 @@ export class E131 {
 	 * @returns promise that resolves when the termination is done
 	 */
 	public terminate(): Promise<void> {
+		logger.info('Terminating E1.31 Connection')
 		this.running = false // Stop the normal loop to avoid client confusion
 		return [...Array(this.firstUniverse + this.universes - 1)].reduce((previous, _current, i) => {
 			return previous.then(() => {
 				// Set the packet to be a terminator packet (warns the clients that this is the last time they'll hear from it)
-				this.e131Clients[i + this.firstUniverse]['packet'].setOption(
-					this.e131Clients[i + this.firstUniverse]['packet'].Options.TERMINATED,
-					true
-				)
-				return new Promise<void>((resolve, reject) => {
-					// Send out the final packet
-					this.e131Clients[i + this.firstUniverse]['client'].send(
-						this.e131Clients[i + this.firstUniverse]['packet'],
-						() => {
-							this.e131Clients[i + this.firstUniverse] = undefined
-							resolve()
-						}
+				if (
+					this.e131Clients &&
+					this.e131Clients[i + this.firstUniverse] &&
+					this.e131Clients[i + this.firstUniverse]['packet']
+				) {
+					this.e131Clients[i + this.firstUniverse]['packet'].setOption(
+						this.e131Clients[i + this.firstUniverse]['packet'].Options.TERMINATED,
+						true
 					)
-				})
+					return new Promise<void>(resolve => {
+						// Send out the final packet
+						this.e131Clients[i + this.firstUniverse]['client'].send(
+							this.e131Clients[i + this.firstUniverse]['packet'],
+							() => {
+								this.e131Clients[i + this.firstUniverse] = undefined
+								resolve()
+							}
+						)
+					})
+				} else {
+					return Promise.resolve()
+				}
 			})
 		}, Promise.resolve())
 	}

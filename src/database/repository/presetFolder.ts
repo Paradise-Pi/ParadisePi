@@ -89,7 +89,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	/**
 	 * Get a particular folder by id
 	 *
-	 * @param id
+	 * @param id - Id of the folder
 	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
 	async getOne(id: number): Promise<DatabasePresetFolder> {

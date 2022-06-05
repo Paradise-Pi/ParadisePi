@@ -1,5 +1,6 @@
+import { createOSC, destroyOSC } from './../../output/osc/constructor'
 import { ConfigRepository } from './../../database/repository/config'
-import { createE131 } from './../../output/e131/constructor'
+import { createE131, destroyE131 } from './../../output/e131/constructor'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
 /**
  * This is a REST router for the preset API.
@@ -19,6 +20,9 @@ export const configRouter = (
 		if (method === 'POST') {
 			return Promise.all(
 				Object.entries(payload).map(async ([key, value]) => {
+					if (value === true) value = 'true'
+					else if (value === false) value = 'false'
+					else if (value === 'null') value = null
 					await ConfigRepository.save({
 						key,
 						value,
@@ -30,11 +34,14 @@ export const configRouter = (
 				})
 				.then((response: Database) => {
 					sendDatabaseObject(response)
-					return e131.terminate()
+					return destroyE131()
 				})
 				.then(() => {
-					console.log('E131 terminated')
 					createE131()
+					// Recreate OSC connection
+					destroyOSC()
+					createOSC()
+					// Return response to window
 					resolve({})
 				})
 		} else reject(new Error('Path not found'))

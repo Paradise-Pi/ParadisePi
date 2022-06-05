@@ -3,7 +3,12 @@ interface iLevels {
 }
 
 export default class meterFunctions {
-	static meter1PacketParser(inBuffer: WithImplicitCoercion<ArrayBuffer | SharedArrayBuffer>) {
+	/**
+	 * Covert a Behringer Meter1 packet into a sensible percentage based set of values
+	 * @param inBuffer - the input buffer
+	 * @returns - iLevels object with the rectified levels from the input buffer
+	 */
+	public static meter1PacketParser(inBuffer: WithImplicitCoercion<ArrayBuffer | SharedArrayBuffer>) {
 		const thisBuffer = Buffer.from(inBuffer)
 		const levels: iLevels = {
 			// Output structure
@@ -59,23 +64,23 @@ export default class meterFunctions {
 		return levels
 	}
 
-	dbToPercentage(d: number) {
-		/*
-              Function courtesy of Patrick‐Gilles Maillot (see their X32 Documentation)
-              “d” represents the dB float data. d:[-90, +10]
-              “f” represents OSC float data. f: [0.0, 1.0]
-           */
+	/**
+	 * Function courtesy of Patrick‐Gilles Maillot (see their X32 Documentation)
+	 * @param d - the dB float data. d:[-90, +10]
+	 * @returns - OSC float data. f: [0.0, 1.0]
+	 */
+	private dbToPercentage(d: number) {
 		let f = 0.0
 		if (d <= -90) f = 0.0
 		else if (d < -60) f = (d + 90) / 480
 		else if (d < -30) f = (d + 70) / 160
 		else if (d < -10) f = (d + 50) / 80
 		else if (d <= 10) f = (d + 30) / 40
-		/*
-              f is now a fudged linear value between 0.0 and 1.0 for decibel values from -90 to 10.
-              0.75 = 0dB, so given our highest values are 0 we want to scale it again slightly to give us a 0.0 to 1.0 value for -90dB to +0 dB
-              0.375 should now be 0.5 for example
-          */
+		/**
+		 * f is now a fudged linear value between 0.0 and 1.0 for decibel values from -90 to 10.
+		 * 0.75 = 0dB, so given our highest values are 0 we want to scale it again slightly to give us a 0.0 to 1.0 value for -90dB to +0 dB
+		 * e.g: 0.375 should now be 0.5
+		 */
 		return f / 0.75
 	}
 }
