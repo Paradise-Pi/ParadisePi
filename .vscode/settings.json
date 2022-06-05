@@ -8,5 +8,7 @@
     "Behringer",
     "Mantine",
     "xair"
-  ]
+  ],
+  "editor.wordWrap": "on",
+  "files.eol": "\n"
 }
