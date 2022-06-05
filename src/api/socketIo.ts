@@ -8,6 +8,7 @@ import { Database } from './database'
 
 export interface ServerToClientEvents {
 	refreshDatabase: (database: Database) => void
+	oscMessage: (message: any) => void
 	logging: (message: { [key: string]: any }) => void
 	socketClients: (message: { [key: string]: any }) => void
 }

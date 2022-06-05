@@ -55,6 +55,10 @@ if (runningInElectron()) {
 		store.dispatch(setFromNode(data))
 	})
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	window.ipcApi.receive('oscMessage', (data: any) => {
+		console.log(data)
+	})
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	window.ipcApi.receive('logging', (logLine: { [key: string]: any }) => {
 		console.log(logLine)
 	})
