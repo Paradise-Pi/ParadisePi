@@ -2,13 +2,14 @@ import staticServer from 'node-static'
 import http from 'http'
 import { IncomingForm } from 'formidable'
 import fs from 'fs'
-import dataSource from './database/dataSource'
-import { reboot } from './electron/windowUtilities'
+import dataSource from './../database/dataSource'
+import { reboot } from './../electron/windowUtilities'
 import path from 'path'
-import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './api/socketIo'
-import { routeRequest } from './api/router'
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './../api/socketIo'
+import { routeRequest } from './../api/router'
 import { Server } from 'socket.io'
-import { broadcast } from './api/broadcast'
+import { broadcast } from './../api/broadcast'
+import { getAvailablePort } from './availablePorts'
 /**
  * The webserver is responsible for serving requests from other devices on the network that might want to connect.
  * This includes devices such as iPads who want to use the remote interface, a web browser which wants to
@@ -97,6 +98,7 @@ export class WebServer {
 				})
 			}
 		})
+		// Setup CORS for Webserver
 		WebServer.socketIo = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(
 			WebServer.server,
 			{
@@ -105,32 +107,34 @@ export class WebServer {
 				},
 			}
 		)
-		// TODO catch port 80 not being available and discontinue boot
-		WebServer.server.listen(80)
-		WebServer.socketIoClients = {}
-		WebServer.socketIo.on('connection', socket => {
-			const os = socket.handshake.query ? (socket.handshake.query.os as string) : 'unknown'
-			WebServer.socketIoClients[socket.id] = {
-				os,
-				ip: socket.conn.remoteAddress,
-			}
-			broadcast('socketClients', WebServer.socketIoClients)
-
-			// This allows the frontend to make requests to the api via socket.io, using the same router as the IPC
-			socket.on('apiCall', (path, method, payload, callback) => {
-				routeRequest(path, method, payload)
-					.then(response => {
-						callback(true, response, null)
-					})
-					.catch(error => {
-						callback(false, {}, error.message)
-					})
-			})
-			socket.on('disconnect', () => {
-				delete WebServer.socketIoClients[socket.id]
+		// Start the webserver and handle requests
+		getAvailablePort().then(port => {
+			WebServer.server.listen(port)
+			WebServer.socketIoClients = {}
+			WebServer.socketIo.on('connection', socket => {
+				const os = socket.handshake.query ? (socket.handshake.query.os as string) : 'unknown'
+				WebServer.socketIoClients[socket.id] = {
+					os,
+					ip: socket.conn.remoteAddress,
+				}
 				broadcast('socketClients', WebServer.socketIoClients)
+
+				// This allows the frontend to make requests to the api via socket.io, using the same router as the IPC
+				socket.on('apiCall', (path, method, payload, callback) => {
+					routeRequest(path, method, payload)
+						.then(response => {
+							callback(true, response, null)
+						})
+						.catch(error => {
+							callback(false, {}, error.message)
+						})
+				})
+				socket.on('disconnect', () => {
+					delete WebServer.socketIoClients[socket.id]
+					broadcast('socketClients', WebServer.socketIoClients)
+				})
 			})
+			logger.info('Web & Socket server running')
 		})
-		logger.info('Web & Socket server running')
 	}
 }
