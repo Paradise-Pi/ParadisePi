@@ -11,7 +11,7 @@ export const SocketClients = () => {
 	const [modalOpened, setModalOpened] = useState(false)
 	const clientsList = useAppSelector(state => state.status.socketClients)
 	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
-	const port = useAppSelector(state => (state.database ? state.database.about.port : null))
+	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
 	return (
 		<>
 			<Center>
@@ -20,20 +20,24 @@ export const SocketClients = () => {
 				</Title>
 			</Center>
 			<Group position="center">
-				<Group onClick={() => setModalOpened(true)}>
-					<Avatar radius="xl">
-						<FaServer />
-					</Avatar>
+				{port ? (
+					<Group onClick={() => setModalOpened(true)}>
+						<Avatar radius="xl">
+							<FaServer />
+						</Avatar>
 
-					<div style={{ flex: 1 }}>
-						<Text size="sm" weight={500}>
-							Server: {ipAddress}
-						</Text>
-						<Text color="dimmed" size="xs">
-							Click for QR Code
-						</Text>
-					</div>
-				</Group>
+						<div style={{ flex: 1 }}>
+							<Text size="sm" weight={500}>
+								Server: {ipAddress}
+							</Text>
+							<Text color="dimmed" size="xs">
+								Click for QR Code
+							</Text>
+						</div>
+					</Group>
+				) : (
+					''
+				)}
 				{Object.entries(clientsList).map(([key, value]) => {
 					return (
 						<Group key={key}>
@@ -60,14 +64,14 @@ export const SocketClients = () => {
 				overflow="outside"
 				opened={modalOpened}
 				onClose={() => setModalOpened(false)}
-				title={'Connect to ' + ipAddress + ':' + port}
+				title={'Connect to ' + ipAddress + ':' + port ?? ''}
 				overlayColor={'#000000'}
 				overlayOpacity={1}
 				overlayBlur={0}
 			>
 				<Center>
 					<QRCodeSVG
-						value={'http://' + ipAddress + ':' + port}
+						value={'http://' + ipAddress + ':' + port ?? ''}
 						bgColor="#000000"
 						fgColor="#FFFFFF"
 						level={'M'}

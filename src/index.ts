@@ -14,11 +14,13 @@ if (require('electron-squirrel-startup')) {
 	app.quit()
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+globalThis.port = false
 globalThis.logger = logger
 logger.profile('boot')
+/**
+ *  This method will be called when Electron has finished initialization and is ready to create browser windows.
+ *  Some APIs can only be used after this event occurs.
+ */
 app.whenReady().then(() => {
 	if (!app.isPackaged) logger.add(winstonTransports.console) // Turn on console logging if not in production
 	// Populate the about info

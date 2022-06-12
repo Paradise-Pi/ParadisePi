@@ -15,7 +15,7 @@ export interface Database {
 		}
 		version: string
 		ipAddress: string
-		port: number
+		port: number | false
 	}
 	config: {
 		general: {
@@ -60,7 +60,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 			},
 			version: version,
 			ipAddress: ip.address(),
-			port: 80, // TODO allow port changing
+			port: globalThis.port,
 		},
 		config: {
 			general: {

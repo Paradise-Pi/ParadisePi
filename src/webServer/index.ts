@@ -10,6 +10,7 @@ import { routeRequest } from './../api/router'
 import { Server } from 'socket.io'
 import { broadcast } from './../api/broadcast'
 import { getAvailablePort } from './availablePorts'
+import { createDatabaseObject, Database, sendDatabaseObject } from './../api/database'
 /**
  * The webserver is responsible for serving requests from other devices on the network that might want to connect.
  * This includes devices such as iPads who want to use the remote interface, a web browser which wants to
@@ -109,6 +110,7 @@ export class WebServer {
 		)
 		// Start the webserver and handle requests
 		getAvailablePort().then(port => {
+			globalThis.port = port
 			WebServer.server.listen(port)
 			WebServer.socketIoClients = {}
 			WebServer.socketIo.on('connection', socket => {
@@ -135,6 +137,9 @@ export class WebServer {
 				})
 			})
 			logger.info('Web & Socket server running port ' + port)
+			createDatabaseObject('Webserver running').then((response: Database) => {
+				sendDatabaseObject(response)
+			})
 		})
 	}
 }
