@@ -134,7 +134,7 @@ export class WebServer {
 					broadcast('socketClients', WebServer.socketIoClients)
 				})
 			})
-			logger.info('Web & Socket server running')
+			logger.info('Web & Socket server running port ' + port)
 		})
 	}
 }
