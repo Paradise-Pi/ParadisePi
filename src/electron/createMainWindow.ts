@@ -15,7 +15,7 @@ export default (startPath: string, fullscreen?: boolean): BrowserWindow => {
 		width: 816, // Equates to 800 when you knock off the menu bar
 		minWidth: 800,
 		minHeight: 480,
-		fullscreen: fullscreen ?? false,
+		fullscreen: fullscreen ?? (process.env.FULLSCREEN && process.env.FULLSCREEN == 'true') ? true : false,
 		title: 'Paradise',
 		icon: path.join(__dirname, '/../../icon/icon.png'),
 		webPreferences: {
