@@ -20,14 +20,15 @@ interface channelFade {
  */
 export class E131 {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	private e131Clients: Array<any>
-	private fades: Array<channelFade>
-	private firstUniverse: number
-	private universes: number
-	private sourceName: string
-	private priority: number
-	private frequency: number
-	private running: boolean
+	protected e131Clients: Array<any>
+	protected fades: Array<channelFade>
+	protected firstUniverse: number
+	protected universes: number
+	protected sourceName: string
+	protected priority: number
+	protected frequency: number
+	protected running: boolean
+
 	constructor(firstUniverse: number, universes: number, sourceName: string, priority: number, frequency: number) {
 		this.firstUniverse = firstUniverse
 		this.universes = universes
@@ -38,6 +39,7 @@ export class E131 {
 		this.setupUniverses()
 		this.initSending()
 	}
+
 	/**
 	 * Setup instances of the E1.31 class for each universe needed
 	 */
