@@ -159,6 +159,13 @@ export const PresetsConfigurationPage = () => {
 					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<Group position="left" mt="md">
 							<Button
+								onClick={() => {
+									ApiCall.get('/e131Sampler', {})
+								}}
+							>
+								Start Sampling mode
+							</Button>
+							<Button
 								onClick={() =>
 									form.addListItem('presets', {
 										id: 0,
