@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { networkInterfaces } from 'os'
-import e131Lib from '@paradise-pi/e131'
+import e131Lib, { Client, Server } from '@paradise-pi/e131'
 import { PresetRepository } from '../../database/repository/preset'
 import { broadcast } from '../../api/broadcast'
 
@@ -69,7 +69,7 @@ export class E131 {
 		this.e131Clients = []
 		this.fades = []
 		for (let i = this.firstUniverse; i <= this.firstUniverse + this.universes - 1; i++) {
-			this.e131Clients[i] = { client: new e131Lib.Client(i) }
+			this.e131Clients[i] = { client: new (Client as any)(i) }
 			this.e131Clients[i]['packet'] = this.e131Clients[i]['client'].createPacket(512)
 			this.e131Clients[i]['addressData'] = this.e131Clients[i]['packet'].getSlotsData()
 			this.e131Clients[i]['packet'].setSourceName(this.sourceName)
@@ -227,39 +227,36 @@ export class E131 {
 	}
 
 	public async sampleE131() {
-		const delay = (time: number) => {
-			return new Promise(res => {
-				setTimeout(res, time)
-			})
-		}
-		await this.terminate()
-		logger.info('Starting Sampling Mode')
-		//log effect mode
+		await this.terminate() // Stop light output entirely and clear all universes
 		logger.info(
-			this.effectMode
+			'Starting Sampling Mode - ' + this.effectMode
 				? 'Storing first value of a varying value (EFFECT MODE ON)'
 				: 'Ignoring varying values (EFFECT MODE OFF)'
 		)
 
-		//how many universes are we sampling?
-		//20 universe limit is enforced due to memory limitations
-		const numUniverses = this.universes > 20 ? 20 : this.universes
+		const numUniverses = this.universes > 20 ? 20 : this.universes // 20 universe limit is enforced due to memory limitations
+		const universes = Array.from({ length: numUniverses }, (_, i) => i + this.firstUniverse) // Generates an array like [1,2,3,4,5] because that's what the lib likes
+		const sampleModeDuration =
+			this.sampleTime === undefined || this.sampleTime > 300 || this.sampleTime < 5
+				? 15000
+				: this.sampleTime * 1000
 
-		const universes = []
-		for (let i = 1; i <= numUniverses; i++) {
-			universes.push(i)
-		}
-		const universeData: UniverseData = {}
-
-		const server = new e131Lib.Server(universes)
+		const server = new (Server as any)({
+			universes: [universes],
+			port: 5568,
+			ip: '127.0.0.1',
+		})
 		logger.debug('E1.31 Server started')
 
 		server.on('listening', () => {
-			logger.info('Listening on ') //port ' + server.port + '- universes ' + server.universes)
+			logger.info('Listening on port ' + server.port + '- universes ' + server.universes)
 		})
+		console.log('here1')
 
+		const universeData: UniverseData = {}
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		server.on('packet', (packet: any) => {
+			console.log('here2')
 			const sourceName: string = packet.getSourceName().replace(/\0/g, '')
 			const universe: number = packet.getUniverse()
 			const slotsData = packet.getSlotsData()
@@ -297,39 +294,28 @@ export class E131 {
 			}
 		})
 
-		//Timeout timer
-		let timeoutTimerDuration = 15000 // 15 seconds is the default
-		if (!(this.sampleTime === undefined || this.sampleTime > 300 || this.sampleTime < 5)) {
-			timeoutTimerDuration = this.sampleTime * 1000
-		}
+		await new Promise(resolve => setTimeout(resolve, sampleModeDuration)) // Wait the specified amount of time before stopping the server
 
-		await delay(timeoutTimerDuration).then(() => {
-			server.close()
-			logger.debug('Finished Sampling')
-			for (const [deviceName, device] of Object.entries(universeData)) {
-				for (const [universeID, universeData] of Object.entries(device)) {
-					for (const key in universeData) {
-						// eslint-disable-next-line no-prototype-builtins
-						if (universeData.hasOwnProperty(key) && universeData[key] === null) {
-							delete universeData[key] // Remove null values
-						}
+		logger.info('Finished sampling - Resuming E1.31 Connection & Uploading Presets')
+		server.close()
+		this.initSending()
+
+		for (const [deviceName, device] of Object.entries(universeData)) {
+			for (const [universeID, universeData] of Object.entries(device)) {
+				for (const key in universeData) {
+					// eslint-disable-next-line no-prototype-builtins
+					if (universeData.hasOwnProperty(key) && universeData[key] === null) {
+						delete universeData[key] // Remove null values
 					}
-					PresetRepository.insertOne({
-						name: 'Universe ' + universeID + ' sampled from ' + deviceName,
-						enabled: true,
-						universe: parseInt(universeID),
-						data: JSON.parse(JSON.stringify(universeData)),
-					})
 				}
+				PresetRepository.insertOne({
+					name: 'Universe ' + universeID + ' sampled from ' + deviceName,
+					enabled: false,
+					universe: parseInt(universeID),
+					data: JSON.parse(JSON.stringify(universeData)),
+				})
 			}
-			logger.info('Resuming E1.31 Connection')
-			this.initSending()
-		})
-
-		const timeoutStarted = +new Date()
-		setInterval(function () {
-			const currentTime = +new Date()
-			broadcast('progress', { progress: currentTime - timeoutStarted, total: timeoutTimerDuration })
-		}, 500)
+		}
+		console.log('fin')
 	}
 }
