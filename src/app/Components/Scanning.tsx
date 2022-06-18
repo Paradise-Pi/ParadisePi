@@ -42,6 +42,6 @@ const ScanningView = () => {
 }
 
 export const Scanning = (props: { children: React.ReactNode }) => {
-	const deviceScanning = useAppSelector(state => (state.scanning ? state.scanning.scanning : false))
+	const deviceScanning = false
 	return <div>{deviceScanning ? <ScanningView /> : props.children}</div>
 }
