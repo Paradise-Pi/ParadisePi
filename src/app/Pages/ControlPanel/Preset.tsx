@@ -62,6 +62,13 @@ export const PresetPage = () => {
 	}
 	return (
 		<>
+			{presetFolder && presetFolder.infoText ? (
+				<Paper px="md">
+					<DangerouslySetHTML html={presetFolder.infoText} />
+				</Paper>
+			) : (
+				''
+			)}
 			{presetFolder && presetFolder.parent !== null ? (
 				<PresetFolderButton
 					folderId={presetFolder.parent.id}
@@ -69,13 +76,6 @@ export const PresetPage = () => {
 					icon={presetFolder.parent.icon}
 					backButton={true}
 				/>
-			) : (
-				''
-			)}
-			{presetFolder && presetFolder.infoText ? (
-				<Paper px="md" py="xs">
-					<DangerouslySetHTML html={presetFolder.infoText} />
-				</Paper>
 			) : (
 				''
 			)}

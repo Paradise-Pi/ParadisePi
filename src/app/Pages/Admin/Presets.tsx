@@ -126,6 +126,7 @@ export const PresetsConfigurationPage = () => {
 						{form.values.presets[index].type === 'e131' ? (
 							<>
 								<TextInput
+									py={'md'}
 									placeholder="Universe"
 									icon={<FaSpaceShuttle />}
 									description="Universe number"
