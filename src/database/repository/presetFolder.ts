@@ -1,3 +1,4 @@
+import { In, Not } from 'typeorm'
 import dataSource from './../dataSource'
 import { Preset } from './../model/Preset'
 import { PresetFolders } from './../model/PresetFolders'
@@ -6,9 +7,12 @@ import { DatabasePreset } from './preset'
 export interface DatabasePresetFolder {
 	name: string
 	id: number
+	sort?: number
 	icon?: string
+	infoText?: string
 	children?: Array<DatabasePresetFolder>
 	parent?: DatabasePresetFolder
+	parentFolderId?: string
 	presets?: Array<DatabasePreset>
 }
 
@@ -24,9 +28,12 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 				name: true,
 				id: true,
 				icon: true,
+				sort: true,
+				infoText: true,
 				childFolders: {
 					name: true,
 					id: true,
+					icon: true,
 				},
 				parent: {
 					name: true,
@@ -61,10 +68,13 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 				name: item.name,
 				id: item.id,
 				icon: item.icon,
+				sort: item.sort,
+				infoText: item.infoText,
 				children: item.childFolders.map((child: PresetFolders) => {
 					return {
 						name: child.name,
 						id: child.id,
+						icon: child.icon,
 					}
 				}),
 				parent: item.parent
@@ -88,7 +98,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	},
 	/**
 	 * Get a particular folder by id
-	 *
+	 * @remarks not used
 	 * @param id - Id of the folder
 	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
@@ -135,5 +145,35 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 				}
 			}),
 		}
+	},
+	/**
+	 * Set the database record of folders based on what's been sent from the app, delete the rest
+	 * @param folders - Array of folders to put into the database. It will delete all the others
+	 */
+	async setAllFromApp(folders: Array<DatabasePresetFolder>): Promise<void> {
+		// Delete any other folders
+		const folderIdsToKeep: Array<number> = folders
+			.filter((folder: DatabasePresetFolder) => folder.id !== null) // Skip new ones
+			.map((folder: DatabasePresetFolder) => folder.id)
+		await this.delete({
+			id: Not(In(folderIdsToKeep)),
+		})
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const foldersToInsert: Array<{ [key: string]: any }> = folders.map(
+			(folder: DatabasePresetFolder, count: number) => {
+				return {
+					name: folder.name,
+					id: folder.id,
+					icon: folder.icon,
+					sort: count + 1,
+					infoText: folder.infoText,
+					parent:
+						folder.parentFolderId !== null && folderIdsToKeep.includes(parseInt(folder.parentFolderId)) // Check the parent folder id exists
+							? parseInt(folder.parentFolderId)
+							: null,
+				}
+			}
+		)
+		await this.upsert(foldersToInsert, ['id'])
 	},
 })

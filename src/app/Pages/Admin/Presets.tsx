@@ -7,33 +7,39 @@ import {
 	Center,
 	ActionIcon,
 	Select,
-	Tooltip,
 	LoadingOverlay,
 	Checkbox,
 	ColorInput,
 	Modal,
-	JsonInput,
-	Tabs,
 	SelectItem,
+	NumberInput,
+	Chips,
+	Chip,
 } from '@mantine/core'
 import { useForm, formList } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
-import { FaInfoCircle } from '@react-icons/all-files/fa/FaInfoCircle'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
+import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import { FormList } from '@mantine/form/lib/form-list/form-list'
 import { useAppSelector } from './../../apis/redux/mainStore'
-import { DatabasePreset } from './../../../database/repository/preset'
+import { DatabasePreset, PresetTypes } from './../../../database/repository/preset'
 import { ApiCall } from './../../apis/wrapper'
+import { OSCPresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/OSC'
+import { HTTPPresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/HTTP'
+import { MacroPresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/Macro'
+import { E131PresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/E131'
+import { useModals } from '@mantine/modals'
 
 interface FormValues {
 	presets: FormList<DatabasePreset>
 }
 
 export const PresetsConfigurationPage = () => {
+	const modalManager = useModals()
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
@@ -45,6 +51,7 @@ export const PresetsConfigurationPage = () => {
 			presetFoldersForSelect.push({
 				value: value.id.toString(),
 				label: value.name,
+				group: 'Folder',
 			})
 		})
 	}
@@ -57,7 +64,7 @@ export const PresetsConfigurationPage = () => {
 			presets: {
 				name: value => (value.length < 2 ? 'Name should have at least 2 letters' : null),
 				fadeTime: value => (value >= 0 && value <= 60 ? null : 'Fade time must be between 0 and 60 seconds'),
-				folderId: value => (parseInt(value) > 0 ? null : 'Folder must be selected'),
+				folderId: value => (value !== null ? null : 'Folder must be selected'),
 			},
 		},
 	})
@@ -71,7 +78,6 @@ export const PresetsConfigurationPage = () => {
 		setLoadingOverlayVisible(true)
 		ApiCall.put('/presets', values.presets)
 	}
-
 	const fields = form.values.presets.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
@@ -93,30 +99,17 @@ export const PresetsConfigurationPage = () => {
 						swatches={['#2C2E33', '#C92A2A', '#A61E4D', '#862E9C', '#1864AB', '#2B8A3E', '#E67700']}
 						swatchesPerRow={7}
 					/>
-					<TextInput
+					<NumberInput
 						placeholder="Fade time"
 						icon={<FaRegClock />}
+						min={0}
+						max={60}
 						{...form.getListInputProps('presets', index, 'fadeTime')}
-						rightSection={
-							<Tooltip label="Time in seconds for fade" position="left" placement="end">
-								<FaInfoCircle />
-							</Tooltip>
-						}
 					/>
 					<Checkbox
 						size={'lg'}
 						title="Visible"
 						{...form.getListInputProps('presets', index, 'enabled', { type: 'checkbox' })}
-					/>
-					<Select
-						placeholder="Type"
-						{...form.getListInputProps('presets', index, 'type')}
-						data={[
-							{ value: 'e131', label: 'sACN (E1.31)' },
-							{ value: 'osc', label: 'OSC' },
-							{ value: 'http', label: 'HTTP', disabled: true },
-							{ value: 'macro', label: 'Macro', disabled: true },
-						]}
 					/>
 					<Modal
 						opened={modalVisible === index}
@@ -127,17 +120,27 @@ export const PresetsConfigurationPage = () => {
 						title="Edit Preset"
 						overflow="inside"
 					>
-						<Tabs>
-							<Tabs.Tab label="Edit">Coming soon</Tabs.Tab>
-							<Tabs.Tab label="JSON Mode">
-								<JsonInput
-									{...form.getListInputProps('presets', index, 'data')}
-									formatOnBlur={true}
-									autosize
-									maxRows={10}
+						{form.values.presets[index].type === 'e131' ? (
+							<>
+								<TextInput
+									py={'md'}
+									placeholder="Universe"
+									icon={<FaSpaceShuttle />}
+									description="Universe number"
+									{...form.getListInputProps('presets', index, 'universe')}
 								/>
-							</Tabs.Tab>
-						</Tabs>
+								<E131PresetEditModal {...form.getListInputProps('presets', index, 'data')} />
+							</>
+						) : null}
+						{form.values.presets[index].type === 'osc' ? (
+							<OSCPresetEditModal {...form.getListInputProps('presets', index, 'data')} />
+						) : null}
+						{form.values.presets[index].type === 'http' ? (
+							<HTTPPresetEditModal {...form.getListInputProps('presets', index, 'data')} />
+						) : null}
+						{form.values.presets[index].type === 'macro' ? (
+							<MacroPresetEditModal {...form.getListInputProps('presets', index, 'data')} />
+						) : null}
 					</Modal>
 
 					<ActionIcon variant="hover" onClick={() => setModalVisible(index)}>
@@ -160,28 +163,46 @@ export const PresetsConfigurationPage = () => {
 						<Group position="left" mt="md">
 							<Button
 								onClick={() => {
-									ApiCall.get('/e131Sampler', {})
+									const createNewPresetModal = modalManager.openModal({
+										title: 'Please select a preset type',
+										children: (
+											<Chips
+												size={'md'}
+												multiple={false}
+												onChange={value => {
+													form.addListItem('presets', {
+														id: null,
+														name: 'New ' + value + ' preset',
+														enabled: true,
+														type: value as PresetTypes,
+														universe: null,
+														fadeTime: 0,
+														data: null,
+														folderId: '0',
+														color: '#2C2E33',
+													})
+													modalManager.closeModal(createNewPresetModal)
+												}}
+											>
+												<Chip value="e131">sACN (E1.31)</Chip>
+												<Chip value="osc">OSC</Chip>
+												<Chip value="http">HTTP</Chip>
+												<Chip value="macro">Macro</Chip>
+											</Chips>
+										),
+								
+									})
 								}}
 							>
-								Start Sampling mode
+								Create preset
 							</Button>
-							<Button
-								onClick={() =>
-									form.addListItem('presets', {
-										id: 0,
-										name: '',
-										enabled: true,
-										type: 'e131',
-										universe: null,
-										fadeTime: 0,
-										data: null,
-										folderId: '0',
-										color: '#2C2E33',
-									})
-								}
-							>
-								Add preset
-							</Button>
+                            <Button
+                                onClick={() => {
+									ApiCall.get('/e131Sampler', {})
+								}}
+                            >
+                                Start Sampling Mode
+                            </Button>
 							<Button type="submit">Save</Button>
 						</Group>
 						<DragDropContext
@@ -205,7 +226,6 @@ export const PresetsConfigurationPage = () => {
 				) : (
 					'Loading'
 				)}
-				{/*<Code block>{JSON.stringify(form.values, null, 2)}</Code>*/}
 			</div>
 		</Box>
 	)

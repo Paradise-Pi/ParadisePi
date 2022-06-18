@@ -1,3 +1,5 @@
+import { PresetFolderRepository, DatabasePresetFolder } from './../../database/repository/presetFolder'
+import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
 /**
  * This is a REST router for the preset folder API.
  * @param path - The path requested by the original route requestor
@@ -13,6 +15,15 @@ export const presetFolderRouter = (
 ): Promise<apiObject> => {
 	logger.debug('Preset folder router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
-		reject(new Error('Path not found'))
+		if (method === 'PUT') {
+			return PresetFolderRepository.setAllFromApp(payload as Array<DatabasePresetFolder>)
+				.then(() => {
+					return createDatabaseObject('updating all presets in bulk')
+				})
+				.then((response: Database) => {
+					sendDatabaseObject(response)
+					resolve({})
+				})
+		} else reject(new Error('Path not found'))
 	})
 }

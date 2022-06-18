@@ -65,7 +65,6 @@ export class WebServer {
 				res.end()
 			} else if (req.url == '/logs') {
 				// Allow backup of database
-				console.log(path.join(__dirname, 'logs/log.log'))
 				const filePath = path.join(__dirname, 'logs/log.log')
 				const fileStat = fs.statSync(filePath)
 				const fileRead = fs.readFileSync(filePath)

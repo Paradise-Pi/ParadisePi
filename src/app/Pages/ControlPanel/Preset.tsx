@@ -1,12 +1,13 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
-import { Button } from '@mantine/core'
+import { Button, Paper } from '@mantine/core'
 import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
-import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
+import { DangerouslySetHTML } from './../../Components/DangerouslySetHTML'
 import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { ApiCall } from './../../apis/wrapper'
+import { PresetFolderIconReact } from './../../Components/ControlPanel/PresetFolderIcon'
 const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
 	return (
 		<Button
@@ -31,28 +32,29 @@ const PresetFolderButton = ({
 	text,
 	folderId,
 	backButton,
+	icon,
 }: {
 	text: string
 	folderId: number
 	backButton: boolean
-}) => {
-	return (
-		<Link to={'/controlPanel/presetFolder/' + folderId.toString()}>
-			<Button
-				variant="default"
-				color="dark"
-				size="xl"
-				mx="xs"
-				my="xs"
-				leftIcon={backButton ? <FaLevelUpAlt /> : <FaFolder />}
-			>
-				{text}
-			</Button>
-		</Link>
-	)
-}
+	icon: string
+}) => (
+	<Link to={'/controlPanel/presetFolder/' + folderId.toString()}>
+		<Button
+			variant="default"
+			color="dark"
+			size="xl"
+			mx="xs"
+			my="xs"
+			leftIcon={backButton ? <FaLevelUpAlt /> : <PresetFolderIconReact icon={icon} />}
+		>
+			{text}
+		</Button>
+	</Link>
+)
+
 export const PresetPage = () => {
-	const { folderId } = useParams<{ folderId?: string }>()
+	const { folderId } = useParams<{ folderId: string }>()
 	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
 	let presetFolder: DatabasePresetFolder | false = false
 	if (presetFolders !== false) {
@@ -60,10 +62,18 @@ export const PresetPage = () => {
 	}
 	return (
 		<>
+			{presetFolder && presetFolder.infoText ? (
+				<Paper px="md">
+					<DangerouslySetHTML html={presetFolder.infoText} />
+				</Paper>
+			) : (
+				''
+			)}
 			{presetFolder && presetFolder.parent !== null ? (
 				<PresetFolderButton
 					folderId={presetFolder.parent.id}
 					text={presetFolder.parent.name}
+					icon={presetFolder.parent.icon}
 					backButton={true}
 				/>
 			) : (
@@ -73,6 +83,7 @@ export const PresetPage = () => {
 				? presetFolder.children.map(presetFolder => (
 						<PresetFolderButton
 							folderId={presetFolder.id}
+							icon={presetFolder.icon}
 							key={presetFolder.id}
 							text={presetFolder.name}
 							backButton={false}

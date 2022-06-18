@@ -19,15 +19,17 @@ const TopLevelPresetFolders = ({
 	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
 	const topLevelPresetFolders: Array<DatabasePresetFolder> = []
 	if (presetFolders !== false) {
-		Object.entries(presetFolders).forEach(([, value]) => {
-			if (value.parent === null) {
-				topLevelPresetFolders.push({
-					name: value.name,
-					id: value.id,
-					icon: value.icon,
-				})
-			}
-		})
+		Object.entries(presetFolders)
+			.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
+			.forEach(([, value]) => {
+				if (value.parent === null) {
+					topLevelPresetFolders.push({
+						name: value.name,
+						id: value.id,
+						icon: value.icon,
+					})
+				}
+			})
 	}
 	return (
 		<>

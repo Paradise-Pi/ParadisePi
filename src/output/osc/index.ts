@@ -91,6 +91,7 @@ export default abstract class OSC {
 	 * Setup actual osc handling
 	 */
 	private setupOSC() {
+		// TODO debug as fails if more than one paradise open
 		this.udpPort = new oscHandler.UDPPort({
 			localAddress: '0.0.0.0',
 			localPort: 57121,
