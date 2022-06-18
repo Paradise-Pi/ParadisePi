@@ -5,16 +5,13 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"type": "node",
+			"command": "npm start",
+			"name": "Run npm start",
 			"request": "launch",
-			"name": "Electron Main",
-			"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge-vscode-nix",
-			"windows": {
-				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron-forge-vscode-win.cmd"
-			},
-			// runtimeArgs will be passed directly to your Electron application
-			"runtimeArgs": [],
-			"cwd": "${workspaceFolder}"
+			"type": "node-terminal",
+			"env": {
+        "DEV_MODE": "true"
+      }
 		}
 	]
 }
