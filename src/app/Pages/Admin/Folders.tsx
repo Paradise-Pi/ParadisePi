@@ -10,7 +10,13 @@ import {
 	LoadingOverlay,
 	SelectItem as MantineSelectItem,
 	Avatar,
+	Checkbox,
+	ColorInput,
+	Modal,
+	NumberInput,
 	Text,
+	Chips,
+	Chip,
 } from '@mantine/core'
 import { useForm, formList } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -22,6 +28,8 @@ import { useAppSelector } from './../../apis/redux/mainStore'
 import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
 import { ApiCall } from './../../apis/wrapper'
 import { AvailableIcons, PresetFolderIconReact } from './../../Components/ControlPanel/PresetFolderIcon'
+import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
+import RichTextEditor from '@mantine/rte'
 
 interface FormValues {
 	folders: FormList<DatabasePresetFolder>
@@ -44,6 +52,7 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(({ icon, label, ...othe
 	</div>
 ))
 export const FoldersConfigurationPage = () => {
+	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const folders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
 	const parentFoldersForSelect: Array<MantineSelectItem> = [{ value: null, label: 'None', group: 'Parent Folder' }]
@@ -86,6 +95,7 @@ export const FoldersConfigurationPage = () => {
 							id: parseInt(item[0]),
 							icon: item[1].icon,
 							parentFolderId: item[1].parent ? item[1].parent.id.toString() : null,
+							infoText: item[1].infoText ?? '',
 						}))
 				),
 			}) // Make a copy of the folders using map because the object is not extensible
@@ -98,7 +108,6 @@ export const FoldersConfigurationPage = () => {
 		setLoadingOverlayVisible(true)
 		ApiCall.put('/presetFolders', values.folders)
 	}
-
 	const fields = form.values.folders.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
@@ -113,7 +122,9 @@ export const FoldersConfigurationPage = () => {
 						// form.values.folders[index].folderId
 						{...form.getListInputProps('folders', index, 'parentFolderId')}
 						data={parentFoldersForSelect.filter((item: MantineSelectItem) => {
-							return typeof form.values.folders[index].id !== undefined && item.value !== null
+							return typeof form.values.folders[index].id !== undefined &&
+								form.values.folders[index].id !== null &&
+								item.value !== null
 								? form.values.folders[index].id.toString() !== item.value
 								: true
 						})}
@@ -128,6 +139,36 @@ export const FoldersConfigurationPage = () => {
 							label: name,
 						}))}
 					/>
+					<Modal
+						opened={modalVisible === index}
+						onClose={() => {
+							setModalVisible(false)
+						}}
+						size="xl"
+						title="Edit Preset"
+						overflow="inside"
+					>
+						{
+							folders ? (
+								<RichTextEditor
+									value={form.getListInputProps('folders', index, 'infoText').value}
+									onChange={form.getListInputProps('folders', index, 'infoText').onChange}
+									controls={[
+										['bold', 'italic', 'underline', 'strike'],
+										['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+										['unorderedList', 'orderedList'],
+										['sup', 'sub', 'blockquote', 'clean'],
+										['alignLeft', 'alignCenter', 'alignRight'],
+									]}
+									sticky={true}
+								/>
+							) : null /* Slight hack because the RichTextEditor doesn't accept value changes - only the one given when rendered, so force a re-render */
+						}
+					</Modal>
+
+					<ActionIcon variant="hover" onClick={() => setModalVisible(index)}>
+						<FaPencilAlt />
+					</ActionIcon>
 					<ActionIcon color="red" variant="hover" onClick={() => form.removeListItem('folders', index)}>
 						<FaTrash />
 					</ActionIcon>
@@ -152,7 +193,7 @@ export const FoldersConfigurationPage = () => {
 									})
 								}
 							>
-								Add folder
+								Create folder
 							</Button>
 							<Button type="submit">Save</Button>
 						</Group>

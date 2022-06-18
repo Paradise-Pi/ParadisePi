@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
-import { Button } from '@mantine/core'
+import { Button, Paper } from '@mantine/core'
 import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
-import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
+import { DangerouslySetHTML } from './../../Components/DangerouslySetHTML'
 import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { ApiCall } from './../../apis/wrapper'
@@ -69,6 +69,13 @@ export const PresetPage = () => {
 					icon={presetFolder.parent.icon}
 					backButton={true}
 				/>
+			) : (
+				''
+			)}
+			{presetFolder && presetFolder.infoText ? (
+				<Paper px="md" py="xs">
+					<DangerouslySetHTML html={presetFolder.infoText} />
+				</Paper>
 			) : (
 				''
 			)}

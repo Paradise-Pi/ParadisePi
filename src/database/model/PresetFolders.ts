@@ -43,6 +43,14 @@ export class PresetFolders {
 	})
 	icon: string | null
 
+	@Column('text', {
+		nullable: true,
+		default: (): string => {
+			return null
+		},
+	})
+	infoText: string | null
+
 	@OneToMany(() => Preset, Preset => Preset.folder)
 	presets: Preset[]
 

@@ -25,6 +25,7 @@ import { AddIcons1653145460118 } from './migration/1653145460118-AddIcons'
 import { AddColorColumn1653147200134 } from './migration/1653147200134-AddColorColumn'
 import { FolderRelations1653221239013 } from './migration/1653221239013-FolderRelations'
 import { ClearUpHelpText1654009120000 } from './migration/1654009120000-ClearUpHelpText'
+import { AddFolderText1655564727255 } from './migration/1655564727255-AddFolderText'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -47,6 +48,7 @@ const dataSource = new DataSource({
 		AddColorColumn1653147200134,
 		FolderRelations1653221239013,
 		ClearUpHelpText1654009120000,
+		AddFolderText1655564727255,
 	],
 	subscribers: [],
 	logger: new MyCustomLogger(),

@@ -2,12 +2,13 @@ import { In, Not } from 'typeorm'
 import dataSource from './../dataSource'
 import { Preset } from './../model/Preset'
 
+export type PresetTypes = 'e131' | 'osc' | 'http' | 'macro'
 export interface DatabasePreset {
 	id: number
 	name: string
 	enabled: boolean
-	type?: 'e131' | 'osc' | 'http' | 'macro'
-	universe?: number | null
+	type?: PresetTypes
+	universe?: string | null
 	fadeTime?: number
 	data?: string | null
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
@@ -60,6 +61,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 			return {
 				...preset,
 				sort: count + 1,
+				universe: preset.universe !== null ? parseInt(preset.universe) : null,
 				folder: preset.folderId !== null ? parseInt(preset.folderId) : null,
 				data: preset.data !== null && preset.data.length > 0 ? JSON.parse(preset.data) : null,
 			}

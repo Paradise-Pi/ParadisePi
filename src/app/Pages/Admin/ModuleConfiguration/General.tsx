@@ -99,7 +99,7 @@ export const GeneralConfigurationPage = () => {
 							]}
 							sticky={true}
 						/>
-					) : null /* Slight hack because the RichTextEditor doesn't accept value changes - only the one given when rendered */
+					) : null /* Slight hack because the RichTextEditor doesn't accept value changes - only the one given when rendered, so force a re-render */
 				}
 			</form>
 		</Box>

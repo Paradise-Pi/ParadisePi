@@ -9,6 +9,7 @@ export interface DatabasePresetFolder {
 	id: number
 	sort?: number
 	icon?: string
+	infoText?: string
 	children?: Array<DatabasePresetFolder>
 	parent?: DatabasePresetFolder
 	parentFolderId?: string
@@ -28,6 +29,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 				id: true,
 				icon: true,
 				sort: true,
+				infoText: true,
 				childFolders: {
 					name: true,
 					id: true,
@@ -67,6 +69,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 				id: item.id,
 				icon: item.icon,
 				sort: item.sort,
+				infoText: item.infoText,
 				children: item.childFolders.map((child: PresetFolders) => {
 					return {
 						name: child.name,
@@ -163,6 +166,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 					id: folder.id,
 					icon: folder.icon,
 					sort: count + 1,
+					infoText: folder.infoText,
 					parent:
 						folder.parentFolderId !== null && folderIdsToKeep.includes(parseInt(folder.parentFolderId)) // Check the parent folder id exists
 							? parseInt(folder.parentFolderId)
