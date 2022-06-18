@@ -19,13 +19,13 @@ export const presetRouter = (
 		if (method === 'GET' && path[0] === 'recall') {
 			return PresetRepository.findOneOrFail({ where: { id: parseInt(path[1]) } }).then((value: Preset) => {
 				logger.verbose('Preset recalled', { value })
-				if (value.type === 'e131') {
+				if (value.type === 'e131' && value.data !== null) {
 					e131.update(
 						parseInt(value.universe),
 						e131.convertObjectToChannelData(value.data),
 						value.fadeTime * 1000
 					)
-				} else if (value.type === 'osc') {
+				} else if (value.type === 'osc' && value.data !== null) {
 					Object.entries(value.data).forEach(([address, args]) => {
 						osc.send(address, args)
 					})
