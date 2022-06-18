@@ -190,11 +190,19 @@ export const PresetsConfigurationPage = () => {
 												<Chip value="macro">Macro</Chip>
 											</Chips>
 										),
+								
 									})
 								}}
 							>
 								Create preset
 							</Button>
+                            <Button
+                                onClick={() => {
+									ApiCall.get('/e131Sampler', {})
+								}}
+                            >
+                                Start Sampling Mode
+                            </Button>
 							<Button type="submit">Save</Button>
 						</Group>
 						<DragDropContext

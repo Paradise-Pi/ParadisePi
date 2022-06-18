@@ -16,6 +16,7 @@ export interface DatabasePreset {
 }
 
 export const PresetRepository = dataSource.getRepository(Preset).extend({
+	//get one preset
 	getItem(key: string): string | null {
 		const item = this.findOne({
 			select: {
@@ -28,6 +29,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 		if (!item) return null
 		else return item.value
 	},
+	//get all presets
 	async getAll(): Promise<Array<DatabasePreset>> {
 		const items = await this.find()
 		return items.map((item: Preset) => {

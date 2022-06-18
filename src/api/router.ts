@@ -3,6 +3,7 @@ import { createDatabaseObject } from './database'
 import { presetRouter } from './preset/presetRouter'
 import { presetFolderRouter } from './presetFolder/presetFolderRouter'
 import { configRouter } from './config/configRouter'
+import { e131SamplerRouter } from './e131Sampler/e131SamplerRouter'
 /**
  * This is a REST router that triages all requests and sends them to relevant routers
  * @param path - The path requested by the requestor
@@ -42,6 +43,10 @@ export const routeRequest = (
 			case 'config':
 				// {@link configRouter} - this router handles all about requests for the /config path
 				resolve(configRouter(pathArr.slice(1), method, payload))
+				break
+			case 'e131Sampler':
+				// {@link e131SamplerRouter} - this router handles all about requests for the /e131Scanner path
+				resolve(e131SamplerRouter(pathArr.slice(1), method, payload))
 				break
 		}
 		reject(new Error('Path not found'))

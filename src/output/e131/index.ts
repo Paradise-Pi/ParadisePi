@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { networkInterfaces } from 'os'
-import e131Lib from '@paradise-pi/e131'
+import { Client, Server } from '@paradise-pi/e131'
+import { PresetRepository } from '../../database/repository/preset'
+import ip from 'ip'
+import { broadcast } from '../../api/broadcast'
 
 interface channelData {
 	channel: number
@@ -15,6 +18,14 @@ interface channelFade {
 	fadeFromTimestamp: number
 	fadeToTimestamp: number
 }
+
+interface UniverseData {
+	[sourceName: string]: {
+		[universe: number]: {
+			[channel: number]: number
+		}
+	}
+}
 /**
  * sACN = E1.31
  */
@@ -28,16 +39,35 @@ export class E131 {
 	private priority: number
 	private frequency: number
 	private running: boolean
-	constructor(firstUniverse: number, universes: number, sourceName: string, priority: number, frequency: number) {
+	private effectMode: boolean
+	private sampleTime: number
+
+	constructor(
+		firstUniverse: number,
+		universes: number,
+		sourceName: string,
+		priority: number,
+		frequency: number,
+		effectMode: boolean,
+		sampleTime: number
+	) {
 		this.firstUniverse = firstUniverse
 		this.universes = universes
 		this.sourceName = sourceName
 		this.priority = priority
 		this.frequency = frequency
+		this.effectMode = effectMode
+		this.sampleTime = sampleTime
+
+		this.init()
+	}
+
+	private init() {
 		this.running = true
 		this.setupUniverses()
 		this.initSending()
 	}
+
 	/**
 	 * Setup instances of the E1.31 class for each universe needed
 	 */
@@ -45,7 +75,7 @@ export class E131 {
 		this.e131Clients = []
 		this.fades = []
 		for (let i = this.firstUniverse; i <= this.firstUniverse + this.universes - 1; i++) {
-			this.e131Clients[i] = { client: new e131Lib.Client(i) }
+			this.e131Clients[i] = { client: new Client(i) }
 			this.e131Clients[i]['packet'] = this.e131Clients[i]['client'].createPacket(512)
 			this.e131Clients[i]['addressData'] = this.e131Clients[i]['packet'].getSlotsData()
 			this.e131Clients[i]['packet'].setSourceName(this.sourceName)
@@ -200,5 +230,106 @@ export class E131 {
 	private getUniqueId() {
 		const interfaces = networkInterfaces()
 		return Buffer.from(interfaces[Object.keys(interfaces)[0]][0].mac) // Get a unique ID to set as the CID
+	}
+
+	public async sampleE131() {
+		await this.terminate() // Stop light output entirely and clear all universes
+
+		logger.info(
+			'Starting Sampling Mode - ' + this.effectMode
+				? 'Storing first value of a varying value (EFFECT MODE ON)'
+				: 'Ignoring varying values (EFFECT MODE OFF)'
+		)
+
+		const numUniverses = this.universes > 20 ? 20 : this.universes // 20 universe limit is enforced due to memory limitations
+		const universes = Array.from({ length: numUniverses }, (_, i) => i + this.firstUniverse) // Generates an array like [1,2,3,4,5] because that's what the lib likes
+		const sampleModeDuration =
+			this.sampleTime === undefined || this.sampleTime > 300 || this.sampleTime < 5
+				? 15000
+				: this.sampleTime * 1000
+
+		broadcast('e131Scanning', {
+			status: true,
+			duration: sampleModeDuration,
+			finish: new Date(new Date().getTime() + sampleModeDuration).getTime(),
+		})
+		//get our current ip so we know which network interface is usable
+		const ipAddress = ip.address()
+		//Create our actual server object now port is free
+		const server = new Server(universes, 5568, ipAddress)
+		logger.debug('E1.31 Server started')
+
+		server.on('listening', () => {
+			logger.info('Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes')
+		})
+
+		const universeData: UniverseData = {}
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		server.on('packet', (packet: any) => {
+			const sourceName: string = packet.getSourceName().replace(/\0/g, '')
+			const universe: number = packet.getUniverse()
+			const slotsData = packet.getSlotsData()
+			const priority: number = packet.getPriority()
+
+			if (priority != 0) {
+				// For some reason, known only to the developers of this library/sACN (I'm not even sure)........you get some bizarre packets that are just priorities and nothing else from time to time. The only feature of these I can find is that they have no priority, so if you find one without priority just ignore it and hope for the best.
+				if (universeData[sourceName] === undefined) {
+					universeData[sourceName] = {}
+					logger.info('Found new device ' + sourceName)
+				}
+				if (universeData[sourceName][universe] === undefined) {
+					universeData[sourceName][universe] = {}
+					logger.info('Found universe ' + universe + ' for device ' + sourceName)
+				}
+				for (let i = 0; i < slotsData.length; i++) {
+					if (universeData[sourceName][universe][i + 1] === undefined) {
+						universeData[sourceName][universe][i + 1] = slotsData[i]
+					} else if (!this.effectMode && universeData[sourceName][universe][i + 1] === null) {
+						// This has already been marked as jittery - so ignore it
+					} else if (!this.effectMode && universeData[sourceName][universe][i + 1] !== slotsData[i]) {
+						// So we've found data that doesn't match what we had down for it before, so it might be that an effect is running. The best way to deal with this is to mark it as false, which means it won't be saved (on purpose)
+						universeData[sourceName][universe][i + 1] = null
+						logger.warn(
+							'Discarding data for channel ' +
+								i +
+								' due to value change (universe ' +
+								universe +
+								' from device ' +
+								sourceName +
+								') - is an effect running?'
+						)
+					}
+				}
+			}
+		})
+
+		await new Promise(resolve => setTimeout(resolve, sampleModeDuration)) // Wait the specified amount of time before stopping the server
+
+		for (const [deviceName, device] of Object.entries(universeData)) {
+			for (const [universeID, universeData] of Object.entries(device)) {
+				for (const key in universeData) {
+					// eslint-disable-next-line no-prototype-builtins
+					if (universeData.hasOwnProperty(key) && universeData[key] === null) {
+						delete universeData[key] // Remove null values
+					}
+				}
+				PresetRepository.insert({
+					id: PresetRepository.getAll.length,
+					name: 'Universe ' + universeID + ' sampled from ' + deviceName,
+					enabled: false,
+					universe: universeID,
+					data: JSON.parse(JSON.stringify(universeData)),
+				})
+					.then(() => logger.info('Added Preset'))
+					.catch(err => logger.error(err))
+			}
+		}
+
+		logger.info('Finished sampling - Resuming E1.31 Connection & Uploading Presets')
+		broadcast('e131Scanning', {
+			status: false,
+		})
+		server.close()
+		this.init()
 	}
 }
