@@ -49,13 +49,15 @@ export const FoldersConfigurationPage = () => {
 	const parentFoldersForSelect: Array<MantineSelectItem> = [{ value: null, label: 'None', group: 'Parent Folder' }]
 	// Prepare preset folders list for select dropdown
 	if (folders !== false) {
-		Object.entries(folders).forEach(([, value]) => {
-			parentFoldersForSelect.push({
-				value: value.id.toString(),
-				label: value.name,
-				group: 'Parent Folder',
+		Object.entries(folders)
+			.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
+			.forEach(([, value]) => {
+				parentFoldersForSelect.push({
+					value: value.id.toString(),
+					label: value.name,
+					group: 'Parent Folder',
+				})
 			})
-		})
 	}
 	// Setup the form
 	const form = useForm<FormValues>({
@@ -77,12 +79,14 @@ export const FoldersConfigurationPage = () => {
 		if (folders !== false) {
 			form.setValues({
 				folders: formList(
-					Object.entries(folders).map(item => ({
-						name: item[1].name,
-						id: parseInt(item[0]),
-						icon: item[1].icon,
-						parentFolderId: item[1].parent ? item[1].parent.id.toString() : null,
-					}))
+					Object.entries(folders)
+						.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
+						.map(item => ({
+							name: item[1].name,
+							id: parseInt(item[0]),
+							icon: item[1].icon,
+							parentFolderId: item[1].parent ? item[1].parent.id.toString() : null,
+						}))
 				),
 			}) // Make a copy of the folders using map because the object is not extensible
 		}

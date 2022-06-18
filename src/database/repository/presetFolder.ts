@@ -7,6 +7,7 @@ import { DatabasePreset } from './preset'
 export interface DatabasePresetFolder {
 	name: string
 	id: number
+	sort?: number
 	icon?: string
 	children?: Array<DatabasePresetFolder>
 	parent?: DatabasePresetFolder
@@ -26,6 +27,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 				name: true,
 				id: true,
 				icon: true,
+				sort: true,
 				childFolders: {
 					name: true,
 					id: true,
@@ -64,6 +66,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 				name: item.name,
 				id: item.id,
 				icon: item.icon,
+				sort: item.sort,
 				children: item.childFolders.map((child: PresetFolders) => {
 					return {
 						name: child.name,
@@ -92,7 +95,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	},
 	/**
 	 * Get a particular folder by id
-	 *
+	 * @remarks not used
 	 * @param id - Id of the folder
 	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
