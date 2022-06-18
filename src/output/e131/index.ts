@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { networkInterfaces } from 'os'
-import e131Lib, { Client, Server } from '@paradise-pi/e131'
+import { Client, Server } from '@paradise-pi/e131'
 import { PresetRepository } from '../../database/repository/preset'
 import { broadcast } from '../../api/broadcast'
 
@@ -57,6 +57,11 @@ export class E131 {
 		this.frequency = frequency
 		this.effectMode = effectMode
 		this.sampleTime = sampleTime
+
+		this.init()
+	}
+
+	private init() {
 		this.running = true
 		this.setupUniverses()
 		this.initSending()
@@ -69,7 +74,7 @@ export class E131 {
 		this.e131Clients = []
 		this.fades = []
 		for (let i = this.firstUniverse; i <= this.firstUniverse + this.universes - 1; i++) {
-			this.e131Clients[i] = { client: new (Client as any)(i) }
+			this.e131Clients[i] = { client: new Client(i) }
 			this.e131Clients[i]['packet'] = this.e131Clients[i]['client'].createPacket(512)
 			this.e131Clients[i]['addressData'] = this.e131Clients[i]['packet'].getSlotsData()
 			this.e131Clients[i]['packet'].setSourceName(this.sourceName)
@@ -241,22 +246,16 @@ export class E131 {
 				? 15000
 				: this.sampleTime * 1000
 
-		const server = new (Server as any)({
-			universes: [universes],
-			port: 5568,
-			ip: '127.0.0.1',
-		})
+		const server = new Server(universes, 5568, '127.0.0.1')
 		logger.debug('E1.31 Server started')
 
 		server.on('listening', () => {
-			logger.info('Listening on port ' + server.port + '- universes ' + server.universes)
+			logger.info('Listening on port ' + server.getPort() + '- universes ' + server.getUniverses())
 		})
-		console.log('here1')
 
 		const universeData: UniverseData = {}
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		server.on('packet', (packet: any) => {
-			console.log('here2')
 			const sourceName: string = packet.getSourceName().replace(/\0/g, '')
 			const universe: number = packet.getUniverse()
 			const slotsData = packet.getSlotsData()
@@ -296,10 +295,6 @@ export class E131 {
 
 		await new Promise(resolve => setTimeout(resolve, sampleModeDuration)) // Wait the specified amount of time before stopping the server
 
-		logger.info('Finished sampling - Resuming E1.31 Connection & Uploading Presets')
-		server.close()
-		this.initSending()
-
 		for (const [deviceName, device] of Object.entries(universeData)) {
 			for (const [universeID, universeData] of Object.entries(device)) {
 				for (const key in universeData) {
@@ -308,14 +303,20 @@ export class E131 {
 						delete universeData[key] // Remove null values
 					}
 				}
-				PresetRepository.insertOne({
+				PresetRepository.insert({
+					id: PresetRepository.getAll.length,
 					name: 'Universe ' + universeID + ' sampled from ' + deviceName,
 					enabled: false,
-					universe: parseInt(universeID),
+					universe: universeID,
 					data: JSON.parse(JSON.stringify(universeData)),
 				})
+					.then(() => logger.info('Added Preset'))
+					.catch(err => logger.error(err))
 			}
 		}
-		console.log('fin')
+
+		logger.info('Finished sampling - Resuming E1.31 Connection & Uploading Presets')
+		server.close()
+		this.init()
 	}
 }

@@ -70,8 +70,4 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 		})
 		await this.upsert(presetsToInsert, ['id'])
 	},
-	//insert one preset - wrapped with correct type
-	async insertOne(preset: DatabasePreset): Promise<void> {
-		await this.insert(preset)
-	},
 })
