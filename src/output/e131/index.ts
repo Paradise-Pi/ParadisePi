@@ -2,6 +2,7 @@
 import { networkInterfaces } from 'os'
 import { Client, Server } from '@paradise-pi/e131'
 import { PresetRepository } from '../../database/repository/preset'
+import ip from 'ip'
 import { broadcast } from '../../api/broadcast'
 
 interface channelData {
@@ -246,11 +247,14 @@ export class E131 {
 				? 15000
 				: this.sampleTime * 1000
 
-		const server = new Server(universes, 5568, '127.0.0.1')
+		//get our current ip so we know which network interface is usable
+		const ipAddress = ip.address()
+		//Create our actual server object now port is free
+		const server = new Server(universes, 5568, ipAddress)
 		logger.debug('E1.31 Server started')
 
 		server.on('listening', () => {
-			logger.info('Listening on port ' + server.getPort() + '- universes ' + server.getUniverses())
+			logger.info('Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes')
 		})
 
 		const universeData: UniverseData = {}
