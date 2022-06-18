@@ -1,6 +1,7 @@
 import { Preset } from './../../database/model/Preset'
 import { DatabasePreset, PresetRepository } from './../../database/repository/preset'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
+import axios from 'axios'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -28,6 +29,24 @@ export const presetRouter = (
 				} else if (value.type === 'osc' && value.data !== null) {
 					Object.entries(value.data).forEach(([address, args]) => {
 						osc.send(address, args)
+					})
+				} else if (value.type === 'http' && value.data !== null) {
+					// Make the HTTP request
+					axios({
+						method: value.data.method ?? 'GET',
+						url: value.data.url ?? '',
+						data: value.data.data ? JSON.parse(value.data.data) : {},
+						headers: value.data.headers ? JSON.parse(value.data.headers) : {},
+						timeout: 1000,
+					}).catch(err => {
+						logger.info('Preset HTTP request failed', { err })
+					})
+				} else if (value.type === 'macro' && value.data !== null) {
+					value.data.forEach((step: { type: string; value: string; key: string }) => {
+						if (step.type === 'preset' && parseInt(step.value) !== value.id) {
+							// Trigger the presets in the macro
+							presetRouter(['recall', step.value], 'GET', {})
+						}
 					})
 				}
 				resolve({})

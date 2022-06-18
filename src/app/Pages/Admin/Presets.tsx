@@ -13,7 +13,6 @@ import {
 	Modal,
 	SelectItem,
 	NumberInput,
-	Text,
 	Chips,
 	Chip,
 } from '@mantine/core'
@@ -70,7 +69,6 @@ export const PresetsConfigurationPage = () => {
 		},
 	})
 	useEffect(() => {
-		console.log(presets)
 		if (presets !== false) form.setValues({ presets: formList(presets.map(item => ({ ...item }))) }) // Make a copy of the presets using map because the object is not extensible
 		if (loadingOverlayVisible) setLoadingOverlayVisible(false)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,7 +78,6 @@ export const PresetsConfigurationPage = () => {
 		setLoadingOverlayVisible(true)
 		ApiCall.put('/presets', values.presets)
 	}
-	console.log(form.values.presets)
 	const fields = form.values.presets.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
@@ -189,12 +186,8 @@ export const PresetsConfigurationPage = () => {
 											>
 												<Chip value="e131">sACN (E1.31)</Chip>
 												<Chip value="osc">OSC</Chip>
-												<Chip value="http" disabled>
-													HTTP
-												</Chip>
-												<Chip value="macro" disabled>
-													Macro
-												</Chip>
+												<Chip value="http">HTTP</Chip>
+												<Chip value="macro">Macro</Chip>
 											</Chips>
 										),
 									})

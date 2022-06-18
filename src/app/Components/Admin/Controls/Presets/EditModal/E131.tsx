@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { GetInputProps } from '@mantine/form/lib/types'
-import { JsonInput, NumberInput, Pagination, Slider, Table, Tabs, Text } from '@mantine/core'
-import { usePagination } from '@mantine/hooks'
+import { JsonInput, NumberInput, Slider, Table, Tabs } from '@mantine/core'
 
 const Input = (props: { channel: number; value: number; onChange(channel: number, value: number): void }) => {
 	return (

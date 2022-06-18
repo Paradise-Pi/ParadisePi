@@ -10,13 +10,8 @@ import {
 	LoadingOverlay,
 	SelectItem as MantineSelectItem,
 	Avatar,
-	Checkbox,
-	ColorInput,
 	Modal,
-	NumberInput,
 	Text,
-	Chips,
-	Chip,
 } from '@mantine/core'
 import { useForm, formList } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -29,7 +24,7 @@ import { DatabasePresetFolder } from './../../../database/repository/presetFolde
 import { ApiCall } from './../../apis/wrapper'
 import { AvailableIcons, PresetFolderIconReact } from './../../Components/ControlPanel/PresetFolderIcon'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
-import RichTextEditor from '@mantine/rte'
+import { RichTextEditor } from '@mantine/rte'
 
 interface FormValues {
 	folders: FormList<DatabasePresetFolder>

@@ -22,6 +22,7 @@
     "ecmaVersion": "latest"
   },
   "rules": {
+    "no-console": "warn",
     "tsdoc/syntax": "warn",
     "max-len": ["off"],
     "linebreak-style": ["off"],
