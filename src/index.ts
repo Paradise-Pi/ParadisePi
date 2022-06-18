@@ -8,6 +8,7 @@ import { IpcRequest } from './api/ipc'
 import logger, { winstonTransports } from './logger/index'
 import { createE131 } from './output/e131/constructor'
 import { createOSC } from './output/osc/constructor'
+import { isRunningInDevelopmentMode } from './electron/developmentMode'
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
 	// eslint-disable-line global-require
@@ -22,7 +23,7 @@ logger.profile('boot')
  *  Some APIs can only be used after this event occurs.
  */
 app.whenReady().then(() => {
-	if (!app.isPackaged) logger.add(winstonTransports.console) // Turn on console logging if not in production
+	if (!app.isPackaged || isRunningInDevelopmentMode) logger.add(winstonTransports.console) // Turn on console logging if not in production
 	// Populate the about info
 	const versions = JSON.stringify(process.versions)
 	app.setAboutPanelOptions({

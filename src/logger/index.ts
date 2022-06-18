@@ -2,6 +2,7 @@ import { createLogger, format, transports } from 'winston'
 import { BroadcastTransport } from './broadcastTransport'
 import fs from 'fs'
 import path from 'path'
+import { isRunningInDevelopmentMode } from './../electron/developmentMode'
 
 const logDir = path.join(__dirname, 'logs')
 if (!fs.existsSync(logDir)) {
@@ -25,13 +26,12 @@ const logLevels = {
 }
 export const winstonTransports = {
 	console: new transports.Console({
-		level: 'debug',
+		level: isRunningInDevelopmentMode ? 'verbose' : 'debug',
 		format: format.json(),
 	}),
 	file: new transports.File({
 		// It's quite important to keep file logging to a minimum to avoid stress on the disk (especially a Pi SD card)
-		//level: 'warn',
-		level: 'silly',
+		level: 'warn',
 		filename: 'log.log',
 		dirname: logDir,
 		tailable: true,
@@ -52,11 +52,10 @@ const logger = createLogger({
 		format.splat(),
 		format.json()
 	),
-	//defaultMeta: { service: 'paradise' },
 	transports: [winstonTransports.file],
-	exceptionHandlers: [winstonTransports.file],
+	exceptionHandlers: isRunningInDevelopmentMode ? [winstonTransports.file] : [],
 	exitOnError: true,
-	rejectionHandlers: [winstonTransports.file],
+	rejectionHandlers: isRunningInDevelopmentMode ? [winstonTransports.file] : [],
 })
 
 export default logger
