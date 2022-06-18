@@ -31,14 +31,14 @@ interface UniverseData {
  */
 export class E131 {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	protected e131Clients: Array<any>
-	protected fades: Array<channelFade>
-	protected firstUniverse: number
-	protected universes: number
-	protected sourceName: string
-	protected priority: number
-	protected frequency: number
-	protected running: boolean
+	private e131Clients: Array<any>
+	private fades: Array<channelFade>
+	private firstUniverse: number
+	private universes: number
+	private sourceName: string
+	private priority: number
+	private frequency: number
+	private running: boolean
 	private effectMode: boolean
 	private sampleTime: number
 
@@ -234,6 +234,7 @@ export class E131 {
 
 	public async sampleE131() {
 		await this.terminate() // Stop light output entirely and clear all universes
+
 		logger.info(
 			'Starting Sampling Mode - ' + this.effectMode
 				? 'Storing first value of a varying value (EFFECT MODE ON)'
@@ -247,6 +248,11 @@ export class E131 {
 				? 15000
 				: this.sampleTime * 1000
 
+		broadcast('e131Scanning', {
+			status: true,
+			duration: sampleModeDuration,
+			finish: new Date(new Date().getTime() + sampleModeDuration).getTime(),
+		})
 		//get our current ip so we know which network interface is usable
 		const ipAddress = ip.address()
 		//Create our actual server object now port is free
@@ -320,6 +326,9 @@ export class E131 {
 		}
 
 		logger.info('Finished sampling - Resuming E1.31 Connection & Uploading Presets')
+		broadcast('e131Scanning', {
+			status: false,
+		})
 		server.close()
 		this.init()
 	}
