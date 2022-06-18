@@ -1,8 +1,9 @@
+import { In, Not } from 'typeorm'
 import dataSource from './../dataSource'
 import { Preset } from './../model/Preset'
 
 export interface DatabasePreset {
-	id?: number
+	id: number
 	name: string
 	enabled: boolean
 	type?: 'e131' | 'osc' | 'http' | 'macro'
@@ -30,6 +31,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 		const items = await this.find()
 		return items.map((item: Preset) => {
 			return {
+				id: item.id,
 				name: item.name,
 				enabled: item.enabled,
 				type: item.type,
@@ -41,8 +43,17 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 			}
 		})
 	},
-	async setAll(presets: Array<DatabasePreset>): Promise<void> {
-		await this.delete({})
+	/**
+	 * Delete all existing presets and then upload the given presets
+	 * @param presets - An array of presets to set as the database record
+	 */
+	async setAllFromApp(presets: Array<DatabasePreset>): Promise<void> {
+		const presetIdsToKeep: Array<number> = presets
+			.filter((preset: DatabasePreset) => preset.id !== null)
+			.map((preset: DatabasePreset) => preset.id)
+		await this.delete({
+			id: Not(In(presetIdsToKeep)),
+		})
 		// Convert preset back to an object
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const presetsToInsert: Array<{ [key: string]: any }> = presets.map((preset: DatabasePreset, count: number) => {
@@ -53,6 +64,6 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				data: preset.data !== null && preset.data.length > 0 ? JSON.parse(preset.data) : null,
 			}
 		})
-		await this.insert(presetsToInsert)
+		await this.upsert(presetsToInsert, ['id'])
 	},
 })

@@ -7,6 +7,7 @@ import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { ApiCall } from './../../apis/wrapper'
+import { PresetFolderIconReact } from './../../Components/ControlPanel/PresetFolderIcon'
 const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
 	return (
 		<Button
@@ -31,28 +32,29 @@ const PresetFolderButton = ({
 	text,
 	folderId,
 	backButton,
+	icon,
 }: {
 	text: string
 	folderId: number
 	backButton: boolean
-}) => {
-	return (
-		<Link to={'/controlPanel/presetFolder/' + folderId.toString()}>
-			<Button
-				variant="default"
-				color="dark"
-				size="xl"
-				mx="xs"
-				my="xs"
-				leftIcon={backButton ? <FaLevelUpAlt /> : <FaFolder />}
-			>
-				{text}
-			</Button>
-		</Link>
-	)
-}
+	icon: string
+}) => (
+	<Link to={'/controlPanel/presetFolder/' + folderId.toString()}>
+		<Button
+			variant="default"
+			color="dark"
+			size="xl"
+			mx="xs"
+			my="xs"
+			leftIcon={backButton ? <FaLevelUpAlt /> : <PresetFolderIconReact icon={icon} />}
+		>
+			{text}
+		</Button>
+	</Link>
+)
+
 export const PresetPage = () => {
-	const { folderId } = useParams<{ folderId?: string }>()
+	const { folderId } = useParams<{ folderId: string }>()
 	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
 	let presetFolder: DatabasePresetFolder | false = false
 	if (presetFolders !== false) {
@@ -64,6 +66,7 @@ export const PresetPage = () => {
 				<PresetFolderButton
 					folderId={presetFolder.parent.id}
 					text={presetFolder.parent.name}
+					icon={presetFolder.parent.icon}
 					backButton={true}
 				/>
 			) : (
@@ -73,6 +76,7 @@ export const PresetPage = () => {
 				? presetFolder.children.map(presetFolder => (
 						<PresetFolderButton
 							folderId={presetFolder.id}
+							icon={presetFolder.icon}
 							key={presetFolder.id}
 							text={presetFolder.name}
 							backButton={false}

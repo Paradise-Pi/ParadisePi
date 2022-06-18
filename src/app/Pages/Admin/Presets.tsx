@@ -45,6 +45,7 @@ export const PresetsConfigurationPage = () => {
 			presetFoldersForSelect.push({
 				value: value.id.toString(),
 				label: value.name,
+				group: 'Folder',
 			})
 		})
 	}
@@ -57,7 +58,7 @@ export const PresetsConfigurationPage = () => {
 			presets: {
 				name: value => (value.length < 2 ? 'Name should have at least 2 letters' : null),
 				fadeTime: value => (value >= 0 && value <= 60 ? null : 'Fade time must be between 0 and 60 seconds'),
-				folderId: value => (parseInt(value) > 0 ? null : 'Folder must be selected'),
+				folderId: value => (value !== null ? null : 'Folder must be selected'),
 			},
 		},
 	})
@@ -112,10 +113,10 @@ export const PresetsConfigurationPage = () => {
 						placeholder="Type"
 						{...form.getListInputProps('presets', index, 'type')}
 						data={[
-							{ value: 'e131', label: 'sACN (E1.31)' },
-							{ value: 'osc', label: 'OSC' },
-							{ value: 'http', label: 'HTTP', disabled: true },
-							{ value: 'macro', label: 'Macro', disabled: true },
+							{ value: 'e131', label: 'sACN (E1.31)', group: 'Preset Type' },
+							{ value: 'osc', label: 'OSC', group: 'Preset Type' },
+							{ value: 'http', label: 'HTTP', disabled: true, group: 'Preset Type' },
+							{ value: 'macro', label: 'Macro', disabled: true, group: 'Preset Type' },
 						]}
 					/>
 					<Modal
@@ -161,7 +162,7 @@ export const PresetsConfigurationPage = () => {
 							<Button
 								onClick={() =>
 									form.addListItem('presets', {
-										id: 0,
+										id: null,
 										name: '',
 										enabled: true,
 										type: 'e131',

@@ -33,7 +33,7 @@ export const presetRouter = (
 				resolve({})
 			})
 		} else if (method === 'PUT') {
-			return PresetRepository.setAll(payload as Array<DatabasePreset>)
+			return PresetRepository.setAllFromApp(payload as Array<DatabasePreset>)
 				.then(() => {
 					return createDatabaseObject('updating all presets in bulk')
 				})

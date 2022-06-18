@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { Link } from 'react-router-dom'
-import { IconType } from 'react-icons'
+import { IconType } from '@react-icons/all-files/lib'
 import { useStyles } from './Styles'
 
 export const NavbarItem = ({
