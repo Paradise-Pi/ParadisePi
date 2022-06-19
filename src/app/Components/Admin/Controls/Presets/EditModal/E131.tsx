@@ -19,7 +19,7 @@ const Input = (props: { channel: number; value: number; onChange(channel: number
 	)
 }
 export const E131PresetEditModal = (props: GetInputProps<'input'>) => {
-	const valueObject = JSON.parse(props.value)
+	const valueObject = JSON.parse(props.value) || {}
 	const [pagination, setPagination] = useState(1)
 	const onChangeFunction = (channel: number, value: number) => {
 		const newValue = { ...valueObject }

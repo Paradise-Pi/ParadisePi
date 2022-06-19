@@ -3,7 +3,7 @@ import { GetInputProps } from '@mantine/form/lib/types'
 import { JsonInput, Select, TextInput } from '@mantine/core'
 
 export const HTTPPresetEditModal = (props: GetInputProps<'input'>) => {
-	const preset = JSON.parse(props.value)
+	const preset = JSON.parse(props.value) || {}
 	const onChangeFunction = (key: string, value: string) => {
 		const newValue = { ...preset }
 		newValue[key] = value
