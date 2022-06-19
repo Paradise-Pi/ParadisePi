@@ -14,6 +14,7 @@ import { ConnectionLost } from './Components/ConnectionLost'
 import { setSocketClients } from './apis/redux/statusSlice'
 import { E131SamplingModeStatusScreen } from './Components/E131SamplingModeStatusScreen'
 import { setFromAPI } from './apis/redux/e131SamplingModeSlice'
+import { appendLogline } from './apis/redux/logsSlice'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -64,7 +65,7 @@ if (runningInElectron()) {
 	})
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	window.ipcApi.receive('logging', (logLine: { [key: string]: any }) => {
-		console.log(logLine)
+		store.dispatch(appendLogline(JSON.stringify(logLine)))
 	})
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	window.ipcApi.receive('socketClients', (clients: { [key: string]: any }) => {

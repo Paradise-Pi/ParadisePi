@@ -60,13 +60,7 @@ export const ControlsConfigurationPage = () => {
 				<PanelButton onClick={openRebootModal}>Reboot</PanelButton>
 				{runningInElectron() ? (
 					<PanelButton onClick={openQuitModal}>Quit to {operatingSystem}</PanelButton>
-				) : (
-					<>
-						<a href="/logs" target="_blank">
-							<PanelButton>Download Logs</PanelButton>
-						</a>
-					</>
-				)}
+				) : null}
 			</Group>
 			<Divider my="sm" />
 			<UsageRings />

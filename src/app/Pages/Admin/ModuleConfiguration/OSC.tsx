@@ -95,7 +95,6 @@ export const OSCModuleConfigurationPage = () => {
 					size="lg"
 					{...form.getInputProps('OSCTargetIP')}
 				/>
-				<Divider my="sm" />
 				<Select
 					required
 					placeholder="Select a Device"

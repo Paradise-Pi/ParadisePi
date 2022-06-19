@@ -14,7 +14,7 @@ export class BroadcastTransport extends Transport {
 			this.emit('logged', info)
 		})
 
-		broadcast('logging', { logLine: info })
+		broadcast('logging', { info })
 
 		callback()
 	}
