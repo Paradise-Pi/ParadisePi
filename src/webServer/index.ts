@@ -44,7 +44,7 @@ export class WebServer {
 						fs.rename('user-uploaded-database.sqlite', 'database.sqlite', err => {
 							if (err) throw err
 							res.write(
-								'System restored from backup. Please now check the device has initiated correctly'
+								'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30" />'
 							)
 							res.end()
 							reboot(true)
@@ -53,16 +53,21 @@ export class WebServer {
 				})
 			} else if (req.url == '/database/download') {
 				// Allow backup of database
-				const filePath = path.join(__dirname, '../../database.sqlite')
-				const fileStat = fs.statSync(filePath)
-				const fileRead = fs.readFileSync(filePath)
-				res.writeHead(200, {
-					'Content-Type': 'application/octet-stream',
-					'Content-Disposition': `attachment;filename="ParadisePi-${Date.now()}.sqlite"`,
-					'Content-Length': fileStat.size,
+				dataSource.destroy().then(() => {
+					const filePath = path.join(__dirname, '../../database.sqlite')
+					const fileStat = fs.statSync(filePath)
+					const fileRead = fs.readFileSync(filePath)
+					dataSource.initialize().then(() => {
+						res.writeHead(200, {
+							'Content-Type': 'application/octet-stream',
+							'Content-Disposition': `attachment;filename="ParadisePi-${Date.now()}.sqlite"`,
+							'Content-Length': fileStat.size,
+						})
+						res.write(fileRead)
+						dataSource
+						res.end()
+					})
 				})
-				res.write(fileRead)
-				res.end()
 			} else if (req.url == '/logs') {
 				// Allow backup of database
 				const filePath = path.join(__dirname, 'logs/log.log')

@@ -51,11 +51,11 @@ export const routeRequest = (
 				resolve(outputModulesRouter(pathArr.slice(1), method, payload))
 				break
 			case 'reboot':
-				reboot(true)
+				reboot(true, false)
 				resolve({})
 				break
 			case 'quit':
-				reboot(false)
+				reboot(false, false)
 				resolve({})
 				break
 		}

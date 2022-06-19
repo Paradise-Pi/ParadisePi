@@ -62,9 +62,6 @@ export const ControlsConfigurationPage = () => {
 					<PanelButton onClick={openQuitModal}>Quit to {operatingSystem}</PanelButton>
 				) : (
 					<>
-						<a href="/database/download" target="_blank">
-							<PanelButton>Download Database Backup</PanelButton>
-						</a>
 						<a href="/logs" target="_blank">
 							<PanelButton>Download Logs</PanelButton>
 						</a>

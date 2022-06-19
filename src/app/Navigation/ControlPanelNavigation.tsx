@@ -2,7 +2,6 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Navbar, ScrollArea } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import { FaQuestion } from '@react-icons/all-files/fa/FaQuestion'
-import { FaCog } from '@react-icons/all-files/fa/FaCog'
 import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
 import { useAppSelector } from './../apis/redux/mainStore'
@@ -53,14 +52,10 @@ export const ControlPanelNavigation = () => {
 	return (
 		<Navbar height={height} width={{ sm: 200, md: 200 }} p="md" className={classes.navbar}>
 			<Navbar.Section grow component={ScrollArea}>
-				{/*<Group className={classes.header} position="apart">
-					<Text className={classes.text}>Paradise</Text>
-				</Group>*/}
 				<TopLevelPresetFolders active={active} setActive={setActive} />
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>
 				<NavbarItem link="help" label="Help" Icon={FaQuestion} active={active} setActive={setActive} />
-				<NavbarItem link="about" label="About" Icon={FaCog} active={active} setActive={setActive} />
 			</Navbar.Section>
 		</Navbar>
 	)

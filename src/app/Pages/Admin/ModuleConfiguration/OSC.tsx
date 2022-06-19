@@ -17,6 +17,7 @@ import { ApiCall } from '../../../apis/wrapper'
 import { useAppSelector } from '../../../apis/redux/mainStore'
 import { BehringerLogo } from './ManufacturerIcons/Behringer'
 import { MidasLogo } from './ManufacturerIcons/Midas'
+import { FaSave } from '@react-icons/all-files/fa/FaSave'
 
 interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
 	image: React.ReactNode
@@ -76,7 +77,9 @@ export const OSCModuleConfigurationPage = () => {
 		<Box sx={{ maxWidth: 400 }} mx="auto">
 			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
 			<form onSubmit={form.onSubmit(handleSubmit)}>
-				<Button type="submit">Save</Button>
+				<Button type="submit" leftIcon={<FaSave />}>
+					Save
+				</Button>
 				<Checkbox
 					mt="md"
 					my="md"

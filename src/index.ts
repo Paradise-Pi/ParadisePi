@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, IpcMainEvent } from 'electron'
+import { app, BrowserWindow, ipcMain, IpcMainEvent, dialog } from 'electron'
 import 'reflect-metadata'
 import createMainWindow from './electron/createMainWindow'
 import dataSource from './database/dataSource'
@@ -45,8 +45,9 @@ app.whenReady().then(() => {
 		})
 		.catch(err => {
 			// Error during Data Source initialization Error: Cannot find module 'undefinedbuild/Release/better_sqlite3.node'  =  https://github.com/electron-userland/electron-forge/issues/2412
-			// TODO handle with a popup to user
-			console.error('Error during Data Source initialization', err)
+			logger.error('Error during Data Source initialization', { err })
+			dialog.showErrorBox('Error', 'Error during Data Source initialization')
+			throw err
 		})
 
 	app.on('activate', () => {

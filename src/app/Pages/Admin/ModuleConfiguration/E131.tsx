@@ -22,6 +22,7 @@ import { FaWaveSquare } from '@react-icons/all-files/fa/FaWaveSquare'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
 import { useModals } from '@mantine/modals'
+import { FaSave } from '@react-icons/all-files/fa/FaSave'
 
 export const E131ModuleConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
@@ -81,7 +82,9 @@ export const E131ModuleConfigurationPage = () => {
 		<Box sx={{ maxWidth: 400 }} mx="auto">
 			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
 			<form onSubmit={form.onSubmit(handleSubmit)}>
-				<Button type="submit">Save</Button>
+				<Button type="submit" leftIcon={<FaSave />}>
+					Save
+				</Button>
 				<Checkbox
 					mt="md"
 					my="md"

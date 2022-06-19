@@ -25,6 +25,8 @@ import { ApiCall } from './../../apis/wrapper'
 import { AvailableIcons, PresetFolderIconReact } from './../../Components/ControlPanel/PresetFolderIcon'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { RichTextEditor } from '@mantine/rte'
+import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 
 interface FormValues {
 	folders: FormList<DatabasePresetFolder>
@@ -180,6 +182,7 @@ export const FoldersConfigurationPage = () => {
 					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<Group position="left" mt="md">
 							<Button
+								leftIcon={<FaPlus />}
 								onClick={() =>
 									form.addListItem('folders', {
 										id: null,
@@ -190,7 +193,9 @@ export const FoldersConfigurationPage = () => {
 							>
 								Create folder
 							</Button>
-							<Button type="submit">Save</Button>
+							<Button type="submit" leftIcon={<FaSave />}>
+								Save
+							</Button>
 						</Group>
 						<DragDropContext
 							onDragEnd={({ destination, source }) =>

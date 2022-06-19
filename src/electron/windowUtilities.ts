@@ -2,6 +2,12 @@ import dataSource from './../database/dataSource'
 import { app } from 'electron'
 import fs from 'fs'
 
+const destroyDatabaseIfExists = (): Promise<void> => {
+	return new Promise<void>(resolve => {
+		if (dataSource.isInitialized) return dataSource.destroy().then(resolve)
+		else return resolve()
+	})
+}
 export const reboot = (reboot?: boolean, force?: boolean, flagsAdd?: Array<string>, flagsRemove?: Array<string>) => {
 	if (!flagsAdd) {
 		flagsAdd = []
@@ -9,7 +15,7 @@ export const reboot = (reboot?: boolean, force?: boolean, flagsAdd?: Array<strin
 	if (!flagsRemove) {
 		flagsRemove = []
 	}
-	dataSource.destroy().then(() => {
+	destroyDatabaseIfExists().then(() => {
 		logger.close() // Otherwise corrupts logfile
 		if (reboot) {
 			let flags = process.argv.slice(1)
@@ -32,7 +38,7 @@ export const factoryReset = () => {
 	dataSource.destroy().then(() => {
 		fs.unlink('database.sqlite', err => {
 			if (err) throw err
-			reboot(true)
+			reboot(true, false)
 		})
 	})
 }

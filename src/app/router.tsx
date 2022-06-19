@@ -3,7 +3,6 @@ import { HashRouter, Routes, Route, Outlet } from 'react-router-dom'
 import { AppShell, Container, ScrollArea } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import { PresetPage } from './Pages/ControlPanel/Preset'
-import { AboutPage } from './Pages/ControlPanel/About'
 import { HelpPage } from './Pages/ControlPanel/Help'
 import { ControlPanelNavigation } from './Navigation/ControlPanelNavigation'
 import { AdminNavigation } from './Navigation/AdminNavigation'
@@ -29,7 +28,6 @@ const Router = () => {
 				>
 					<Route path="presetFolder/:folderId" element={<PresetPage />} />
 					<Route path="help" element={<HelpPage />} />
-					<Route path="about" element={<AboutPage />} />
 				</Route>
 				<Route path="e131sampler" element={<div>Sampling E1.31</div>} />
 				<Route path="admin" element={<MainNav navigation={<AdminNavigation />} />}>

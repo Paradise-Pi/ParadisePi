@@ -21,8 +21,10 @@ export const AdminNavigation = () => {
 	return (
 		<Navbar height={height} width={{ xs: 200, sm: 200, md: 200 }} p="md" className={classes.navbar}>
 			<Navbar.Section grow component={ScrollArea}>
-				<Group className={classes.header} position="apart">
-					<Text className={classes.text}>Admin</Text>
+				<Group className={classes.header} style={{ gap: 0 }}>
+					<Text className={classes.text} style={{ marginBottom: 0 }}>
+						Admin
+					</Text>
 					<Code className={classes.version}>v{version}</Code>
 				</Group>
 				{runningInElectron() ? (

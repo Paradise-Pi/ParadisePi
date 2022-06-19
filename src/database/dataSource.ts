@@ -32,6 +32,7 @@ const dataSource = new DataSource({
 	database: path.join(__dirname, '../../database.sqlite'),
 	synchronize: false,
 	migrationsRun: true,
+	cache: false,
 	entities: [Config, Preset, PresetFolders, Preset, Fader],
 	migrations: [
 		Initial1650709558593,

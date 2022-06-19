@@ -6,6 +6,7 @@ import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { ApiCall } from '../../../apis/wrapper'
 import { runningInElectron } from '../../../apis/utilities/version'
 import { RichTextEditor } from '@mantine/rte'
+import { FaSave } from '@react-icons/all-files/fa/FaSave'
 
 export const GeneralConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
@@ -54,21 +55,23 @@ export const GeneralConfigurationPage = () => {
 		<Box sx={{ maxWidth: 400 }} mx="auto">
 			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
 			<form onSubmit={form.onSubmit(handleSubmit)}>
-				<Button type="submit">Save</Button>
+				<Button type="submit" leftIcon={<FaSave />}>
+					Save
+				</Button>
 				<Divider my="sm" />
 				<Checkbox
 					mt="md"
 					size="lg"
 					label="Lock the control panel"
 					{...form.getInputProps('deviceLock', { type: 'checkbox' })}
-					disabled={runningInElectron()}
+					disabled={runningInElectron() && !form.values.deviceLock}
 				/>
-				{/* You can't set the lock whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
+				{/* You can't set the lock or hide the admin button whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
 				<Checkbox
 					mt="md"
 					my="md"
 					size="lg"
-					label="Show admin button in Control Panel"
+					label="Allow access from Control Panel to Admin"
 					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
 				/>
 				<Divider my="sm" />
