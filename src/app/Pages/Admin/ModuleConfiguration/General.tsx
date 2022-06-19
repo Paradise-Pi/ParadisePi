@@ -64,7 +64,6 @@ export const GeneralConfigurationPage = () => {
 					disabled={runningInElectron()}
 				/>
 				{/* You can't set the lock whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
-				<Divider my="sm" />
 				<Checkbox
 					mt="md"
 					my="md"
@@ -72,6 +71,7 @@ export const GeneralConfigurationPage = () => {
 					label="Show admin button in Control Panel"
 					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
 				/>
+				<Divider my="sm" />
 				<NumberInput
 					required
 					label="Screensaver Time"

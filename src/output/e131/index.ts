@@ -59,7 +59,7 @@ export class E131 {
 		this.frequency = frequency
 		this.effectMode = effectMode
 		this.sampleTime = sampleTime
-
+		logger.verbose('Opening E1.31 Connection')
 		this.init()
 	}
 

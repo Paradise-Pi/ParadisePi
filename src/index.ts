@@ -38,16 +38,10 @@ app.whenReady().then(() => {
 		.then(() => {
 			createE131()
 			createOSC()
-			if (process.argv.includes('--e131sampler')) {
-				// TODO remove this and do it whilst the app is running
-				//setupE131Sampler();
-				createMainWindow('/e131sampler')
-			} else {
-				globalThis.mainBrowserWindow = createMainWindow('/controlPanel/help')
-				new WebServer()
-				logger.add(winstonTransports.broadcast) // You can only add the broadcast transport once the webserver has started
-				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
-			}
+			globalThis.mainBrowserWindow = createMainWindow('/controlPanel/help')
+			new WebServer()
+			logger.add(winstonTransports.broadcast) // You can only add the broadcast transport once the webserver has started
+			logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
 		})
 		.catch(err => {
 			// Error during Data Source initialization Error: Cannot find module 'undefinedbuild/Release/better_sqlite3.node'  =  https://github.com/electron-userland/electron-forge/issues/2412

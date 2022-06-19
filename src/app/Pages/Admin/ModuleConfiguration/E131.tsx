@@ -1,4 +1,15 @@
-import { Box, Button, Divider, Loader, LoadingOverlay, TextInput, Checkbox, NumberInput } from '@mantine/core'
+import {
+	Box,
+	Button,
+	Divider,
+	Loader,
+	LoadingOverlay,
+	TextInput,
+	Checkbox,
+	NumberInput,
+	Alert,
+	Text,
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../apis/wrapper'
@@ -9,9 +20,12 @@ import { FaClipboardList } from '@react-icons/all-files/fa/FaClipboardList'
 import { FaCrown } from '@react-icons/all-files/fa/FaCrown'
 import { FaWaveSquare } from '@react-icons/all-files/fa/FaWaveSquare'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
+import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
+import { useModals } from '@mantine/modals'
 
 export const E131ModuleConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
+	const modals = useModals()
 	const e131Config = useAppSelector(state => (state.database ? state.database.config.e131 : false))
 	const form = useForm({
 		initialValues: {
@@ -46,9 +60,20 @@ export const E131ModuleConfigurationPage = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [e131Config])
 	const handleSubmit = (values: typeof form.values) => {
-		setLoadingOverlayVisible(true)
-		ApiCall.post('/config', values).then(() => {
-			setLoadingOverlayVisible(false)
+		modals.openConfirmModal({
+			title: 'Are you sure you want to save?',
+			centered: true,
+			children: (
+				<Text size="sm">Saving configuration will restart the sACN output - turning off all lighting</Text>
+			),
+			labels: { confirm: 'Save', cancel: 'Cancel' },
+			confirmProps: { color: 'red' },
+			onConfirm: () => {
+				setLoadingOverlayVisible(true)
+				ApiCall.post('/config', values).then(() => {
+					setLoadingOverlayVisible(false)
+				})
+			},
 		})
 	}
 	if (!e131Config) return <Loader variant="bars" />

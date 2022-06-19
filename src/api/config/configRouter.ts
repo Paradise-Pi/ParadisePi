@@ -18,11 +18,13 @@ export const configRouter = (
 	logger.debug('Preset router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'POST') {
+			let restartE131 = false
 			return Promise.all(
 				Object.entries(payload).map(async ([key, value]) => {
 					if (value === true) value = 'true'
 					else if (value === false) value = 'false'
 					else if (value === 'null') value = null
+					if (key.includes('e131')) restartE131 = true // Only restart e131 output IF there is some e131 that's been changed
 					await ConfigRepository.save({
 						key,
 						value,
@@ -34,10 +36,11 @@ export const configRouter = (
 				})
 				.then((response: Database) => {
 					sendDatabaseObject(response)
-					return destroyE131()
+					if (restartE131) return destroyE131()
+					return Promise.resolve()
 				})
 				.then(() => {
-					createE131()
+					if (restartE131) createE131()
 					// Recreate OSC connection
 					destroyOSC()
 					createOSC()
