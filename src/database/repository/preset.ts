@@ -62,7 +62,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 		const presetsToInsert: Array<{ [key: string]: any }> = presets.map((preset: DatabasePreset, count: number) => {
 			return {
 				...preset,
-				sort: count + 1,
+				sort: count + 10, // +10 to make sure that newly inserted ones with null/0/1 end up at the top
 				universe: preset.universe !== null ? parseInt(preset.universe) : null,
 				folder: preset.folderId !== null ? parseInt(preset.folderId) : null,
 				data: preset.data !== null && preset.data.length > 0 ? JSON.parse(preset.data) : null,

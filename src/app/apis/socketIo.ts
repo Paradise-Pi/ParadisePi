@@ -1,6 +1,7 @@
 import { io, Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from './../../api/socketIo'
 import { setFromNode } from './redux/databaseSlice'
+import { setFromAPI } from './redux/e131SamplingModeSlice'
 import store from './redux/mainStore'
 import { setSocketClients, setSocketStatusConnection } from './redux/statusSlice'
 import { getOS } from './utilities/os'
@@ -14,7 +15,6 @@ export class SocketConnection {
 		callback: (success: boolean, response: apiObject, errorMessage: string | null) => void
 	) {
 		if (!SocketConnection.socket) {
-			console.log('Opening socket connection')
 			SocketConnection.socket = io({
 				autoConnect: true,
 				query: {
@@ -30,12 +30,14 @@ export class SocketConnection {
 			SocketConnection.socket.on('connect', () => {
 				store.dispatch(setSocketStatusConnection(true))
 			})
-			SocketConnection.socket.on('disconnect', reason => {
+			SocketConnection.socket.on('disconnect', () => {
 				store.dispatch(setSocketStatusConnection(false))
-				console.log('Socket disconnected = ' + reason)
 			})
 			SocketConnection.socket.on('socketClients', clients => {
 				store.dispatch(setSocketClients(clients))
+			})
+			SocketConnection.socket.on('e131SamplingMode', message => {
+				store.dispatch(setFromAPI(message))
 			})
 		}
 

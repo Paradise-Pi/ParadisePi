@@ -3,7 +3,9 @@ import { createDatabaseObject } from './database'
 import { presetRouter } from './preset/presetRouter'
 import { presetFolderRouter } from './presetFolder/presetFolderRouter'
 import { configRouter } from './config/configRouter'
-import { e131SamplerRouter } from './e131Sampler/e131SamplerRouter'
+import { outputModulesRouter } from './outputModules/outputModulesRouter'
+import { reboot } from './../electron/windowUtilities'
+
 /**
  * This is a REST router that triages all requests and sends them to relevant routers
  * @param path - The path requested by the requestor
@@ -44,9 +46,17 @@ export const routeRequest = (
 				// {@link configRouter} - this router handles all about requests for the /config path
 				resolve(configRouter(pathArr.slice(1), method, payload))
 				break
-			case 'e131Sampler':
-				// {@link e131SamplerRouter} - this router handles all about requests for the /e131Scanner path
-				resolve(e131SamplerRouter(pathArr.slice(1), method, payload))
+			case 'outputModules':
+				// {@link outputModulesRouter} - this router handles all about requests for the /outputModules path
+				resolve(outputModulesRouter(pathArr.slice(1), method, payload))
+				break
+			case 'reboot':
+				reboot(true)
+				resolve({})
+				break
+			case 'quit':
+				reboot(false)
+				resolve({})
 				break
 		}
 		reject(new Error('Path not found'))

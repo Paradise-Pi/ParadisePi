@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
 import { networkInterfaces } from 'os'
 import { Client, Server } from '@paradise-pi/e131'
-import { PresetRepository } from '../../database/repository/preset'
+import { PresetRepository } from './../../database/repository/preset'
 import ip from 'ip'
-import { broadcast } from '../../api/broadcast'
+import { broadcast } from './../../api/broadcast'
+import { createDatabaseObject, Database, sendDatabaseObject } from './../../api/database'
 
 interface channelData {
 	channel: number
@@ -116,7 +117,7 @@ export class E131 {
 	 * @returns promise that resolves when the termination is done
 	 */
 	public terminate(): Promise<void> {
-		logger.info('Terminating E1.31 Connection')
+		logger.verbose('Terminating E1.31 Connection')
 		this.running = false // Stop the normal loop to avoid client confusion
 		return [...Array(this.firstUniverse + this.universes - 1)].reduce((previous, _current, i) => {
 			return previous.then(() => {
@@ -235,7 +236,7 @@ export class E131 {
 	public async sampleE131() {
 		await this.terminate() // Stop light output entirely and clear all universes
 
-		logger.info(
+		logger.verbose(
 			'Starting Sampling Mode - ' + this.effectMode
 				? 'Storing first value of a varying value (EFFECT MODE ON)'
 				: 'Ignoring varying values (EFFECT MODE OFF)'
@@ -248,10 +249,11 @@ export class E131 {
 				? 15000
 				: this.sampleTime * 1000
 
-		broadcast('e131Scanning', {
+		broadcast('e131SamplingMode', {
+			messageType: 'START',
 			status: true,
 			duration: sampleModeDuration,
-			finish: new Date(new Date().getTime() + sampleModeDuration).getTime(),
+			message: `Started sampling with effect mode ${this.effectMode ? 'on' : 'off'}`,
 		})
 		//get our current ip so we know which network interface is usable
 		const ipAddress = ip.address()
@@ -260,7 +262,11 @@ export class E131 {
 		logger.debug('E1.31 Server started')
 
 		server.on('listening', () => {
-			logger.info('Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes')
+			broadcast('e131SamplingMode', {
+				messageType: 'LOGLINE',
+				message: 'Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes',
+			})
+			logger.verbose('Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes')
 		})
 
 		const universeData: UniverseData = {}
@@ -275,11 +281,19 @@ export class E131 {
 				// For some reason, known only to the developers of this library/sACN (I'm not even sure)........you get some bizarre packets that are just priorities and nothing else from time to time. The only feature of these I can find is that they have no priority, so if you find one without priority just ignore it and hope for the best.
 				if (universeData[sourceName] === undefined) {
 					universeData[sourceName] = {}
-					logger.info('Found new device ' + sourceName)
+					broadcast('e131SamplingMode', {
+						messageType: 'LOGLINE',
+						message: 'Found new device ' + sourceName,
+					})
+					logger.verbose('Found new device ' + sourceName)
 				}
 				if (universeData[sourceName][universe] === undefined) {
 					universeData[sourceName][universe] = {}
-					logger.info('Found universe ' + universe + ' for device ' + sourceName)
+					broadcast('e131SamplingMode', {
+						messageType: 'LOGLINE',
+						message: 'Found universe ' + universe + ' for device ' + sourceName,
+					})
+					logger.verbose('Found universe ' + universe + ' for device ' + sourceName)
 				}
 				for (let i = 0; i < slotsData.length; i++) {
 					if (universeData[sourceName][universe][i + 1] === undefined) {
@@ -289,15 +303,10 @@ export class E131 {
 					} else if (!this.effectMode && universeData[sourceName][universe][i + 1] !== slotsData[i]) {
 						// So we've found data that doesn't match what we had down for it before, so it might be that an effect is running. The best way to deal with this is to mark it as false, which means it won't be saved (on purpose)
 						universeData[sourceName][universe][i + 1] = null
-						logger.warn(
-							'Discarding data for channel ' +
-								i +
-								' due to value change (universe ' +
-								universe +
-								' from device ' +
-								sourceName +
-								') - is an effect running?'
-						)
+						broadcast('e131SamplingMode', {
+							messageType: 'LOGLINE',
+							message: `Discarding data for channel ${i} due to value change in universe ${universe} from device ${sourceName} - effect mode is off so varying values are not captured`,
+						})
 					}
 				}
 			}
@@ -314,22 +323,29 @@ export class E131 {
 					}
 				}
 				PresetRepository.insert({
-					id: PresetRepository.getAll.length,
 					name: 'Universe ' + universeID + ' sampled from ' + deviceName,
 					enabled: false,
 					universe: universeID,
+					type: 'e131',
 					data: JSON.parse(JSON.stringify(universeData)),
 				})
-					.then(() => logger.info('Added Preset'))
+					.then(() => logger.verbose('Added Preset'))
 					.catch(err => logger.error(err))
 			}
 		}
 
-		logger.info('Finished sampling - Resuming E1.31 Connection & Uploading Presets')
-		broadcast('e131Scanning', {
-			status: false,
-		})
+		logger.verbose('Finished sampling - Resuming E1.31 Connection & Uploading Presets')
+
 		server.close()
 		this.init()
+
+		broadcast('e131SamplingMode', {
+			status: false,
+			messageType: 'STOP',
+			message: 'Sampling completed',
+		})
+		createDatabaseObject('Added sampled universes').then((response: Database) => {
+			sendDatabaseObject(response)
+		})
 	}
 }

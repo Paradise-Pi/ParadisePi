@@ -110,7 +110,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 			orderBy: {
 				sort: 'ASC',
 				presets: {
-					sort: 'ASC', // TODO get sorting working
+					sort: 'ASC',
 				},
 			},
 			relations: {

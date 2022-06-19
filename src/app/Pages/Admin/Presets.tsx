@@ -15,6 +15,7 @@ import {
 	NumberInput,
 	Chips,
 	Chip,
+	Text,
 } from '@mantine/core'
 import { useForm, formList } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -24,6 +25,9 @@ import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
+import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
+import { FaRecycle } from '@react-icons/all-files/fa/FaRecycle'
 import { FormList } from '@mantine/form/lib/form-list/form-list'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { DatabasePreset, PresetTypes } from './../../../database/repository/preset'
@@ -162,6 +166,7 @@ export const PresetsConfigurationPage = () => {
 					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<Group position="left" mt="md">
 							<Button
+								leftIcon={<FaPlus />}
 								onClick={() => {
 									const createNewPresetModal = modalManager.openModal({
 										title: 'Please select a preset type',
@@ -190,20 +195,32 @@ export const PresetsConfigurationPage = () => {
 												<Chip value="macro">Macro</Chip>
 											</Chips>
 										),
-								
 									})
 								}}
 							>
 								Create preset
 							</Button>
-                            <Button
-                                onClick={() => {
-									ApiCall.get('/e131Sampler', {})
+							<Button
+								leftIcon={<FaRecycle />}
+								onClick={() => {
+									modalManager.openConfirmModal({
+										title: 'Start Sampling Mode',
+										children: (
+											<Text size="sm">
+												Are you sure you wish to sample for data from other lighting control
+												systems? This will stop all lighting output from Paradise
+											</Text>
+										),
+										labels: { confirm: 'Confirm', cancel: 'Cancel' },
+										onConfirm: () => ApiCall.get('/outputModules/e131/startSampling', {}),
+									})
 								}}
-                            >
-                                Start Sampling Mode
-                            </Button>
-							<Button type="submit">Save</Button>
+							>
+								Start Sampling Mode
+							</Button>
+							<Button type="submit" leftIcon={<FaSave />}>
+								Save
+							</Button>
 						</Group>
 						<DragDropContext
 							onDragEnd={({ destination, source }) =>

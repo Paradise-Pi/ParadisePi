@@ -12,6 +12,8 @@ import { ModalsProvider } from '@mantine/modals'
 import { ScreenSaver } from './Components/ScreenSaver'
 import { ConnectionLost } from './Components/ConnectionLost'
 import { setSocketClients } from './apis/redux/statusSlice'
+import { E131SamplingModeStatusScreen } from './Components/E131SamplingModeStatusScreen'
+import { setFromAPI } from './apis/redux/e131SamplingModeSlice'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -36,7 +38,9 @@ const App = () => {
 			<ModalsProvider>
 				<ScreenSaver>
 					<ConnectionLost>
-						<Router />
+						<E131SamplingModeStatusScreen>
+							<Router />
+						</E131SamplingModeStatusScreen>
 					</ConnectionLost>
 				</ScreenSaver>
 			</ModalsProvider>
@@ -66,4 +70,11 @@ if (runningInElectron()) {
 	window.ipcApi.receive('socketClients', (clients: { [key: string]: any }) => {
 		store.dispatch(setSocketClients(clients))
 	})
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	window.ipcApi.receive(
+		'e131SamplingMode',
+		(message: { messageType: string; status?: boolean; duration?: number; message: string }) => {
+			store.dispatch(setFromAPI(message))
+		}
+	)
 }

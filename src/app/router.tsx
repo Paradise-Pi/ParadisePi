@@ -14,7 +14,6 @@ import { PresetsConfigurationPage } from './Pages/Admin/Presets'
 import { FadersConfigurationPage } from './Pages/Admin/Faders'
 import { ControlsConfigurationPage } from './Pages/Admin/Controls'
 import { Locked } from './Components/Locked'
-import { Scanning } from './Components/Scanning'
 
 const Router = () => {
 	return (
@@ -23,11 +22,9 @@ const Router = () => {
 				<Route
 					path="controlPanel"
 					element={
-						<Scanning>
-							<Locked>
-								<MainNav navigation={<ControlPanelNavigation />} />
-							</Locked>
-						</Scanning>
+						<Locked>
+							<MainNav navigation={<ControlPanelNavigation />} />
+						</Locked>
 					}
 				>
 					<Route path="presetFolder/:folderId" element={<PresetPage />} />

@@ -10,6 +10,7 @@ export const reboot = (reboot?: boolean, force?: boolean, flagsAdd?: Array<strin
 		flagsRemove = []
 	}
 	dataSource.destroy().then(() => {
+		logger.close() // Otherwise corrupts logfile
 		if (reboot) {
 			let flags = process.argv.slice(1)
 			flagsRemove.forEach(flagRemove => {

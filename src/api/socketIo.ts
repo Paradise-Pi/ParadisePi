@@ -11,6 +11,7 @@ export interface ServerToClientEvents {
 	oscMessage: (message: any) => void
 	logging: (message: { [key: string]: any }) => void
 	socketClients: (message: { [key: string]: any }) => void
+	e131SamplingMode: (message: { messageType: string; status?: boolean; duration?: number; message: string }) => void
 }
 
 export interface ClientToServerEvents {

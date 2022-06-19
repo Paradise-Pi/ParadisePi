@@ -7,7 +7,7 @@ import { runningInElectron } from '../../apis/utilities/version'
 import { UsageRings } from './../../Components/Admin/Controls/UsageRings'
 import { useModals } from '@mantine/modals'
 import { SocketClients } from './../../Components/Admin/Controls/SocketClients'
-
+import { ApiCall } from './../../apis/wrapper'
 const PanelButton = (props: { children: React.ReactNode; onClick?: React.MouseEventHandler<HTMLButtonElement> }) => {
 	return (
 		<Button variant="default" color="dark" size="md" mx="xs" my="xs" onClick={props.onClick}>
@@ -34,7 +34,7 @@ export const ControlsConfigurationPage = () => {
 			),
 			labels: { confirm: 'Quit', cancel: 'Cancel' },
 			confirmProps: { color: 'red' },
-			onConfirm: () => console.log('Confirmed'), //TODO implement quit functionality
+			onConfirm: () => ApiCall.get('/quit', {}),
 		})
 	const openRebootModal = () =>
 		modals.openConfirmModal({
@@ -42,14 +42,14 @@ export const ControlsConfigurationPage = () => {
 			centered: true,
 			children: (
 				<Text size="sm">
-					Are you sure you want to reboot this computer?
+					Are you sure you want to reboot this system?
 					<br />
 					This may result in loss of lighting/sound/video whilst the reboot takes place
 				</Text>
 			),
 			labels: { confirm: 'Quit', cancel: 'Cancel' },
 			confirmProps: { color: 'red' },
-			onConfirm: () => console.log('Confirmed'), //TODO implement quit functionality
+			onConfirm: () => ApiCall.get('/reboot', {}),
 		})
 	return (
 		<div>
