@@ -140,7 +140,7 @@ export const FoldersConfigurationPage = () => {
 							setModalVisible(false)
 						}}
 						size="xl"
-						title="Edit Preset"
+						title="Edit Folder Help Text"
 						overflow="inside"
 					>
 						{
