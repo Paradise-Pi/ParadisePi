@@ -31,33 +31,36 @@ export class WebServer {
 			indexFile: 'main_window/index.html',
 		})
 		WebServer.server = http.createServer((req, res) => {
-			if (req.url == '/database/upload') {
+			if (req.url == '/database/upload' && req.method.toLowerCase() === 'post') {
 				res.writeHead(200, { 'Content-Type': 'text/html' })
 				// Allow uploading of the database
 				const form = new IncomingForm({
 					filename: () => 'user-uploaded-database.sqlite',
 					uploadDir: path.join(__dirname, '../../'),
 					maxFiles: 1,
+					allowEmptyFiles: false,
 				})
 				form.parse(req, err => {
-					if (err || !fs.existsSync(path.join(__dirname, '../../', 'user-uploaded-database.sqlite'))) {
+					if (err || !fs.existsSync(path.join(__dirname, '../../user-uploaded-database.sqlite'))) {
 						if (err) {
 							res.write(err)
 							logger.error(err)
 						}
-						res.write('\n Error encountered - not continuing with upload, so system is still running')
+						res.write(
+							'<br/>Error encountered - not continuing with upload, so system is still running. <a href="/">Click here to return to administration</a>'
+						)
 						res.end()
 					} else {
 						dataSource.destroy().then(() => {
 							fs.rename(
-								path.join(__dirname, '../../', 'user-uploaded-database.sqlite'),
-								path.join(__dirname, '../../', 'database.sqlite'),
+								path.join(__dirname, '../../user-uploaded-database.sqlite'),
+								path.join(__dirname, '../../database.sqlite'),
 								err => {
 									if (err) {
 										res.write(err)
 										logger.error(err)
 										res.write(
-											'\n Error encountered - upload failed & system crashed. Please re-install Paradise'
+											'<br/>Error encountered - upload failed & system crashed. Please re-install Paradise'
 										)
 									} else {
 										res.write(

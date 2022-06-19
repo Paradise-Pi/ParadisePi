@@ -45,7 +45,7 @@ const Database = () => {
 					using the system, as all lighting and sound will be lost.
 				</Alert>
 				<form action="/database/upload" method="post" encType="multipart/form-data">
-					<input className="form-control" type="file" name="file" accept=".sqlite,.sqlite3" />
+					<input type="file" name="fileupload" accept=".sqlite,.sqlite3" />
 					<Button type="submit" color="red">
 						Upload
 					</Button>
