@@ -4,6 +4,7 @@ import databaseSliceReducer from './databaseSlice'
 import statusSliceReducer from './statusSlice'
 import e131SamplingModeReducer from './e131SamplingModeSlice'
 import oscMetersReducer from './oscMetersSlice'
+import logsSliceReducer from './logsSlice'
 
 const store = configureStore({
 	reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
 		status: statusSliceReducer, // Status of whether we are connected to the server or not, and which clients are connected
 		e131SamplingMode: e131SamplingModeReducer, // Whether we are currently in e131 sampling mode or not
 		oscMeters: oscMetersReducer, // The realtime status of the OSC metering
+		logs: logsSliceReducer, // Logging sent from node.js
 	},
 })
 

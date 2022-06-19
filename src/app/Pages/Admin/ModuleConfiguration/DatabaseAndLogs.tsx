@@ -1,9 +1,29 @@
 import React, { useState } from 'react'
-import { Alert, Blockquote, Button, Modal, Text } from '@mantine/core'
+import { Alert, Blockquote, Button, Divider, Modal, Container } from '@mantine/core'
 import { runningInElectron } from '../../../apis/utilities/version'
 import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
+import { useAppSelector } from './../../../apis/redux/mainStore'
+import { Prism } from '@mantine/prism'
+import { useViewportSize } from '@mantine/hooks'
 
-export const DatabaseConfigurationPage = () => {
+const Logs = () => {
+	const { width } = useViewportSize()
+	const logs = useAppSelector(state => state.logs.logs)
+	return (
+		<Container size={width}>
+			<Prism
+				withLineNumbers
+				language="json"
+				copyLabel="Copy code to clipboard"
+				copiedLabel="Code copied to clipboard"
+				noCopy={runningInElectron()}
+			>
+				{logs.map(logLine => JSON.stringify(JSON.parse(logLine), null, 2)).join('\n')}
+			</Prism>
+		</Container>
+	)
+}
+const Database = () => {
 	const [showModal, setShowModal] = useState(false)
 	if (runningInElectron())
 		return <Blockquote icon={null}>To backup or reset the database, please use the web interface.</Blockquote>
@@ -31,6 +51,18 @@ export const DatabaseConfigurationPage = () => {
 					</Button>
 				</form>
 			</Modal>
+			<a href="/logs" target="_blank">
+				<Button variant="default" color="dark" size="md" mx="xs" my="xs">
+					Download Logs
+				</Button>
+			</a>
 		</>
 	)
 }
+export const DatabaseAndLogsConfigurationPage = () => (
+	<>
+		<Database />
+		<Divider my={'sm'} label="Live Logging" labelPosition="center" />
+		<Logs />
+	</>
+)

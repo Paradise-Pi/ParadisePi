@@ -6,7 +6,7 @@ import { FaDatabase } from '@react-icons/all-files/fa/FaDatabase'
 import { FaTools } from '@react-icons/all-files/fa/FaTools'
 import { E131ModuleConfigurationPage } from './ModuleConfiguration/E131'
 import { GeneralConfigurationPage } from './ModuleConfiguration/General'
-import { DatabaseConfigurationPage } from './ModuleConfiguration/Database'
+import { DatabaseAndLogsConfigurationPage } from './ModuleConfiguration/DatabaseAndLogs'
 import { OSCModuleConfigurationPage } from './ModuleConfiguration/OSC'
 
 export const ConfigurationPage = () => {
@@ -16,8 +16,8 @@ export const ConfigurationPage = () => {
 				<Tabs.Tab label="General" icon={<FaTools />}>
 					<GeneralConfigurationPage />
 				</Tabs.Tab>
-				<Tabs.Tab label="Database" icon={<FaDatabase />}>
-					<DatabaseConfigurationPage />
+				<Tabs.Tab label="Database & Logs" icon={<FaDatabase />}>
+					<DatabaseAndLogsConfigurationPage />
 				</Tabs.Tab>
 				<Tabs.Tab label="sACN (E1.31)" icon={<FaLightbulb />}>
 					<E131ModuleConfigurationPage />

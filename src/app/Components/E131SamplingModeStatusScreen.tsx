@@ -1,7 +1,7 @@
 import { Title, Progress, Center, Code } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import { useElementSize, useViewportSize } from '@mantine/hooks'
-import { useAppSelector } from '../apis/redux/mainStore'
+import { useAppSelector } from './../apis/redux/mainStore'
 
 const SamplingView = () => {
 	const samplingMode = useAppSelector(state => state.e131SamplingMode)

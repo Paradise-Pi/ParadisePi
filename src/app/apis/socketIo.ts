@@ -2,6 +2,7 @@ import { io, Socket } from 'socket.io-client'
 import { ClientToServerEvents, ServerToClientEvents } from './../../api/socketIo'
 import { setFromNode } from './redux/databaseSlice'
 import { setFromAPI } from './redux/e131SamplingModeSlice'
+import { appendLogline } from './redux/logsSlice'
 import store from './redux/mainStore'
 import { setSocketClients, setSocketStatusConnection } from './redux/statusSlice'
 import { getOS } from './utilities/os'
@@ -25,7 +26,7 @@ export class SocketConnection {
 				store.dispatch(setFromNode(database))
 			})
 			SocketConnection.socket.on('logging', message => {
-				console.log(message)
+				store.dispatch(appendLogline(JSON.stringify(message)))
 			})
 			SocketConnection.socket.on('connect', () => {
 				store.dispatch(setSocketStatusConnection(true))

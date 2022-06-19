@@ -14,7 +14,7 @@ const logLevels = {
 		error: 0, // Errors that cannot be recovered from - these are crashing the app (e.g. multiple interfaces found)
 		warn: 1, // Errors that can be recovered from - the app knows something is up and is working around it (e.g. port 80 not available)
 		info: 2, // Information that is useful to know - the app is working as expected and started
-		verbose: 3, // As above, but with a bit more detail - e.g. actions taken and requests made
+		verbose: 3, // As above, but with a bit more detail - e.g. actions taken and requests made. MAX LEVEL SHOWN TO USERS IN UI
 		debug: 4, // Useful to someone trying to develop the app
 		silly: 5, // Quite extreme, logs every single SQL call for example
 	},
