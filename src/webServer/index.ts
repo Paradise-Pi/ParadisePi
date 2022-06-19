@@ -32,6 +32,7 @@ export class WebServer {
 		})
 		WebServer.server = http.createServer((req, res) => {
 			if (req.url == '/database/upload') {
+				res.writeHead(200, { 'Content-Type': 'text/html' })
 				// Allow uploading of the database
 				const form = new IncomingForm({
 					filename: () => 'user-uploaded-database.sqlite',
@@ -39,17 +40,32 @@ export class WebServer {
 					maxFiles: 1,
 				})
 				form.parse(req, err => {
-					if (err) throw err
-					dataSource.destroy().then(() => {
-						fs.rename('user-uploaded-database.sqlite', 'database.sqlite', err => {
-							if (err) throw err
-							res.write(
-								'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30" />'
-							)
-							res.end()
-							reboot(true)
+					if (err || !fs.existsSync('user-uploaded-database.sqlite')) {
+						if (err) {
+							res.write(err)
+							logger.error(err)
+						}
+						res.write('\n Error encountered - not continuing with upload, so system is still running')
+						res.end()
+					} else {
+						dataSource.destroy().then(() => {
+							fs.rename('user-uploaded-database.sqlite', 'database.sqlite', err => {
+								if (err) {
+									res.write(err)
+									logger.error(err)
+									res.write(
+										'\n Error encountered - upload failed & system crashed. Please re-install Paradise'
+									)
+								} else {
+									res.write(
+										'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30;url=/" />'
+									)
+								}
+								res.end()
+								reboot(true)
+							})
 						})
-					})
+					}
 				})
 			} else if (req.url == '/database/download') {
 				// Allow backup of database
