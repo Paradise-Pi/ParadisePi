@@ -40,7 +40,7 @@ export class WebServer {
 					maxFiles: 1,
 				})
 				form.parse(req, err => {
-					if (err || !fs.existsSync('user-uploaded-database.sqlite')) {
+					if (err || !fs.existsSync(path.join(__dirname, '../../', 'user-uploaded-database.sqlite'))) {
 						if (err) {
 							res.write(err)
 							logger.error(err)
@@ -49,21 +49,25 @@ export class WebServer {
 						res.end()
 					} else {
 						dataSource.destroy().then(() => {
-							fs.rename('user-uploaded-database.sqlite', 'database.sqlite', err => {
-								if (err) {
-									res.write(err)
-									logger.error(err)
-									res.write(
-										'\n Error encountered - upload failed & system crashed. Please re-install Paradise'
-									)
-								} else {
-									res.write(
-										'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30;url=/" />'
-									)
+							fs.rename(
+								path.join(__dirname, '../../', 'user-uploaded-database.sqlite'),
+								path.join(__dirname, '../../', 'database.sqlite'),
+								err => {
+									if (err) {
+										res.write(err)
+										logger.error(err)
+										res.write(
+											'\n Error encountered - upload failed & system crashed. Please re-install Paradise'
+										)
+									} else {
+										res.write(
+											'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30;url=/" />'
+										)
+									}
+									res.end()
+									reboot(true)
 								}
-								res.end()
-								reboot(true)
-							})
+							)
 						})
 					}
 				})
