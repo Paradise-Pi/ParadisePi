@@ -10,7 +10,7 @@
 
 ### Basics
 
-- [ ] Boots with a pre-existing database from the previous release
+- [ ] Boots with a pre-existing database from the previous release, uploaded using the interface
 - [ ] Boots without a database, successfully creating its own 
 
 ### Presets

@@ -21,7 +21,6 @@ Made up of an electron app, with a websocket server serving an admin interface
  - Logging: [Winston](https://github.com/winstonjs/winston)
  - ORM: [Typeorm](https://github.com/typeorm/typeorm)
  - Database: [Sqlite3](https://sqlite.org) with [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) driver
- - Admin Theme - [CoreUI](https://github.com/coreui)
  - Website - [Docusaurus 2](https://github.com/facebook/docusaurus)
 
 ## Installation

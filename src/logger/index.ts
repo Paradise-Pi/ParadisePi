@@ -53,9 +53,9 @@ const logger = createLogger({
 		format.json()
 	),
 	transports: [winstonTransports.file],
-	exceptionHandlers: isRunningInDevelopmentMode ? [winstonTransports.file] : [],
+	exceptionHandlers: isRunningInDevelopmentMode ? [] : [winstonTransports.file],
 	exitOnError: true,
-	rejectionHandlers: isRunningInDevelopmentMode ? [winstonTransports.file] : [],
+	rejectionHandlers: isRunningInDevelopmentMode ? [] : [winstonTransports.file],
 })
 
 export default logger

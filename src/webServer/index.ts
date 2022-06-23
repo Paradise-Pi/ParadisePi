@@ -31,25 +31,48 @@ export class WebServer {
 			indexFile: 'main_window/index.html',
 		})
 		WebServer.server = http.createServer((req, res) => {
-			if (req.url == '/database/upload') {
+			if (req.url == '/database/upload' && req.method.toLowerCase() === 'post') {
+				res.writeHead(200, { 'Content-Type': 'text/html' })
 				// Allow uploading of the database
 				const form = new IncomingForm({
 					filename: () => 'user-uploaded-database.sqlite',
 					uploadDir: path.join(__dirname, '../../'),
 					maxFiles: 1,
+					allowEmptyFiles: false,
 				})
 				form.parse(req, err => {
-					if (err) throw err
-					dataSource.destroy().then(() => {
-						fs.rename('user-uploaded-database.sqlite', 'database.sqlite', err => {
-							if (err) throw err
-							res.write(
-								'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30" />'
+					if (err || !fs.existsSync(path.join(__dirname, '../../user-uploaded-database.sqlite'))) {
+						if (err) {
+							res.write(err)
+							logger.error(err)
+						}
+						res.write(
+							'<br/>Error encountered - not continuing with upload, so system is still running. <a href="/">Click here to return to administration</a>'
+						)
+						res.end()
+					} else {
+						dataSource.destroy().then(() => {
+							fs.rename(
+								path.join(__dirname, '../../user-uploaded-database.sqlite'),
+								path.join(__dirname, '../../database.sqlite'),
+								err => {
+									if (err) {
+										res.write(err)
+										logger.error(err)
+										res.write(
+											'<br/>Error encountered - upload failed & system crashed. Please re-install Paradise'
+										)
+									} else {
+										res.write(
+											'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30;url=/" />'
+										)
+									}
+									res.end()
+									reboot(true)
+								}
 							)
-							res.end()
-							reboot(true)
 						})
-					})
+					}
 				})
 			} else if (req.url == '/database/download') {
 				// Allow backup of database
