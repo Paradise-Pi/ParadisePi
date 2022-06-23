@@ -27,7 +27,7 @@ export const MacroPresetEditModal = (props: GetInputProps<'input'>) => {
 		})
 	}
 
-	const valueObject = JSON.parse(props.value)
+	const valueObject = JSON.parse(props.value) || {}
 	const form = useForm<FormValues>({
 		initialValues: {
 			steps: formList([]),
