@@ -3,10 +3,17 @@ sidebar_position: 1
 title: Introduction
 ---
 
-## Limitations
+Welcome to the user guide for version 2 of Paradise. [Version 1](/v1) is now discontinued. 
 
-- Only one network interface can exist on the RaspberryPi. WiFi must be disabled
-- Sampling mode is limited to universes 1-20, due to memory constraints
-- 16bit addresses are supported by sampling mode, but not intended for edit via the admin user interface
+## Basics
 
-MacOS Error = [mh40616](https://support.apple.com/en-gb/guide/mac-help/mh40616)
+Paradise runs on a computer (usually a Raspberry Pi, hence ParadisePi, but it also runs on Windows, Linux & MacOS) usually with a touchscreen. It is comparable to Crestron® and AMX® panels.
+
+Paradise has two parts to the user interface - the **Control Panel** and the **Administration Menu**. 
+
+The Control Panel is used by users, to trigger presets and faders, and the Administration Menu allows the creation and configuration of presets and faders
+
+## Features
+
+ - #
+ - #
