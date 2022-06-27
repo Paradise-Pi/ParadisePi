@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { GetInputProps } from '@mantine/form/lib/types'
 import { ActionIcon, Button, Group, JsonInput, NumberInput, Select, Tabs } from '@mantine/core'
 import { useForm, FormList, formList } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import { useAppSelector } from '../../../../../../app/apis/redux/mainStore'
 
 export interface OSCFormValues {
 	commands: FormList<OSCFormValue>
@@ -17,10 +18,33 @@ export interface OSCFormValue {
 	key: string
 }
 
+interface oscCommand {
+	value: string
+	label: string
+	properties: {
+		startVal: number
+		endVal: number
+		step: number
+		hasSecondOption: boolean
+		valIsEncode: boolean
+	}
+}
+interface oscCommands {
+	[console: string]: oscCommand[]
+}
+
 export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
-	const mixer = 'x32'
-	//TODO: make this part of osc classes @cherry-john
-	const oscFirstOption = {
+	const [mixer, setMixer] = useState('')
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const oscConfig = useAppSelector((state: any) => (state.database ? state.database.config.osc : false))
+	useEffect(() => {
+		if (oscConfig !== false) {
+			setMixer(oscConfig.OSCMixerType)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [oscConfig])
+
+	const oscFirstOption: oscCommands = {
 		// "mixer":[{value:"address",label:"name", properties:{startVal, endVal, Step, hasSecondOption, valIsEncode}}]
 		xair: [
 			{
@@ -76,6 +100,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 				properties: { startVal: 0, endVal: 99, step: 1, hasSecondOption: false, valIsEncode: true },
 			},
 		],
+		'': [],
 	}
 	const oscSecondOption = [
 		{
@@ -115,65 +140,69 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 		<Tabs>
 			<Tabs.Tab label="Edit">
 				{form.values.commands.map((item, index) => {
-					const part1Index = oscFirstOption[mixer].findIndex(
-						x => x.value == form.values.commands[index].command1
-					)
-					const part2Index = oscSecondOption.findIndex(x => x.value == form.values.commands[index].command2)
-					return (
-						<Group key={item.key} mt="xs">
-							<Select
-								placeholder="State"
-								{...form.getListInputProps('commands', index, 'command1')}
-								label="Part 1"
-								searchable
-								nothingFound="No options"
-								data={oscFirstOption[mixer]}
-							/>
-							{form.values.commands[index].command1 &&
-							oscFirstOption[mixer][part1Index].properties.startVal > -1 ? (
-								<NumberInput
-									label="Part 1 Value"
-									placeholder="Command Value"
-									{...form.getListInputProps('commands', index, 'value1')}
-									min={oscFirstOption[mixer][part1Index].properties.startVal}
-									max={oscFirstOption[mixer][part1Index].properties.endVal}
-									step={oscFirstOption[mixer][part1Index].properties.step}
-									precision={0}
-								/>
-							) : null}
-							{form.values.commands[index].command1 &&
-							oscFirstOption[mixer][part1Index].properties.hasSecondOption ? (
+					if (mixer !== '') {
+						const part1Index = oscFirstOption[mixer].findIndex(
+							x => x.value == form.values.commands[index].command1
+						)
+						const part2Index = oscSecondOption.findIndex(
+							x => x.value == form.values.commands[index].command2
+						)
+						return (
+							<Group key={item.key} mt="xs">
 								<Select
-									placeholder="Options"
-									{...form.getListInputProps('commands', index, 'command2')}
-									label="Part 2"
+									placeholder="State"
+									{...form.getListInputProps('commands', index, 'command1')}
+									label="Part 1"
 									searchable
 									nothingFound="No options"
-									data={oscSecondOption}
+									data={oscFirstOption[mixer]}
 								/>
-							) : null}
-							{form.values.commands[index].command1 &&
-							form.values.commands[index].command2 &&
-							oscSecondOption[part2Index].properties.startVal > -1 ? (
-								<NumberInput
-									placeholder="Option Value"
-									label="Part 2 Value"
-									{...form.getListInputProps('commands', index, 'value2')}
-									min={oscSecondOption[part2Index].properties.startVal}
-									max={oscSecondOption[part2Index].properties.endVal}
-									step={oscSecondOption[part2Index].properties.step}
-									precision={oscSecondOption[part2Index].properties.precision}
-								/>
-							) : null}
-							<ActionIcon
-								color="red"
-								variant="hover"
-								onClick={() => form.removeListItem('commands', index)}
-							>
-								<FaTrash />
-							</ActionIcon>
-						</Group>
-					)
+								{form.values.commands[index].command1 &&
+								oscFirstOption[mixer][part1Index].properties.startVal > -1 ? (
+									<NumberInput
+										label="Part 1 Value"
+										placeholder="Command Value"
+										{...form.getListInputProps('commands', index, 'value1')}
+										min={oscFirstOption[mixer][part1Index].properties.startVal}
+										max={oscFirstOption[mixer][part1Index].properties.endVal}
+										step={oscFirstOption[mixer][part1Index].properties.step}
+										precision={0}
+									/>
+								) : null}
+								{form.values.commands[index].command1 &&
+								oscFirstOption[mixer][part1Index].properties.hasSecondOption ? (
+									<Select
+										placeholder="Options"
+										{...form.getListInputProps('commands', index, 'command2')}
+										label="Part 2"
+										searchable
+										nothingFound="No options"
+										data={oscSecondOption}
+									/>
+								) : null}
+								{form.values.commands[index].command1 &&
+								form.values.commands[index].command2 &&
+								oscSecondOption[part2Index].properties.startVal > -1 ? (
+									<NumberInput
+										placeholder="Option Value"
+										label="Part 2 Value"
+										{...form.getListInputProps('commands', index, 'value2')}
+										min={oscSecondOption[part2Index].properties.startVal}
+										max={oscSecondOption[part2Index].properties.endVal}
+										step={oscSecondOption[part2Index].properties.step}
+										precision={oscSecondOption[part2Index].properties.precision}
+									/>
+								) : null}
+								<ActionIcon
+									color="red"
+									variant="hover"
+									onClick={() => form.removeListItem('commands', index)}
+								>
+									<FaTrash />
+								</ActionIcon>
+							</Group>
+						)
+					}
 				})}
 				<Group position="center" mt="md">
 					<Button
