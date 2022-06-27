@@ -7,15 +7,16 @@ import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 
 export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 	interface FormValues {
-		steps: FormList<{
-			part1: string
-			value1?: string
-			part2: string | null
-			value2?: string
+		commands: FormList<{
+			command1: string
+			value1: string
+			command2: string
+			value2: string
 			key: string
 		}>
 	}
 	const mixer = 'x32'
+	//TODO: make this part of osc classes @cherry-john
 	const oscFirstOption = {
 		// "mixer":[{value:"address",label:"name", properties:{startVal, endVal, Step, hasSecondOption, valIsEncode}}]
 		xair: [
@@ -77,86 +78,96 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 		{
 			value: '/mix/on',
 			label: 'Mute',
-			properties: { startVal: 0, endVal: 1, step: 1 },
+			properties: { startVal: 0, endVal: 1, step: 1, precision: 0 },
 		},
 		{
 			value: '/mix/fader',
 			label: 'Level',
-			properties: { startVal: 0.0, endVal: 1.0, step: 0.01 },
+			properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
 		},
 		{
 			value: '/mix/pan',
 			label: 'Pan',
-			properties: { startVal: 0.0, endVal: 1.0, step: 0.01 },
+			properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
 		},
 		{
 			value: '/headamp/gain',
 			label: 'Gain',
-			properties: { startVal: 0.0, endVal: 1.0, step: 0.01 },
+			properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
 		},
 		{
 			value: '/headamp/phantom',
 			label: '+48V',
-			properties: { startVal: 0, endVal: 1, step: 1 },
+			properties: { startVal: 0, endVal: 1, step: 1, precision: 0 },
 		},
 	]
 
 	const preset = JSON.parse(props.value) || {}
+	console.log(preset)
 	const form = useForm<FormValues>({
 		initialValues: {
-			steps: formList([]),
+			commands: formList(preset),
 		},
 	})
 	return (
 		<Tabs>
 			<Tabs.Tab label="Edit">
-				{form.values.steps.map((item, index) => {
-					const part1Index = oscFirstOption[mixer].findIndex(x => x.value == form.values.steps[index].part1)
-					const part2Index = oscSecondOption.findIndex(x => x.value == form.values.steps[index].part2)
-					console.log(part2Index)
+				{form.values.commands.map((item, index) => {
+					const part1Index = oscFirstOption[mixer].findIndex(
+						x => x.value == form.values.commands[index].command1
+					)
+					const part2Index = oscSecondOption.findIndex(x => x.value == form.values.commands[index].command2)
 					return (
 						<Group key={item.key} mt="xs">
 							<Select
 								placeholder="State"
-								{...form.getListInputProps('steps', index, 'part1')}
-								label="First Step"
+								{...form.getListInputProps('commands', index, 'command1')}
+								label="Part 1"
 								searchable
 								nothingFound="No options"
 								data={oscFirstOption[mixer]}
 							/>
-							{form.values.steps[index].part1 &&
+							{form.values.commands[index].command1 &&
 							oscFirstOption[mixer][part1Index].properties.startVal > -1 ? (
 								<NumberInput
-									label="Step Value"
-									{...form.getListInputProps('steps', index, 'value1')}
+									label="Part 1 Value"
+									placeholder="Command Value"
+									{...form.getListInputProps('commands', index, 'value1')}
 									min={oscFirstOption[mixer][part1Index].properties.startVal}
 									max={oscFirstOption[mixer][part1Index].properties.endVal}
 									step={oscFirstOption[mixer][part1Index].properties.step}
+									precision={0}
 								/>
 							) : null}
-							{form.values.steps[index].part1 &&
+							{form.values.commands[index].command1 &&
 							oscFirstOption[mixer][part1Index].properties.hasSecondOption ? (
 								<Select
 									placeholder="Options"
-									{...form.getListInputProps('steps', index, 'part2')}
-									label="Second Step"
+									{...form.getListInputProps('commands', index, 'command2')}
+									label="Part 2"
 									searchable
 									nothingFound="No options"
 									data={oscSecondOption}
 								/>
 							) : null}
-							{form.values.steps[index].part1 &&
-							form.values.steps[index].part2 &&
+							{form.values.commands[index].command1 &&
+							form.values.commands[index].command2 &&
 							oscSecondOption[part2Index].properties.startVal > -1 ? (
 								<NumberInput
-									label="Step 2 Value"
-									{...form.getListInputProps('steps', index, 'value2')}
+									placeholder="Option Value"
+									label="Part 2 Value"
+									{...form.getListInputProps('commands', index, 'value2')}
 									min={oscSecondOption[part2Index].properties.startVal}
 									max={oscSecondOption[part2Index].properties.endVal}
 									step={oscSecondOption[part2Index].properties.step}
+									precision={oscSecondOption[part2Index].properties.precision}
 								/>
 							) : null}
-							<ActionIcon color="red" variant="hover" onClick={() => form.removeListItem('steps', index)}>
+							<ActionIcon
+								color="red"
+								variant="hover"
+								onClick={() => form.removeListItem('commands', index)}
+							>
 								<FaTrash />
 							</ActionIcon>
 						</Group>
@@ -165,12 +176,18 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 				<Group position="center" mt="md">
 					<Button
 						onClick={() =>
-							form.addListItem('steps', { part1: '', value1: '', part2: '', value2: '', key: randomId() })
+							form.addListItem('commands', {
+								command1: '',
+								value1: '',
+								command2: '',
+								value2: '',
+								key: randomId(),
+							})
 						}
 					>
 						Add OSC Call
 					</Button>
-					<Button onClick={() => props.onChange(JSON.stringify(form.values.steps))}>Save</Button>
+					<Button onClick={() => props.onChange(JSON.stringify(form.values.commands))}>Save</Button>
 				</Group>
 			</Tabs.Tab>
 			<Tabs.Tab label="JSON Mode">
