@@ -3,6 +3,7 @@ import oscHandler from 'osc'
 import { broadcast } from './../../api/broadcast'
 import { DatabaseFader, FaderRepository } from '../../database/repository/fader'
 import meterFunctions from './meterFunctions'
+import { OSCFormValue } from '../../app/Components/Admin/Controls/Presets/EditModal/OSC'
 
 /**
  * OSC Controller class
@@ -130,10 +131,21 @@ export default abstract class OSC {
 
 	/**
 	 * Main sending handler
-	 * @param address - OSC address
-	 * @param args - OSC arguments
+	 * @param presetData - data to send to the device from a Preset
 	 */
-	public send(address: string, args: any) {
+	public send(presetData: any) {
+		const data: OSCFormValue = presetData[1] //Something is incorrectly wrapping the data in an array so we need to get rid of it
+		const address = data.command1 + String(data.value1).padStart(2, '0') + data.command2
+		let args = {}
+		if (Number.isInteger(Number(data.value2))) {
+			//assuming we have an integer so need an integer type
+			args = { type: 'i', value: data.value2 }
+		} else {
+			//we have a decimal number so need a floating point type
+			args = { type: 'f', value: data.value2 }
+		}
+
+		//Actual sending
 		logger.verbose('Sending OSC Packet to address ' + address, { args })
 		this.udpPort.send({ address: address, args: args })
 	}

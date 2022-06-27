@@ -2,6 +2,7 @@ import { Preset } from './../../database/model/Preset'
 import { DatabasePreset, PresetRepository } from './../../database/repository/preset'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
 import axios from 'axios'
+import { OSCFormValue } from '../../app/Components/Admin/Controls/Presets/EditModal/OSC'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -27,8 +28,8 @@ export const presetRouter = (
 						value.fadeTime * 1000
 					)
 				} else if (value.type === 'osc' && value.data !== null) {
-					Object.entries(value.data).forEach(([address, args]) => {
-						osc.send(address, args)
+					Object.entries(value.data).forEach(presetData => {
+						osc.send(presetData)
 					})
 				} else if (value.type === 'http' && value.data !== null) {
 					// Make the HTTP request
