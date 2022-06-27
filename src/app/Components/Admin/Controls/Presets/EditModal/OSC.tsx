@@ -5,16 +5,19 @@ import { useForm, FormList, formList } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 
+export interface OSCFormValues {
+	commands: FormList<OSCFormValue>
+}
+
+export interface OSCFormValue {
+	command1: string
+	value1: string
+	command2: string
+	value2: string
+	key: string
+}
+
 export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
-	interface FormValues {
-		commands: FormList<{
-			command1: string
-			value1: string
-			command2: string
-			value2: string
-			key: string
-		}>
-	}
 	const mixer = 'x32'
 	//TODO: make this part of osc classes @cherry-john
 	const oscFirstOption = {
@@ -102,9 +105,8 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 		},
 	]
 
-	const preset = JSON.parse(props.value) || {}
-	console.log(preset)
-	const form = useForm<FormValues>({
+	const preset = JSON.parse(props.value) || []
+	const form = useForm<OSCFormValues>({
 		initialValues: {
 			commands: formList(preset),
 		},
