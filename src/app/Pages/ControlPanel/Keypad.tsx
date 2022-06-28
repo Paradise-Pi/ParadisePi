@@ -69,6 +69,7 @@ export const KeypadPage = () => {
 		switch (commandValue) {
 			case 'clear':
 				outputTextbox.current.value = ''
+				setIntensity(0)
 				break
 			default:
 				outputTextbox.current.value += commandValue
