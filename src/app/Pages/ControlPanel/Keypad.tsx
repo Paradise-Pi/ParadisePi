@@ -34,7 +34,6 @@ export const KeypadPage = () => {
 	 * @returns True if the command array is valid, false otherwise
 	 */
 	function validCommand(command: string[]) {
-		console.log(command)
 		if (
 			command.length === 0 ||
 			command.length > 3 ||
@@ -76,12 +75,11 @@ export const KeypadPage = () => {
 
 	return (
 		<Container>
-			<Space h="xl" />
 			<TextInput disabled aria-label="Command Output" size="xl" value={commandText} />
 			<Space h="xl" />
 			<SimpleGrid cols={3}>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('7')
 					}}
@@ -89,7 +87,7 @@ export const KeypadPage = () => {
 					7
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('8')
 					}}
@@ -97,7 +95,7 @@ export const KeypadPage = () => {
 					8
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('9')
 					}}
@@ -105,7 +103,7 @@ export const KeypadPage = () => {
 					9
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('4')
 					}}
@@ -113,7 +111,7 @@ export const KeypadPage = () => {
 					4
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('5')
 					}}
@@ -121,7 +119,7 @@ export const KeypadPage = () => {
 					5
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('6')
 					}}
@@ -129,7 +127,7 @@ export const KeypadPage = () => {
 					6
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('1')
 					}}
@@ -137,7 +135,7 @@ export const KeypadPage = () => {
 					1
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('2')
 					}}
@@ -145,7 +143,7 @@ export const KeypadPage = () => {
 					2
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('3')
 					}}
@@ -153,7 +151,7 @@ export const KeypadPage = () => {
 					3
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('clear')
 					}}
@@ -161,7 +159,7 @@ export const KeypadPage = () => {
 					Clear
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString('0')
 					}}
@@ -169,7 +167,7 @@ export const KeypadPage = () => {
 					0
 				</Button>
 				<Button
-					size="xl"
+					size="lg"
 					onClick={() => {
 						updateCommandString(' thru ')
 					}}

@@ -52,13 +52,23 @@ export const MacroPresetEditModal = (props: GetInputProps<'input'>) => {
 				<Group key={item.key} mt="xs">
 					<Select
 						{...form.getListInputProps('steps', index, 'type')}
-						data={[{ value: 'preset', label: 'Trigger Preset' }]}
+						data={[
+							{ value: 'preset', label: 'Trigger Preset' },
+							{ value: 'link', label: 'Open a Page' },
+						]}
 					/>
 					{form.values.steps[index].type === 'preset' ? (
 						<Select
 							placeholder="Preset"
 							{...form.getListInputProps('steps', index, 'value')}
 							data={presetsForSelect}
+						/>
+					) : null}
+					{form.values.steps[index].type === 'link' ? (
+						<Select
+							placeholder="Page"
+							{...form.getListInputProps('steps', index, 'value')}
+							data={[{ value: '/controlPanel/lxKeypad', label: 'Lighting Keypad' }]}
 						/>
 					) : null}
 					<ActionIcon color="red" variant="hover" onClick={() => form.removeListItem('steps', index)}>

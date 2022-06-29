@@ -14,7 +14,6 @@ import { FadersConfigurationPage } from './Pages/Admin/Faders'
 import { ControlsConfigurationPage } from './Pages/Admin/Controls'
 import { Locked } from './Components/Locked'
 import { KeypadPage } from './Pages/ControlPanel/Keypad'
-import { UtilitiesPage } from './Pages/ControlPanel/Utilities'
 
 const Router = () => {
 	return (
@@ -30,7 +29,6 @@ const Router = () => {
 				>
 					<Route path="presetFolder/:folderId" element={<PresetPage />} />
 					<Route path="help" element={<HelpPage />} />
-					<Route path="utilities" element={<UtilitiesPage />} />
 					<Route path="lxkeypad" element={<KeypadPage />} />
 				</Route>
 				<Route path="e131sampler" element={<div>Sampling E1.31</div>} />

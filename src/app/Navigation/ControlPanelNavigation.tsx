@@ -56,7 +56,6 @@ export const ControlPanelNavigation = () => {
 				<TopLevelPresetFolders active={active} setActive={setActive} />
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>
-				<NavbarItem link="utilities" label="Utilities" Icon={FaCogs} active={active} setActive={setActive} />
 				<NavbarItem link="help" label="Help" Icon={FaQuestion} active={active} setActive={setActive} />
 			</Navbar.Section>
 		</Navbar>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
 import { Button, Paper } from '@mantine/core'
 import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
@@ -9,6 +9,8 @@ import { useAppSelector } from './../../apis/redux/mainStore'
 import { ApiCall } from './../../apis/wrapper'
 import { PresetFolderIconReact } from './../../Components/ControlPanel/PresetFolderIcon'
 const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
+	const navigate = useNavigate()
+
 	return (
 		<Button
 			variant="default"
@@ -18,7 +20,11 @@ const PresetButton = ({ text, presetId, color }: { text: string; presetId: numbe
 				color: pickTextColorBasedOnBgColor(color),
 			})}
 			onClick={() => {
-				ApiCall.get('/presets/recall/' + presetId, {})
+				ApiCall.get('/presets/recall/' + presetId, {}).then(function (value) {
+					if (value.redirect) {
+						navigate(value.redirect)
+					}
+				})
 			}}
 			size="xl"
 			mx="xs"
