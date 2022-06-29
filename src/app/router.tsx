@@ -13,6 +13,7 @@ import { PresetsConfigurationPage } from './Pages/Admin/Presets'
 import { FadersConfigurationPage } from './Pages/Admin/Faders'
 import { ControlsConfigurationPage } from './Pages/Admin/Controls'
 import { Locked } from './Components/Locked'
+import { ChannelCheckPage } from './Pages/ControlPanel/ChannelCheck'
 import { KeypadPage } from './Pages/ControlPanel/Keypad'
 
 const Router = () => {
@@ -29,6 +30,7 @@ const Router = () => {
 				>
 					<Route path="presetFolder/:folderId" element={<PresetPage />} />
 					<Route path="help" element={<HelpPage />} />
+					<Route path="channelCheck" element={<ChannelCheckPage />} />
 					<Route path="lxkeypad" element={<KeypadPage />} />
 				</Route>
 				<Route path="e131sampler" element={<div>Sampling E1.31</div>} />
