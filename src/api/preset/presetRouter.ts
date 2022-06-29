@@ -2,7 +2,6 @@ import { Preset } from './../../database/model/Preset'
 import { DatabasePreset, PresetRepository } from './../../database/repository/preset'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
 import axios from 'axios'
-import { OSCFormValue } from '../../app/Components/Admin/Controls/Presets/EditModal/OSC'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor

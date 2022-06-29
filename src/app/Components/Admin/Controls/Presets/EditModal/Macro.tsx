@@ -68,7 +68,10 @@ export const MacroPresetEditModal = (props: GetInputProps<'input'>) => {
 						<Select
 							placeholder="Page"
 							{...form.getListInputProps('steps', index, 'value')}
-							data={[{ value: '/controlPanel/lxKeypad', label: 'Lighting Keypad' }]}
+							data={[
+								{ value: '/controlPanel/lxKeypad', label: 'Lighting Keypad' },
+								{ value: '/controlPanel/channelCheck', label: 'Lighting Channel Check' },
+							]}
 						/>
 					) : null}
 					<ActionIcon color="red" variant="hover" onClick={() => form.removeListItem('steps', index)}>

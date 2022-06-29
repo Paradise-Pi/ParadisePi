@@ -1,25 +1,24 @@
 import { Button, Center, Container, SimpleGrid, Space, Text } from '@mantine/core'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../app/apis/wrapper'
 import { channelData } from '../../../output/e131'
 
 export const ChannelCheckPage = () => {
-	const textRef = useRef<HTMLDivElement>()
-
-	const [channel, setChannel] = useState<number>(0)
+	const [channel, setChannel] = useState<number>(-1)
+	const [channelText, setChannelText] = useState<string>('Off')
 
 	useEffect(() => {
 		if (channel > 0) {
+			setChannelText(channel.toString())
+			setChannelLX(channel, 180)
+		} else if (channel === 0) {
+			setAllLX(180)
+			setChannelText('All')
+		} else {
 			setAllLX(0)
-			textRef.current.innerText = channel.toString()
-
-			const data: apiObject = {
-				universe: 1,
-				channels: { channel: channel, level: 180 },
-				fadeTime: 0,
-			}
-			ApiCall.get('/outputModules/e131/output', data)
+			setChannelText('Off')
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [channel])
 
 	function setAllLX(intensity: number) {
@@ -29,14 +28,24 @@ export const ChannelCheckPage = () => {
 		}
 		const data: apiObject = {
 			universe: 1,
-			channels: channels,
+			channelData: channels,
+			fadeTime: 0,
+		}
+		ApiCall.get('/outputModules/e131/output', data)
+	}
+
+	function setChannelLX(thisChannel: number, intensity: number) {
+		setAllLX(0)
+		const data: apiObject = {
+			universe: 1,
+			channelData: [{ channel: thisChannel, level: intensity }],
 			fadeTime: 0,
 		}
 		ApiCall.get('/outputModules/e131/output', data)
 	}
 
 	function checkPrevious() {
-		if (channel == 1) {
+		if (channel == 1 || channel < 1) {
 			setChannel(512)
 		} else {
 			setChannel(channel - 1)
@@ -44,23 +53,11 @@ export const ChannelCheckPage = () => {
 	}
 
 	function checkNext() {
-		if (channel == 512) {
+		if (channel == 512 || channel < 1) {
 			setChannel(1)
 		} else {
 			setChannel(channel + 1)
 		}
-	}
-
-	function checkAll() {
-		setAllLX(180)
-		setChannel(0)
-		textRef.current.innerText = 'All'
-	}
-
-	function checkOff() {
-		setAllLX(0)
-		setChannel(-1)
-		textRef.current.innerText = 'Off'
 	}
 
 	return (
@@ -71,18 +68,28 @@ export const ChannelCheckPage = () => {
 					Previous
 				</Button>
 				<Center>
-					<Text size="xl" color="white" ref={textRef}>
-						Off
+					<Text size="xl" color="white">
+						{channelText}
 					</Text>
 				</Center>
 				<Button size="xl" onClick={checkNext}>
 					Next
 				</Button>
-				<Button size="xl" onClick={checkOff}>
+				<Button
+					size="xl"
+					onClick={() => {
+						setChannel(-1)
+					}}
+				>
 					Off
 				</Button>
 				<Space />
-				<Button size="xl" onClick={checkAll}>
+				<Button
+					size="xl"
+					onClick={() => {
+						setChannel(0)
+					}}
+				>
 					All
 				</Button>
 			</SimpleGrid>

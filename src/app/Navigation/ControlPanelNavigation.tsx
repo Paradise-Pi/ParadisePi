@@ -7,7 +7,6 @@ import { NavbarItem } from './NavbarItem'
 import { useAppSelector } from './../apis/redux/mainStore'
 import { DatabasePresetFolder } from './../../database/repository/presetFolder'
 import { PresetFolderIcon } from './../Components/ControlPanel/PresetFolderIcon'
-import { FaCogs } from '@react-icons/all-files/fa/FaCogs'
 
 const TopLevelPresetFolders = ({
 	active,
