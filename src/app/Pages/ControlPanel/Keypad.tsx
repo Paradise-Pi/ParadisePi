@@ -46,10 +46,6 @@ export const KeypadPage = () => {
 		return true
 	}
 
-	function commandToArray(command: string) {
-		return command.split(' ')
-	}
-
 	/**
 	 * Actually update our e131 Data
 	 * @param universe - Current Universe
@@ -57,8 +53,8 @@ export const KeypadPage = () => {
 	 * @param fadeTime - how long to fade the channels
 	 */
 	function sendLX(universe: number, channels: Array<channelData>, fadeTime: number) {
-		const data: apiObject = { universe: universe, channels: channels, fadeTime: fadeTime * 1000 }
-		ApiCall.get('/outputModules/e131/output', {})
+		const data: apiObject = { universe: universe, channelData: channels, fadeTime: fadeTime * 1000 }
+		ApiCall.get('/outputModules/e131/output', data)
 	}
 
 	/**
@@ -75,7 +71,7 @@ export const KeypadPage = () => {
 				outputTextbox.current.value += commandValue
 				break
 		}
-		const command = commandToArray(outputTextbox.current.value)
+		const command = outputTextbox.current.value.split(' ')
 		if (validCommand(command)) {
 			setFaderDisabled(false)
 		} else {
@@ -194,12 +190,14 @@ export const KeypadPage = () => {
 				onChange={setIntensity}
 				size="xl"
 				radius="xl"
+				min={0}
+				max={255}
 				marks={[
 					{ value: 0, label: '0%' },
-					{ value: 25, label: '25%' },
-					{ value: 50, label: '50%' },
-					{ value: 75, label: '75%' },
-					{ value: 100, label: '100%' },
+					{ value: 64, label: '25%' },
+					{ value: 128, label: '50%' },
+					{ value: 192, label: '75%' },
+					{ value: 255, label: '100%' },
 				]}
 			></Slider>
 		</Container>
