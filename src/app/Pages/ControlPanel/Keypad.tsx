@@ -13,6 +13,7 @@ export const KeypadPage = () => {
 		const command = commandText.split(' ')
 		const channels: Array<channelData> = []
 		if (validCommand(command)) {
+			setFaderDisabled(false)
 			if (command[2]) {
 				for (let i = parseInt(command[0]); i <= parseInt(command[2]); i++) {
 					channels.push({ channel: i, level: intensity })
@@ -22,6 +23,8 @@ export const KeypadPage = () => {
 			}
 
 			sendLX(1, channels, 0)
+		} else {
+			setFaderDisabled(true)
 		}
 	}, [commandText, intensity])
 
@@ -31,7 +34,9 @@ export const KeypadPage = () => {
 	 * @returns True if the command array is valid, false otherwise
 	 */
 	function validCommand(command: string[]) {
+		console.log(command)
 		if (
+			command.length === 0 ||
 			command.length > 3 ||
 			command.length === 2 ||
 			command[0] === '' ||
@@ -61,20 +66,11 @@ export const KeypadPage = () => {
 	 * @param commandValue - the new value to add
 	 */
 	function updateCommandString(commandValue: string) {
-		switch (commandValue) {
-			case 'clear':
-				setCommandText('')
-				setIntensity(0)
-				break
-			default:
-				setCommandText(commandText + commandValue)
-				break
-		}
-		const commandArray = commandText.split(' ')
-		if (validCommand(commandArray)) {
-			setFaderDisabled(false)
+		if (commandValue === 'clear') {
+			setCommandText('')
+			setIntensity(0)
 		} else {
-			setFaderDisabled(true)
+			setCommandText(commandText + commandValue)
 		}
 	}
 
