@@ -6,7 +6,7 @@ import ip from 'ip'
 import { broadcast } from './../../api/broadcast'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../../api/database'
 
-interface channelData {
+export interface channelData {
 	channel: number
 	level: number
 }

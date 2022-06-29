@@ -27,10 +27,12 @@ export const presetRouter = (
 						e131.convertObjectToChannelData(value.data),
 						value.fadeTime * 1000
 					)
+					resolve({})
 				} else if (value.type === 'osc' && value.data !== null) {
 					Object.entries(value.data).forEach(presetData => {
 						osc.send(presetData)
 					})
+					resolve({})
 				} else if (value.type === 'http' && value.data !== null) {
 					// Make the HTTP request
 					axios({
@@ -42,15 +44,19 @@ export const presetRouter = (
 					}).catch(err => {
 						logger.info('Preset HTTP request failed', { err })
 					})
+					resolve({})
 				} else if (value.type === 'macro' && value.data !== null) {
 					value.data.forEach((step: { type: string; value: string; key: string }) => {
+						logger.info(step)
 						if (step.type === 'preset' && parseInt(step.value) !== value.id) {
 							// Trigger the presets in the macro
 							presetRouter(['recall', step.value], 'GET', {})
+							resolve({})
+						} else if (step.type === 'link') {
+							resolve({ redirect: step.value })
 						}
 					})
 				}
-				resolve({})
 			})
 		} else if (method === 'PUT') {
 			return PresetRepository.setAllFromApp(payload as Array<DatabasePreset>)
