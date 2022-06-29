@@ -1,17 +1,16 @@
 import { Button, SimpleGrid, TextInput, Space, Slider, Container, Title } from '@mantine/core'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../app/apis/wrapper'
 import { channelData } from '../../../output/e131'
 
 export const KeypadPage = () => {
-	const outputTextbox = useRef<HTMLInputElement>()
-
 	const [faderDisabled, setFaderDisabled] = useState<boolean>(true)
 	const [intensity, setIntensity] = useState<number>(0)
+	const [commandText, setCommandText] = useState<string>('')
 
 	//Update e131 output on intensity change
 	useEffect(() => {
-		const command = outputTextbox.current.value.split(' ')
+		const command = commandText.split(' ')
 		const channels: Array<channelData> = []
 		if (validCommand(command)) {
 			if (command[2]) {
@@ -24,7 +23,7 @@ export const KeypadPage = () => {
 
 			sendLX(1, channels, 0)
 		}
-	}, [intensity])
+	}, [commandText, intensity])
 
 	/**
 	 * Verify a command array will actually be able to control fixtures
@@ -64,15 +63,15 @@ export const KeypadPage = () => {
 	function updateCommandString(commandValue: string) {
 		switch (commandValue) {
 			case 'clear':
-				outputTextbox.current.value = ''
+				setCommandText('')
 				setIntensity(0)
 				break
 			default:
-				outputTextbox.current.value += commandValue
+				setCommandText(commandText + commandValue)
 				break
 		}
-		const command = outputTextbox.current.value.split(' ')
-		if (validCommand(command)) {
+		const commandArray = commandText.split(' ')
+		if (validCommand(commandArray)) {
 			setFaderDisabled(false)
 		} else {
 			setFaderDisabled(true)
@@ -82,7 +81,7 @@ export const KeypadPage = () => {
 	return (
 		<Container>
 			<Space h="xl" />
-			<TextInput disabled aria-label="Command Output" size="xl" ref={outputTextbox} />
+			<TextInput disabled aria-label="Command Output" size="xl" value={commandText} />
 			<Space h="xl" />
 			<SimpleGrid cols={3}>
 				<Button
