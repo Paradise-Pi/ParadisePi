@@ -20,7 +20,7 @@ const PresetButton = ({ text, presetId, color }: { text: string; presetId: numbe
 				color: pickTextColorBasedOnBgColor(color),
 			})}
 			onClick={() => {
-				ApiCall.get('/presets/recall/' + presetId, {}).then(function (value) {
+				ApiCall.get('/presets/recall/' + presetId, {}).then(value => {
 					if (value.redirect) {
 						navigate(value.redirect)
 					}
