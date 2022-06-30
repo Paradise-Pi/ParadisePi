@@ -1,8 +1,9 @@
-import { Button, Center, Container, SimpleGrid, Space, Text } from '@mantine/core'
+import { Button, Center, Container, SimpleGrid, Space, Text, Title } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
-import { ApiCall } from '../../../app/apis/wrapper'
-import { channelData } from '../../../output/e131'
-
+import { ApiCall } from '../../../../app/apis/wrapper'
+import { channelData } from '../../../../output/e131'
+// TODO allow level to be configured
+// TODO respect first universe
 export const ChannelCheckPage = () => {
 	const [channel, setChannel] = useState<number>(-1)
 	const [channelText, setChannelText] = useState<string>('Off')
@@ -10,18 +11,18 @@ export const ChannelCheckPage = () => {
 	useEffect(() => {
 		if (channel > 0) {
 			setChannelText(channel.toString())
-			setChannelLX(channel, 180)
+			setChannelE131(channel, 180)
 		} else if (channel === 0) {
-			setAllLX(180)
+			setAllE131(180)
 			setChannelText('All')
 		} else {
-			setAllLX(0)
+			setAllE131(0)
 			setChannelText('Off')
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [channel])
 
-	function setAllLX(intensity: number) {
+	function setAllE131(intensity: number) {
 		const channels: Array<channelData> = []
 		for (let i = 1; i <= 512; i++) {
 			channels.push({ channel: i, level: intensity })
@@ -31,17 +32,17 @@ export const ChannelCheckPage = () => {
 			channelData: channels,
 			fadeTime: 0,
 		}
-		ApiCall.get('/outputModules/e131/output', data)
+		ApiCall.put('/outputModules/e131/output', data)
 	}
 
-	function setChannelLX(thisChannel: number, intensity: number) {
-		setAllLX(0)
+	function setChannelE131(thisChannel: number, intensity: number) {
+		setAllE131(0)
 		const data: apiObject = {
 			universe: 1,
 			channelData: [{ channel: thisChannel, level: intensity }],
 			fadeTime: 0,
 		}
-		ApiCall.get('/outputModules/e131/output', data)
+		ApiCall.put('/outputModules/e131/output', data)
 	}
 
 	function checkPrevious() {
@@ -62,7 +63,8 @@ export const ChannelCheckPage = () => {
 
 	return (
 		<Container>
-			<Space h="xl" />
+			<Title order={2}>Channel Check</Title>
+			<Space h="md" />
 			<SimpleGrid cols={3}>
 				<Button size="xl" onClick={checkPrevious}>
 					Previous

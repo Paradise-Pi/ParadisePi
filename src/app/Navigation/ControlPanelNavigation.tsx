@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React from 'react'
 import { Navbar, ScrollArea } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import { FaQuestion } from '@react-icons/all-files/fa/FaQuestion'
@@ -8,13 +8,7 @@ import { useAppSelector } from './../apis/redux/mainStore'
 import { DatabasePresetFolder } from './../../database/repository/presetFolder'
 import { PresetFolderIcon } from './../Components/ControlPanel/PresetFolderIcon'
 
-const TopLevelPresetFolders = ({
-	active,
-	setActive,
-}: {
-	active: string
-	setActive: Dispatch<SetStateAction<string>>
-}) => {
+const TopLevelPresetFolders = () => {
 	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
 	const topLevelPresetFolders: Array<DatabasePresetFolder> = []
 	if (presetFolders !== false) {
@@ -38,8 +32,6 @@ const TopLevelPresetFolders = ({
 					link={'presetFolder/' + item.id.toString()}
 					label={item.name}
 					Icon={PresetFolderIcon(item.icon)}
-					active={active}
-					setActive={setActive}
 				/>
 			))}
 		</>
@@ -48,14 +40,13 @@ const TopLevelPresetFolders = ({
 export const ControlPanelNavigation = () => {
 	const { classes } = useStyles()
 	const { height } = useViewportSize()
-	const [active, setActive] = useState('Help') // Default page of help
 	return (
 		<Navbar height={height} width={{ sm: 200, md: 200 }} p="md" className={classes.navbar}>
 			<Navbar.Section grow component={ScrollArea}>
-				<TopLevelPresetFolders active={active} setActive={setActive} />
+				<TopLevelPresetFolders />
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>
-				<NavbarItem link="help" label="Help" Icon={FaQuestion} active={active} setActive={setActive} />
+				<NavbarItem link="help" label="Help" Icon={FaQuestion} />
 			</Navbar.Section>
 		</Navbar>
 	)

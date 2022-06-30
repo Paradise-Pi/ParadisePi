@@ -1,7 +1,7 @@
 import { Button, SimpleGrid, TextInput, Space, Slider, Container, Title } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
-import { ApiCall } from '../../../app/apis/wrapper'
-import { channelData } from '../../../output/e131'
+import { ApiCall } from '../../../apis/wrapper'
+import { channelData } from '../../../../output/e131'
 
 export const KeypadPage = () => {
 	const [faderDisabled, setFaderDisabled] = useState<boolean>(true)
@@ -57,7 +57,7 @@ export const KeypadPage = () => {
 	 */
 	function sendLX(universe: number, channels: Array<channelData>, fadeTime: number) {
 		const data: apiObject = { universe: universe, channelData: channels, fadeTime: fadeTime * 1000 }
-		ApiCall.get('/outputModules/e131/output', data)
+		ApiCall.put('/outputModules/e131/output', data)
 	}
 
 	/**
@@ -78,78 +78,17 @@ export const KeypadPage = () => {
 			<TextInput disabled aria-label="Command Output" size="xl" value={commandText} />
 			<Space h="xl" />
 			<SimpleGrid cols={3}>
-				<Button
-					size="lg"
-					onClick={() => {
-						updateCommandString('7')
-					}}
-				>
-					7
-				</Button>
-				<Button
-					size="lg"
-					onClick={() => {
-						updateCommandString('8')
-					}}
-				>
-					8
-				</Button>
-				<Button
-					size="lg"
-					onClick={() => {
-						updateCommandString('9')
-					}}
-				>
-					9
-				</Button>
-				<Button
-					size="lg"
-					onClick={() => {
-						updateCommandString('4')
-					}}
-				>
-					4
-				</Button>
-				<Button
-					size="lg"
-					onClick={() => {
-						updateCommandString('5')
-					}}
-				>
-					5
-				</Button>
-				<Button
-					size="lg"
-					onClick={() => {
-						updateCommandString('6')
-					}}
-				>
-					6
-				</Button>
-				<Button
-					size="lg"
-					onClick={() => {
-						updateCommandString('1')
-					}}
-				>
-					1
-				</Button>
-				<Button
-					size="lg"
-					onClick={() => {
-						updateCommandString('2')
-					}}
-				>
-					2
-				</Button>
-				<Button
-					size="lg"
-					onClick={() => {
-						updateCommandString('3')
-					}}
-				>
-					3
-				</Button>
+				{['7', '8', '9', '4', '5', '6', '1', '2', '3'].map(number => (
+					<Button
+						size="lg"
+						key={number}
+						onClick={() => {
+							updateCommandString(number)
+						}}
+					>
+						{number}
+					</Button>
+				))}
 				<Button
 					size="lg"
 					onClick={() => {
@@ -175,24 +114,27 @@ export const KeypadPage = () => {
 					Thru
 				</Button>
 			</SimpleGrid>
-			<Space h="xl" />
-			<Title order={2}>Intensity</Title>
-			<Slider
-				disabled={faderDisabled}
-				value={intensity}
-				onChange={setIntensity}
-				size="xl"
-				radius="xl"
-				min={0}
-				max={255}
-				marks={[
-					{ value: 0, label: '0%' },
-					{ value: 64, label: '25%' },
-					{ value: 128, label: '50%' },
-					{ value: 192, label: '75%' },
-					{ value: 255, label: '100%' },
-				]}
-			></Slider>
+			{!faderDisabled ? (
+				<>
+					<Space h="xl" />
+					<Title order={2}>Intensity</Title>
+					<Slider
+						value={intensity}
+						onChange={setIntensity}
+						size="xl"
+						radius="xl"
+						min={0}
+						max={255}
+						marks={[
+							{ value: 0, label: '0%' },
+							{ value: 64, label: '25%' },
+							{ value: 128, label: '50%' },
+							{ value: 192, label: '75%' },
+							{ value: 255, label: '100%' },
+						]}
+					></Slider>
+				</>
+			) : null}
 		</Container>
 	)
 }

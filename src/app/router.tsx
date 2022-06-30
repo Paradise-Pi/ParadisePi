@@ -13,8 +13,8 @@ import { PresetsConfigurationPage } from './Pages/Admin/Presets'
 import { FadersConfigurationPage } from './Pages/Admin/Faders'
 import { ControlsConfigurationPage } from './Pages/Admin/Controls'
 import { Locked } from './Components/Locked'
-import { ChannelCheckPage } from './Pages/ControlPanel/ChannelCheck'
-import { KeypadPage } from './Pages/ControlPanel/Keypad'
+import { ChannelCheckPage } from './Pages/ControlPanel/E131/ChannelCheck'
+import { KeypadPage } from './Pages/ControlPanel/E131/Keypad'
 
 const Router = () => {
 	return (
@@ -30,8 +30,10 @@ const Router = () => {
 				>
 					<Route path="presetFolder/:folderId" element={<PresetPage />} />
 					<Route path="help" element={<HelpPage />} />
-					<Route path="channelCheck" element={<ChannelCheckPage />} />
-					<Route path="lxkeypad" element={<KeypadPage />} />
+					<Route path="e131">
+						<Route path="channelCheck" element={<ChannelCheckPage />} />
+						<Route path="lxkeypad" element={<KeypadPage />} />
+					</Route>
 				</Route>
 				<Route path="e131sampler" element={<div>Sampling E1.31</div>} />
 				<Route path="admin" element={<MainNav navigation={<AdminNavigation />} />}>

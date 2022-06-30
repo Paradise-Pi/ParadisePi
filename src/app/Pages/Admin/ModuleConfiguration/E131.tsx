@@ -1,15 +1,4 @@
-import {
-	Box,
-	Button,
-	Divider,
-	Loader,
-	LoadingOverlay,
-	TextInput,
-	Checkbox,
-	NumberInput,
-	Alert,
-	Text,
-} from '@mantine/core'
+import { Box, Button, Divider, Loader, LoadingOverlay, TextInput, Checkbox, NumberInput, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../apis/wrapper'
@@ -20,7 +9,6 @@ import { FaClipboardList } from '@react-icons/all-files/fa/FaClipboardList'
 import { FaCrown } from '@react-icons/all-files/fa/FaCrown'
 import { FaWaveSquare } from '@react-icons/all-files/fa/FaWaveSquare'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
-import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
 import { useModals } from '@mantine/modals'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 

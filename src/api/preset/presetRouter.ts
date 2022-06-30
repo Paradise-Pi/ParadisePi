@@ -32,7 +32,7 @@ export const presetRouter = (
 						osc.send(presetData)
 					})
 					resolve({})
-				} else if (value.type === 'http' && value.data !== null) {
+				} else if (value.type === 'http' && value.data !== null && value.data.url !== null) {
 					// Make the HTTP request
 					axios({
 						method: value.data.method ?? 'GET',
@@ -40,21 +40,22 @@ export const presetRouter = (
 						data: value.data.data ? JSON.parse(value.data.data) : {},
 						headers: value.data.headers ? JSON.parse(value.data.headers) : {},
 						timeout: 1000,
-					}).catch(err => {
-						logger.info('Preset HTTP request failed', { err })
 					})
-					resolve({})
+						.catch(err => {
+							logger.info('Preset HTTP request failed', { err })
+						})
+						.then(() => resolve({}))
 				} else if (value.type === 'macro' && value.data !== null) {
+					let linkStep: string = null
 					value.data.forEach((step: { type: string; value: string; key: string }) => {
-						logger.info(step)
-						if (step.type === 'preset' && parseInt(step.value) !== value.id) {
-							// Trigger the presets in the macro
-							presetRouter(['recall', step.value], 'GET', {})
-							resolve({})
-						} else if (step.type === 'link') {
-							resolve({ redirect: step.value })
+						if (step.type === 'preset' && parseInt(step.value) !== value.id && step.value !== null) {
+							presetRouter(['recall', step.value], 'GET', {}) // Trigger the preset in the macro
+						} else if (step.type === 'link' && step.value !== null) {
+							linkStep = step.value
 						}
 					})
+					if (linkStep !== null) resolve({ redirect: linkStep })
+					else resolve({})
 				}
 			})
 		} else if (method === 'PUT') {

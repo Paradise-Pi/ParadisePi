@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { MantineTheme, Slider } from '@mantine/core'
 
 /**
  * Notches on the fader used for the metering, available in decibels
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const decibelMarks = [
 	{ value: 100, label: '10db' },
 	{ value: 87.5, label: '5db' },

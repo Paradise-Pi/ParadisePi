@@ -63,14 +63,31 @@ export const MacroPresetEditModal = (props: GetInputProps<'input'>) => {
 							{...form.getListInputProps('steps', index, 'value')}
 							data={presetsForSelect}
 						/>
-					) : null}
-					{form.values.steps[index].type === 'link' ? (
+					) : form.values.steps[index].type === 'link' ? (
 						<Select
 							placeholder="Page"
 							{...form.getListInputProps('steps', index, 'value')}
 							data={[
-								{ value: '/controlPanel/lxKeypad', label: 'Lighting Keypad' },
-								{ value: '/controlPanel/channelCheck', label: 'Lighting Channel Check' },
+								{
+									value: '/controlPanel/help',
+									label: 'Help',
+									group: 'General',
+								},
+								{
+									value: '/admin/controls',
+									label: 'Setup & Administration Menu',
+									group: 'General',
+								},
+								{
+									value: '/controlPanel/e131/lxKeypad',
+									label: 'Keypad',
+									group: 'sACN (E1.31)',
+								},
+								{
+									value: '/controlPanel/e131/channelCheck',
+									label: 'Channel Check',
+									group: 'sACN (E1.31)',
+								},
 							]}
 						/>
 					) : null}
@@ -84,7 +101,7 @@ export const MacroPresetEditModal = (props: GetInputProps<'input'>) => {
 				<Button onClick={() => form.addListItem('steps', { type: '', value: '', key: randomId() })}>
 					Add step
 				</Button>
-				<Button onClick={() => props.onChange(JSON.stringify(form.values.steps))}>Save</Button>
+				<Button onClick={() => props.onChange(JSON.stringify(form.values.steps))}>Apply</Button>
 			</Group>
 		</>
 	)

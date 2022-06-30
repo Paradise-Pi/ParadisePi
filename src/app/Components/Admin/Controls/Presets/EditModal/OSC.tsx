@@ -218,7 +218,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 					>
 						Add OSC Call
 					</Button>
-					<Button onClick={() => props.onChange(JSON.stringify(form.values.commands))}>Save</Button>
+					<Button onClick={() => props.onChange(JSON.stringify(form.values.commands))}>Apply</Button>
 				</Group>
 			</Tabs.Tab>
 			<Tabs.Tab label="JSON Mode">
