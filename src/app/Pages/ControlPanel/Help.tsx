@@ -7,6 +7,7 @@ import { FaCogs } from '@react-icons/all-files/fa/FaCogs'
 import { useModals } from '@mantine/modals'
 import { useEventListener, useViewportSize } from '@mantine/hooks'
 import { QRCodeSVG } from 'qrcode.react'
+import { Fader } from './../../Components/ControlPanel/Fader'
 
 const ShowAccessDetails = () => {
 	const [count, setCount] = useState(0)
@@ -70,6 +71,14 @@ export const HelpPage = () => {
 	}
 	return (
 		<>
+			<Fader
+				disabled={false}
+				meterValue={5}
+				value={5}
+				onChange={val => {
+					console.log(val)
+				}}
+			/>
 			<DangerouslySetHTML html={helpText} />
 			<Button variant="default" my={'md'} leftIcon={<FaCogs />} onClick={() => navigateToAdmin()}>
 				Setup and Administration Menu
