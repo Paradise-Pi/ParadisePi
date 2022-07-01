@@ -1,53 +1,56 @@
 import dataSource from '../dataSource'
 import { Fader } from '../model/Faders'
+import { In, Not } from 'typeorm'
 
 export interface DatabaseFader {
 	id?: number
 	name: string
-	channel?: number
+	channel: number
 	enabled: boolean
-	data?: string | null
 	type: string
 	sort: number
+	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
+	data?: string | null
 }
 
 export const FaderRepository = dataSource.getRepository(Fader).extend({
-	getItem(key: string): string | null {
-		const item = this.findOne({
-			select: {
-				value: true,
-			},
-			where: {
-				key,
-			},
-		})
-		if (!item) return null
-		else return item.value
-	},
+	//get all faders
 	async getAll(): Promise<Array<DatabaseFader>> {
 		const items = await this.find()
 		return items.map((item: Fader) => {
 			return {
+				id: item.id,
 				name: item.name,
-				channel: item.channel !== null ? item.channel : 0,
 				enabled: item.enabled,
-				data: item.data !== null ? JSON.stringify(item.data) : null,
+				channel: item.channel,
+				data: item.data,
 				type: item.type,
 				sort: item.sort,
+				folderId: item.folder !== null ? item.folder.id.toString() : null,
 			}
 		})
 	},
-	async setAll(faders: Array<DatabaseFader>): Promise<void> {
-		await this.delete({})
-		// Convert preset back to an object
+	/**
+	 * Delete all existing faders and then upload the given faders
+	 * @param faders - An array of faders to set as the database record
+	 */
+	async setAllFromApp(faders: Array<DatabaseFader>): Promise<void> {
+		const faderIdsToKeep: Array<number> = faders
+			.filter((fader: DatabaseFader) => fader.id !== null)
+			.map((fader: DatabaseFader) => fader.id)
+		await this.delete({
+			id: Not(In(faderIdsToKeep)),
+		})
+		// Convert fader back to an object
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const fadersToInsert: Array<{ [key: string]: any }> = faders.map((fader: DatabaseFader, count: number) => {
 			return {
 				...fader,
-				sort: count + 1,
+				sort: count + 10, // +10 to make sure that newly inserted ones with null/0/1 end up at the top
+				folder: fader.folderId !== null ? parseInt(fader.folderId) : null,
 				data: fader.data !== null && fader.data.length > 0 ? JSON.parse(fader.data) : null,
 			}
 		})
-		await this.insert(fadersToInsert)
+		await this.upsert(fadersToInsert, ['id'])
 	},
 })

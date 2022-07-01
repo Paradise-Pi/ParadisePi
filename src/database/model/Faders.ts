@@ -1,5 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from 'typeorm'
+import {
+	Column,
+	CreateDateColumn,
+	Entity,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
+	VersionColumn,
+} from 'typeorm'
+import { PresetFolders } from './PresetFolders'
 
 @Entity('faders')
 export class Fader {
@@ -9,8 +18,8 @@ export class Fader {
 	@Column('text')
 	name: string
 
-	@Column('integer', { nullable: true })
-	channel: number | null
+	@Column('integer') // Channel number means say channel 02 OR (see type) could be Matrix 01 or Bus 02
+	channel: number
 
 	@Column('boolean')
 	enabled: boolean
@@ -25,6 +34,12 @@ export class Fader {
 
 	@Column('integer')
 	sort: number
+
+	@ManyToOne(() => PresetFolders, PresetFolders => PresetFolders.presets, {
+		createForeignKeyConstraints: false,
+		eager: true,
+	})
+	folder: PresetFolders
 
 	@CreateDateColumn({ nullable: true })
 	createdAt: Date

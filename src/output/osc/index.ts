@@ -58,20 +58,21 @@ export default abstract class OSC {
 			// When a connection is first opened, want to get the statuses of stuff we're interested in
 			setTimeout(async () => {
 				// Timeout is to give the window the chance to have launched, so it doesn't miss the data!
+				// TODO is that sill needed?
 				await FaderRepository.getAll().then((faders: DatabaseFader[]) => {
-					// TODO what's actually happening here sorry?
+					// Iterate through all faders to send subscriptions for them (so we get updates if their fader level changes)
 					faders.forEach(entry => {
+						// Channel fader
 						this.udpPort.send({
-							address: '/ch/' + String(entry.channel).padStart(2, '0') + '/mix/fader',
+							address: `/${String(entry.type)}/${String(entry.channel).padStart(2, '0')}/mix/fader`,
 							args: [],
 						})
+						// Mute status
 						this.udpPort.send({
-							address: '/ch/' + String(entry.channel).padStart(2, '0') + '/mix/on',
+							address: `/${String(entry.type)}/${String(entry.channel).padStart(2, '0')}/mix/on`,
 							args: [],
 						})
 					})
-					this.udpPort.send({ address: this.masterOscString + '/mix/fader', args: [] })
-					this.udpPort.send({ address: this.masterOscString + '/mix/on', args: [] })
 				})
 			}, 3000)
 		} else if (this.udpStatus) {
