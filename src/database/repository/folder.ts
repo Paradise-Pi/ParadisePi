@@ -1,7 +1,7 @@
 import { In, Not } from 'typeorm'
 import dataSource from '../dataSource'
 import { Preset } from '../model/Preset'
-import { Folders } from '../model/Folders'
+import { Folders } from '../model/Folder'
 import { DatabasePreset } from './preset'
 
 export interface DatabaseFolder {

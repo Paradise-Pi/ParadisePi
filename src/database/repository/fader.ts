@@ -1,5 +1,5 @@
 import dataSource from '../dataSource'
-import { Fader } from '../model/Faders'
+import { Fader } from '../model/Fader'
 import { In, Not } from 'typeorm'
 
 export interface DatabaseFader {

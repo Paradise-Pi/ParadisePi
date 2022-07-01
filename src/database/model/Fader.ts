@@ -8,7 +8,7 @@ import {
 	UpdateDateColumn,
 	VersionColumn,
 } from 'typeorm'
-import { Folders } from './Folders'
+import { Folders } from './Folder'
 
 @Entity('faders')
 export class Fader {

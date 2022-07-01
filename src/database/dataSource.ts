@@ -7,8 +7,8 @@ import path from 'path'
  */
 import { Config } from './model/Config'
 import { Preset } from './model/Preset'
-import { Fader } from './model/Faders'
-import { Folders } from './model/Folders'
+import { Fader } from './model/Fader'
+import { Folders } from './model/Folder'
 import { MyCustomLogger } from './logger'
 
 import { Initial1650709558593 } from './migration/1650709558593-Initial'
