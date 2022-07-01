@@ -5,12 +5,12 @@ import { In, Not } from 'typeorm'
 export interface DatabaseFader {
 	id?: number
 	name: string
-	channel: number
 	enabled: boolean
-	type: string
-	sort: number
+	channel?: number
+	type?: string
+	sort?: number
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
-	data?: string | null
+	data?: string | null // TODO remove this if we're not using it
 }
 
 export const FaderRepository = dataSource.getRepository(Fader).extend({
@@ -44,6 +44,7 @@ export const FaderRepository = dataSource.getRepository(Fader).extend({
 		// Convert fader back to an object
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const fadersToInsert: Array<{ [key: string]: any }> = faders.map((fader: DatabaseFader, count: number) => {
+			if (['main/st', 'main/m'].includes(fader.type)) fader.channel = 1 // Master faders have no channel
 			return {
 				...fader,
 				sort: count + 10, // +10 to make sure that newly inserted ones with null/0/1 end up at the top

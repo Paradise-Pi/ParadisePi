@@ -5,6 +5,7 @@ import { folderRouter } from './folder/folderRouter'
 import { configRouter } from './config/configRouter'
 import { outputModulesRouter } from './outputModules/outputModulesRouter'
 import { reboot } from './../electron/windowUtilities'
+import { faderRouter } from './fader/faderRouter'
 
 /**
  * This is a REST router that triages all requests and sends them to relevant routers
@@ -37,6 +38,10 @@ export const routeRequest = (
 			case 'presets':
 				// {@link presetRouter} - the preset router handles all about requests for the /presets path
 				resolve(presetRouter(pathArr.slice(1), method, payload))
+				break
+			case 'faders':
+				// {@link faderRouter} - the fader router handles all about requests for the /faders path
+				resolve(faderRouter(pathArr.slice(1), method, payload))
 				break
 			case 'folders':
 				// {@link folderRouter} - this router handles all about requests for the /folders path

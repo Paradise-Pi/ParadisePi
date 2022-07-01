@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { GetInputProps } from '@mantine/form/lib/types'
 import { JsonInput, NumberInput, Slider, Table, Tabs } from '@mantine/core'
+import { isValidJson } from './isValidJson'
 
 const Input = (props: { channel: number; value: number; onChange(channel: number, value: number): void }) => {
 	return (
@@ -19,7 +20,14 @@ const Input = (props: { channel: number; value: number; onChange(channel: number
 	)
 }
 export const E131PresetEditModal = (props: GetInputProps<'input'>) => {
-	const valueObject = JSON.parse(props.value) || {}
+	let valueObject = JSON.parse('{}')
+	let disableForm = false
+	if (isValidJson(props.value)) {
+		valueObject = JSON.parse(props.value)
+	} else if (props.value !== null) {
+		disableForm = true
+	}
+
 	const [pagination, setPagination] = useState(1)
 	const onChangeFunction = (channel: number, value: number) => {
 		const newValue = { ...valueObject }
@@ -28,7 +36,7 @@ export const E131PresetEditModal = (props: GetInputProps<'input'>) => {
 	}
 	return (
 		<Tabs>
-			<Tabs.Tab label="Channels">
+			<Tabs.Tab label="Channels" disabled={disableForm}>
 				<Slider
 					defaultValue={pagination}
 					onChange={setPagination}

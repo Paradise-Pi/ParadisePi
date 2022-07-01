@@ -5,6 +5,7 @@ import { getOperatingSystemName } from './about/operatingSystem/info'
 import { version } from './../../package.json'
 import { broadcast } from './broadcast'
 import ip from 'ip'
+import { DatabaseFader, FaderRepository } from './../database/repository/fader'
 
 export interface Database {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,6 +46,7 @@ export interface Database {
 	folders: {
 		[key: number]: DatabaseFolder
 	}
+	faders: Array<DatabaseFader>
 }
 /**
  * Create a new database object for monitoring by redux
@@ -88,6 +90,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 		},
 		presets: await PresetRepository.getAll(),
 		folders: await FolderRepository.getAll(),
+		faders: await FaderRepository.getAll(),
 	}
 }
 /**

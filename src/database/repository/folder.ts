@@ -3,6 +3,8 @@ import dataSource from '../dataSource'
 import { Preset } from '../model/Preset'
 import { Folders } from '../model/Folder'
 import { DatabasePreset } from './preset'
+import { DatabaseFader } from './fader'
+import { Fader } from '../model/Fader'
 
 export interface DatabaseFolder {
 	name: string
@@ -14,6 +16,7 @@ export interface DatabaseFolder {
 	parent?: DatabaseFolder
 	parentFolderId?: string
 	presets?: Array<DatabasePreset>
+	faders?: Array<DatabaseFader>
 }
 
 export const FolderRepository = dataSource.getRepository(Folders).extend({
@@ -46,6 +49,11 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					enabled: true,
 					color: true,
 				},
+				faders: {
+					id: true,
+					name: true,
+					enabled: true,
+				},
 			},
 			order: {
 				sort: 'ASC',
@@ -60,6 +68,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 				childFolders: true,
 				parent: true,
 				presets: true,
+				faders: true,
 			},
 		})
 		const returnItem: { [key: number]: DatabaseFolder } = {}
@@ -92,6 +101,13 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 						color: preset.color !== null ? preset.color : '#2C2E33',
 					}
 				}),
+				faders: item.faders.map((fader: Fader) => {
+					return {
+						id: fader.id,
+						name: fader.name,
+						enabled: fader.enabled,
+					}
+				}),
 			}
 		})
 		return returnItem
@@ -117,6 +133,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 				childFolders: true,
 				parent: true,
 				presets: true,
+				faders: true,
 			},
 		})
 		return {
@@ -144,6 +161,13 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					color: preset.color !== null ? preset.color : '#2C2E33',
 				}
 			}),
+			faders: item.faders.map((fader: Fader) => {
+				return {
+					id: fader.id,
+					name: fader.name,
+					enabled: fader.enabled,
+				}
+			}),
 		}
 	},
 	/**
@@ -159,21 +183,19 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 			id: Not(In(folderIdsToKeep)),
 		})
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const foldersToInsert: Array<{ [key: string]: any }> = folders.map(
-			(folder: DatabaseFolder, count: number) => {
-				return {
-					name: folder.name,
-					id: folder.id,
-					icon: folder.icon,
-					sort: count + 1,
-					infoText: folder.infoText,
-					parent:
-						folder.parentFolderId !== null && folderIdsToKeep.includes(parseInt(folder.parentFolderId)) // Check the parent folder id exists
-							? parseInt(folder.parentFolderId)
-							: null,
-				}
+		const foldersToInsert: Array<{ [key: string]: any }> = folders.map((folder: DatabaseFolder, count: number) => {
+			return {
+				name: folder.name,
+				id: folder.id,
+				icon: folder.icon,
+				sort: count + 1,
+				infoText: folder.infoText,
+				parent:
+					folder.parentFolderId !== null && folderIdsToKeep.includes(parseInt(folder.parentFolderId)) // Check the parent folder id exists
+						? parseInt(folder.parentFolderId)
+						: null,
 			}
-		)
+		})
 		await this.upsert(foldersToInsert, ['id'])
 	},
 })

@@ -10,7 +10,11 @@ import {
 } from 'typeorm'
 import { Folders } from './Folder'
 
-@Entity('faders')
+@Entity('faders', {
+	orderBy: {
+		sort: 'ASC',
+	},
+})
 export class Fader {
 	@PrimaryGeneratedColumn()
 	id: number

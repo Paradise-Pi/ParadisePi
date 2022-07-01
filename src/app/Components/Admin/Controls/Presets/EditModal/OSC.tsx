@@ -5,6 +5,7 @@ import { useForm, FormList, formList } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { useAppSelector } from '../../../../../../app/apis/redux/mainStore'
+import { isValidJson } from './isValidJson'
 
 export interface OSCFormValues {
 	commands: FormList<OSCFormValue>
@@ -129,8 +130,14 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 			properties: { startVal: 0, endVal: 1, step: 1, precision: 0 },
 		},
 	]
+	let preset = JSON.parse('[]')
+	let disableForm = false
+	if (isValidJson(props.value)) {
+		preset = JSON.parse(props.value)
+	} else if (props.value !== null) {
+		disableForm = true
+	}
 
-	const preset = JSON.parse(props.value) || []
 	const form = useForm<OSCFormValues>({
 		initialValues: {
 			commands: formList(preset),
@@ -138,7 +145,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 	})
 	return (
 		<Tabs>
-			<Tabs.Tab label="Edit">
+			<Tabs.Tab label="Edit" disabled={disableForm}>
 				{form.values.commands.map((item, index) => {
 					if (mixer !== '') {
 						const part1Index = oscFirstOption[mixer].findIndex(

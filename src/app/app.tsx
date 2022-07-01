@@ -15,6 +15,7 @@ import { setSocketClients } from './apis/redux/statusSlice'
 import { E131SamplingModeStatusScreen } from './Components/E131SamplingModeStatusScreen'
 import { setFromAPI } from './apis/redux/e131SamplingModeSlice'
 import { appendLogline } from './apis/redux/logsSlice'
+import { NotificationsProvider } from '@mantine/notifications'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -36,15 +37,17 @@ const App = () => {
 			}}
 			withGlobalStyles
 		>
-			<ModalsProvider>
-				<ScreenSaver>
-					<ConnectionLost>
-						<E131SamplingModeStatusScreen>
-							<Router />
-						</E131SamplingModeStatusScreen>
-					</ConnectionLost>
-				</ScreenSaver>
-			</ModalsProvider>
+			<NotificationsProvider>
+				<ModalsProvider>
+					<ScreenSaver>
+						<ConnectionLost>
+							<E131SamplingModeStatusScreen>
+								<Router />
+							</E131SamplingModeStatusScreen>
+						</ConnectionLost>
+					</ScreenSaver>
+				</ModalsProvider>
+			</NotificationsProvider>
 		</MantineProvider>
 	)
 }

@@ -8,6 +8,7 @@ import {
 	UpdateDateColumn,
 	VersionColumn,
 } from 'typeorm'
+import { Fader } from './Fader'
 import { Preset } from './Preset'
 
 @Entity('folders', {
@@ -53,6 +54,9 @@ export class Folders {
 
 	@OneToMany(() => Preset, Preset => Preset.folder)
 	presets: Preset[]
+
+	@OneToMany(() => Fader, Fader => Fader.folder)
+	faders: Fader[]
 
 	@CreateDateColumn({ nullable: true })
 	createdAt: Date
