@@ -7,7 +7,7 @@ export class AddFaderType1656679151854 implements MigrationInterface {
 		await queryRunner.query(`UPDATE faders SET type='ch';`)
 		await queryRunner.query(
 			`ALTER TABLE faders
-			ADD "folder" integer`
+			ADD "folderId" integer`
 		)
 	}
 
