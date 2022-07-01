@@ -1,28 +1,28 @@
 import { In, Not } from 'typeorm'
-import dataSource from './../dataSource'
-import { Preset } from './../model/Preset'
-import { PresetFolders } from './../model/PresetFolders'
+import dataSource from '../dataSource'
+import { Preset } from '../model/Preset'
+import { Folders } from '../model/Folders'
 import { DatabasePreset } from './preset'
 
-export interface DatabasePresetFolder {
+export interface DatabaseFolder {
 	name: string
 	id: number
 	sort?: number
 	icon?: string
 	infoText?: string
-	children?: Array<DatabasePresetFolder>
-	parent?: DatabasePresetFolder
+	children?: Array<DatabaseFolder>
+	parent?: DatabaseFolder
 	parentFolderId?: string
 	presets?: Array<DatabasePreset>
 }
 
-export const PresetFolderRepository = dataSource.getRepository(PresetFolders).extend({
+export const FolderRepository = dataSource.getRepository(Folders).extend({
 	/**
 	 * Get all folders and their contents
 	 *
 	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
-	async getAll(): Promise<{ [key: number]: DatabasePresetFolder }> {
+	async getAll(): Promise<{ [key: number]: DatabaseFolder }> {
 		const item = await this.find({
 			select: {
 				name: true,
@@ -62,15 +62,15 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 				presets: true,
 			},
 		})
-		const returnItem: { [key: number]: DatabasePresetFolder } = {}
-		item.forEach((item: PresetFolders) => {
+		const returnItem: { [key: number]: DatabaseFolder } = {}
+		item.forEach((item: Folders) => {
 			returnItem[item.id] = {
 				name: item.name,
 				id: item.id,
 				icon: item.icon,
 				sort: item.sort,
 				infoText: item.infoText,
-				children: item.childFolders.map((child: PresetFolders) => {
+				children: item.childFolders.map((child: Folders) => {
 					return {
 						name: child.name,
 						id: child.id,
@@ -102,7 +102,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	 * @param id - Id of the folder
 	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
-	async getOne(id: number): Promise<DatabasePresetFolder> {
+	async getOne(id: number): Promise<DatabaseFolder> {
 		const item = await this.find({
 			where: {
 				id,
@@ -123,7 +123,7 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 			name: item.name,
 			id: item.id,
 			icon: item.icon,
-			children: item.childFolders.map((child: PresetFolders) => {
+			children: item.childFolders.map((child: Folders) => {
 				return {
 					name: child.name,
 					id: child.id,
@@ -150,17 +150,17 @@ export const PresetFolderRepository = dataSource.getRepository(PresetFolders).ex
 	 * Set the database record of folders based on what's been sent from the app, delete the rest
 	 * @param folders - Array of folders to put into the database. It will delete all the others
 	 */
-	async setAllFromApp(folders: Array<DatabasePresetFolder>): Promise<void> {
+	async setAllFromApp(folders: Array<DatabaseFolder>): Promise<void> {
 		// Delete any other folders
 		const folderIdsToKeep: Array<number> = folders
-			.filter((folder: DatabasePresetFolder) => folder.id !== null) // Skip new ones
-			.map((folder: DatabasePresetFolder) => folder.id)
+			.filter((folder: DatabaseFolder) => folder.id !== null) // Skip new ones
+			.map((folder: DatabaseFolder) => folder.id)
 		await this.delete({
 			id: Not(In(folderIdsToKeep)),
 		})
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const foldersToInsert: Array<{ [key: string]: any }> = folders.map(
-			(folder: DatabasePresetFolder, count: number) => {
+			(folder: DatabaseFolder, count: number) => {
 				return {
 					name: folder.name,
 					id: folder.id,

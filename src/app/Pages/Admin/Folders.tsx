@@ -20,16 +20,16 @@ import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { FormList } from '@mantine/form/lib/form-list/form-list'
 import { useAppSelector } from './../../apis/redux/mainStore'
-import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
+import { DatabaseFolder } from './../../../database/repository/folder'
 import { ApiCall } from './../../apis/wrapper'
-import { AvailableIcons, PresetFolderIconReact } from './../../Components/ControlPanel/PresetFolderIcon'
+import { AvailableIcons, FolderIconReact } from './../../Components/ControlPanel/FolderIcon'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { RichTextEditor } from '@mantine/rte'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 
 interface FormValues {
-	folders: FormList<DatabasePresetFolder>
+	folders: FormList<DatabaseFolder>
 }
 interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
 	icon: string
@@ -40,7 +40,7 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(({ icon, label, ...othe
 	<div ref={ref} {...others}>
 		<Group noWrap>
 			<Avatar radius={'xs'} size={'md'}>
-				<PresetFolderIconReact icon={icon} />
+				<FolderIconReact icon={icon} />
 			</Avatar>
 			<div>
 				<Text size="sm">{label}</Text>
@@ -51,7 +51,7 @@ const SelectItem = forwardRef<HTMLDivElement, ItemProps>(({ icon, label, ...othe
 export const FoldersConfigurationPage = () => {
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
-	const folders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
+	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
 	const parentFoldersForSelect: Array<MantineSelectItem> = [{ value: null, label: 'None', group: 'Parent Folder' }]
 	// Prepare preset folders list for select dropdown
 	if (folders !== false) {
@@ -103,7 +103,7 @@ export const FoldersConfigurationPage = () => {
 	// Handle the submit button
 	const handleSubmit = (values: typeof form.values) => {
 		setLoadingOverlayVisible(true)
-		ApiCall.put('/presetFolders', values.folders)
+		ApiCall.put('/folders', values.folders)
 	}
 	const fields = form.values.folders.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>

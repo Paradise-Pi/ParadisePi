@@ -8,7 +8,7 @@ import {
 	UpdateDateColumn,
 	VersionColumn,
 } from 'typeorm'
-import { PresetFolders } from './PresetFolders'
+import { Folders } from './Folders'
 
 @Entity('presets', {
 	orderBy: {
@@ -43,11 +43,11 @@ export class Preset {
 	})
 	fadeTime: number
 
-	@ManyToOne(() => PresetFolders, PresetFolders => PresetFolders.presets, {
+	@ManyToOne(() => Folders, Folders => Folders.presets, {
 		createForeignKeyConstraints: false,
 		eager: true,
 	})
-	folder: PresetFolders
+	folder: Folders
 
 	@Column('simple-json', { nullable: true })
 	data: {

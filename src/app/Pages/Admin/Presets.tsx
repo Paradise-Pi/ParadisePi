@@ -47,12 +47,12 @@ export const PresetsConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
-	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
-	const presetFoldersForSelect: Array<SelectItem> = []
+	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const foldersForSelect: Array<SelectItem> = []
 	// Prepare preset folders list for select dropdown
-	if (presetFolders !== false) {
-		Object.entries(presetFolders).forEach(([, value]) => {
-			presetFoldersForSelect.push({
+	if (folders !== false) {
+		Object.entries(folders).forEach(([, value]) => {
+			foldersForSelect.push({
 				value: value.id.toString(),
 				label: value.name,
 				group: 'Folder',
@@ -95,7 +95,7 @@ export const PresetsConfigurationPage = () => {
 						icon={<FaFolder />}
 						// form.values.presets[index].folderId
 						{...form.getListInputProps('presets', index, 'folderId')}
-						data={presetFoldersForSelect}
+						data={foldersForSelect}
 					/>
 					<ColorInput
 						format="hex"
@@ -162,7 +162,7 @@ export const PresetsConfigurationPage = () => {
 		<Box mx="lg">
 			<div style={{ position: 'relative' }}>
 				<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-				{presets !== false && presetFolders !== false ? (
+				{presets !== false && folders !== false ? (
 					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<Group position="left" mt="md">
 							<Button

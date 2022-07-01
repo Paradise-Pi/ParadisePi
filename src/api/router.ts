@@ -1,7 +1,7 @@
 import { aboutRouter } from './about/aboutRouter'
 import { createDatabaseObject } from './database'
 import { presetRouter } from './preset/presetRouter'
-import { presetFolderRouter } from './presetFolder/presetFolderRouter'
+import { folderRouter } from './folder/folderRouter'
 import { configRouter } from './config/configRouter'
 import { outputModulesRouter } from './outputModules/outputModulesRouter'
 import { reboot } from './../electron/windowUtilities'
@@ -38,9 +38,9 @@ export const routeRequest = (
 				// {@link presetRouter} - the preset router handles all about requests for the /presets path
 				resolve(presetRouter(pathArr.slice(1), method, payload))
 				break
-			case 'presetFolders':
-				// {@link presetFolderRouter} - this router handles all about requests for the /presetFolders path
-				resolve(presetFolderRouter(pathArr.slice(1), method, payload))
+			case 'folders':
+				// {@link folderRouter} - this router handles all about requests for the /folders path
+				resolve(folderRouter(pathArr.slice(1), method, payload))
 				break
 			case 'config':
 				// {@link configRouter} - this router handles all about requests for the /config path

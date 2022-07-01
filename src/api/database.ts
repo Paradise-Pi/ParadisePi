@@ -1,5 +1,5 @@
 import { DatabasePreset, PresetRepository } from './../database/repository/preset'
-import { DatabasePresetFolder, PresetFolderRepository } from './../database/repository/presetFolder'
+import { DatabaseFolder, FolderRepository } from './../database/repository/folder'
 import { ConfigRepository } from './../database/repository/config'
 import { getOperatingSystemName } from './about/operatingSystem/info'
 import { version } from './../../package.json'
@@ -42,8 +42,8 @@ export interface Database {
 		}
 	}
 	presets: Array<DatabasePreset>
-	presetFolders: {
-		[key: number]: DatabasePresetFolder
+	folders: {
+		[key: number]: DatabaseFolder
 	}
 }
 /**
@@ -87,7 +87,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 			},
 		},
 		presets: await PresetRepository.getAll(),
-		presetFolders: await PresetFolderRepository.getAll(),
+		folders: await FolderRepository.getAll(),
 	}
 }
 /**

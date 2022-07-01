@@ -8,7 +8,7 @@ import path from 'path'
 import { Config } from './model/Config'
 import { Preset } from './model/Preset'
 import { Fader } from './model/Faders'
-import { PresetFolders } from './model/PresetFolders'
+import { Folders } from './model/Folders'
 import { MyCustomLogger } from './logger'
 
 import { Initial1650709558593 } from './migration/1650709558593-Initial'
@@ -27,6 +27,7 @@ import { FolderRelations1653221239013 } from './migration/1653221239013-FolderRe
 import { ClearUpHelpText1654009120000 } from './migration/1654009120000-ClearUpHelpText'
 import { AddFolderText1655564727255 } from './migration/1655564727255-AddFolderText'
 import { AddFaderType1656679151854 } from './migration/1656679151854-AddFaderType'
+import { PresetFoldersToFolders1656681029002 } from './migration/1656681029002-PresetFoldersToFolders'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -34,7 +35,7 @@ const dataSource = new DataSource({
 	synchronize: false,
 	migrationsRun: true,
 	cache: false,
-	entities: [Config, Preset, PresetFolders, Preset, Fader],
+	entities: [Config, Preset, Folders, Preset, Fader],
 	migrations: [
 		Initial1650709558593,
 		InsertConfig1650710286405,
@@ -52,6 +53,7 @@ const dataSource = new DataSource({
 		ClearUpHelpText1654009120000,
 		AddFolderText1655564727255,
 		AddFaderType1656679151854,
+		PresetFoldersToFolders1656681029002,
 	],
 	subscribers: [],
 	logger: new MyCustomLogger(),

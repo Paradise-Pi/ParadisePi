@@ -1,13 +1,13 @@
 import React from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { DatabasePresetFolder } from './../../../database/repository/presetFolder'
+import { DatabaseFolder } from './../../../database/repository/folder'
 import { Button, Paper } from '@mantine/core'
 import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
 import { DangerouslySetHTML } from './../../Components/DangerouslySetHTML'
 import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { ApiCall } from './../../apis/wrapper'
-import { PresetFolderIconReact } from './../../Components/ControlPanel/PresetFolderIcon'
+import { FolderIconReact } from './../../Components/ControlPanel/FolderIcon'
 const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
 	const navigate = useNavigate()
 
@@ -34,7 +34,7 @@ const PresetButton = ({ text, presetId, color }: { text: string; presetId: numbe
 		</Button>
 	)
 }
-const PresetFolderButton = ({
+const FolderButton = ({
 	text,
 	folderId,
 	backButton,
@@ -45,14 +45,14 @@ const PresetFolderButton = ({
 	backButton: boolean
 	icon: string
 }) => (
-	<Link to={'/controlPanel/presetFolder/' + folderId.toString()}>
+	<Link to={'/controlPanel/folder/' + folderId.toString()}>
 		<Button
 			variant="default"
 			color="dark"
 			size="xl"
 			mx="xs"
 			my="xs"
-			leftIcon={backButton ? <FaLevelUpAlt /> : <PresetFolderIconReact icon={icon} />}
+			leftIcon={backButton ? <FaLevelUpAlt /> : <FolderIconReact icon={icon} />}
 		>
 			{text}
 		</Button>
@@ -61,43 +61,43 @@ const PresetFolderButton = ({
 
 export const PresetPage = () => {
 	const { folderId } = useParams<{ folderId: string }>()
-	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
-	let presetFolder: DatabasePresetFolder | false = false
-	if (presetFolders !== false) {
-		presetFolder = presetFolders[parseInt(folderId)]
+	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	let folder: DatabaseFolder | false = false
+	if (folders !== false) {
+		folder = folders[parseInt(folderId)]
 	}
 	return (
 		<>
-			{presetFolder && presetFolder.infoText ? (
+			{folder && folder.infoText ? (
 				<Paper px="md">
-					<DangerouslySetHTML html={presetFolder.infoText} />
+					<DangerouslySetHTML html={folder.infoText} />
 				</Paper>
 			) : (
 				''
 			)}
-			{presetFolder && presetFolder.parent !== null ? (
-				<PresetFolderButton
-					folderId={presetFolder.parent.id}
-					text={presetFolder.parent.name}
-					icon={presetFolder.parent.icon}
+			{folder && folder.parent !== null ? (
+				<FolderButton
+					folderId={folder.parent.id}
+					text={folder.parent.name}
+					icon={folder.parent.icon}
 					backButton={true}
 				/>
 			) : (
 				''
 			)}
-			{presetFolder
-				? presetFolder.children.map(presetFolder => (
-						<PresetFolderButton
-							folderId={presetFolder.id}
-							icon={presetFolder.icon}
-							key={presetFolder.id}
-							text={presetFolder.name}
+			{folder
+				? folder.children.map(folder => (
+						<FolderButton
+							folderId={folder.id}
+							icon={folder.icon}
+							key={folder.id}
+							text={folder.name}
 							backButton={false}
 						/>
 				  ))
 				: ''}
-			{presetFolder
-				? presetFolder.presets.map(preset =>
+			{folder
+				? folder.presets.map(preset =>
 						preset.enabled ? (
 							<PresetButton
 								presetId={preset.id}

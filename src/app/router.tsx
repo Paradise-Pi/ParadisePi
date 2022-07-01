@@ -28,7 +28,7 @@ const Router = () => {
 						</Locked>
 					}
 				>
-					<Route path="presetFolder/:folderId" element={<PresetPage />} />
+					<Route path="folder/:folderId" element={<PresetPage />} />
 					<Route path="help" element={<HelpPage />} />
 					<Route path="e131">
 						<Route path="channelCheck" element={<ChannelCheckPage />} />

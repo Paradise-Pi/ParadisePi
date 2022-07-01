@@ -8,7 +8,7 @@ import {
 	UpdateDateColumn,
 	VersionColumn,
 } from 'typeorm'
-import { PresetFolders } from './PresetFolders'
+import { Folders } from './Folders'
 
 @Entity('faders')
 export class Fader {
@@ -35,11 +35,11 @@ export class Fader {
 	@Column('integer')
 	sort: number
 
-	@ManyToOne(() => PresetFolders, PresetFolders => PresetFolders.presets, {
+	@ManyToOne(() => Folders, Folders => Folders.presets, {
 		createForeignKeyConstraints: false,
 		eager: true,
 	})
-	folder: PresetFolders
+	folder: Folders
 
 	@CreateDateColumn({ nullable: true })
 	createdAt: Date

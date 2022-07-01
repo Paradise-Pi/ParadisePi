@@ -10,27 +10,27 @@ import {
 } from 'typeorm'
 import { Preset } from './Preset'
 
-@Entity('presetFolders', {
+@Entity('folders', {
 	orderBy: {
 		sort: 'ASC',
 		name: 'ASC',
 	},
 })
-export class PresetFolders {
+export class Folders {
 	@PrimaryGeneratedColumn()
 	id: number
 
 	@Column('text')
 	name: string
 
-	@ManyToOne(() => PresetFolders, PresetFolders => PresetFolders.id, {
+	@ManyToOne(() => Folders, Folders => Folders.id, {
 		nullable: true,
 		createForeignKeyConstraints: false,
 	})
-	parent: PresetFolders
+	parent: Folders
 
-	@OneToMany(() => PresetFolders, presetFolder => presetFolder.parent)
-	childFolders: PresetFolders[]
+	@OneToMany(() => Folders, folder => folder.parent)
+	childFolders: Folders[]
 
 	@Column('integer', { default: 1 })
 	sort: number

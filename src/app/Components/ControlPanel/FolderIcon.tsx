@@ -26,7 +26,7 @@ export const AvailableIcons = {
 	FaVideo: 'Camera',
 }
 
-export const PresetFolderIcon = (icon: string): IconType => {
+export const FolderIcon = (icon: string): IconType => {
 	if (icon === 'FaLightbulb') return FaLightbulb
 	else if (icon === 'FaRegLightbulb') return FaRegLightbulb
 	else if (icon === 'FaVolumeDown') return FaVolumeDown
@@ -40,7 +40,7 @@ export const PresetFolderIcon = (icon: string): IconType => {
 	else return FaFolder
 }
 // TODO surely we don't need two functions?
-export const PresetFolderIconReact = (props: { icon: string }) => {
+export const FolderIconReact = (props: { icon: string }) => {
 	if (props.icon === 'FaLightbulb') return <FaLightbulb />
 	else if (props.icon === 'FaRegLightbulb') return <FaRegLightbulb />
 	else if (props.icon === 'FaVolumeDown') return <FaVolumeDown />

@@ -5,18 +5,18 @@ import { FaQuestion } from '@react-icons/all-files/fa/FaQuestion'
 import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
 import { useAppSelector } from './../apis/redux/mainStore'
-import { DatabasePresetFolder } from './../../database/repository/presetFolder'
-import { PresetFolderIcon } from './../Components/ControlPanel/PresetFolderIcon'
+import { DatabaseFolder } from './../../database/repository/folder'
+import { FolderIcon } from './../Components/ControlPanel/FolderIcon'
 
-const TopLevelPresetFolders = () => {
-	const presetFolders = useAppSelector(state => (state.database ? state.database.presetFolders : false))
-	const topLevelPresetFolders: Array<DatabasePresetFolder> = []
-	if (presetFolders !== false) {
-		Object.entries(presetFolders)
+const TopLevelFolders = () => {
+	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const topLevelFolders: Array<DatabaseFolder> = []
+	if (folders !== false) {
+		Object.entries(folders)
 			.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
 			.forEach(([, value]) => {
 				if (value.parent === null) {
-					topLevelPresetFolders.push({
+					topLevelFolders.push({
 						name: value.name,
 						id: value.id,
 						icon: value.icon,
@@ -26,12 +26,12 @@ const TopLevelPresetFolders = () => {
 	}
 	return (
 		<>
-			{topLevelPresetFolders.map(item => (
+			{topLevelFolders.map(item => (
 				<NavbarItem
 					key={item.id}
-					link={'presetFolder/' + item.id.toString()}
+					link={'folder/' + item.id.toString()}
 					label={item.name}
-					Icon={PresetFolderIcon(item.icon)}
+					Icon={FolderIcon(item.icon)}
 				/>
 			))}
 		</>
@@ -43,7 +43,7 @@ export const ControlPanelNavigation = () => {
 	return (
 		<Navbar height={height} width={{ sm: 200, md: 200 }} p="md" className={classes.navbar}>
 			<Navbar.Section grow component={ScrollArea}>
-				<TopLevelPresetFolders />
+				<TopLevelFolders />
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>
 				<NavbarItem link="help" label="Help" Icon={FaQuestion} />
