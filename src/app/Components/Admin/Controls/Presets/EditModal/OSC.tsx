@@ -35,15 +35,7 @@ interface oscCommands {
 }
 
 export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
-	const [mixer, setMixer] = useState('')
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const oscConfig = useAppSelector((state: any) => (state.database ? state.database.config.osc : false))
-	useEffect(() => {
-		if (oscConfig !== false) {
-			setMixer(oscConfig.OSCMixerType)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [oscConfig])
+	const mixer = useAppSelector(state => (state.database ? state.database.config.osc.OSCMixerType : false))
 
 	const oscFirstOption: oscCommands = {
 		// "mixer":[{value:"address",label:"name", properties:{startVal, endVal, Step, hasSecondOption, valIsEncode}}]
@@ -147,7 +139,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 		<Tabs>
 			<Tabs.Tab label="Edit" disabled={disableForm}>
 				{form.values.commands.map((item, index) => {
-					if (mixer !== '') {
+					if (mixer !== false) {
 						const part1Index = oscFirstOption[mixer].findIndex(
 							x => x.value == form.values.commands[index].command1
 						)
