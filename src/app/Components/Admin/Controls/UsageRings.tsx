@@ -31,7 +31,6 @@ export const UsageRings = () => {
 	const uptimeString = timeago.format(Date.now() - uptime * 1000)
 	const megabytes = usageData.memory.totalMemMb as number
 	const gigabytes = megabytes / 1024
-	const percentage: number = Math.round((gigabytes / 8) * 100)
 	return (
 		<Group position="center">
 			<RingProgress
@@ -52,7 +51,7 @@ export const UsageRings = () => {
 			<RingProgress
 				sections={[
 					{
-						value: usageData.cpuPercent as number,
+						value: usageData.memory.usedMemPercentage as number,
 						color: 'pink',
 					},
 				]}
@@ -65,12 +64,7 @@ export const UsageRings = () => {
 				}
 			></RingProgress>
 			<RingProgress
-				sections={[
-					{
-						value: percentage > 100 ? 100 : percentage,
-						color: 'pink',
-					},
-				]}
+				sections={[]}
 				label={
 					<Text color="white" align="center" size="md">
 						RAM <br />
@@ -79,12 +73,7 @@ export const UsageRings = () => {
 				}
 			></RingProgress>
 			<RingProgress
-				sections={[
-					{
-						value: 100,
-						color: 'pink',
-					},
-				]}
+				sections={[]}
 				label={
 					<Text color="white" align="center" size="md">
 						Uptime <br />
