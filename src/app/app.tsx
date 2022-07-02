@@ -16,6 +16,7 @@ import { E131SamplingModeStatusScreen } from './Components/E131SamplingModeStatu
 import { setFromAPI } from './apis/redux/e131SamplingModeSlice'
 import { appendLogline } from './apis/redux/logsSlice'
 import { NotificationsProvider } from '@mantine/notifications'
+import ErrorBoundary from './Components/ErrorBoundary'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -37,17 +38,19 @@ const App = () => {
 			}}
 			withGlobalStyles
 		>
-			<NotificationsProvider>
-				<ModalsProvider>
-					<ScreenSaver>
-						<ConnectionLost>
-							<E131SamplingModeStatusScreen>
-								<Router />
-							</E131SamplingModeStatusScreen>
-						</ConnectionLost>
-					</ScreenSaver>
-				</ModalsProvider>
-			</NotificationsProvider>
+			<ErrorBoundary>
+				<NotificationsProvider>
+					<ModalsProvider>
+						<ScreenSaver>
+							<ConnectionLost>
+								<E131SamplingModeStatusScreen>
+									<Router />
+								</E131SamplingModeStatusScreen>
+							</ConnectionLost>
+						</ScreenSaver>
+					</ModalsProvider>
+				</NotificationsProvider>
+			</ErrorBoundary>
 		</MantineProvider>
 	)
 }
