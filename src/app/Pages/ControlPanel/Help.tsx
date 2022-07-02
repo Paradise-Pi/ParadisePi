@@ -71,14 +71,6 @@ export const HelpPage = () => {
 	}
 	return (
 		<>
-			<Fader
-				disabled={false}
-				meterValue={5}
-				value={5}
-				onChange={val => {
-					console.log(val)
-				}}
-			/>
 			<DangerouslySetHTML html={helpText} />
 			<Button variant="default" my={'md'} leftIcon={<FaCogs />} onClick={() => navigateToAdmin()}>
 				Setup and Administration Menu

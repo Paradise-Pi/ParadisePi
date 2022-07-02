@@ -58,7 +58,7 @@ export const FoldersConfigurationPage = () => {
 	const [formOriginalValues, setFormOriginalValues] = useState<string>('') // Values used to detect unsaved changes
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
 	const parentFoldersForSelect: Array<MantineSelectItem> = [{ value: null, label: 'None', group: 'Parent Folder' }]
-	// Prepare preset folders list for select dropdown
+	// Prepare folders list for select dropdown
 	if (folders !== false) {
 		Object.entries(folders)
 			.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
