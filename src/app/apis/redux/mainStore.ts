@@ -3,7 +3,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import databaseSliceReducer from './databaseSlice'
 import statusSliceReducer from './statusSlice'
 import e131SamplingModeReducer from './e131SamplingModeSlice'
-import oscMetersReducer from './oscMetersSlice'
+import oscDataSliceReducer from './oscDataSlice'
 import logsSliceReducer from './logsSlice'
 
 const store = configureStore({
@@ -11,8 +11,8 @@ const store = configureStore({
 		database: databaseSliceReducer, // Master database
 		status: statusSliceReducer, // Status of whether we are connected to the server or not, and which clients are connected
 		e131SamplingMode: e131SamplingModeReducer, // Whether we are currently in e131 sampling mode or not
-		oscMeters: oscMetersReducer, // The realtime status of the OSC metering
 		logs: logsSliceReducer, // Logging sent from node.js
+		oscDatastore: oscDataSliceReducer, // The OSC datastore
 	},
 })
 

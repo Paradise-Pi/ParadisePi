@@ -16,7 +16,7 @@ interface FormValues {
 export const MacroPresetEditModal = (props: GetInputProps<'input'>) => {
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
 	const presetsForSelect: Array<SelectItem> = []
-	// Prepare preset folders list for select dropdown
+	// Prepare folders list for select dropdown
 	if (presets !== false) {
 		Object.entries(presets).forEach(([, value]) => {
 			presetsForSelect.push({

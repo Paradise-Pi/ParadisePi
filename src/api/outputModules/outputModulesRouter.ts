@@ -20,6 +20,11 @@ export const outputModulesRouter = (
 				globalThis.e131.update(payload.universe, payload.channelData, payload.fadeTime)
 				return resolve({})
 			}
+		} else if (path[0] === 'osc') {
+			if (path[1] === 'getDatastore') {
+				const datastore = globalThis.osc.getDatastore()
+				resolve(datastore)
+			}
 		}
 	})
 }

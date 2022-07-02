@@ -1,13 +1,14 @@
 import React, { useCallback, useState } from 'react'
 import { DangerouslySetHTML } from './../../Components/DangerouslySetHTML'
 import { useAppSelector } from './../../apis/redux/mainStore'
-import { Button, Text } from '@mantine/core'
+import { Button, Text, Group } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
 import { FaCogs } from '@react-icons/all-files/fa/FaCogs'
 import { useModals } from '@mantine/modals'
 import { useEventListener, useViewportSize } from '@mantine/hooks'
 import { QRCodeSVG } from 'qrcode.react'
-import { Fader } from './../../Components/ControlPanel/Fader'
+import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { FaTimes } from '@react-icons/all-files/fa/FaTimes'
 
 const ShowAccessDetails = () => {
 	const [count, setCount] = useState(0)
@@ -47,6 +48,9 @@ const ShowAccessDetails = () => {
 }
 export const HelpPage = () => {
 	const helpText = useAppSelector(state => (state.database ? state.database.config.general.helpText : ''))
+	const oscEnabled = useAppSelector(state => (state.database ? state.database.config.osc.OSCEnabled : false))
+	const oscMixerName = useAppSelector(state => (state.oscDatastore ? state.oscDatastore.mixerName : false))
+	const oscConnected = useAppSelector(state => (state.oscDatastore ? state.oscDatastore.status : false))
 	const showButton = useAppSelector(state =>
 		state.database ? state.database.config.general.adminLinkFromControlPanel : false
 	)
@@ -69,12 +73,36 @@ export const HelpPage = () => {
 			})
 		}
 	}
+	const showOSCStatus = () => {
+		modals.openModal({
+			title: 'Sound System Status',
+			children: (
+				<Text size="sm">
+					{oscConnected ? 'Connected to: ' + oscMixerName : 'Could not connect to sound system'}
+				</Text>
+			),
+		})
+	}
 	return (
 		<>
 			<DangerouslySetHTML html={helpText} />
-			<Button variant="default" my={'md'} leftIcon={<FaCogs />} onClick={() => navigateToAdmin()}>
-				Setup and Administration Menu
-			</Button>
+			<Group position="left" mt="md">
+				<Button variant="default" my={'md'} leftIcon={<FaCogs />} onClick={() => navigateToAdmin()}>
+					Setup and Administration Menu
+				</Button>
+				{oscEnabled ? (
+					<Button
+						variant="default"
+						my={'md'}
+						leftIcon={oscConnected ? <FaCheck /> : <FaTimes />}
+						onClick={() => showOSCStatus()}
+					>
+						{oscConnected ? 'Sound System is connected' : 'Sound System is not connected'}
+					</Button>
+				) : (
+					''
+				)}
+			</Group>
 		</>
 	)
 }

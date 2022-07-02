@@ -8,6 +8,7 @@ import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOpposite
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { ApiCall } from './../../apis/wrapper'
 import { FolderIconReact } from './../../Components/ControlPanel/FolderIcon'
+import { PresetFaders } from './../../Components/ControlPanel/PresetFaders'
 const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
 	const navigate = useNavigate()
 
@@ -66,50 +67,49 @@ export const PresetPage = () => {
 	if (folders !== false) {
 		folder = folders[parseInt(folderId)]
 	}
-	return (
-		<>
-			{folder && folder.infoText ? (
-				<Paper px="md">
-					<DangerouslySetHTML html={folder.infoText} />
-				</Paper>
-			) : (
-				''
-			)}
-			{folder && folder.parent !== null ? (
-				<FolderButton
-					folderId={folder.parent.id}
-					text={folder.parent.name}
-					icon={folder.parent.icon}
-					backButton={true}
-				/>
-			) : (
-				''
-			)}
-			{folder
-				? folder.children.map(folder => (
-						<FolderButton
-							folderId={folder.id}
-							icon={folder.icon}
-							key={folder.id}
-							text={folder.name}
-							backButton={false}
+	if (folder) {
+		return (
+			<>
+				{folder.infoText ? (
+					<Paper px="md">
+						<DangerouslySetHTML html={folder.infoText} />
+					</Paper>
+				) : (
+					''
+				)}
+				<PresetFaders faders={folder.faders} />
+				{folder.parent !== null ? (
+					<FolderButton
+						folderId={folder.parent.id}
+						text={folder.parent.name}
+						icon={folder.parent.icon}
+						backButton={true}
+					/>
+				) : (
+					''
+				)}
+				{folder.children.map(folder => (
+					<FolderButton
+						folderId={folder.id}
+						icon={folder.icon}
+						key={'folder' + folder.id}
+						text={folder.name}
+						backButton={false}
+					/>
+				))}
+				{folder.presets.map(preset =>
+					preset.enabled ? (
+						<PresetButton
+							presetId={preset.id}
+							key={'preset' + preset.id}
+							text={preset.name}
+							color={preset.color}
 						/>
-				  ))
-				: ''}
-			{folder
-				? folder.presets.map(preset =>
-						preset.enabled ? (
-							<PresetButton
-								presetId={preset.id}
-								key={preset.id}
-								text={preset.name}
-								color={preset.color}
-							/>
-						) : (
-							''
-						)
-				  )
-				: ''}
-		</>
-	)
+					) : (
+						''
+					)
+				)}
+			</>
+		)
+	} else return <></>
 }

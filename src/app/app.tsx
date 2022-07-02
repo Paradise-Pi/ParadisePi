@@ -5,7 +5,8 @@ import { Provider } from 'react-redux'
 import './app.css'
 import store, { useAppDispatch } from './apis/redux/mainStore'
 import Router from './router'
-import { getFromAPI, setFromNode } from './apis/redux/databaseSlice'
+import { getDatabaseFromAPI, setFromNode } from './apis/redux/databaseSlice'
+import { getOSCFromAPI, updateOSCDatastore } from './apis/redux/oscDataSlice'
 import { Database } from './../api/database'
 import { runningInElectron } from './apis/utilities/version'
 import { ModalsProvider } from '@mantine/modals'
@@ -16,6 +17,7 @@ import { E131SamplingModeStatusScreen } from './Components/E131SamplingModeStatu
 import { setFromAPI } from './apis/redux/e131SamplingModeSlice'
 import { appendLogline } from './apis/redux/logsSlice'
 import { NotificationsProvider } from '@mantine/notifications'
+import { OSCDatastore } from './../output/osc'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -25,7 +27,8 @@ const App = () => {
 	 */
 	const dispatch = useAppDispatch()
 	useEffect(() => {
-		dispatch(getFromAPI())
+		dispatch(getDatabaseFromAPI())
+		dispatch(getOSCFromAPI())
 	}, [dispatch])
 
 	return (
@@ -63,8 +66,8 @@ if (runningInElectron()) {
 		store.dispatch(setFromNode(data))
 	})
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	window.ipcApi.receive('oscMessage', (data: any) => {
-		console.log(data)
+	window.ipcApi.receive('oscDatastoreUpdate', (data: OSCDatastore) => {
+		store.dispatch(updateOSCDatastore(data))
 	})
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	window.ipcApi.receive('logging', (logLine: { [key: string]: any }) => {

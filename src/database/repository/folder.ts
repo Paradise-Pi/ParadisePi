@@ -63,6 +63,9 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 				childFolders: {
 					sort: 'ASC',
 				},
+				faders: {
+					sort: 'ASC',
+				},
 			},
 			relations: {
 				childFolders: true,

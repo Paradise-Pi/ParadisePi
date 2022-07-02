@@ -4,6 +4,7 @@ import { setFromNode } from './redux/databaseSlice'
 import { setFromAPI } from './redux/e131SamplingModeSlice'
 import { appendLogline } from './redux/logsSlice'
 import store from './redux/mainStore'
+import { updateOSCDatastore } from './redux/oscDataSlice'
 import { setSocketClients, setSocketStatusConnection } from './redux/statusSlice'
 import { getOS } from './utilities/os'
 
@@ -39,6 +40,9 @@ export class SocketConnection {
 			})
 			SocketConnection.socket.on('e131SamplingMode', message => {
 				store.dispatch(setFromAPI(message))
+			})
+			SocketConnection.socket.on('oscDatastoreUpdate', database => {
+				store.dispatch(updateOSCDatastore(database))
 			})
 		}
 
