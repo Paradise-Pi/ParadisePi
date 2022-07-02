@@ -10,6 +10,9 @@ A facility control panel for sACN & OSC, in Electron.
 
 Made up of an electron app, with a websocket server serving an admin interface
 
+> **Warning**
+> This is version 1 which is depreciated - it is no longer supported and should not be used anymore
+
 ## Limitations
 
 - Only one network interface can exist on the RaspberryPi. WiFi must be disabled
