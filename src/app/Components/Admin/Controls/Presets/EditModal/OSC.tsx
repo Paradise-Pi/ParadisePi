@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { GetInputProps } from '@mantine/form/lib/types'
 import { ActionIcon, Button, Group, JsonInput, NumberInput, Select, Tabs } from '@mantine/core'
 import { useForm, FormList, formList } from '@mantine/form'
@@ -140,7 +140,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 			<Tabs.Tab label="Edit" disabled={disableForm}>
 				{form.values.commands.map((item, index) => {
 					if (mixer !== false) {
-						const part1Index = oscFirstOption[mixer].findIndex(
+						const part1Index = oscFirstOption[mixer.replace('midas-', '')].findIndex(
 							x => x.value == form.values.commands[index].command1
 						)
 						const part2Index = oscSecondOption.findIndex(
@@ -154,22 +154,24 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 									label="Part 1"
 									searchable
 									nothingFound="No options"
-									data={oscFirstOption[mixer]}
+									data={oscFirstOption[mixer.replace('midas-', '')]}
 								/>
 								{form.values.commands[index].command1 &&
-								oscFirstOption[mixer][part1Index].properties.startVal > -1 ? (
+								oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.startVal > -1 ? (
 									<NumberInput
 										label="Part 1 Value"
 										placeholder="Command Value"
 										{...form.getListInputProps('commands', index, 'value1')}
-										min={oscFirstOption[mixer][part1Index].properties.startVal}
-										max={oscFirstOption[mixer][part1Index].properties.endVal}
-										step={oscFirstOption[mixer][part1Index].properties.step}
+										min={
+											oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.startVal
+										}
+										max={oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.endVal}
+										step={oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.step}
 										precision={0}
 									/>
 								) : null}
 								{form.values.commands[index].command1 &&
-								oscFirstOption[mixer][part1Index].properties.hasSecondOption ? (
+								oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.hasSecondOption ? (
 									<Select
 										placeholder="Options"
 										{...form.getListInputProps('commands', index, 'command2')}
