@@ -3,14 +3,20 @@ import oscHandler from 'osc'
 import { broadcast } from './../../api/broadcast'
 import { DatabaseFader, FaderRepository } from '../../database/repository/fader'
 import { OSCFormValue } from '../../app/Components/Admin/Controls/Presets/EditModal/OSC'
-import { iLevels, meter1PacketParser } from './meterFunctions'
+import { MeterLevels, meter1PacketParser } from './meterFunctions'
 import { clearInterval } from 'timers'
+import { faderArrayToString, faderStringToArray } from './faderFunctions'
 
 export interface OSCDatastore {
 	status: boolean
 	mixerName: string | false
-	metering: iLevels | false
-	[key: string]: any
+	metering: MeterLevels | false
+	faderValues: {
+		[key: string]: number
+	}
+	faderMutes: {
+		[key: string]: boolean
+	}
 }
 
 /**
@@ -41,6 +47,8 @@ export default abstract class OSC {
 			status: false,
 			mixerName: false,
 			metering: false,
+			faderValues: {},
+			faderMutes: {},
 		}
 		this.setupOSC()
 	}
@@ -52,6 +60,21 @@ export default abstract class OSC {
 		if (this.deviceType === 'xair' || this.deviceType === 'x32') {
 			this.udpPort.send({ address: '/xremote' })
 			this.udpPort.send({ address: '/meters', args: [{ type: 's', value: '/meters/1' }] })
+			FaderRepository.getAll().then((faders: DatabaseFader[]) => {
+				// Iterate through all faders to send subscriptions for them (so we get updates if their fader level changes)
+				faders.forEach(entry => {
+					// Fader
+					this.udpPort.send({
+						address: '/' + faderArrayToString(entry.type, entry.channel, this.deviceType) + '/mix/fader',
+						args: [],
+					})
+					// Mute status
+					this.udpPort.send({
+						address: '/' + faderArrayToString(entry.type, entry.channel, this.deviceType) + '/mix/on',
+						args: [],
+					})
+				})
+			})
 		}
 	}
 
@@ -60,52 +83,41 @@ export default abstract class OSC {
 	 */
 	private checkStatusOSC(): void {
 		const currentMillis = +new Date()
-		if (currentMillis - this.lastOSCMessage > 3000) {
-			// Now disconnected from the Device - been more than 3 seconds since we've received a message
-			this.setUDPStatus(false)
-			this.udpPort.send({ address: '/status', args: [] }) // Keep trying anyway, no harm
-		} else if (currentMillis - this.lastOSCMessage > 500 && this.datastore.status) {
-			// Send a status request to hope you get something back - before you decide you're offline
+		if (
+			currentMillis - this.lastOSCMessage > 500 &&
+			currentMillis - this.lastOSCMessage < 3000 &&
+			this.datastore.status
+		) {
+			// Not heard for over 500ms, so assume we might have lost connection and try and get something back
 			this.udpPort.send({ address: '/status', args: [] })
+		} else if (currentMillis - this.lastOSCMessage >= 3000) {
+			// Been over 3 seconds since last message, so assume we're not connected and try to reconnect once more
+			this.udpPort.send({ address: '/status', args: [] }) // Keep trying to connect - in case it comes back
+			if (this.datastore.status) {
+				this.datastore.status = false
+				this.databaseUpdated()
+				this.setCheckStatusCycle(5000) // Turn the frequency right down, we don't need to spam it constantly
+			}
 		} else if (currentMillis - this.lastOSCMessage < 500 && !this.datastore.status) {
-			// Reconnected
+			// We're not connected but we have heard recently, so we need to setup the connection again
 			this.udpPort.send({ address: '/info', args: [] })
-			this.setUDPStatus(true)
+			this.datastore.status = true
+			this.setCheckStatusCycle(250) // Turn the frequency back up to maintain a connection
 			this.subscribeOSC()
-			// When a connection is first opened, want to get the statuses of stuff we're interested in
-			FaderRepository.getAll().then((faders: DatabaseFader[]) => {
-				// Iterate through all faders to send subscriptions for them (so we get updates if their fader level changes)
-				faders.forEach(entry => {
-					// Note that the stereo output faders don't have a number, so don't send a channel number
-					const thisAddress = `/${String(entry.type)}${
-						!['main/st', 'main/m', 'lr'].includes(String(entry.type))
-							? '/' + String(entry.channel).padStart(2, '0')
-							: ''
-					}`
-					// Fader
-					this.udpPort.send({
-						address: thisAddress + '/mix/fader',
-						args: [],
-					})
-					// Mute status
-					// this.udpPort.send({
-					// 	address: thisAddress + '/mix/on',
-					// 	args: [],
-					// })
-				})
-			})
-		} else if (!this.datastore.status) {
-			this.setUDPStatus(true)
+			this.databaseUpdated()
 		}
 	}
-
 	/**
-	 * Set the status of the connection to the device
-	 * @param status - true if connected, false if not
+	 * Set the check status cycle timings to a new value
+	 * @param interval - time in ms to wait before checking status
 	 */
-	private setUDPStatus(status: boolean) {
-		this.datastore.status = status
-		this.databaseUpdated()
+	private setCheckStatusCycle(interval: number) {
+		if (typeof this.statusCheckerTimer === 'object') {
+			clearInterval(this.statusCheckerTimer)
+		}
+		this.statusCheckerTimer = setInterval(() => {
+			this.checkStatusOSC()
+		}, interval)
 	}
 
 	/**
@@ -139,17 +151,27 @@ export default abstract class OSC {
 
 		this.udpPort.on('ready', () => {
 			logger.log('info', '[OSC] UDP Socket open and listening')
-			this.statusCheckerTimer = setInterval(() => {
-				this.checkStatusOSC()
-			}, 1000)
+			this.setCheckStatusCycle(250)
+			this.subscribeOSC()
 		})
 
 		this.udpPort.on('message', (oscMessage: { address: string; parsed: any; args: any[] }) => {
 			this.lastOSCMessage = +new Date()
 			if (oscMessage.address === '/meters/1') {
-				this.datastore.metering = meter1PacketParser(oscMessage.args[0])
+				this.datastore.metering = meter1PacketParser(oscMessage.args[0], this.deviceType)
 			} else if (oscMessage.address === '/status' && oscMessage.args.length === 3) {
 				this.datastore.mixerName = oscMessage.args[2]
+			} else if (oscMessage.address === '/info' && oscMessage.args.length === 4) {
+				// Example ["V2.07","X32 Emulator","X32","4.06"]
+				this.datastore.mixerName = oscMessage.args[1]
+			} else if (oscMessage.address.endsWith('/mix/fader') && oscMessage.args.length === 1) {
+				const faderArray = faderStringToArray(oscMessage.address, this.deviceType)
+				this.datastore.faderValues[faderArrayToString(faderArray[0], faderArray[1], this.deviceType)] =
+					oscMessage.args[0]
+			} else if (oscMessage.address.endsWith('/mix/on') && oscMessage.args.length === 1) {
+				const faderArray = faderStringToArray(oscMessage.address, this.deviceType)
+				this.datastore.faderMutes[faderArrayToString(faderArray[0], faderArray[1], this.deviceType)] =
+					oscMessage.args[0] === 1
 			} else {
 				logger.verbose('[OSC] Received unrecognized message', { oscMessage })
 			}

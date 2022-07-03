@@ -76,7 +76,7 @@ export const Fader = (props: {
 	return (
 		<Slider
 			defaultValue={!props.disabled && props.value !== false ? props.value : null}
-			disabled={props.value !== false}
+			disabled={props.value === false}
 			onChange={value => (!props.disabled ? props.onChange(value) : false)}
 			value={props.disabled && props.value !== false ? props.value : null}
 			radius={'lg'}
