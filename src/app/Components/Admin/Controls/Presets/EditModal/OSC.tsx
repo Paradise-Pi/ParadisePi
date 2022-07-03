@@ -42,102 +42,150 @@ interface oscCommand {
 		startVal: number
 		endVal: number
 		step: number
-		hasSecondOption: boolean
-		valIsEncode: boolean
+		secondOption: string //the array from oscSecondOptionList containing the relevent options for this command
 	}
 }
 interface oscCommands {
 	[console: string]: oscCommand[]
 }
 
+interface oscSecondOption {
+	value: string
+	label: string
+	properties: {
+		startVal: number
+		endVal: number
+		step: number
+		precision: number
+	}
+}
+
+interface oscSecondOptions {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[key: string]: oscSecondOption[]
+}
+
 export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 	const mixer = useAppSelector(state => (state.database ? state.database.config.osc.OSCMixerType : false))
 
 	const oscFirstOption: oscCommands = {
-		// "mixer":[{value:"address",label:"name", properties:{startVal, endVal, Step, hasSecondOption, valIsEncode}}]
+		// "mixer":[{value:"address",label:"name", properties:{startVal, endVal, Step, secondOption, valIsEncode}}]
 		xair: [
 			{
 				value: '/ch/',
 				label: 'Channel',
-				properties: { startVal: 1, endVal: 16, step: 1, hasSecondOption: true, valIsEncode: false },
+				properties: { startVal: 1, endVal: 16, step: 1, secondOption: 'channel' },
 			},
 			{
 				value: '/config/mute/',
 				label: 'Mute Group',
-				properties: { startVal: 1, endVal: 6, step: 1, hasSecondOption: false, valIsEncode: false },
+				properties: { startVal: 1, endVal: 6, step: 1, secondOption: 'basic' },
 			},
 			{
 				value: '/lr',
 				label: 'Master',
-				properties: { startVal: -1, endVal: -1, step: -1, hasSecondOption: true, valIsEncode: false },
+				properties: { startVal: -1, endVal: -1, step: -1, secondOption: 'basic' },
 			},
 			{
-				value: '/-snap/load',
+				value: '/-snap',
 				label: 'Load Snapshot',
-				properties: { startVal: 1, endVal: 64, step: 1, hasSecondOption: false, valIsEncode: true },
+				properties: { startVal: 1, endVal: 64, step: 1, secondOption: 'snap' },
 			},
 		],
 		x32: [
 			{
 				value: '/ch/',
 				label: 'Channel',
-				properties: { startVal: 1, endVal: 16, step: 1, hasSecondOption: true, valIsEncode: false },
+				properties: { startVal: 1, endVal: 16, step: 1, secondOption: 'channel' },
 			},
 			{
 				value: '/config/mute/',
 				label: 'Mute Group',
-				properties: { startVal: 1, endVal: 6, step: 1, hasSecondOption: false, valIsEncode: false },
+				properties: { startVal: 1, endVal: 6, step: 1, secondOption: 'basic' },
 			},
 			{
 				value: '/main/st',
 				label: 'Master',
-				properties: { startVal: -1, endVal: -1, step: -1, hasSecondOption: true, valIsEncode: false },
+				properties: { startVal: -1, endVal: -1, step: -1, secondOption: 'basic' },
 			},
 			{
-				value: '/‐action/gocue',
-				label: 'Load Cue',
-				properties: { startVal: 0, endVal: 99, step: 1, hasSecondOption: false, valIsEncode: true },
-			},
-			{
-				value: '/‐action/goscene',
-				label: 'Load Scene',
-				properties: { startVal: 0, endVal: 99, step: 1, hasSecondOption: false, valIsEncode: true },
-			},
-			{
-				value: '/‐action/gosnippet',
-				label: 'Load Snippet',
-				properties: { startVal: 0, endVal: 99, step: 1, hasSecondOption: false, valIsEncode: true },
+				value: '/-action',
+				label: 'Console Actions',
+				properties: { startVal: -1, endVal: -1, step: -1, secondOption: 'action' },
 			},
 		],
 		'': [],
 	}
-	const oscSecondOption = [
-		{
-			value: '/mix/on',
-			label: 'Mute',
-			properties: { startVal: 0, endVal: 1, step: 1, precision: 0 },
-		},
-		{
-			value: '/mix/fader',
-			label: 'Level',
-			properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
-		},
-		{
-			value: '/mix/pan',
-			label: 'Pan',
-			properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
-		},
-		{
-			value: '/headamp/gain',
-			label: 'Gain',
-			properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
-		},
-		{
-			value: '/headamp/phantom',
-			label: '+48V',
-			properties: { startVal: 0, endVal: 1, step: 1, precision: 0 },
-		},
-	]
+
+	/**
+	 * The second part of the OSC command.
+	 * This is made up of lists of options, that should be selected in the above oscFirstOption.
+	 */
+	const oscSecondOptionList: oscSecondOptions = {
+		basic: [
+			{
+				value: '/mix/on',
+				label: 'Mute',
+				properties: { startVal: 0, endVal: 1, step: 1, precision: 0 },
+			},
+			{
+				value: '/mix/fader',
+				label: 'Level',
+				properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
+			},
+		],
+		channel: [
+			{
+				value: '/mix/on',
+				label: 'Mute',
+				properties: { startVal: 0, endVal: 1, step: 1, precision: 0 },
+			},
+			{
+				value: '/mix/fader',
+				label: 'Level',
+				properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
+			},
+			{
+				value: '/mix/pan',
+				label: 'Pan',
+				properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
+			},
+			{
+				value: '/headamp/gain',
+				label: 'Gain',
+				properties: { startVal: 0.0, endVal: 1.0, step: 0.01, precision: 2 },
+			},
+			{
+				value: '/headamp/phantom',
+				label: '+48V',
+				properties: { startVal: 0, endVal: 1, step: 1, precision: 0 },
+			},
+		],
+		snap: [
+			{
+				value: '/load',
+				label: 'Load Snapshot',
+				properties: { startVal: 1, endVal: 64, step: 1, precision: 0 },
+			},
+		],
+		action: [
+			{
+				value: '/gocue',
+				label: 'Load Cue',
+				properties: { startVal: 0, endVal: 99, step: 1, precision: 0 },
+			},
+			{
+				value: '/goscene',
+				label: 'Load Scene',
+				properties: { startVal: 0, endVal: 99, step: 1, precision: 0 },
+			},
+			{
+				value: '/gosnippet',
+				label: 'Load Snippet',
+				properties: { startVal: 0, endVal: 99, step: 1, precision: 0 },
+			},
+		],
+	}
 	let preset = JSON.parse('[]')
 	let disableForm = false
 	if (isValidJson(props.value)) {
@@ -159,9 +207,19 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 						const part1Index = oscFirstOption[mixer.replace('midas-', '')].findIndex(
 							x => x.value == form.values.commands[index].command1
 						)
-						const part2Index = oscSecondOption.findIndex(
-							x => x.value == form.values.commands[index].command2
-						)
+
+						const part2Array =
+							part1Index != -1
+								? oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.secondOption
+								: null
+
+						const part2Index =
+							part1Index != -1
+								? oscSecondOptionList[part2Array].findIndex(
+										x => x.value == form.values.commands[index].command2
+								  )
+								: null
+
 						return (
 							<Group key={item.key} mt="xs">
 								<Select
@@ -186,28 +244,27 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 										precision={0}
 									/>
 								) : null}
-								{form.values.commands[index].command1 &&
-								oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.hasSecondOption ? (
+								{form.values.commands[index].command1 && part2Array ? (
 									<Select
 										placeholder="Options"
 										{...form.getListInputProps('commands', index, 'command2')}
 										label="Part 2"
 										searchable
 										nothingFound="No options"
-										data={oscSecondOption}
+										data={oscSecondOptionList[part2Array]}
 									/>
 								) : null}
 								{form.values.commands[index].command1 &&
 								form.values.commands[index].command2 &&
-								oscSecondOption[part2Index].properties.startVal > -1 ? (
+								oscSecondOptionList[part2Array][part2Index].properties.startVal > -1 ? (
 									<NumberInput
 										placeholder="Option Value"
 										label="Part 2 Value"
 										{...form.getListInputProps('commands', index, 'value2')}
-										min={oscSecondOption[part2Index].properties.startVal}
-										max={oscSecondOption[part2Index].properties.endVal}
-										step={oscSecondOption[part2Index].properties.step}
-										precision={oscSecondOption[part2Index].properties.precision}
+										min={oscSecondOptionList[part2Array][part2Index].properties.startVal}
+										max={oscSecondOptionList[part2Array][part2Index].properties.endVal}
+										step={oscSecondOptionList[part2Array][part2Index].properties.step}
+										precision={oscSecondOptionList[part2Array][part2Index].properties.precision}
 									/>
 								) : null}
 								<ActionIcon
