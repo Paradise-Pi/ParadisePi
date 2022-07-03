@@ -9,20 +9,11 @@ import { ApiCall } from './../../apis/wrapper'
 export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 	const oscDatastore = useAppSelector(state => (state.oscDatastore ? state.oscDatastore : false))
 	const deviceType = useAppSelector(state => (state.database ? state.database.config.osc.OSCMixerType : false))
-	if (oscDatastore) {
-		console.log(oscDatastore)
-	}
 	if (oscDatastore && deviceType) {
 		return (
 			<>
 				{props.faders.map(fader => {
 					const faderString = faderArrayToString(fader.type, fader.channel, deviceType)
-					console.log(
-						typeof oscDatastore.faderValues[faderString] !== 'undefined'
-							? Math.floor(oscDatastore.faderValues[faderString] * 100)
-							: false,
-						faderString
-					)
 					return (
 						<>
 							<Group position="left" mt="md">
@@ -52,12 +43,12 @@ export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 										? Math.floor(oscDatastore.faderValues[faderString] * 100)
 										: false
 								}
-								onChange={val => {
+								onChange={val =>
 									ApiCall.post('/faders', {
 										address: '/' + faderString + '/mix/fader',
 										value: val / 100,
 									})
-								}}
+								}
 							/>
 						</>
 					)

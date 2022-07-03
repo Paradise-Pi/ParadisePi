@@ -40,7 +40,7 @@ const metering = (theme: MantineTheme, value: number) => {
 		defaultColour: theme.colors.dark[4],
 	}
 	const thresholds = {
-		green: 75,
+		green: 73,
 		yellow: 87.5,
 	}
 	let coloursArray: string[]
@@ -75,10 +75,9 @@ export const Fader = (props: {
 }) => {
 	return (
 		<Slider
-			defaultValue={!props.disabled && props.value !== false ? props.value : null}
 			disabled={props.value === false}
 			onChange={value => (!props.disabled ? props.onChange(value) : false)}
-			value={props.disabled && props.value !== false ? props.value : null}
+			value={props.value !== false ? props.value : null}
 			radius={'lg'}
 			showLabelOnHover={false}
 			size={'xl'}

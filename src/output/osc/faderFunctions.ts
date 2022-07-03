@@ -32,3 +32,13 @@ export const faderArrayToString = (type: string, channel: number, mixerType: str
 		else return String(type) + '/' + String(channel).padStart(2, '0') // TODO does the XAir like padding? We're not 100% sure
 	} else return null // TODO: throw error? This is called from node and react so not easy to do
 }
+/**
+ * Push the string throuhg the to array function, then back again. This can clean up something like /ch/01/mix/fader to ch/01
+ * @param faderString - string address of fader
+ * @param mixerType - type of mixer (eg 'xair' or 'x32')
+ * @returns a fader string that can be sent via OSC (eg '/ch/1')
+ */
+export const faderStringBackToString = (faderString: string, mixerType: string): string => {
+	const [type, channel] = faderStringToArray(faderString, mixerType)
+	return faderArrayToString(type, channel, mixerType)
+}
