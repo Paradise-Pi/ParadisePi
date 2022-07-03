@@ -7,10 +7,17 @@ import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { useAppSelector } from '../../../../../../app/apis/redux/mainStore'
 import { isValidJson } from './isValidJson'
 
+/**
+ * List of commands formatted for \@mantine/form
+ */
 export interface OSCFormValues {
 	commands: FormList<OSCFormValue>
 }
 
+/**
+ * A single osc command, stored as individual fields to allow editing.
+ * The command is combined and formatted when sent using OSC.sendPreset()
+ */
 export interface OSCFormValue {
 	command1: string
 	value1: string
@@ -19,6 +26,15 @@ export interface OSCFormValue {
 	key: string
 }
 
+/**
+ * Wrapper for an OSC command initial option - eg '/ch/'
+ *
+ * First options take a number of formats, most commonly a type followed by a parameter number.
+ *
+ * Some have second options (eg pan, level, on/off), but not all. If it doesn't have a second option,
+ * the value of this option is often a recall parameter (eg for scenes)m however this is not always the
+ * case so be careful!
+ */
 interface oscCommand {
 	value: string
 	label: string

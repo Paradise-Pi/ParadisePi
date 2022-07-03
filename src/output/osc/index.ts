@@ -5,7 +5,7 @@ import { DatabaseFader, FaderRepository } from '../../database/repository/fader'
 import { OSCFormValue } from '../../app/Components/Admin/Controls/Presets/EditModal/OSC'
 import { MeterLevels, meter1PacketParser } from './meterFunctions'
 import { clearInterval } from 'timers'
-import { faderArrayToString, faderStringBackToString, faderStringToArray } from './faderFunctions'
+import { faderArrayToString, faderStringBackToString } from './faderFunctions'
 
 export interface OSCDatastore {
 	status: boolean
@@ -209,23 +209,27 @@ export default abstract class OSC {
 	}
 
 	/**
-	 * Main sending handler
-	 * @param presetData - data to send to the device from a Preset
+	 * Preset sending handler
+	 * @param presetData - a SINGLE OSCFormValue Preset command
 	 */
-	public sendPreset(presetData: any) {
-		const data: OSCFormValue = presetData[1] //Something is incorrectly wrapping the data in an array so we need to get rid of it
-		const address = data.command1 + String(data.value1).padStart(2, '0') + data.command2
-		let args = {}
-		if (Number.isInteger(Number(data.value2))) {
-			//assuming we have an integer so need an integer type
-			args = { type: 'i', value: data.value2 }
+	public sendPreset(presetData: OSCFormValue) {
+		const address = presetData.command1 + String(presetData.value1).padStart(2, '0') + presetData.command2
+		if (presetData.command1 === '/ch/') {
+			//if we're sending a channel, pretend we moved a fader so that graphical faders are updated correctly
+			this.sendFaderValue(address, Number(presetData.value2))
 		} else {
-			//we have a decimal number so need a floating point type
-			args = { type: 'f', value: data.value2 }
-		}
+			let args = {}
+			if (Number.isInteger(Number(presetData.value2))) {
+				//assuming we have an integer so need an integer type
+				args = { type: 'i', value: presetData.value2 }
+			} else {
+				//we have a decimal number so need a floating point type
+				args = { type: 'f', value: presetData.value2 }
+			}
 
-		//Actual sending
-		logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
-		this.udpPort.send({ address: address, args: args })
+			//Actual sending
+			logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
+			this.udpPort.send({ address: address, args: args })
+		}
 	}
 }
