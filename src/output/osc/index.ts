@@ -217,25 +217,29 @@ export default abstract class OSC {
 
 	/**
 	 * Preset sending handler
-	 * @param presetData - a SINGLE OSCFormValue Preset command
+	 * @param presetData - a SINGLE OSCFormValue Preset command or a string address to send
 	 */
-	public sendPreset(presetData: OSCFormValue) {
-		const address =
-			presetData.command1 +
-			(presetData.value1 ?? String(presetData.value1).padStart(2, '0')) +
-			presetData.command2
-		let args = {}
-		if (Number.isInteger(Number(presetData.value2))) {
-			//assuming we have an integer so need an integer type
-			args = { type: 'i', value: presetData.value2 }
+	public sendPreset(presetData: OSCFormValue | string) {
+		if (typeof presetData === 'string') {
+			this.udpPort.send({ address: presetData, args: [] })
 		} else {
-			//we have a decimal number so need a floating point type
-			args = { type: 'f', value: presetData.value2 }
-		}
+			const address =
+				presetData.command1 +
+				(presetData.value1 ?? String(presetData.value1).padStart(2, '0')) +
+				presetData.command2
+			let args = {}
+			if (Number.isInteger(Number(presetData.value2))) {
+				//assuming we have an integer so need an integer type
+				args = { type: 'i', value: presetData.value2 }
+			} else {
+				//we have a decimal number so need a floating point type
+				args = { type: 'f', value: presetData.value2 }
+			}
 
-		//Actual sending
-		logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
-		this.udpPort.send({ address: address, args: args })
-		this.manuallyGetFaderPositions() //get the fader positions after a preset is sent, as they might have moved
+			//Actual sending
+			logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
+			this.udpPort.send({ address: address, args: args })
+			this.manuallyGetFaderPositions() //get the fader positions after a preset is sent, as they might have moved
+		}
 	}
 }
