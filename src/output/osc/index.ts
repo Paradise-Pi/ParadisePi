@@ -65,6 +65,27 @@ export default abstract class OSC {
 	}
 
 	/**
+	 * Iterate through all faders to get initial levels for them - subscribing only gets changes not the values they're currently at!
+	 * We also call this when firing a preset, as that might have impacted faders, and when we make a change we're not notified by the device
+	 */
+	private manuallyGetFaderPositions() {
+		FaderRepository.getAll().then((faders: DatabaseFader[]) => {
+			faders.forEach(entry => {
+				// Fader
+				this.udpPort.send({
+					address: '/' + faderArrayToString(entry.type, entry.channel, this.deviceType) + '/mix/fader',
+					args: [],
+				})
+				// Mute status
+				this.udpPort.send({
+					address: '/' + faderArrayToString(entry.type, entry.channel, this.deviceType) + '/mix/on',
+					args: [],
+				})
+			})
+		})
+	}
+
+	/**
 	 * Check we're actually connected, and try to reconnect if not
 	 */
 	private checkStatusOSC(): void {
@@ -90,21 +111,7 @@ export default abstract class OSC {
 			this.datastore.status = true
 			this.setCheckStatusCycle(250) // Turn the frequency back up to maintain a connection
 			this.subscribeOSC()
-			FaderRepository.getAll().then((faders: DatabaseFader[]) => {
-				// Iterate through all faders to get initial levels for them - subscribing only gets changes - not the values they're currently at!
-				faders.forEach(entry => {
-					// Fader
-					this.udpPort.send({
-						address: '/' + faderArrayToString(entry.type, entry.channel, this.deviceType) + '/mix/fader',
-						args: [],
-					})
-					// Mute status
-					this.udpPort.send({
-						address: '/' + faderArrayToString(entry.type, entry.channel, this.deviceType) + '/mix/on',
-						args: [],
-					})
-				})
-			})
+			this.manuallyGetFaderPositions()
 			this.datastoreUpdated()
 		}
 	}
@@ -214,22 +221,18 @@ export default abstract class OSC {
 	 */
 	public sendPreset(presetData: OSCFormValue) {
 		const address = presetData.command1 + String(presetData.value1).padStart(2, '0') + presetData.command2
-		if (presetData.command1 === '/ch/') {
-			//if we're sending a channel, pretend we moved a fader so that graphical faders are updated correctly
-			this.sendFaderValue(address, Number(presetData.value2))
+		let args = {}
+		if (Number.isInteger(Number(presetData.value2))) {
+			//assuming we have an integer so need an integer type
+			args = { type: 'i', value: presetData.value2 }
 		} else {
-			let args = {}
-			if (Number.isInteger(Number(presetData.value2))) {
-				//assuming we have an integer so need an integer type
-				args = { type: 'i', value: presetData.value2 }
-			} else {
-				//we have a decimal number so need a floating point type
-				args = { type: 'f', value: presetData.value2 }
-			}
-
-			//Actual sending
-			logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
-			this.udpPort.send({ address: address, args: args })
+			//we have a decimal number so need a floating point type
+			args = { type: 'f', value: presetData.value2 }
 		}
+
+		//Actual sending
+		logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
+		this.udpPort.send({ address: address, args: args })
+		this.manuallyGetFaderPositions() //get the fader positions after a preset is sent, as they might have moved
 	}
 }
