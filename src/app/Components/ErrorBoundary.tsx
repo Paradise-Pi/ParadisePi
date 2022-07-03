@@ -23,12 +23,8 @@ class ErrorBoundary extends Component<Props, State> {
 			errorInfo: errorInfo,
 		})
 		//log the error
-		try {
-			logger.error('Uncaught error:', error, errorInfo)
-		} catch (e) {
-			// eslint-disable-next-line no-console
-			console.error('Uncaught error:', error, errorInfo)
-		}
+		// eslint-disable-next-line no-console
+		console.error('Uncaught error:', error, errorInfo)
 	}
 
 	render() {
