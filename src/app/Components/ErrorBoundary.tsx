@@ -1,4 +1,4 @@
-import { Button, Title, Text, Container, Accordion, Divider, Code, Center, Box } from '@mantine/core'
+import { Button, Title, Text, Container, Accordion, Divider, Code, Box } from '@mantine/core'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 import { ApiCall } from '../apis/wrapper'
