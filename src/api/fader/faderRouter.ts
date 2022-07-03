@@ -25,7 +25,7 @@ export const faderRouter = (
 					resolve({})
 				})
 		} else if (method === 'POST') {
-			if (payload && payload.address && payload.value) {
+			if (payload && typeof payload.address !== undefined && typeof payload.value !== undefined) {
 				osc.sendFaderValue(payload.address, payload.value)
 				resolve({})
 			} else reject(new Error('Payload not sent'))
