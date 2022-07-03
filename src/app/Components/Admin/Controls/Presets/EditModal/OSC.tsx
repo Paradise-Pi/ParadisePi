@@ -199,6 +199,16 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 			commands: formList(preset),
 		},
 	})
+
+	const doJsonUpdate = (value: string) => {
+		props.onChange(value)
+		if (isValidJson(value)) {
+			form.values.commands = JSON.parse(value)
+		} else {
+			throw new Error('Invalid JSON, falling back to JSON editor')
+		}
+	}
+
 	try {
 		return (
 			<Tabs>
@@ -303,13 +313,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 					</Group>
 				</Tabs.Tab>
 				<Tabs.Tab label="JSON Mode">
-					<JsonInput
-						formatOnBlur={true}
-						autosize
-						maxRows={20}
-						value={props.value}
-						onChange={props.onChange}
-					/>
+					<JsonInput formatOnBlur={true} autosize maxRows={20} value={props.value} onChange={doJsonUpdate} />
 				</Tabs.Tab>
 			</Tabs>
 		)
