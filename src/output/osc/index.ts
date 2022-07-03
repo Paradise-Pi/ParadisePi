@@ -180,7 +180,7 @@ export default abstract class OSC {
 				this.datastore.faderMutes[faderStringBackToString(oscMessage.address, this.deviceType)] =
 					oscMessage.args[0] === 1
 			} else {
-				logger.debug('[OSC] Received unrecognized message', { oscMessage })
+				logger.debug('[OSC] Received unrecognised message', { oscMessage })
 			}
 			this.datastoreUpdated()
 		})

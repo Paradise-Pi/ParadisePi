@@ -42,7 +42,7 @@ interface oscCommand {
 		startVal: number
 		endVal: number
 		step: number
-		secondOption: string //the array from oscSecondOptionList containing the relevent options for this command
+		secondOption: string //the array from oscSecondOptionList containing the relevant options for this command
 	}
 }
 interface oscCommands {
