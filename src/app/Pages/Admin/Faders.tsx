@@ -41,11 +41,6 @@ const FaderChoices = (mixer: string) => {
 			group: 'Inputs',
 		},
 		{
-			value: 'dca',
-			label: 'DCAs',
-			group: '',
-		},
-		{
 			value: 'auxin',
 			label: 'Aux In',
 			group: 'Inputs',
