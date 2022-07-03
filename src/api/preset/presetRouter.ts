@@ -29,7 +29,7 @@ export const presetRouter = (
 					resolve({})
 				} else if (value.type === 'osc' && value.data !== null && typeof osc !== 'undefined') {
 					Object.entries(value.data).forEach(presetData => {
-						osc.send(presetData)
+						osc.sendPreset(presetData)
 					})
 					resolve({})
 				} else if (value.type === 'http' && value.data !== null && value.data.url !== null) {

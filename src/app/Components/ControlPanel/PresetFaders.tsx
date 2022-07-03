@@ -1,9 +1,10 @@
 import React from 'react'
-import { Badge, Button, Group, Title } from '@mantine/core'
+import { Badge, Group, Title } from '@mantine/core'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { Fader } from './../../Components/ControlPanel/Fader'
 import { DatabaseFader } from './../../../database/repository/fader'
 import { faderArrayToString } from './../../../output/osc/faderFunctions'
+import { ApiCall } from './../../apis/wrapper'
 
 export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 	const oscDatastore = useAppSelector(state => (state.oscDatastore ? state.oscDatastore : false))
@@ -52,7 +53,10 @@ export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 										: false
 								}
 								onChange={val => {
-									console.log(val)
+									ApiCall.post('/faders', {
+										address: '/' + faderString + '/mix/fader',
+										value: val / 100,
+									})
 								}}
 							/>
 						</>

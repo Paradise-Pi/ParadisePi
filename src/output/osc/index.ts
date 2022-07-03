@@ -197,10 +197,19 @@ export default abstract class OSC {
 	}
 
 	/**
+	 * Send the value of a fader, to be set on the device
+	 * @param faderString	- string of the fader to set the value of (e.g. /ch/1/mix/fader)
+	 * @param value - a value between 0 and 1
+	 */
+	public sendFaderValue(faderString: string, value: number) {
+		this.udpPort.send({ address: faderString, args: [{ type: 'f', value: [value] }] })
+	}
+
+	/**
 	 * Main sending handler
 	 * @param presetData - data to send to the device from a Preset
 	 */
-	public send(presetData: any) {
+	public sendPreset(presetData: any) {
 		const data: OSCFormValue = presetData[1] //Something is incorrectly wrapping the data in an array so we need to get rid of it
 		const address = data.command1 + String(data.value1).padStart(2, '0') + data.command2
 		let args = {}
@@ -213,7 +222,7 @@ export default abstract class OSC {
 		}
 
 		//Actual sending
-		logger.verbose('Sending OSC Packet to address ' + address, { args })
+		logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
 		this.udpPort.send({ address: address, args: args })
 	}
 }

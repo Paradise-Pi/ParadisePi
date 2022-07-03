@@ -24,6 +24,11 @@ export const faderRouter = (
 					sendDatabaseObject(response)
 					resolve({})
 				})
+		} else if (method === 'POST') {
+			if (payload && payload.address && payload.value) {
+				osc.sendFaderValue(payload.address, payload.value)
+				resolve({})
+			} else reject(new Error('Payload not sent'))
 		} else reject(new Error('Path not found'))
 	})
 }
