@@ -8,7 +8,7 @@ import { Database } from './database'
 
 export interface ServerToClientEvents {
 	refreshDatabase: (database: Database) => void
-	oscMessage: (message: any) => void
+	oscDatastoreUpdate: (message: any) => void
 	logging: (message: { [key: string]: any }) => void
 	socketClients: (message: { [key: string]: any }) => void
 	e131SamplingMode: (message: { messageType: string; status?: boolean; duration?: number; message: string }) => void

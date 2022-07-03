@@ -12,6 +12,8 @@
 
 - [ ] Boots with a pre-existing database from the previous release, uploaded using the interface
 - [ ] Boots without a database, successfully creating its own 
+- [ ] Reboots when reboot clicked
+- [ ] Quits when quit clicked
 
 ### Presets
 
@@ -23,6 +25,6 @@
 - [ ] Preset colors can be changed, and this is shown in the control panel
 - [ ] Preset sort order is maintained
 
-### Preset Folders
+### Folders
 
 

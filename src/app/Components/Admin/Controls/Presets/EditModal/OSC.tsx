@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { GetInputProps } from '@mantine/form/lib/types'
 import { ActionIcon, Button, Group, JsonInput, NumberInput, Select, Tabs } from '@mantine/core'
 import { useForm, FormList, formList } from '@mantine/form'
@@ -7,10 +7,17 @@ import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { useAppSelector } from '../../../../../../app/apis/redux/mainStore'
 import { isValidJson } from './isValidJson'
 
+/**
+ * List of commands formatted for \@mantine/form
+ */
 export interface OSCFormValues {
 	commands: FormList<OSCFormValue>
 }
 
+/**
+ * A single osc command, stored as individual fields to allow editing.
+ * The command is combined and formatted when sent using OSC.sendPreset()
+ */
 export interface OSCFormValue {
 	command1: string
 	value1: string
@@ -19,6 +26,15 @@ export interface OSCFormValue {
 	key: string
 }
 
+/**
+ * Wrapper for an OSC command initial option - eg '/ch/'
+ *
+ * First options take a number of formats, most commonly a type followed by a parameter number.
+ *
+ * Some have second options (eg pan, level, on/off), but not all. If it doesn't have a second option,
+ * the value of this option is often a recall parameter (eg for scenes)m however this is not always the
+ * case so be careful!
+ */
 interface oscCommand {
 	value: string
 	label: string
@@ -140,7 +156,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 			<Tabs.Tab label="Edit" disabled={disableForm}>
 				{form.values.commands.map((item, index) => {
 					if (mixer !== false) {
-						const part1Index = oscFirstOption[mixer].findIndex(
+						const part1Index = oscFirstOption[mixer.replace('midas-', '')].findIndex(
 							x => x.value == form.values.commands[index].command1
 						)
 						const part2Index = oscSecondOption.findIndex(
@@ -154,22 +170,24 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 									label="Part 1"
 									searchable
 									nothingFound="No options"
-									data={oscFirstOption[mixer]}
+									data={oscFirstOption[mixer.replace('midas-', '')]}
 								/>
 								{form.values.commands[index].command1 &&
-								oscFirstOption[mixer][part1Index].properties.startVal > -1 ? (
+								oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.startVal > -1 ? (
 									<NumberInput
 										label="Part 1 Value"
 										placeholder="Command Value"
 										{...form.getListInputProps('commands', index, 'value1')}
-										min={oscFirstOption[mixer][part1Index].properties.startVal}
-										max={oscFirstOption[mixer][part1Index].properties.endVal}
-										step={oscFirstOption[mixer][part1Index].properties.step}
+										min={
+											oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.startVal
+										}
+										max={oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.endVal}
+										step={oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.step}
 										precision={0}
 									/>
 								) : null}
 								{form.values.commands[index].command1 &&
-								oscFirstOption[mixer][part1Index].properties.hasSecondOption ? (
+								oscFirstOption[mixer.replace('midas-', '')][part1Index].properties.hasSecondOption ? (
 									<Select
 										placeholder="Options"
 										{...form.getListInputProps('commands', index, 'command2')}

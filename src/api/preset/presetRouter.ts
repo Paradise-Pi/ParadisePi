@@ -20,16 +20,16 @@ export const presetRouter = (
 		if (method === 'GET' && path[0] === 'recall') {
 			return PresetRepository.findOneOrFail({ where: { id: parseInt(path[1]) } }).then((value: Preset) => {
 				logger.verbose('Preset recalled', { value })
-				if (value.type === 'e131' && value.data !== null) {
+				if (value.type === 'e131' && value.data !== null && typeof e131 !== 'undefined') {
 					e131.update(
 						parseInt(value.universe),
 						e131.convertObjectToChannelData(value.data),
 						value.fadeTime * 1000
 					)
 					resolve({})
-				} else if (value.type === 'osc' && value.data !== null) {
+				} else if (value.type === 'osc' && value.data !== null && typeof osc !== 'undefined') {
 					Object.entries(value.data).forEach(presetData => {
-						osc.send(presetData)
+						osc.sendPreset(presetData[1]) //we want the object part of each entry
 					})
 					resolve({})
 				} else if (value.type === 'http' && value.data !== null && value.data.url !== null) {
@@ -56,7 +56,7 @@ export const presetRouter = (
 					})
 					if (linkStep !== null) resolve({ redirect: linkStep })
 					else resolve({})
-				}
+				} else resolve({})
 			})
 		} else if (method === 'PUT') {
 			return PresetRepository.setAllFromApp(payload as Array<DatabasePreset>)

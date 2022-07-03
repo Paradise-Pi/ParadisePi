@@ -56,7 +56,7 @@ export const PresetsConfigurationPage = () => {
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
 	const foldersForSelect: Array<SelectItem> = []
-	// Prepare preset folders list for select dropdown
+	// Prepare folders list for select dropdown
 	if (folders !== false) {
 		Object.entries(folders).forEach(([, value]) => {
 			foldersForSelect.push({
@@ -287,10 +287,10 @@ export const PresetsConfigurationPage = () => {
 										</Button>
 									</th>
 									<th>Name</th>
-									<th>Visible</th>
-									<th>Type</th>
-									<th>Number</th>
 									<th>Folder</th>
+									<th>Button Colour</th>
+									<th>Fade Time</th>
+									<th>Visible</th>
 									<th></th>
 									<th></th>
 								</tr>

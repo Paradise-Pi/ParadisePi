@@ -6,9 +6,17 @@
   "eslint.validate": ["javascript", "typescript", "typescriptreact"],
   "cSpell.words": [
     "Behringer",
+    "Colour",
+    "Gilles",
+    "Logline",
     "Mantine",
+    "Millis",
     "portfinder",
-    "xair"
+    "postfade",
+    "prefade",
+    "qrcode",
+    "xair",
+    "xremote"
   ],
   "editor.wordWrap": "on",
   "files.eol": "\n"

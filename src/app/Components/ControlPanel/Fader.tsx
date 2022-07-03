@@ -4,22 +4,22 @@ import { MantineTheme, Slider } from '@mantine/core'
 /**
  * Notches on the fader used for the metering, available in decibels
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const decibelMarks = [
-	{ value: 100, label: '10db' },
-	{ value: 87.5, label: '5db' },
-	{ value: 75, label: '0db' },
-	{ value: 62.5, label: '-5db' },
-	{ value: 50, label: '-10db' },
-	{ value: 37.5, label: '-20db' },
-	{ value: 25, label: '-30db' },
-	{ value: 12.5, label: '-50db' },
-	{ value: 6.25, label: '-60db' },
-]
+// const decibelMarks = [
+// 	{ value: 100, label: '10db' },
+// 	{ value: 87.5, label: '5db' },
+// 	{ value: 75, label: '0db' },
+// 	{ value: 62.5, label: '-5db' },
+// 	{ value: 50, label: '-10db' },
+// 	{ value: 37.5, label: '-20db' },
+// 	{ value: 25, label: '-30db' },
+// 	{ value: 12.5, label: '-50db' },
+// 	{ value: 6.25, label: '-60db' },
+// ]
 /**
  * Notches on the fader used for metering, available as percentages
  */
 const percentageMarks = [
+	{ value: 0, label: 'Off' },
 	{ value: 19, label: '25%' },
 	{ value: 38, label: '50%' },
 	{ value: 57, label: '75%' },
@@ -40,7 +40,7 @@ const metering = (theme: MantineTheme, value: number) => {
 		defaultColour: theme.colors.dark[4],
 	}
 	const thresholds = {
-		green: 75,
+		green: 73,
 		yellow: 87.5,
 	}
 	let coloursArray: string[]
@@ -70,15 +70,14 @@ const metering = (theme: MantineTheme, value: number) => {
 export const Fader = (props: {
 	disabled: boolean
 	meterValue: number
-	value: number
+	value: number | false
 	onChange: (value: number) => void
 }) => {
 	return (
 		<Slider
-			defaultValue={75}
-			value={props.value}
-			disabled={props.disabled}
-			onChange={value => props.onChange(value)}
+			disabled={props.value === false}
+			onChange={value => (!props.disabled ? props.onChange(value) : false)}
+			value={props.value !== false ? props.value : null}
 			radius={'lg'}
 			showLabelOnHover={false}
 			size={'xl'}
@@ -87,7 +86,7 @@ export const Fader = (props: {
 			min={0}
 			max={100}
 			precision={0}
-			label={value => `${value}%`}
+			label={() => null}
 			styles={theme => ({
 				track: {
 					'&:before': {
@@ -103,9 +102,13 @@ export const Fader = (props: {
 					width: 1,
 				},
 				thumb: {
-					height: '2em',
-					width: '1em',
-					backgroundColor: theme.colors.pink[6],
+					height: props.disabled ? '1em' : '2em',
+					width: props.disabled ? '0.5em' : '1em',
+					backgroundColor: 'white',
+				},
+				root: {
+					paddingTop: '1em',
+					paddingBottom: '2em',
 				},
 			})}
 		/>

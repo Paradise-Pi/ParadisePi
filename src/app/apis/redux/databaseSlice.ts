@@ -14,7 +14,7 @@ export const databaseSlice = createSlice({
 	name: 'database',
 	initialState,
 	reducers: {
-		getFromAPI: () => {
+		getDatabaseFromAPI: () => {
 			getFromAPIFatActionCreator()
 		},
 		storeManually: (state, action: PayloadAction<Database>) => {
@@ -27,6 +27,6 @@ export const databaseSlice = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { getFromAPI, setFromNode, storeManually } = databaseSlice.actions
+export const { getDatabaseFromAPI, setFromNode, storeManually } = databaseSlice.actions
 
 export default databaseSlice.reducer

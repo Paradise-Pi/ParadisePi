@@ -33,12 +33,58 @@ import { showNotification } from '@mantine/notifications'
 interface FormValues {
 	faders: FormList<DatabaseFader>
 }
-
+const FaderChoices = (mixer: string) => {
+	const choices = [
+		{
+			value: 'ch',
+			label: 'Channel',
+			group: 'Inputs',
+		},
+		{
+			value: 'auxin',
+			label: 'Aux In',
+			group: 'Inputs',
+		},
+		{
+			value: 'fxrtn',
+			label: 'Effect Return',
+			group: 'Outputs',
+		},
+		{
+			value: 'bus',
+			label: 'Bus',
+			group: 'Outputs',
+		},
+	]
+	if (mixer === 'x32') {
+		choices.push(
+			{
+				value: 'main/st',
+				label: 'Stereo Master',
+				group: '',
+			},
+			{
+				value: 'main/m',
+				label: 'Mono Master',
+				group: '',
+			}
+		)
+	}
+	if (mixer === 'xair') {
+		choices.push({
+			value: 'lr',
+			label: 'Stereo Master',
+			group: '',
+		})
+	}
+	return choices
+}
 export const FadersConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const [formOriginalValues, setFormOriginalValues] = useState<string>('') // Values used to detect unsaved changes
 	const faders = useAppSelector(state => (state.database ? state.database.faders : false))
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const mixer = useAppSelector(state => (state.database ? state.database.config.osc.OSCMixerType : false))
 	const foldersForSelect: Array<SelectItem> = []
 	// Prepare fader folders list for select dropdown
 	if (folders !== false) {
@@ -101,10 +147,12 @@ export const FadersConfigurationPage = () => {
 						<TextInput placeholder="Name" {...form.getListInputProps('faders', index, 'name')} />
 					</td>
 					<td>
-						<Checkbox
-							size={'lg'}
-							title="Visible"
-							{...form.getListInputProps('faders', index, 'enabled', { type: 'checkbox' })}
+						<Select
+							placeholder="Folder"
+							icon={<FaFolder />}
+							//
+							{...form.getListInputProps('faders', index, 'folderId')}
+							data={foldersForSelect}
 						/>
 					</td>
 					<td>
@@ -112,47 +160,11 @@ export const FadersConfigurationPage = () => {
 							placeholder="Type"
 							icon={<FaIcons />}
 							{...form.getListInputProps('faders', index, 'type')}
-							data={[
-								{
-									value: 'ch',
-									label: 'Channel',
-									group: 'Inputs',
-								},
-								{
-									value: 'dca',
-									label: 'DCAs',
-									group: '',
-								},
-								{
-									value: 'auxin',
-									label: 'Aux In',
-									group: 'Inputs',
-								},
-								{
-									value: 'fxrtn',
-									label: 'Effect Return',
-									group: 'Outputs',
-								},
-								{
-									value: 'bus',
-									label: 'Bus',
-									group: 'Outputs',
-								},
-								{
-									value: 'main/st',
-									label: 'Stereo Master',
-									group: '',
-								},
-								{
-									value: 'main/m',
-									label: 'Mono Master',
-									group: '',
-								},
-							]}
+							data={mixer !== false ? FaderChoices(mixer.replace('midas-', '')) : []}
 						/>
 					</td>
 					<td>
-						{!['main/st', 'main/m'].includes(form.values.faders[index].type) ? (
+						{!['main/st', 'main/m', 'lr'].includes(form.values.faders[index].type) ? (
 							<NumberInput
 								placeholder="Number"
 								icon={<FaHashtag />}
@@ -163,12 +175,10 @@ export const FadersConfigurationPage = () => {
 						) : null}
 					</td>
 					<td>
-						<Select
-							placeholder="Folder"
-							icon={<FaFolder />}
-							//
-							{...form.getListInputProps('faders', index, 'folderId')}
-							data={foldersForSelect}
+						<Checkbox
+							size={'lg'}
+							title="Visible"
+							{...form.getListInputProps('faders', index, 'enabled', { type: 'checkbox' })}
 						/>
 					</td>
 					<td>
@@ -185,7 +195,7 @@ export const FadersConfigurationPage = () => {
 		<Box mx="lg">
 			<div style={{ position: 'relative' }}>
 				<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-				{faders !== false && folders !== false ? (
+				{faders !== false && folders !== false && mixer !== false ? (
 					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<Group position="left" mt="md">
 							<Title>Faders</Title>
@@ -218,10 +228,10 @@ export const FadersConfigurationPage = () => {
 										</Button>
 									</th>
 									<th>Name</th>
-									<th>Visible</th>
+									<th>Folder</th>
 									<th>Type</th>
 									<th>Number</th>
-									<th>Folder</th>
+									<th>Controllable</th>
 									<th></th>
 								</tr>
 							</thead>

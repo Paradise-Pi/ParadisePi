@@ -53,6 +53,8 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					id: true,
 					name: true,
 					enabled: true,
+					type: true,
+					channel: true,
 				},
 			},
 			order: {
@@ -61,6 +63,9 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					sort: 'ASC',
 				},
 				childFolders: {
+					sort: 'ASC',
+				},
+				faders: {
 					sort: 'ASC',
 				},
 			},
@@ -106,6 +111,8 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 						id: fader.id,
 						name: fader.name,
 						enabled: fader.enabled,
+						type: fader.type,
+						channel: fader.channel,
 					}
 				}),
 			}

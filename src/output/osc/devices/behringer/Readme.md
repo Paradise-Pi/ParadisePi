@@ -39,8 +39,10 @@ MMMMMMMNkc:;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;ckNMMMMMMM
 
 Testing with an X32 is of course the simplest route, but if you don't have one available on your network you can use the [X32 emulator](https://sites.google.com/site/patrickmaillot/x32#h.p_rE4IH0Luimc0) by Patrick-Gilles Maillot. You can download it direct from that site, or if you're having issues it is reproduced [here for Windows](./../../../../../docs/static/downloads/x32-emulator/X32_windows.zip) under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
 
-The source code is [available on Github](https://github.com/pmaillot/X32-Behringer/blob/master/X32.c)
+> The source code is [available on Github](https://github.com/pmaillot/X32-Behringer/blob/master/X32.c)
 
 ### XR/MR Family
 
-We're yet to find a good emulator, and ended up buying one
+We're yet to find a good emulator, and ended up buying an XAir 18 to test it.
+
+We did find some useful docs on the web in various forums - one is a [reverse engineered list of commands](./../../../../../docs/static/downloads/xair-osc/Reverse%20Engineered%20XAir%20OSC%20Commands.csv) as a CSV, and another is Music Tribe's [official list of commands](./../../../../../docs/static/downloads/xair-osc/Music%20Tribe%20OSC%20XAir.pdf) which seems quite outdated. 
