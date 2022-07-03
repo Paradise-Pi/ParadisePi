@@ -2,7 +2,7 @@
 import oscHandler from 'osc'
 import { broadcast } from './../../api/broadcast'
 import { DatabaseFader, FaderRepository } from '../../database/repository/fader'
-import { OSCFormValue } from '../../app/Components/Admin/Controls/Presets/EditModal/OSC'
+import { instanceofOSCFormValue, OSCFormValue } from '../../app/Components/Admin/Controls/Presets/EditModal/OSC'
 import { MeterLevels, meter1PacketParser } from './meterFunctions'
 import { clearInterval } from 'timers'
 import { faderArrayToString, faderStringBackToString } from './faderFunctions'
@@ -17,6 +17,21 @@ export interface OSCDatastore {
 	faderMutes: {
 		[key: string]: boolean
 	}
+}
+
+interface simpleOSCMessage {
+	address: string
+	args: Array<string | number>
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function instanceofSimpleOSCMessage(data: any): data is simpleOSCMessage {
+	return (
+		typeof data === 'object' &&
+		typeof data.address === 'string' &&
+		typeof data.args === 'object' &&
+		data.args.every((arg: any) => typeof arg === 'string' || typeof arg === 'number')
+	)
 }
 
 /**
@@ -217,12 +232,15 @@ export default abstract class OSC {
 
 	/**
 	 * Preset sending handler
-	 * @param presetData - a SINGLE OSCFormValue Preset command or a string address to send
+	 * @param presetData - a SINGLE OSCFormValue Preset command, single simpleOSCMessage or an address string to send
+	 * A simple OSC message consists of an address and an array of arguments
 	 */
-	public sendPreset(presetData: OSCFormValue | string) {
+	public sendPreset(presetData: OSCFormValue | simpleOSCMessage | string) {
 		if (typeof presetData === 'string') {
 			this.udpPort.send({ address: presetData, args: [] })
-		} else {
+		} else if (instanceofSimpleOSCMessage(presetData)) {
+			this.udpPort.send(presetData)
+		} else if (instanceofOSCFormValue(presetData)) {
 			const address =
 				presetData.command1 +
 				(presetData.value1 ?? String(presetData.value1).padStart(2, '0')) +
@@ -240,6 +258,8 @@ export default abstract class OSC {
 			logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
 			this.udpPort.send({ address: address, args: args })
 			this.manuallyGetFaderPositions() //get the fader positions after a preset is sent, as they might have moved
+		} else {
+			logger.error('sendPreset called with invalid data type', { presetData })
 		}
 	}
 }

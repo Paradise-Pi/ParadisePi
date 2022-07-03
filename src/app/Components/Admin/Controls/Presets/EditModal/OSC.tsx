@@ -27,6 +27,21 @@ export interface OSCFormValue {
 }
 
 /**
+ * Verify if object is an OSCFormValue
+ * @param data - an object
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function instanceofOSCFormValue(data: any): data is OSCFormValue {
+	return (
+		data.command1 !== undefined &&
+		data.value1 !== undefined &&
+		data.command2 !== undefined &&
+		data.value2 !== undefined &&
+		data.key !== undefined
+	)
+}
+
+/**
  * Wrapper for an OSC command initial option - eg '/ch/'
  *
  * First options take a number of formats, most commonly a type followed by a parameter number.
