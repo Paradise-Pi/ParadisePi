@@ -220,7 +220,10 @@ export default abstract class OSC {
 	 * @param presetData - a SINGLE OSCFormValue Preset command
 	 */
 	public sendPreset(presetData: OSCFormValue) {
-		const address = presetData.command1 + String(presetData.value1).padStart(2, '0') + presetData.command2
+		const address =
+			presetData.command1 +
+			(presetData.value1 ?? String(presetData.value1).padStart(2, '0')) +
+			presetData.command2
 		let args = {}
 		if (Number.isInteger(Number(presetData.value2))) {
 			//assuming we have an integer so need an integer type
