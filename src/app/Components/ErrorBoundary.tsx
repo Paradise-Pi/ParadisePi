@@ -12,6 +12,13 @@ interface State {
 	errorInfo: ErrorInfo
 }
 
+/**
+ * This is a catch-all error boundary wrapped around everything within the MantineProvider.
+ * N.B. it's within the MantineProvider for a nicer interface!
+ *
+ * It's been included as a final catch for the app, as most errors should be caught in their relevant component.
+ * Fingers crossed the end user will never see it!
+ */
 class ErrorBoundary extends Component<Props, State> {
 	public state: State = { hasError: false, error: null, errorInfo: null }
 
