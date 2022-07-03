@@ -16,7 +16,7 @@ const HomepageHeader = () => {
 				<p className="hero__subtitle">{siteConfig.tagline}</p>
 				<div className={styles.buttons}>
 					<Link className="button button--secondary button--lg" to="/docs/user-guide/intro">
-						Docusaurus Tutorial - 5min ⏱️
+						Get Started 📖
 					</Link>
 				</div>
 			</div>
@@ -27,7 +27,7 @@ const HomepageHeader = () => {
 const Home = (): JSX.Element => {
 	const { siteConfig } = useDocusaurusContext()
 	return (
-		<Layout title={`Hello from ${siteConfig.title}`} description="Description will go into a meta tag in <head />">
+		<Layout description={siteConfig.tagline}>
 			<HomepageHeader />
 			<main>
 				<HomepageFeatures />

@@ -15,5 +15,7 @@ The Control Panel is used by users, to trigger presets and faders, and the Admin
 
 ## Features
 
- - #
- - #
+ - Fully customisable control panel interface, with combinations of presets and faders
+ - Presets and faders can be grouped into folders to help organise the control panel
+ - Simple administration interface providing full control over devices and control panels
+ - Web interface to access both control panel and administration remotely

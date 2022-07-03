@@ -7,8 +7,7 @@ import { FaCogs } from '@react-icons/all-files/fa/FaCogs'
 import { useModals } from '@mantine/modals'
 import { useEventListener, useViewportSize } from '@mantine/hooks'
 import { QRCodeSVG } from 'qrcode.react'
-import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
-import { FaTimes } from '@react-icons/all-files/fa/FaTimes'
+import { OSCConnectionStatus } from './../../Components/ControlPanel/OSCConnectionStatus'
 
 const ShowAccessDetails = () => {
 	const [count, setCount] = useState(0)
@@ -48,9 +47,6 @@ const ShowAccessDetails = () => {
 }
 export const HelpPage = () => {
 	const helpText = useAppSelector(state => (state.database ? state.database.config.general.helpText : ''))
-	const oscEnabled = useAppSelector(state => (state.database ? state.database.config.osc.OSCEnabled : false))
-	const oscMixerName = useAppSelector(state => (state.oscDatastore ? state.oscDatastore.mixerName : false))
-	const oscConnected = useAppSelector(state => (state.oscDatastore ? state.oscDatastore.status : false))
 	const showButton = useAppSelector(state =>
 		state.database ? state.database.config.general.adminLinkFromControlPanel : false
 	)
@@ -73,16 +69,6 @@ export const HelpPage = () => {
 			})
 		}
 	}
-	const showOSCStatus = () => {
-		modals.openModal({
-			title: 'Sound System Status',
-			children: (
-				<Text size="sm">
-					{oscConnected ? 'Connected to: ' + oscMixerName : 'Could not connect to sound system'}
-				</Text>
-			),
-		})
-	}
 	return (
 		<>
 			<DangerouslySetHTML html={helpText} />
@@ -90,18 +76,7 @@ export const HelpPage = () => {
 				<Button variant="default" my={'md'} leftIcon={<FaCogs />} onClick={() => navigateToAdmin()}>
 					Setup and Administration Menu
 				</Button>
-				{oscEnabled ? (
-					<Button
-						variant="default"
-						my={'md'}
-						leftIcon={oscConnected ? <FaCheck /> : <FaTimes />}
-						onClick={() => showOSCStatus()}
-					>
-						{oscConnected ? 'Sound System is connected' : 'Sound System is not connected'}
-					</Button>
-				) : (
-					''
-				)}
+				<OSCConnectionStatus />
 			</Group>
 		</>
 	)

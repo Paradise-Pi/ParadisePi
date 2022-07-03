@@ -1,4 +1,5 @@
-import { Button, Title, Text, Container, Accordion, Divider } from '@mantine/core'
+import { Button, Title, Text, Container, Accordion, Divider, Code, Box } from '@mantine/core'
+import { QRCodeSVG } from 'qrcode.react'
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 import { ApiCall } from '../apis/wrapper'
 
@@ -41,17 +42,44 @@ class ErrorBoundary extends Component<Props, State> {
 				<Container size="sm" px="md">
 					<Title my="md">Something went wrong</Title>
 					<Button size="lg" my="md" onClick={() => ApiCall.get('/reboot', {})}>
-						Restart ParadisePi
+						Restart
 					</Button>
-					<Text my="md" size="sm">
-						If you have seen this before, please submit the information below to the ParadisePi Github
-						Repository
-					</Text>
-					<Accordion>
+					<a href="http://localhost/logs" target="_blank" rel="noreferrer">
+						<Button variant="default" color="dark" size="lg" mx="xs">
+							Download Logs
+						</Button>
+					</a>
+					<Accordion offsetIcon={false} initialItem={0}>
+						<Accordion.Item label="How to report this problem">
+							<Box
+								sx={{
+									height: 150,
+									float: 'right',
+									marginLeft: '1em',
+								}}
+							>
+								<QRCodeSVG
+									value={
+										'https://github.com/Paradise-Pi/ParadisePi/issues/new?title=[BUG]+React+crash+on+frontend+in+production&body=' +
+										encodeURIComponent(this.state.error.toString())
+									}
+									bgColor="#000000"
+									fgColor="#FFFFFF"
+									level={'M'}
+									size={150}
+									includeMargin={false}
+								/>
+							</Box>
+							<Text sx={{ minHeight: 150 }}>
+								If you manage this device please submit the information below to the ParadisePi Github
+								Repository at https://github.com/paradise-pi/paradisepi. Alternatively please contact
+								your IT help desk.
+							</Text>
+						</Accordion.Item>
 						<Accordion.Item label="Error Details">
 							<Text>{this.state.error && this.state.error.toString()}</Text>
-							<Divider my="sm" label="Error Stack" labelPosition="center" />
-							<Text>{this.state.errorInfo.componentStack}</Text>
+							<Divider my="sm" label="Error Stack Trace" labelPosition="center" />
+							<Code block>{this.state.errorInfo.componentStack}</Code>
 						</Accordion.Item>
 					</Accordion>
 				</Container>
