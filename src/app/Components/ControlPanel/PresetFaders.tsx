@@ -1,15 +1,16 @@
 import React from 'react'
-import { Badge, Group, Title } from '@mantine/core'
+import { Alert, Badge, Group, Title } from '@mantine/core'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { Fader } from './../../Components/ControlPanel/Fader'
 import { DatabaseFader } from './../../../database/repository/fader'
 import { faderArrayToString } from './../../../output/osc/faderFunctions'
 import { ApiCall } from './../../apis/wrapper'
+import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
 
 export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 	const oscDatastore = useAppSelector(state => (state.oscDatastore ? state.oscDatastore : false))
 	const deviceType = useAppSelector(state => (state.database ? state.database.config.osc.OSCMixerType : false))
-	if (oscDatastore && deviceType) {
+	if (oscDatastore && deviceType && oscDatastore.status) {
 		return (
 			<>
 				{props.faders.map(fader => {
@@ -55,5 +56,11 @@ export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 				})}
 			</>
 		)
-	} else return <></>
+	} else if (oscDatastore && !oscDatastore.status && props.faders.length > 0)
+		return (
+			<Alert icon={<FaExclamationTriangle />} title="Faders Unavailable" variant="outline">
+				Could not connect to the sound system to get fader status
+			</Alert>
+		)
+	else return <></>
 }
