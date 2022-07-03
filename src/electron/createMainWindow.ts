@@ -42,7 +42,7 @@ export default (startPath: string, fullscreen?: boolean): BrowserWindow => {
 		callback({
 			responseHeaders: {
 				...details.responseHeaders,
-				'Content-Security-Policy': ["default-src 'self' 'unsafe-eval' 'unsafe-inline';"],
+				'Content-Security-Policy': ["default-src 'self' 'unsafe-eval' 'unsafe-inline' data:;"],
 			},
 		})
 	})

@@ -19,6 +19,8 @@ import { appendLogline } from './apis/redux/logsSlice'
 import { NotificationsProvider } from '@mantine/notifications'
 import { OSCDatastore } from './../output/osc'
 import ErrorBoundary from './Components/ErrorBoundary'
+import { Images } from './../api/images'
+import { getImageDatastoreFromAPI, refreshImagesDatastore } from './apis/redux/imagesSlice'
 
 const container = document.getElementById('app')
 const root = createRoot(container)
@@ -30,6 +32,7 @@ const App = () => {
 	useEffect(() => {
 		dispatch(getDatabaseFromAPI())
 		dispatch(getOSCFromAPI())
+		dispatch(getImageDatastoreFromAPI())
 	}, [dispatch])
 
 	return (
@@ -67,6 +70,9 @@ root.render(
 if (runningInElectron()) {
 	window.ipcApi.receive('refreshDatabase', (data: Database) => {
 		store.dispatch(setFromNode(data))
+	})
+	window.ipcApi.receive('refreshImagesDatastore', (data: Images) => {
+		store.dispatch(refreshImagesDatastore(data))
 	})
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	window.ipcApi.receive('oscDatastoreUpdate', (data: OSCDatastore) => {

@@ -5,6 +5,7 @@ import statusSliceReducer from './statusSlice'
 import e131SamplingModeReducer from './e131SamplingModeSlice'
 import oscDataSliceReducer from './oscDataSlice'
 import logsSliceReducer from './logsSlice'
+import imagesSliceReducer from './imagesSlice'
 
 const store = configureStore({
 	reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
 		e131SamplingMode: e131SamplingModeReducer, // Whether we are currently in e131 sampling mode or not
 		logs: logsSliceReducer, // Logging sent from node.js
 		oscDatastore: oscDataSliceReducer, // The OSC datastore
+		images: imagesSliceReducer, // The images datastore - full of base64 images (ouch! Thanks webpack)
 	},
 })
 

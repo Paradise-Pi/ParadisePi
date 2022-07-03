@@ -1,7 +1,9 @@
 import { io, Socket } from 'socket.io-client'
+import { Images } from './../../api/images'
 import { ClientToServerEvents, ServerToClientEvents } from './../../api/socketIo'
 import { setFromNode } from './redux/databaseSlice'
 import { setFromAPI } from './redux/e131SamplingModeSlice'
+import { refreshImagesDatastore } from './redux/imagesSlice'
 import { appendLogline } from './redux/logsSlice'
 import store from './redux/mainStore'
 import { updateOSCDatastore } from './redux/oscDataSlice'
@@ -25,6 +27,9 @@ export class SocketConnection {
 			})
 			SocketConnection.socket.on('refreshDatabase', database => {
 				store.dispatch(setFromNode(database))
+			})
+			SocketConnection.socket.on('refreshImagesDatastore', (data: Images) => {
+				store.dispatch(refreshImagesDatastore(data))
 			})
 			SocketConnection.socket.on('logging', message => {
 				store.dispatch(appendLogline(JSON.stringify(message)))

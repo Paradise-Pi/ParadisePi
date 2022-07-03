@@ -5,9 +5,11 @@
  */
 
 import { Database } from './database'
+import { Images } from './images'
 
 export interface ServerToClientEvents {
 	refreshDatabase: (database: Database) => void
+	refreshImagesDatastore: (images: Images) => void
 	oscDatastoreUpdate: (message: any) => void
 	logging: (message: { [key: string]: any }) => void
 	socketClients: (message: { [key: string]: any }) => void

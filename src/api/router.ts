@@ -6,6 +6,7 @@ import { configRouter } from './config/configRouter'
 import { outputModulesRouter } from './outputModules/outputModulesRouter'
 import { reboot } from './../electron/windowUtilities'
 import { faderRouter } from './fader/faderRouter'
+import { createImagesObject } from './images'
 
 /**
  * This is a REST router that triages all requests and sends them to relevant routers
@@ -55,6 +56,11 @@ export const routeRequest = (
 				// {@link outputModulesRouter} - this router handles all about requests for the /outputModules path
 				resolve(outputModulesRouter(pathArr.slice(1), method, payload))
 				break
+			case 'images':
+				// Route is used at first load to get the images object
+				return createImagesObject().then(response => {
+					resolve(response)
+				})
 			case 'reboot':
 				reboot(true, false)
 				resolve({})

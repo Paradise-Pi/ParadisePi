@@ -28,6 +28,7 @@ import { ClearUpHelpText1654009120000 } from './migration/1654009120000-ClearUpH
 import { AddFolderText1655564727255 } from './migration/1655564727255-AddFolderText'
 import { AddFaderType1656679151854 } from './migration/1656679151854-AddFaderType'
 import { PresetFoldersToFolders1656681029002 } from './migration/1656681029002-PresetFoldersToFolders'
+import { Logo1656867549439 } from './migration/1656867549439-Logo'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -54,6 +55,7 @@ const dataSource = new DataSource({
 		AddFolderText1655564727255,
 		AddFaderType1656679151854,
 		PresetFoldersToFolders1656681029002,
+		Logo1656867549439,
 	],
 	subscribers: [],
 	logger: new MyCustomLogger(),

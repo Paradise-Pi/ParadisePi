@@ -16,7 +16,7 @@ contextBridge.exposeInMainWorld('ipcApi', {
 	},
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	receive: (channel: string, func: any) => {
-		const validChannels = ['refreshDatabase', 'logging', 'socketClients', 'oscDatastoreUpdate', 'e131SamplingMode']
+		const validChannels = ['refreshDatabase', 'logging', 'socketClients', 'oscDatastoreUpdate', 'e131SamplingMode','refreshImagesDatastore']
 		if (validChannels.includes(channel)) {
 			ipcRenderer.on(channel, (event, ...args) => func(...args))
 		}

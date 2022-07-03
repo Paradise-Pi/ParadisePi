@@ -14,20 +14,14 @@ export const GeneralConfigurationPage = () => {
 	const form = useForm({
 		initialValues: {
 			deviceLock: false,
-			timeoutTime: 0,
 			helpText: '', // This will never be shown - see below
 			adminLinkFromControlPanel: false,
-		},
-
-		validate: {
-			timeoutTime: value => (value > 3 ? null : 'Must be more than 3 seconds'),
 		},
 	})
 	useEffect(() => {
 		if (generalConfig !== false) {
 			form.setValues({
 				deviceLock: generalConfig.deviceLock,
-				timeoutTime: generalConfig.timeoutTime / 1000,
 				helpText: generalConfig.helpText, // This is ignored - see below
 				adminLinkFromControlPanel: generalConfig.adminLinkFromControlPanel,
 			})
@@ -46,7 +40,7 @@ export const GeneralConfigurationPage = () => {
 				else payload['adminLinkFromControlPanel'] = 'false'
 			}
 		})
-		ApiCall.post('/config', values).then(() => {
+		ApiCall.post('/config', payload).then(() => {
 			setLoadingOverlayVisible(false)
 		})
 	}
@@ -73,17 +67,6 @@ export const GeneralConfigurationPage = () => {
 					size="lg"
 					label="Allow access from Control Panel to Admin"
 					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
-				/>
-				<Divider my="sm" />
-				<NumberInput
-					required
-					label="Screensaver Time"
-					description="How long to wait in seconds before showing the screensaver"
-					size="lg"
-					placeholder="120 seconds"
-					min={3}
-					icon={<FaRegClock />}
-					{...form.getInputProps('timeoutTime')}
 				/>
 				<Divider my="sm" />
 				<Title order={5}>Help Page</Title>

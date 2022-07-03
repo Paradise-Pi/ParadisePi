@@ -95,3 +95,4 @@ dist/
 *.sqlite*
 release-builds/
 /admin/database.sqlite*
+/logo.*

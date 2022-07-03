@@ -11,6 +11,8 @@ import { Server } from 'socket.io'
 import { broadcast } from './../api/broadcast'
 import { getAvailablePort } from './availablePorts'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../api/database'
+import { ConfigRepository } from './../database/repository/config'
+import { createAndSendImagesObject } from './../api/images'
 /**
  * The webserver is responsible for serving requests from other devices on the network that might want to connect.
  * This includes devices such as iPads who want to use the remote interface, a web browser which wants to
@@ -103,6 +105,49 @@ export class WebServer {
 				})
 				res.write(fileRead)
 				res.end()
+			} else if (req.url == '/logo/upload' && req.method.toLowerCase() === 'post') {
+				// Allow uploading of logo
+				new IncomingForm({
+					filename: (_name, ext) => 'logo' + ext,
+					keepExtensions: true,
+					uploadDir: path.join(__dirname, '../../'),
+					maxFiles: 1,
+					maxFileSize: 2 * 1024 * 1024, // 2MB
+					allowEmptyFiles: false,
+					filter: ({ mimetype }) => {
+						return mimetype && mimetype.includes('image') // Only allow images
+					},
+				}).parse(req, (err, fields, files) => {
+					if (
+						err ||
+						!files.logo ||
+						!Array.isArray(files.logo) ||
+						files.logo.length !== 1 ||
+						!files.logo[0].newFilename
+					) {
+						res.writeHead(500, { 'Content-Type': 'text/html' })
+						if (err) {
+							res.write(err)
+							logger.error(err)
+						}
+						res.write(
+							'<br/>Error encountered - not continuing with upload. <a href="/">Click here to return to administration</a>'
+						)
+						res.end()
+					} else {
+						ConfigRepository.save({
+							key: 'logoPath',
+							value: files.logo[0].newFilename,
+						})
+							.then(() => {
+								createAndSendImagesObject()
+							})
+							.then(() => {
+								res.writeHead(302, { Location: req.headers.referer })
+								res.end()
+							})
+					}
+				})
 			} else {
 				// Serve the react app
 				WebServer.staticFileServer.serve(req, res, (e: Error) => {
