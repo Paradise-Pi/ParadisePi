@@ -35,8 +35,8 @@ const FeatureList: FeatureItem[] = [
 		title: 'Macros',
 		description: (
 			<>
-				Trigger a combination of presets, to create simple controls such as "turn all off" or a setup for
-				"assembly"
+				Trigger a combination of presets, to create simple controls such as &quot;turn all off&quot; or a setup
+				for &quot;assembly&quot;.
 			</>
 		),
 	},
