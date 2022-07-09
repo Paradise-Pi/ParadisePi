@@ -7,9 +7,11 @@ updates:
       interval: "daily"
       time: "17:00"
       timezone: "Europe/London"
+    open-pull-requests-limit: 50
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "daily"
       time: "17:00"
       timezone: "Europe/London"
+    open-pull-requests-limit: 50
