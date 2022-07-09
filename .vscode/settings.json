@@ -1,6 +1,24 @@
 {
   "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
+    "source.fixAll.eslint": true,
+    "editor.formatOnSave": true
   },
-  "eslint.validate": ["javascript"]
+  "eslint.validate": ["javascript", "typescript", "typescriptreact"],
+  "cSpell.words": [
+    "Behringer",
+    "Colour",
+    "Customisation",
+    "Gilles",
+    "Logline",
+    "Mantine",
+    "Millis",
+    "portfinder",
+    "postfade",
+    "prefade",
+    "qrcode",
+    "xair",
+    "xremote"
+  ],
+  "editor.wordWrap": "on",
+  "files.eol": "\n"
 }

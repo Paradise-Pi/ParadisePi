@@ -1,0 +1,268 @@
+Command,Type,Value,Text,Description
+/-action/clearsolo,,,,Clear all solos
+/-action/initall,,,,Reinitialize console ??
+/-action/savestate,,,,Save current state ??
+/-action/setclock,,,,Set clock
+/-action/updnet,,,,Lan IP address ??
+/-action/wlanscan,,,,Wireless scan ??
+/-prefs/ap/channel,,,,WLan channel
+/-prefs/ap/key,,,,Access Point key
+/-prefs/ap/security,,,,Access Point security
+/-prefs/ap/ssid,,,,Access Point ssid
+/-prefs/clockrate,,,,Clock Rate
+/-prefs/dcamute,,,,DCA groups mute Off/On
+/-prefs/hardmute,,,,Hard mute Off/On
+/-prefs/is/addr,,,,
+/-prefs/is/gateway,,,,
+/-prefs/is/key,,,,
+/-prefs/is/mask,,,,
+/-prefs/is/mode,,,,
+/-prefs/is/security,,,,
+/-prefs/is/ssid,,,,
+/-prefs/lan/addr,,,,Lan IP address
+/-prefs/lan/gateway,,,,Lan IP gateway
+/-prefs/lan/mask,,,,Lan IP mask
+/-prefs/lan/mode,,,,Lan mode
+/-prefs/midiconfig,,,,Midi config
+/-prefs/name,,,,Mixer name
+/-prefs/playnext,,,,USB player - play next ??
+/-prefs/ponmute,,,,
+/-prefs/rta/decay,,,,
+/-prefs/rta/det,,,,
+/-prefs/usbifcmode,,,,
+/-prefs/x/osc,,,,
+/-snap/01/name,s,,,Snapshot [0..63] name
+/-snap/01/scope,,,,Snapshot [0..63] recall scope
+/-snap/delete,,,,Snapshot (current) delete
+/-snap/index,i,,,Snapshot (current) list index
+/-snap/load,,,,Snapshot (current) load
+/-snap/name,s,,,Snapshot (current) name
+/-snap/save,,,,Snapshot (current) save
+/-snapstore/01/scope,,,,Snapshot [0..63] recall scope
+/-snapstore/index,i,,,Snapshot (current) list index
+/-snapstore/name,s,,,Snapshot (current) name
+/-stat/autosave,,,,Autosave ??
+/-stat/keysolo,,,,??
+/-stat/netmode,i,0..2,"Static, DHCP, DHCP Server",Lan Mode
+/-stat/networks/01/flags,,,,
+/-stat/networks/01/ssid,,,,
+/-stat/networks/01/strength,,,,
+/-stat/rta/pos,,,,
+/-stat/rta/source,i,,,RTA source
+/-stat/solo,,,,Solo status ??
+/-stat/solosw/01,i,0..1,"OFF, ON",Solo switch [01..20??] status
+/-stat/tape/etime,,,,
+/-stat/tape/file,,,,
+/-stat/tape/rtime,,,,
+/-stat/tape/state,,,,
+/-stat/usb/001/name,s,,,Name of file or subdirectory
+/-stat/usb/001/type,i,0-1,,"Returns 0 for a file, 1 for a subdirectory"
+/-stat/usb/count,i,1-200,,Number of entries in the current path
+/-stat/usb/path,s,,,Gets or sets the directory path
+/-stat/usbmounted,i,0..1,,USB mounted status
+/bus/1/config/color,i,0-15,"OFF, RD, GN, YE, BL, MG, CY, WH, OFFi, RDi, GNi, YEi, BLi, MGi, CYi, WHi",Mixbus color
+/bus/1/config/name,s,,,Mixbus name
+/bus/1/dyn/attack,f,0.0-1.0,0.0 - 120.0,Mixbus compressor attack
+/bus/1/dyn/auto,i,0-1,"OFF, ON",Mixbus compressor auto
+/bus/1/dyn/det,i,0-1,"PEAK, RMS",Mixbus compressor ??
+/bus/1/dyn/env,i,0-1,"LIN, LOG",Mixbus compressor envelope
+/bus/1/dyn/filter/f,f,0.0-1.0,20 - 20000,Mixbus compressor filter frequency
+/bus/1/dyn/filter/f,f,0.0-1.0,20 - 20000,Mixbus compressor filter frequency
+/bus/1/dyn/filter/on,i,0-1,"OFF, ON",Mixbus compressor filter Off/On
+/bus/1/dyn/filter/on,i,0-1,"OFF, ON",Mixbus compressor filter Off/On
+/bus/1/dyn/filter/type,i,0-8,"LC6, LC12, HC6, HC12, 1.0, 2.0, 3.0, 5.0, 10.0",Mixbus compressor filter type
+/bus/1/dyn/filter/type,i,0-5,"LCut, LShv, PEQ, VEQ, HShv, HCut",Mixbus compressor filter type
+/bus/1/dyn/hold,f,0.0-1.0,0.02 - 2000,Mixbus compressor hold
+/bus/1/dyn/insert/fxslot,i,0-8,"OFF, Fx1A, Fx1B, Fx2A, Fx2B, Fx3A, Fx3B, Fx4A, Fx4B",Mixbus compressor insert Fx slot
+/bus/1/dyn/insert/on,i,0-1,"OFF, ON",Mixbus compressor insert Off/On
+/bus/1/dyn/keysrc,i,0-22,"SELF, Ch01-Ch16, Bus1-Bus6",Mixbus compressor keysource
+/bus/1/dyn/knee,f,0.0-1.0,0.0 - 5.0,Mixbus compressor knee
+/bus/1/dyn/mgain,f,0.0-1.0,0.0 - 24.0,Mixbus compressor makeup gain
+/bus/1/dyn/mix,f,0.0-1.0,0 - 100,Mixbus compressor mix
+/bus/1/dyn/mode,i,0-1,"COMP, EXP",Mixbus compressor mode
+/bus/1/dyn/on,i,0-1,"OFF, ON",Mixbus compressor Off/On
+/bus/1/dyn/ratio,i,0-11,"1.1, 1.3, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.0, 10, 20, 100",Mixbus compressor ratio
+/bus/1/dyn/release,f,0.0-1.0,5.0 - 4000.0,Mixbus compressor release
+/bus/1/dyn/thr,f,0.0-1.0,-60,Mixbus compressor threshold
+/bus/1/eq/1/f,f,0.0-1.0,20 - 20000,Mixbus EQ band frequency
+/bus/1/eq/1/g,f,0.0-1.0,-30,Mixbus EQ band gain
+/bus/1/eq/1/q,f,0.0-1.0,10.0 - 9.3,Mixbus EQ band Q
+/bus/1/eq/1/type,i,0-5,"LCut, LShv, PEQ, VEQ, HShv, HCut",Mixbus EQ type
+/bus/1/eq/mode,i,0-2,"PEQ, GEQ, TEQ",Mixbus EQ mode
+/bus/1/eq/on,i,0-1,"OFF, ON",Mixbus EQ Off/On
+/bus/1/geq/0,f,0.0-1.0,-30,Mixbus graphics EQ band level
+/bus/1/insert/fxslot,i,0-8,"OFF, Fx1A, Fx1B, Fx2A, Fx2B, Fx3A, Fx3B, Fx4A, Fx4B",Mixbus insert Fx slot
+/bus/1/insert/on,i,0-1,-30,Mixbus insert Off/On
+/bus/1/mix/fader,f,0.0-1.0,#NAME?,Mixbus fader level
+/bus/1/mix/lr,i,0-1,"OFF, ON",Mixbus LR assignment
+/bus/1/mix/on,i,0-1,"OFF, ON",Mixbus mute
+/bus/1/mix/pan,f,0.0-1.0,#NAME?,Mixbus pan level
+/bus/grp/dca,i,0-,0%,Mixbus DCA assignment
+/bus/grp/mute,i,0-,0%,Mixbus mutegroup assignment
+/ch/01/automix/group,i,0-2,"OFF, X, Y",Channel automix assignment
+/ch/01/automix/weight,f,0.0-1.0,-48,Channel automix weight level
+/ch/01/config/color,i,0-15,"OFF, RD, GN, YE, BL, MG, CY, WH, OFFi, RDi, GNi, YEi, BLi, MGi, CYi, WHi",Channel scribble trip color
+/ch/01/config/insrc,i,0-15,"OFF, IN01-16",Channel input source
+/ch/01/config/name,s,,,Channel scribble strip name
+/ch/01/config/rtnsrc,i,0-17,U01-18,Channel USB input source
+/ch/01/dyn/attack,f,0.0-1.0,0.0 -  120.0,Channel compressor attack (ms)
+/ch/01/dyn/auto,i,0-1,"OFF, ON",Channel compressor auto off/on
+/ch/01/dyn/det,i,0-1,"PEAK, RMS",
+/ch/01/dyn/env,i,0-1,"LIN, LOG",Channel compressor envelope
+/ch/01/dyn/filter/f,f,0.0-1.0,20 - 20000,Channel compressor filter frequency (hz)
+/ch/01/dyn/filter/on,i,0-1,"OFF, ON",Channel compressor filter off/on
+/ch/01/dyn/filter/type,i,0-8,"LC6, LC12, HC6, HC12, 1.0, 2.0, 3.0, 5.0, 10.0",Channel compressor filter type
+/ch/01/dyn/hold,f,0.0-1.0,0.02 - 2000,Channel compressor hold (ms)
+/ch/01/dyn/keysrc,i,0-22,"SELF, Ch01-Ch16, Bus1-Bus6",Channel compressor key source
+/ch/01/dyn/knee,f,0.0-1.0,0.0 - 5.0,Channel compressor knee
+/ch/01/dyn/mgain,f,0.0-1.0,0.0 - 24.0,Channel compressor gain (db)
+/ch/01/dyn/mix,f,0.0-1.0,0 - 100,Channel compressor mix
+/ch/01/dyn/mode,i,0-1,"COMP, EXP",Channel compressor mode
+/ch/01/dyn/on,i,0-1,"OFF, ON",Channel compressor off/on
+/ch/01/dyn/ratio,i,0-11,"1.1, 1.3, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.0, 10, 20, 100",Channel compressor ratio
+/ch/01/dyn/release,f,0.0-1.0,5.0 - 4000.0,Channel compressor release (ms)
+/ch/01/dyn/thr,f,0.0-1.0,-60,Channel compressor theshold (db)
+/ch/01/eq/1/f,f,0.0-1.0,20 - 20000,Channel EQ band frequency
+/ch/01/eq/1/g,f,0.0-1.0,-30,Channel EQ band gain
+/ch/01/eq/1/q,f,0.0-1.0,10.0 - 0.3,Channel EQ band Q
+/ch/01/eq/1/type,i,0-5,"LCut, LShv, PEQ, VEQ, HShv, HCut",Channel EQ band type
+/ch/01/eq/on,i,0-1,"OFF, ON",Channel EQ Off/On
+/ch/01/gate/attack,f,0.0-1.0,0.0 - 120.0,Channel gate attack (ms)
+/ch/01/gate/filter/f,f,0.0-1.0,20.000 - 20000,Channel gate filter frequency (hz)
+/ch/01/gate/filter/on,i,0-1,"OFF, ON",Channel gate filter off/on
+/ch/01/gate/filter/type,i,0-8,"LC6, LC12, HC6, HC12, 1.0, 2.0, 3.0, 5.0, 10.0",Channel gate filter type
+/ch/01/gate/hold,f,0.0-1.0,0.02 - 2000,Channel gate hold (ms)
+/ch/01/gate/keysrc,i,0-22,"SELF, Ch01-Ch16, Bus1-Bus6",Channel gate key source
+/ch/01/gate/mode,i,0-4,"GATE, EXP2, EXP3, EXP4, DUCK",Channel gate mode
+/ch/01/gate/on,i,0-1,"OFF, ON",Channel gate off/on
+/ch/01/gate/range,f,0.0-1.0,3.0 - 60.0,Channel gate range (db)
+/ch/01/gate/release,f,0.0-1.0,5.0 - 4000.0,Channel gate release (ms)
+/ch/01/gate/thr,f,0.0-1.0,-80,Channel gate threshold (db)
+/ch/01/geq/0,f,0.0-1.0,-30,Channel graphics EQ level
+/ch/01/grp/dca,i,0-,0%,Channel DCA assignment
+/ch/01/grp/mute,i,0-,0%,Channel mutegroup assignment
+/ch/01/insert/fxslot,i,0-8,"OFF, Fx1A, Fx1B, Fx2A, Fx2B, Fx3A, Fx3B, Fx4A, Fx4B",Channel insert assignment
+/ch/01/insert/on,i,0-1,"OFF, ON",Channel insert Off/On
+/ch/01/mix/01/grpon,i,0-1,"OFF, ON",Channel mixbus sends group Off/On
+/ch/01/mix/01/level,f,0.0-1.0,#NAME?,Channel mixbus sends level
+/ch/01/mix/01/pan,f,0.0-1.0,-200,Channel mixbus sends pan
+/ch/01/mix/01/tap,i,0-5,"IN, PREEQ, POSTEQ, PRE, POST, GRP",Channel mixbus sends tap
+/ch/01/mix/fader,f,0.0-1.0,#NAME?,Channel fader level
+/ch/01/mix/lr,i,0-1,"OFF, ON",Channel LR assignment
+/ch/01/mix/on,i,0-1,"OFF, ON",Channel mute
+/ch/01/mix/pan,f,0.0-1.0,-200,Channel pan value
+/ch/01/preamp/hpf,f,0.0-1.0,20 - 200,Channel low cut frequency (hz)
+/ch/01/preamp/hpon,i,0-1,"OFF, ON",Channel low cut off/on
+/ch/01/preamp/invert,i,0-1,"OFF, ON",Channel preamp invert
+/ch/01/preamp/rtnsw,i,0-1,"OFF, ON",Channel Return switch (preamp/USB)
+/ch/01/preamp/rtntrim,f,0.0-1.0,-36,Channel USB preamp trim
+/config/amixenable/X,i,0-1,"OFF, ON",Automix - Group X Off/On
+/config/amixenable/Y,i,0-1,"OFF, ON",Automix - Group Y Off/On
+/config/amixlock/X,i,0-1,"OFF, ON",Automix - Lock X Off/On
+/config/amixlock/Y,i,0-1,"OFF, ON",Automix - Lock Y Off/On
+/config/buslink/1-2,i,0-2,1-2 .. 5-6,"Bus links (odd/even pairs 1-2, 3-4, etc)"
+/config/chlink/1-2,i,0-7,1-2 .. 15-16,"Channel links (odd/even pairs 1-2, 3-4, etc)"
+/config/linkcfg/dyn,i,0-1,"OFF, ON",Link Pref - Dyn
+/config/linkcfg/eq,i,0-1,"OFF, ON",Link Pref - EQ
+/config/linkcfg/fdrmute,i,0-1,"OFF, ON","Link Pref - Fader, Mute, Sends"
+/config/linkcfg/preamp,i,0-1,"OFF, ON",Link Pref - preamp
+/config/mute/1,i,0-1,"OFF, ON",Mutegroup [1..4] Off/On
+/config/solo/busmode,i,0-1,"PFL, AFL",Headphone source bus tap
+/config/solo/chmode,i,0-1,"PFL, AFL",Headphone source channel tap
+/config/solo/dim,i,0-1,"OFF, ON",Headphone Dim Off/On
+/config/solo/dimatt,f,0.0-1.0,-40,Headphone Dim Gain
+/config/solo/dimpfl,i,0-1,"OFF, ON",Headphone PFL-Dim
+/config/solo/level,f,0.0-1.0,#NAME?,Headphone volume level
+/config/solo/mono,i,0-1,"OFF, ON",Headphone Mono Off/On
+/config/solo/mute,i,0-1,"OFF, ON",Headphone Mute Off/On
+/config/solo/source,i,0-14,"OFF, LR, LRPFL, LRAFL, AUX, U1718, Bus1-6, Bus12, Bus34, Bus56",Headphone source
+/config/solo/sourcetrim,f,0.0-1.0,-30,Headphone source trim
+/dca/1/config/color,i,0-15,"OFF, RD, GN, YE, BL, MG, CY, WH, OFFi, RDi, GNi, YEi, BLi, MGi, CYi, WHi",DCA color
+/dca/1/config/name,s,,,DCA name
+/dca/1/fader,f,0.0-1.0,#NAME?,DCA fader level
+/dca/1/on,i,0-1,"OFF, ON",DCA [1..4] Off/On
+/fx/1/insert,i,0-1,"OFF, ON",Fx slot [1..4] insert
+/fx/1/par/01,i,,,Fx slot [1..4] parameter value (see doc)
+/fx/1/type,i,0-60,"61 Fx, see doc",Fx slot [1..4] type (see doc)
+/fxsend/1/config/color,i,0-15,"OFF, RD, GN, YE, BL, MG, CY, WH, OFFi, RDi, GNi, YEi, BLi, MGi, CYi, WHi",Fx send color
+/fxsend/1/config/name,s,,,Fx send name
+/fxsend/1/grp/dca,i,0-,0%,Fx send DCA assignment
+/fxsend/1/grp/mute,i,0-,0%,Fx send mutegroup assignment
+/fxsend/1/mix/fader,f,0.0-1.0,#NAME?,Fx send fader level
+/fxsend/1/mix/on,i,0-1,"OFF, ON",Fx send mute
+/headamp/01/gain,f,0.0-1.0,-32,Headamp gain
+/headamp/01/phantom,i,0-1,"OFF, ON",Headamp phantom Off/On
+/lr/config/color/,i,0-15,"OFF, RD, GN, YE, BL, MG, CY, WH, OFFi, RDi, GNi, YEi, BLi, MGi, CYi, WHi",Main LR color
+/lr/config/name,s,,,Main LR name
+/lr/dyn/attack,f,0.0-1.0,0.0 -  120.0,Main LR compressor attack
+/lr/dyn/auto,i,0-1,"OFF, ON",Main LR compressor auto
+/lr/dyn/det,i,0-1,"PEAK, RMS",Main LR compressor ??
+/lr/dyn/env,i,0-1,"LIN, LOG",Main LR compressor envelope
+/lr/dyn/filter/f,f,0.0-1.0,20 - 20000,Main LR compressor filter frequency
+/lr/dyn/filter/on,i,0-1,"OFF, ON",Main LR compressor filter Off/On
+/lr/dyn/filter/type,i,0-8,"LC6, LC12, HC6, HC12, 1.0, 2.0, 3.0, 5.0, 10.0",Main LR compressor filter type
+/lr/dyn/hold,f,0.0-1.0,0.02 - 2000,Main LR compressor hold
+/lr/dyn/insert/fxslot,i,0-8,"OFF, Fx1A, Fx1B, Fx2A, Fx2B, Fx3A, Fx3B, Fx4A, Fx4B",Main LR compressor insert Fx slot
+/lr/dyn/insert/on,i,0-1,"OFF, ON",Main LR compressor insert Off/On
+/lr/dyn/keysrc,i,0-22,"SELF, Ch01-Ch16, Bus1-Bus6",Main LR compressor keysource
+/lr/dyn/knee,f,0.0-1.0,0.0 - 5.0,Main LR compressor knee
+/lr/dyn/mgain,f,0.0-1.0,0.0 - 24.0,Main LR compressor makeup gain
+/lr/dyn/mix,f,0.0-1.0,0 - 100,Main LR compressor mix
+/lr/dyn/mode,i,0-1,"COMP, EXP",Main LR compressor mode
+/lr/dyn/on,i,0-1,"OFF, ON",Main LR compressor Off/On
+/lr/dyn/ratio,i,0-11,"1.1, 1.3, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.0, 10, 20, 100",Main LR compressor ratio
+/lr/dyn/release,f,0.0-1.0,5.0 - 4000.0,Main LR compressor release
+/lr/dyn/thr,f,0.0-1.0,-60,Main LR compressor threshold
+/lr/eq/1/f,f,0.0-1.0,20 - 20000,Main LR EQ frequency
+/lr/eq/1/g,f,0.0-1.0,-30,Main LR EQ gain
+/lr/eq/1/q,f,0.0-1.0,10.0 - 0.3,Main LR EQ Q
+/lr/eq/1/type,i,0-5,"LCut, LShv, PEQ, VEQ, HShv, HCut",Main LR EQ band type
+/lr/eq/mode,i,0-2,"PEQ, GEQ, TEQ",Main LR EQ mode
+/lr/eq/on,i,0-1,"OFF, ON",Main LR EQ Off/On
+/lr/geq/0,f,0.0-1.0,-30,Main LR graphics EQ band level
+/lr/mix/fader,f,0.0-1.0,#NAME?,Main LR fader level
+/lr/mix/on,i,0-1,"OFF, ON",Main LR mute
+/lr/mix/pan,f,0.0-1.0,-200,Main LR pan level
+/routing/aux/01/pos,i,0-10,"AIN, AIN+M, IN, IN+M, PREEQ, PREEQ+M, POSTEQ, POSTEQ+M, PRE, PRE+M, POST",Routing Aux [1..6] tap
+/routing/aux/01/src,i,0-55,"Ch01-16, AuxL-R, Fx1L-Fx4R, Bus1-6, Send1-4, L, R, U1-18",Routing Aux [1..6] source
+/routing/main/01,i,0-10,"LR, MON, U0102-U1718",Routing Main assignment
+/routing/p16/01/pos,i,0-10,"AIN, AIN+M, IN, IN+M, PREEQ, PREEQ+M, POSTEQ, POSTEQ+M, PRE, PRE+M, POST",Routing P16 [1..16] ??
+/routing/p16/01/src,i,0-55,"Ch01-16, AuxL-R, Fx1L-Fx4R, Bus1-6, Send1-4, L, R, U1-18",Routing P16 [1..16] source
+/routing/usb/01/pos,i,0-10,"AIN, AIN+M, IN, IN+M, PREEQ, PREEQ+M, POSTEQ, POSTEQ+M, PRE, PRE+M, POST",Routing USB [1..36] ??
+/routing/usb/01/src,i,0-37,"Ch01-16, AuxL-R, Fx1L-Fx4R, Bus1-6, Send1-4, L, R",Routing USB [1..36] source
+/rtn/1/config/color,i,0-15,"OFF, RD, GN, YE, BL, MG, CY, WH, OFFi, RDi, GNi, YEi, BLi, MGi, CYi, WHi",Fx Return [1..4] color
+/rtn/1/config/name,s,,,Fx Return [1..4] name
+/rtn/1/config/rtnsrc,i,0-8,"U0102, U0304, U0506, - U1718",Fx Return [1..4] source
+/rtn/1/eq/1/f,f,0.0-1.0,20 - 20000,Fx Return [1..4] EQ band frequency
+/rtn/1/eq/1/g,f,0.0-1.0,-30,Fx Return [1..4] EQ band gain
+/rtn/1/eq/1/q,f,0.0-1.0,10.0 - 0.3,Fx Return [1..4] EQ band Q
+/rtn/1/eq/1/type,i,0-5,"LCut, LShv, PEQ, VEQ, HShv, HCut",Fx Return [1..4] EQ band type
+/rtn/1/mix/01/grpon,i,0-1,"OFF, ON",Fx Return [1..4] mixbus sends group
+/rtn/1/mix/01/level,f,0.0-1.0,#NAME?,Fx Return [1..4] mixbus sends level
+/rtn/1/mix/01/pan,f,0.0-1.0,-200,Fx Return [1..4] mixbus sends pan
+/rtn/1/mix/01/tap,i,0-5,"IN, PREEQ, POSTEQ, PRE, POST, GRP",Fx Return [1..4] mixbus sends tap
+/rtn/1/mix/fader,f,0.0-1.0,#NAME?,Fx Return [1..4] fader level
+/rtn/1/mix/lr,i,0-1,"OFF, ON",Fx Return [1..4] LR assignment
+/rtn/1/mix/on,i,0-1,"OFF, ON",Fx Return [1..4] mute
+/rtn/1/mix/pan,f,0.0-1.0,-200,Fx Return [1..4] pan level
+/rtn/1/preamp/rtnsw,i,0-1,"OFF, ON",Fx Return [1..4] preamp switch (preamp/USB)
+/rtn/1/preamp/rtntrim,f,0.0-1.0,-36,Fx Return [1..4] preamp trim
+/rtn/aux/config/color,i,0-15,"OFF, RD, GN, YE, BL, MG, CY, WH, OFFi, RDi, GNi, YEi, BLi, MGi, CYi, WHi",Aux Return color
+/rtn/aux/config/name,s,,,Aux Return name
+/rtn/aux/config/rtnsrc,i,0-8,"U0102, U0304, U0506, - U1718",Aux Return source
+/rtn/aux/eq ON,i,0-1,"OFF, ON",Aux Return EQ Off/On
+/rtn/aux/eq/1/f,f,0.0-1.0,20 - 20000,Aux Return EQ band frequency
+/rtn/aux/eq/1/g,f,0.0-1.0,-30,Aux Return EQ band gain
+/rtn/aux/eq/1/q,f,0.0-1.0,10 - 0.3,Aux Return EQ band Q
+/rtn/aux/eq/1/type,i,0-5,"LCut, LShv, PEQ, VEQ, HShv, HCut",Aux Return EQ band type
+/rtn/aux/mix/01/grpon,i,0-1,"OFF, ON",Aux Return mixbus sends group Off/On
+/rtn/aux/mix/01/level,f,0.0-1.0,#NAME?,Aux Return mixbus sends level
+/rtn/aux/mix/01/pan,f,0.0-1.0,-200,Aux Return mixbus sends pan level
+/rtn/aux/mix/01/tap,i,0-5,"IN, PREEQ, POSTEQ, PRE, POST, GRP",Aux Return mixbus sends tap
+/rtn/aux/mix/fader,f,0.0-1.0,#NAME?,Aux Return fader level
+/rtn/aux/mix/lr,i,0-1,"OFF, ON",Aux Return LR assignment
+/rtn/aux/mix/on,i,0-1,"OFF, ON",Aux Return mute
+/rtn/aux/mix/pan,f,0.0-1.0,-200,Aux Return pan level
+/rtn/aux/preamp/rtnsw,i,0-1,"OFF, ON",Aux Return switch (preamp/USB)
+/rtn/aux/preamp/rtntrim,f,0.0-1.0,-36,Aux Return trim
+/xinfo,,,,"Returns info of the X-Air (eg firmware #, etc)"

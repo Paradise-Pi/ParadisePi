@@ -87,7 +87,12 @@ typings/
 
 # Electron-Forge
 out/
+dist/
+
+# Project
 
 .idea/
-database.sqlite
+*.sqlite*
 release-builds/
+/admin/database.sqlite*
+/logo.*
