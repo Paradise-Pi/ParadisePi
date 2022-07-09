@@ -1,18 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-	Alert,
-	Blockquote,
-	Box,
-	Button,
-	Card,
-	Group,
-	Image,
-	Modal,
-	Text,
-	Loader,
-	NumberInput,
-	LoadingOverlay,
-} from '@mantine/core'
+import { Alert, Box, Button, Card, Group, Image, Modal, Text, Loader, NumberInput, LoadingOverlay } from '@mantine/core'
 import { runningInElectron } from '../../../apis/utilities/version'
 import { FaFileImage } from '@react-icons/all-files/fa/FaFileImage'
 import { useAppSelector } from '../../../apis/redux/mainStore'
