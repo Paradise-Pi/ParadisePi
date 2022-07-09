@@ -10,8 +10,7 @@ A facility control panel for sACN & OSC, in Electron.
 
 Made up of an electron app, with a websocket server serving an admin interface
 
-> **Warning**
-> This is version 2 which is currently in development
+Read about it [on the website](https://paradisepi.pages.dev/)
 
 ## Stack
 
