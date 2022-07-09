@@ -29,6 +29,7 @@ import { AddFolderText1655564727255 } from './migration/1655564727255-AddFolderT
 import { AddFaderType1656679151854 } from './migration/1656679151854-AddFaderType'
 import { PresetFoldersToFolders1656681029002 } from './migration/1656681029002-PresetFoldersToFolders'
 import { Logo1656867549439 } from './migration/1656867549439-Logo'
+import { Fullscreen1657356807729 } from './migration/1657356807729-Fullscreen'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -56,6 +57,7 @@ const dataSource = new DataSource({
 		AddFaderType1656679151854,
 		PresetFoldersToFolders1656681029002,
 		Logo1656867549439,
+		Fullscreen1657356807729,
 	],
 	subscribers: [],
 	logger: new MyCustomLogger(),

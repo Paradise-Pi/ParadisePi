@@ -24,6 +24,7 @@ export interface Database {
 			timeoutTime: number
 			helpText: string
 			adminLinkFromControlPanel: boolean
+			fullscreen: boolean
 		}
 		osc: {
 			OSCTargetIP: string
@@ -70,6 +71,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 				timeoutTime: parseInt(await ConfigRepository.getItem('timeoutTime')) * 1000,
 				helpText: await ConfigRepository.getItem('helpText'),
 				adminLinkFromControlPanel: (await ConfigRepository.getItem('adminLinkFromControlPanel')) === 'true',
+				fullscreen: (await ConfigRepository.getItem('fullscreen')) === 'true',
 			},
 			osc: {
 				OSCTargetIP: await ConfigRepository.getItem('OSCTargetIP'),

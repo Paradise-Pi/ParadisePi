@@ -9,6 +9,7 @@ import logger, { winstonTransports } from './logger/index'
 import { createE131 } from './output/e131/constructor'
 import { createOSC } from './output/osc/constructor'
 import { isRunningInDevelopmentMode } from './electron/developmentMode'
+import { ConfigRepository } from './database/repository/config'
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
 	// eslint-disable-line global-require
@@ -38,7 +39,10 @@ app.whenReady().then(() => {
 		.then(() => {
 			createE131()
 			createOSC()
-			globalThis.mainBrowserWindow = createMainWindow('/controlPanel/help')
+			return ConfigRepository.getItem('fullscreen')
+		})
+		.then((fullscreen: string) => {
+			globalThis.mainBrowserWindow = createMainWindow('/controlPanel/help', fullscreen === 'true')
 			new WebServer()
 			logger.add(winstonTransports.broadcast) // You can only add the broadcast transport once the webserver has started
 			logger.profile('boot', { level: 'debug', message: 'Boot Timer' })

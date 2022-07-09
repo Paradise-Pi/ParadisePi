@@ -15,6 +15,7 @@ export const GeneralConfigurationPage = () => {
 			deviceLock: false,
 			helpText: '', // This will never be shown - see below
 			adminLinkFromControlPanel: false,
+			fullscreen: false,
 		},
 	})
 	useEffect(() => {
@@ -23,6 +24,7 @@ export const GeneralConfigurationPage = () => {
 				deviceLock: generalConfig.deviceLock,
 				helpText: generalConfig.helpText, // This is ignored - see below
 				adminLinkFromControlPanel: generalConfig.adminLinkFromControlPanel,
+				fullscreen: generalConfig.fullscreen,
 			})
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -30,13 +32,13 @@ export const GeneralConfigurationPage = () => {
 	const handleSubmit = (values: typeof form.values) => {
 		setLoadingOverlayVisible(true)
 		const payload = values as unknown as { [key: string]: string }
-		Object.entries(values).map(async ([key, value]) => {
+		Object.entries(payload).map(([key, value]) => {
 			if (key === 'deviceLock') {
 				if (value) payload['deviceLock'] = 'LOCKED'
 				else payload['deviceLock'] = 'UNLOCKED'
-			} else if (key === 'adminLinkFromControlPanel') {
-				if (value) payload['adminLinkFromControlPanel'] = 'true'
-				else payload['adminLinkFromControlPanel'] = 'false'
+			} else if (key === 'fullscreen' || key === 'adminLinkFromControlPanel') {
+				if (value) payload[key] = 'true'
+				else payload[key] = 'false'
 			}
 		})
 		ApiCall.post('/config', payload).then(() => {
@@ -66,6 +68,13 @@ export const GeneralConfigurationPage = () => {
 					size="lg"
 					label="Allow access from Control Panel to Admin"
 					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
+				/>
+				<Checkbox
+					mt="md"
+					my="md"
+					size="lg"
+					label="Fullscreen mode (requires restart)"
+					{...form.getInputProps('fullscreen', { type: 'checkbox' })}
 				/>
 				<Divider my="sm" />
 				<Title order={5}>Help Page</Title>
