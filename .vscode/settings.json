@@ -4,10 +4,12 @@
     "editor.formatOnSave": true
   },
   "eslint.validate": ["javascript", "typescript", "typescriptreact"],
+  "cSpell.language": "en-GB",
   "cSpell.words": [
     "Behringer",
+    "clsx",
     "Colour",
-    "Customisation",
+    "Crestron",
     "Gilles",
     "Logline",
     "Mantine",
@@ -16,6 +18,7 @@
     "postfade",
     "prefade",
     "qrcode",
+    "tagline",
     "xair",
     "xremote"
   ],
