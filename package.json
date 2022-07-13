@@ -80,7 +80,7 @@
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
-    "@vercel/webpack-asset-relocator-loader": "^1.7.2",
+    "@vercel/webpack-asset-relocator-loader": "^1.7.3",
     "autoprefixer": "^10.4.7",
     "css-loader": "^6.7.1",
     "electron": "19.0.8",
