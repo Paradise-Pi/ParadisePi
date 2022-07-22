@@ -1,8 +1,8 @@
-name: Build
+name: Build for Release
 on:
   push:
     tags:
-      - '*'
+      - 'v*'
 jobs:
   build:
     name: Build
@@ -11,18 +11,13 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - run: npm install
       - if: matrix.os == 'windows-latest'
         uses: microsoft/setup-msbuild@v1.1
-      - run: npm run package
-      - name: Upload builds to release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.event.release.tag_name }}
-          files: dist/*.*
-          body: Latest build
-          draft: false
+      - run: npm run publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

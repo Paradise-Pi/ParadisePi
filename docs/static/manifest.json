@@ -1,0 +1,11 @@
+{
+  "name": "ParadisePi",
+  "short_name": "Paradise",
+  "theme_color": "#2196f3",
+  "background_color": "#424242",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./index.html",
+  "icons": [
+  ]
+}
