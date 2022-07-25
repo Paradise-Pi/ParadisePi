@@ -29,7 +29,7 @@
     "email": "Jbithell@users.noreply.github.com"
   },
   "dependencies": {
-    "@mantine/core": "^4.2.12",
+    "@mantine/core": "^5.0.0",
     "@mantine/form": "^4.2.12",
     "@mantine/hooks": "^4.2.12",
     "@mantine/modals": "^4.2.12",
