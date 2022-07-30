@@ -14,22 +14,40 @@ import { ScreensaverConfigurationPage } from './ModuleConfiguration/Screensaver'
 export const ConfigurationPage = () => {
 	return (
 		<>
-			<Tabs grow>
-				<Tabs.Tab label="General" icon={<FaTools />}>
+			<Tabs defaultValue="General">
+				<Tabs.List grow>
+					<Tabs.Tab value="General" icon={<FaTools />}>
+						General
+					</Tabs.Tab>
+					<Tabs.Tab value="Screensaver" icon={<FaPaintBrush />}>
+						Screensaver
+					</Tabs.Tab>
+					<Tabs.Tab value="Logs" icon={<FaDatabase />}>
+						Database & Logs
+					</Tabs.Tab>
+					<Tabs.Tab value="sACN" icon={<FaLightbulb />}>
+						sACN (E1.31)
+					</Tabs.Tab>
+					<Tabs.Tab value="OSC" icon={<FaDrum />}>
+						OSC
+					</Tabs.Tab>
+				</Tabs.List>
+
+				<Tabs.Panel value="General" pt="xs">
 					<GeneralConfigurationPage />
-				</Tabs.Tab>
-				<Tabs.Tab label="Screensaver" icon={<FaPaintBrush />}>
+				</Tabs.Panel>
+				<Tabs.Panel value="Screensaver" pt="xs">
 					<ScreensaverConfigurationPage />
-				</Tabs.Tab>
-				<Tabs.Tab label="Database & Logs" icon={<FaDatabase />}>
+				</Tabs.Panel>
+				<Tabs.Panel value="Logs" pt="xs">
 					<DatabaseAndLogsConfigurationPage />
-				</Tabs.Tab>
-				<Tabs.Tab label="sACN (E1.31)" icon={<FaLightbulb />}>
+				</Tabs.Panel>
+				<Tabs.Panel value="sACN" pt="xs">
 					<E131ModuleConfigurationPage />
-				</Tabs.Tab>
-				<Tabs.Tab label="OSC" icon={<FaDrum />}>
+				</Tabs.Panel>
+				<Tabs.Panel value="OSC" pt="xs">
 					<OSCModuleConfigurationPage />
-				</Tabs.Tab>
+				</Tabs.Panel>
 			</Tabs>
 		</>
 	)

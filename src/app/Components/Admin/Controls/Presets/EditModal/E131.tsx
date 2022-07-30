@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { GetInputProps } from '@mantine/form/lib/types'
 import { JsonInput, NumberInput, Slider, Table, Tabs } from '@mantine/core'
 import { isValidJson } from './isValidJson'
+import { InputProps } from '../../../../../../globals'
 
 const Input = (props: { channel: number; value: number; onChange(channel: number, value: number): void }) => {
 	return (
@@ -19,7 +19,7 @@ const Input = (props: { channel: number; value: number; onChange(channel: number
 		</>
 	)
 }
-export const E131PresetEditModal = (props: GetInputProps<'input'>) => {
+export const E131PresetEditModal = (props: InputProps) => {
 	let valueObject = JSON.parse('{}')
 	let disableForm = false
 	if (isValidJson(props.value)) {
@@ -32,11 +32,20 @@ export const E131PresetEditModal = (props: GetInputProps<'input'>) => {
 	const onChangeFunction = (channel: number, value: number) => {
 		const newValue = { ...valueObject }
 		newValue[channel] = value
-		props.onChange(JSON.stringify(newValue))
+		//props.onChange(JSON.stringify(newValue))
 	}
+
+	//TODO fix LX form @cherry-john
+	disableForm = true
 	return (
-		<Tabs>
-			<Tabs.Tab label="Channels" disabled={disableForm}>
+		<Tabs defaultValue={disableForm ? 'JSON' : 'Channels'}>
+			<Tabs.List>
+				<Tabs.Tab value="Channels" disabled={disableForm}>
+					Channels
+				</Tabs.Tab>
+				<Tabs.Tab value="JSON">JSON Editor</Tabs.Tab>
+			</Tabs.List>
+			<Tabs.Panel value="Channels" pt="xs">
 				<Slider
 					defaultValue={pagination}
 					onChange={setPagination}
@@ -104,10 +113,10 @@ export const E131PresetEditModal = (props: GetInputProps<'input'>) => {
 						</tr>
 					</tbody>
 				</Table>
-			</Tabs.Tab>
-			<Tabs.Tab label="JSON">
+			</Tabs.Panel>
+			<Tabs.Panel value="JSON" pt="xs">
 				<JsonInput formatOnBlur={true} autosize maxRows={20} value={props.value} onChange={props.onChange} />
-			</Tabs.Tab>
+			</Tabs.Panel>
 		</Tabs>
 	)
 }
