@@ -65,7 +65,7 @@
     "winston": "^3.8.1"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.64",
+    "@electron-forge/cli": "^6.0.0-beta.65",
     "@electron-forge/maker-deb": "^6.0.0-beta.64",
     "@electron-forge/maker-dmg": "^6.0.0-beta.64",
     "@electron-forge/maker-rpm": "^6.0.0-beta.64",
