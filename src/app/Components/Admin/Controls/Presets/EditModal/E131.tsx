@@ -32,11 +32,9 @@ export const E131PresetEditModal = (props: InputProps) => {
 	const onChangeFunction = (channel: number, value: number) => {
 		const newValue = { ...valueObject }
 		newValue[channel] = value
-		//props.onChange(JSON.stringify(newValue))
+		props.onChange(JSON.stringify(newValue))
 	}
 
-	//TODO fix LX form @cherry-john
-	disableForm = true
 	return (
 		<Tabs defaultValue={disableForm ? 'JSON' : 'Channels'}>
 			<Tabs.List>
@@ -54,8 +52,7 @@ export const E131PresetEditModal = (props: InputProps) => {
 					px={'lg'}
 					step={8}
 					size={'xl'}
-					showLabelOnHover={false}
-					labelAlwaysOn
+					showLabelOnHover={true}
 				/>
 				<Table>
 					<thead>
