@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, Blockquote, Button, Divider, Modal, Container } from '@mantine/core'
+import { Alert, Blockquote, Button, Divider, Modal, Container, ScrollArea } from '@mantine/core'
 import { runningInElectron } from '../../../apis/utilities/version'
 import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
 import { useAppSelector } from './../../../apis/redux/mainStore'
@@ -59,10 +59,13 @@ const Database = () => {
 		</>
 	)
 }
-export const DatabaseAndLogsConfigurationPage = () => (
-	<>
-		<Database />
-		<Divider my={'sm'} label="Live Logging" labelPosition="center" />
-		<Logs />
-	</>
-)
+export const DatabaseAndLogsConfigurationPage = () => {
+	const { height } = useViewportSize()
+	return (
+		<ScrollArea style={{ height: height - 80 }} type="auto" offsetScrollbars>
+			<Database />
+			<Divider my={'sm'} label="Live Logging" labelPosition="center" />
+			<Logs />
+		</ScrollArea>
+	)
+}

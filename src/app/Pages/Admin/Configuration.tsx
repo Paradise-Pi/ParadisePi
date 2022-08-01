@@ -32,7 +32,6 @@ export const ConfigurationPage = () => {
 						OSC
 					</Tabs.Tab>
 				</Tabs.List>
-
 				<Tabs.Panel value="General" pt="xs">
 					<GeneralConfigurationPage />
 				</Tabs.Panel>

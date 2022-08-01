@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Alert, Box, Button, Card, Group, Image, Modal, Text, Loader, NumberInput, LoadingOverlay } from '@mantine/core'
+import {
+	Alert,
+	Box,
+	Button,
+	Card,
+	Group,
+	Image,
+	Modal,
+	Text,
+	Loader,
+	NumberInput,
+	LoadingOverlay,
+	ScrollArea,
+} from '@mantine/core'
 import { runningInElectron } from '../../../apis/utilities/version'
 import { FaFileImage } from '@react-icons/all-files/fa/FaFileImage'
 import { useAppSelector } from '../../../apis/redux/mainStore'
@@ -7,6 +20,7 @@ import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { ApiCall } from '../../../apis/wrapper'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { useForm } from '@mantine/form'
+import { useViewportSize } from '@mantine/hooks'
 
 const ScreenSaverSettings = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
@@ -116,9 +130,14 @@ const UploadLogo = () => {
 		</>
 	)
 }
-export const ScreensaverConfigurationPage = () => (
-	<Box sx={{ maxWidth: 400 }} mx="auto">
-		<UploadLogo />
-		<ScreenSaverSettings />
-	</Box>
-)
+export const ScreensaverConfigurationPage = () => {
+	const { height } = useViewportSize()
+	return (
+		<ScrollArea style={{ height: height - 80 }} type="auto" offsetScrollbars>
+			<Box sx={{ maxWidth: 400 }} mx="auto">
+				<UploadLogo />
+				<ScreenSaverSettings />
+			</Box>
+		</ScrollArea>
+	)
+}
