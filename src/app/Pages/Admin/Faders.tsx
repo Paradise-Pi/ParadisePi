@@ -60,12 +60,12 @@ const FaderChoices = (mixer: string) => {
 			{
 				value: 'main/st',
 				label: 'Stereo Master',
-				group: '',
+				group: 'Outputs',
 			},
 			{
 				value: 'main/m',
 				label: 'Mono Master',
-				group: '',
+				group: 'Outputs',
 			}
 		)
 	}
@@ -73,7 +73,7 @@ const FaderChoices = (mixer: string) => {
 		choices.push({
 			value: 'lr',
 			label: 'Stereo Master',
-			group: '',
+			group: 'Outputs',
 		})
 	}
 	return choices
