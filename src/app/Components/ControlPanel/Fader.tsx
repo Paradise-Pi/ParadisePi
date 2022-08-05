@@ -72,45 +72,43 @@ export const Fader = (props: {
 	meterValue: number
 	value: number | false
 	onChange: (value: number) => void
-}) => {
-	return (
-		<Slider
-			disabled={props.value === false}
-			onChange={value => (!props.disabled ? props.onChange(value) : false)}
-			value={props.value !== false ? props.value : null}
-			radius={'lg'}
-			showLabelOnHover={false}
-			size={'xl'}
-			marks={percentageMarks}
-			step={1}
-			min={0}
-			max={100}
-			precision={0}
-			label={() => null}
-			styles={theme => ({
-				track: {
-					'&:before': {
-						background: metering(theme, props.meterValue),
-					},
+}) => (
+	<Slider
+		disabled={props.value === false}
+		onChange={value => (!props.disabled ? props.onChange(value) : false)}
+		value={props.value !== false ? props.value : null}
+		radius={'lg'}
+		showLabelOnHover={false}
+		size={'xl'}
+		marks={percentageMarks}
+		step={1}
+		min={0}
+		max={100}
+		precision={0}
+		label={() => null}
+		styles={theme => ({
+			track: {
+				'&:before': {
+					background: metering(theme, props.meterValue),
 				},
-				bar: {
-					backgroundColor: 'transparent',
-				},
-				mark: {
-					border: 0,
-					height: 12,
-					width: 1,
-				},
-				thumb: {
-					height: props.disabled ? '1em' : '2em',
-					width: props.disabled ? '0.5em' : '1em',
-					backgroundColor: 'white',
-				},
-				root: {
-					paddingTop: '1em',
-					paddingBottom: '2em',
-				},
-			})}
-		/>
-	)
-}
+			},
+			bar: {
+				backgroundColor: 'transparent',
+			},
+			mark: {
+				border: 0,
+				height: 12,
+				width: 1,
+			},
+			thumb: {
+				height: props.disabled ? '1em' : '2em',
+				width: props.disabled ? '0.5em' : '1em',
+				backgroundColor: 'white',
+			},
+			root: {
+				paddingTop: '1em',
+				paddingBottom: '2em',
+			},
+		})}
+	/>
+)

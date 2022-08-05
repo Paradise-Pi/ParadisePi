@@ -13,13 +13,33 @@ const dbToPercentage = (d: number) => {
 	else if (d < -30) f = (d + 70) / 160
 	else if (d < -10) f = (d + 50) / 80
 	else if (d <= 10) f = (d + 30) / 40
-	/**
-	 * f is now a fudged linear value between 0.0 and 1.0 for decibel values from -90 to 10.
-	 * 0.75 = 0dB, so given our highest values are 0 we want to scale it again slightly to give us a 0.0 to 1.0 value for -90dB to +0 dB
-	 * e.g: 0.375 should now be 0.5
-	 */
-	return f / 0.75
+	return f
 }
+/**
+ * Function courtesy of Patrick‐Gilles Maillot (see their X32 Documentation)
+ * @param f - the OSC float data. f:[0.0, 1.0]
+ * @returns - dB float data. d:[-90, +10]
+ */
+const percentageToDB = (f: number) => {
+	let d = 0.0
+	if (f >= 0.5) d = f * 40 - 30 // max dB value: +10.
+	else if (f >= 0.25) d = f * 80 - 50
+	else if (f >= 0.0625) d = f * 160 - 70
+	else if (f >= 0.0) d = f * 480 - 90
+	return d
+}
+/**
+ * Convert from a scaled percentage value that is linear to one applied to a log base 10 curve. This applies a more logaritmic scale to the values
+ * @param f - the OSC float data. f:[0.0, 1.0]
+ * @returns scaled by natural log divided by E
+ */
+const scalePercentageValues = (f: number) => {
+	if (f === 0.0) return 0.0
+	const rtn = Math.log10(f) / Math.E + 1.0
+	if (rtn < 0) return 0.0
+	else return rtn
+}
+
 const xairLevels: MeterLevels = {
 	'ch/01': 0.0, // channel 1 - prefade
 	'ch/02': 0.0, // channel 2 - prefade
@@ -169,17 +189,32 @@ export const meter1PacketParser = (
 	inBuffer: WithImplicitCoercion<ArrayBuffer | SharedArrayBuffer>,
 	deviceType: string
 ) => {
+	if (deviceType !== 'x32' && deviceType !== 'xair') return {}
 	const thisBuffer = Buffer.from(inBuffer)
 	let i = 4
 	const levels = deviceType === 'x32' ? x32Levels : xairLevels
 	Object.keys(levels).forEach(key => {
 		if (thisBuffer.length >= i + 2) {
-			let value = thisBuffer.readIntLE(i, 2) // Convert the two bytes into a signed int
-			value = value / 256 // Convert to float as decibels
-			value = dbToPercentage(value)
+			let value = 0.0
+			if (deviceType === 'x32') {
+				value = thisBuffer.readFloatLE(i) // Convert the two bytes into a signed int
+				value = scalePercentageValues(value)
+				i = i + 4 // Increment by four bytes for the next one
+			} else if (deviceType === 'xair') {
+				value = thisBuffer.readIntLE(i, 2) // Convert the two bytes into a signed int
+				value = value / 256 // Convert to float as decibels
+				value = dbToPercentage(value)
+				//TODO check if we need to scale the values on the XAir as well as the x32 (as above)
+				/**
+				 * f is now a fudged linear value between 0.0 and 1.0 for decibel values from -90 to 10.
+				 * 0.75 = 0dB, so given our highest values are 0 we want to scale it again slightly to give us a 0.0 to 1.0 value for -90dB to +0 dB
+				 * e.g: 0.375 should now be 0.5
+				 */
+				value = value / 0.75
+				i = i + 2 // Increment by two bytes for the next one
+			}
 			levels[key] = value
 		}
-		i = i + 2 // Increment by two bytes for the next one
 	})
 	return levels
 }
