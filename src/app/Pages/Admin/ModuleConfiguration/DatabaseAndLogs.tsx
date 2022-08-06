@@ -59,12 +59,10 @@ const Database = () => {
 		</>
 	)
 }
-export const DatabaseAndLogsConfigurationPage = () => {
-	return (
-		<>
-			<Database />
-			<Divider my={'sm'} label="Live Logging" labelPosition="center" />
-			<Logs />
-		</>
-	)
-}
+export const DatabaseAndLogsConfigurationPage = () => (
+	<>
+		<Database />
+		<Divider my={'sm'} label="Live Logging" labelPosition="center" />
+		<Logs />
+	</>
+)

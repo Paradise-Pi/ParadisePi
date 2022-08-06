@@ -116,11 +116,9 @@ const UploadLogo = () => {
 		</>
 	)
 }
-export const ScreensaverConfigurationPage = () => {
-	return (
-		<Box sx={{ maxWidth: 400 }} mx="auto">
-			<UploadLogo />
-			<ScreenSaverSettings />
-		</Box>
-	)
-}
+export const ScreensaverConfigurationPage = () => (
+	<Box sx={{ maxWidth: 400 }} mx="auto">
+		<UploadLogo />
+		<ScreenSaverSettings />
+	</Box>
+)
