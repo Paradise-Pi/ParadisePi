@@ -1,5 +1,5 @@
-import { Tabs } from '@mantine/core'
-import React from 'react'
+import { ScrollArea, Tabs } from '@mantine/core'
+import React, { ReactNode } from 'react'
 import { FaDrum } from '@react-icons/all-files/fa/FaDrum'
 import { FaLightbulb } from '@react-icons/all-files/fa/FaLightbulb'
 import { FaDatabase } from '@react-icons/all-files/fa/FaDatabase'
@@ -10,6 +10,16 @@ import { GeneralConfigurationPage } from './ModuleConfiguration/General'
 import { DatabaseAndLogsConfigurationPage } from './ModuleConfiguration/DatabaseAndLogs'
 import { OSCModuleConfigurationPage } from './ModuleConfiguration/OSC'
 import { ScreensaverConfigurationPage } from './ModuleConfiguration/Screensaver'
+import { useViewportSize } from '@mantine/hooks'
+
+const ScrollAreaForConfigModule = (props: { children: ReactNode }) => {
+	const { height } = useViewportSize()
+	return (
+		<ScrollArea style={{ height: height - 80 }} type="auto" offsetScrollbars>
+			{props.children}
+		</ScrollArea>
+	)
+}
 
 export const ConfigurationPage = () => {
 	return (
@@ -33,19 +43,29 @@ export const ConfigurationPage = () => {
 					</Tabs.Tab>
 				</Tabs.List>
 				<Tabs.Panel value="General" pt="xs">
-					<GeneralConfigurationPage />
+					<ScrollAreaForConfigModule>
+						<GeneralConfigurationPage />
+					</ScrollAreaForConfigModule>
 				</Tabs.Panel>
 				<Tabs.Panel value="Screensaver" pt="xs">
-					<ScreensaverConfigurationPage />
+					<ScrollAreaForConfigModule>
+						<ScreensaverConfigurationPage />
+					</ScrollAreaForConfigModule>
 				</Tabs.Panel>
 				<Tabs.Panel value="Logs" pt="xs">
-					<DatabaseAndLogsConfigurationPage />
+					<ScrollAreaForConfigModule>
+						<DatabaseAndLogsConfigurationPage />
+					</ScrollAreaForConfigModule>
 				</Tabs.Panel>
 				<Tabs.Panel value="sACN" pt="xs">
-					<E131ModuleConfigurationPage />
+					<ScrollAreaForConfigModule>
+						<E131ModuleConfigurationPage />
+					</ScrollAreaForConfigModule>
 				</Tabs.Panel>
 				<Tabs.Panel value="OSC" pt="xs">
-					<OSCModuleConfigurationPage />
+					<ScrollAreaForConfigModule>
+						<OSCModuleConfigurationPage />
+					</ScrollAreaForConfigModule>
 				</Tabs.Panel>
 			</Tabs>
 		</>

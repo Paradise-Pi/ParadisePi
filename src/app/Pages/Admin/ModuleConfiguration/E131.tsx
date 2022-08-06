@@ -1,15 +1,4 @@
-import {
-	Box,
-	Button,
-	Divider,
-	Loader,
-	LoadingOverlay,
-	TextInput,
-	Checkbox,
-	NumberInput,
-	Text,
-	ScrollArea,
-} from '@mantine/core'
+import { Box, Button, Divider, Loader, LoadingOverlay, TextInput, Checkbox, NumberInput, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../apis/wrapper'
@@ -22,10 +11,8 @@ import { FaWaveSquare } from '@react-icons/all-files/fa/FaWaveSquare'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { useModals } from '@mantine/modals'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
-import { useViewportSize } from '@mantine/hooks'
 
 export const E131ModuleConfigurationPage = () => {
-	const { height } = useViewportSize()
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const modals = useModals()
 	const e131Config = useAppSelector(state => (state.database ? state.database.config.e131 : false))
@@ -80,87 +67,85 @@ export const E131ModuleConfigurationPage = () => {
 	}
 	if (!e131Config) return <Loader variant="bars" />
 	return (
-		<ScrollArea style={{ height: height - 80 }} type="auto" offsetScrollbars>
-			<Box sx={{ maxWidth: 400 }} mx="auto">
-				<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-				<form onSubmit={form.onSubmit(handleSubmit)}>
-					<Button type="submit" leftIcon={<FaSave />}>
-						Save
-					</Button>
-					<Checkbox
-						mt="md"
-						my="md"
-						size="lg"
-						label="sACN (E1.31) Enabled"
-						{...form.getInputProps('e131Enabled', { type: 'checkbox' })}
-					/>
-					<Divider my="sm" />
-					<TextInput
-						required
-						label="Source Name"
-						description="Name to give this device for identification purposes"
-						size="lg"
-						placeholder="Paradise Pi"
-						icon={<FaIdBadge />}
-						{...form.getInputProps('e131SourceName')}
-					/>
-					<NumberInput
-						required
-						label="First Universe"
-						description="Paradise transmits in a block of universes from this number"
-						size="lg"
-						placeholder="1"
-						min={1}
-						icon={<FaPlay />}
-						{...form.getInputProps('e131FirstUniverse')}
-					/>
-					<NumberInput
-						required
-						label="Number of universes"
-						description="How many universes to transmit, starting with the number above"
-						size="lg"
-						placeholder="2"
-						min={1}
-						max={20}
-						icon={<FaClipboardList />}
-						{...form.getInputProps('e131Universes')}
-					/>
-					<NumberInput
-						required
-						label="sACN (E1.31) Priority"
-						description="Priorities go from 1 to 200, where 200 is the most important"
-						size="lg"
-						placeholder="50"
-						min={1}
-						max={200}
-						icon={<FaCrown />}
-						{...form.getInputProps('e131Priority')}
-					/>
-					<NumberInput
-						required
-						label="sACN (E1.31) Frequency"
-						description="Frequency in Hertz"
-						size="lg"
-						placeholder="5"
-						min={1}
-						max={8}
-						icon={<FaWaveSquare />}
-						{...form.getInputProps('e131Frequency')}
-					/>
-					<Divider my="sm" />
-					<NumberInput
-						required
-						label="Sampler Time"
-						description="How long (in seconds) should the sampler run for"
-						size="lg"
-						placeholder="15"
-						min={5}
-						max={120}
-						icon={<FaRegClock />}
-						{...form.getInputProps('e131Sampler_time')}
-					/>
-				</form>
-			</Box>
-		</ScrollArea>
+		<Box sx={{ maxWidth: 400 }} mx="auto">
+			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
+			<form onSubmit={form.onSubmit(handleSubmit)}>
+				<Button type="submit" leftIcon={<FaSave />}>
+					Save
+				</Button>
+				<Checkbox
+					mt="md"
+					my="md"
+					size="lg"
+					label="sACN (E1.31) Enabled"
+					{...form.getInputProps('e131Enabled', { type: 'checkbox' })}
+				/>
+				<Divider my="sm" />
+				<TextInput
+					required
+					label="Source Name"
+					description="Name to give this device for identification purposes"
+					size="lg"
+					placeholder="Paradise Pi"
+					icon={<FaIdBadge />}
+					{...form.getInputProps('e131SourceName')}
+				/>
+				<NumberInput
+					required
+					label="First Universe"
+					description="Paradise transmits in a block of universes from this number"
+					size="lg"
+					placeholder="1"
+					min={1}
+					icon={<FaPlay />}
+					{...form.getInputProps('e131FirstUniverse')}
+				/>
+				<NumberInput
+					required
+					label="Number of universes"
+					description="How many universes to transmit, starting with the number above"
+					size="lg"
+					placeholder="2"
+					min={1}
+					max={20}
+					icon={<FaClipboardList />}
+					{...form.getInputProps('e131Universes')}
+				/>
+				<NumberInput
+					required
+					label="sACN (E1.31) Priority"
+					description="Priorities go from 1 to 200, where 200 is the most important"
+					size="lg"
+					placeholder="50"
+					min={1}
+					max={200}
+					icon={<FaCrown />}
+					{...form.getInputProps('e131Priority')}
+				/>
+				<NumberInput
+					required
+					label="sACN (E1.31) Frequency"
+					description="Frequency in Hertz"
+					size="lg"
+					placeholder="5"
+					min={1}
+					max={8}
+					icon={<FaWaveSquare />}
+					{...form.getInputProps('e131Frequency')}
+				/>
+				<Divider my="sm" />
+				<NumberInput
+					required
+					label="Sampler Time"
+					description="How long (in seconds) should the sampler run for"
+					size="lg"
+					placeholder="15"
+					min={5}
+					max={120}
+					icon={<FaRegClock />}
+					{...form.getInputProps('e131Sampler_time')}
+				/>
+			</form>
+		</Box>
 	)
 }

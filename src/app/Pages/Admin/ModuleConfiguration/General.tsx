@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from '@mantine/form'
-import { Checkbox, Button, Box, Divider, Loader, LoadingOverlay, Title, Text, ScrollArea } from '@mantine/core'
+import { Checkbox, Button, Box, Divider, Loader, LoadingOverlay, Title, Text } from '@mantine/core'
 import { useAppSelector } from '../../../apis/redux/mainStore'
 import { ApiCall } from '../../../apis/wrapper'
 import { runningInElectron } from '../../../apis/utilities/version'
 import { RichTextEditor } from '@mantine/rte'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
-import { useViewportSize } from '@mantine/hooks'
 
 export const GeneralConfigurationPage = () => {
-	const { height } = useViewportSize()
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const generalConfig = useAppSelector(state => (state.database ? state.database.config.general : false))
 	const form = useForm({
@@ -49,57 +47,55 @@ export const GeneralConfigurationPage = () => {
 	}
 	if (!generalConfig) return <Loader variant="bars" />
 	return (
-		<ScrollArea style={{ height: height - 80 }} type="auto" offsetScrollbars>
-			<Box sx={{ maxWidth: 380 }} mx="auto">
-				<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-				<form onSubmit={form.onSubmit(handleSubmit)}>
-					<Button type="submit" leftIcon={<FaSave />}>
-						Save
-					</Button>
-					<Divider my="sm" />
-					<Checkbox
-						mt="md"
-						size="lg"
-						label="Lock the control panel"
-						{...form.getInputProps('deviceLock', { type: 'checkbox' })}
-						disabled={runningInElectron() && !form.values.deviceLock}
-					/>
-					{/* You can't set the lock or hide the admin button whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
-					<Checkbox
-						mt="md"
-						my="md"
-						size="lg"
-						label="Allow access from Control Panel to Admin"
-						{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
-					/>
-					<Checkbox
-						mt="md"
-						my="md"
-						size="lg"
-						label="Fullscreen mode (requires restart)"
-						{...form.getInputProps('fullscreen', { type: 'checkbox' })}
-					/>
-					<Divider my="sm" />
-					<Title order={5}>Help Page</Title>
-					<Text my="md">Text to display on the help page</Text>
-					{
-						generalConfig ? (
-							<RichTextEditor
-								value={generalConfig.helpText}
-								onChange={form.getInputProps('helpText').onChange}
-								controls={[
-									['bold', 'italic', 'underline', 'strike'],
-									['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-									['unorderedList', 'orderedList'],
-									['sup', 'sub', 'blockquote', 'clean'],
-									['alignLeft', 'alignCenter', 'alignRight'],
-								]}
-								sticky={true}
-							/>
-						) : null /* Slight hack because the RichTextEditor doesn't accept value changes - only the one given when rendered, so force a re-render */
-					}
-				</form>
-			</Box>
-		</ScrollArea>
+		<Box sx={{ maxWidth: 380 }} mx="auto">
+			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
+			<form onSubmit={form.onSubmit(handleSubmit)}>
+				<Button type="submit" leftIcon={<FaSave />}>
+					Save
+				</Button>
+				<Divider my="sm" />
+				<Checkbox
+					mt="md"
+					size="lg"
+					label="Lock the control panel"
+					{...form.getInputProps('deviceLock', { type: 'checkbox' })}
+					disabled={runningInElectron() && !form.values.deviceLock}
+				/>
+				{/* You can't set the lock or hide the admin button whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
+				<Checkbox
+					mt="md"
+					my="md"
+					size="lg"
+					label="Allow access from Control Panel to Admin"
+					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
+				/>
+				<Checkbox
+					mt="md"
+					my="md"
+					size="lg"
+					label="Fullscreen mode (requires restart)"
+					{...form.getInputProps('fullscreen', { type: 'checkbox' })}
+				/>
+				<Divider my="sm" />
+				<Title order={5}>Help Page</Title>
+				<Text my="md">Text to display on the help page</Text>
+				{
+					generalConfig ? (
+						<RichTextEditor
+							value={generalConfig.helpText}
+							onChange={form.getInputProps('helpText').onChange}
+							controls={[
+								['bold', 'italic', 'underline', 'strike'],
+								['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+								['unorderedList', 'orderedList'],
+								['sup', 'sub', 'blockquote', 'clean'],
+								['alignLeft', 'alignCenter', 'alignRight'],
+							]}
+							sticky={true}
+						/>
+					) : null /* Slight hack because the RichTextEditor doesn't accept value changes - only the one given when rendered, so force a re-render */
+				}
+			</form>
+		</Box>
 	)
 }
