@@ -15,12 +15,11 @@ import {
 	Table,
 	Title,
 } from '@mantine/core'
-import { useForm, formList } from '@mantine/form'
+import { useForm } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
-import { FormList } from '@mantine/form/lib/form-list/form-list'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { DatabaseFolder } from './../../../database/repository/folder'
 import { ApiCall } from './../../apis/wrapper'
@@ -33,7 +32,7 @@ import { showNotification } from '@mantine/notifications'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 
 interface FormValues {
-	folders: FormList<DatabaseFolder>
+	folders: Array<DatabaseFolder>
 }
 interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
 	icon: string
@@ -73,7 +72,7 @@ export const FoldersConfigurationPage = () => {
 	// Setup the form
 	const form = useForm<FormValues>({
 		initialValues: {
-			folders: formList([]),
+			folders: [],
 		},
 		validate: {
 			folders: {
@@ -89,17 +88,15 @@ export const FoldersConfigurationPage = () => {
 	useEffect(() => {
 		if (folders !== false) {
 			const formValues = {
-				folders: formList(
-					Object.entries(folders)
-						.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
-						.map(item => ({
-							name: item[1].name,
-							id: parseInt(item[0]),
-							icon: item[1].icon,
-							parentFolderId: item[1].parent ? item[1].parent.id.toString() : null,
-							infoText: item[1].infoText ?? '',
-						}))
-				),
+				folders: Object.entries(folders)
+					.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
+					.map(item => ({
+						name: item[1].name,
+						id: parseInt(item[0]),
+						icon: item[1].icon,
+						parentFolderId: item[1].parent ? item[1].parent.id.toString() : null,
+						infoText: item[1].infoText ?? '',
+					})),
 			}
 			form.setValues(formValues) // Make a copy of the folders using map because the object is not extensible
 			setFormOriginalValues(JSON.stringify(formValues))
@@ -132,14 +129,14 @@ export const FoldersConfigurationPage = () => {
 						</Center>
 					</td>
 					<td>
-						<TextInput placeholder="Name" {...form.getListInputProps('folders', index, 'name')} />
+						<TextInput placeholder="Name" {...form.getInputProps(`folders.${index}.name`)} />
 					</td>
 					<td>
 						<Select
 							placeholder="Parent Folder"
 							icon={<FaFolder />}
 							// form.values.folders[index].folderId
-							{...form.getListInputProps('folders', index, 'parentFolderId')}
+							{...form.getInputProps(`folders.${index}.parentFolderId`)}
 							data={parentFoldersForSelect.filter((item: MantineSelectItem) => {
 								return typeof form.values.folders[index].id !== undefined &&
 									form.values.folders[index].id !== null &&
@@ -152,7 +149,7 @@ export const FoldersConfigurationPage = () => {
 					<td>
 						<Select
 							placeholder="Folder Icon"
-							{...form.getListInputProps('folders', index, 'icon')}
+							{...form.getInputProps(`folders.${index}.icon`)}
 							itemComponent={SelectItem}
 							data={Object.entries(AvailableIcons).map(([value, name]) => ({
 								value: value,
@@ -178,8 +175,8 @@ export const FoldersConfigurationPage = () => {
 							{
 								folders ? (
 									<RichTextEditor
-										value={form.getListInputProps('folders', index, 'infoText').value}
-										onChange={form.getListInputProps('folders', index, 'infoText').onChange}
+										value={form.getInputProps(`folders.${index}.infoText`).value}
+										onChange={form.getInputProps(`folders.${index}.infoText`).onChange}
 										controls={[
 											['bold', 'italic', 'underline', 'strike'],
 											['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
@@ -193,12 +190,16 @@ export const FoldersConfigurationPage = () => {
 							}
 						</Modal>
 
-						<ActionIcon variant="hover" onClick={() => setModalVisible(index)}>
+						<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
 							<FaPencilAlt />
 						</ActionIcon>
 					</td>
 					<td>
-						<ActionIcon color="red" variant="hover" onClick={() => form.removeListItem('folders', index)}>
+						<ActionIcon
+							color="red"
+							variant="transparent"
+							onClick={() => form.removeListItem('folders', index)}
+						>
 							<FaTrash />
 						</ActionIcon>
 					</td>
@@ -229,7 +230,7 @@ export const FoldersConfigurationPage = () => {
 											compact
 											variant="default"
 											onClick={() => {
-												form.addListItem('folders', {
+												form.insertListItem('folders', {
 													id: null,
 													name: '',
 													parentFolderId: '',

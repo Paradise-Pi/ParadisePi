@@ -14,8 +14,8 @@ export default (startPath: string, fullscreen?: boolean): BrowserWindow => {
 	const window = new BrowserWindow({
 		height: 519, // Equates to 480 when you knock off the menu bar
 		width: 816, // Equates to 800 when you knock off the menu bar
-		minWidth: 800,
-		minHeight: 480,
+		minWidth: 816,
+		minHeight: 519,
 		fullscreen: process.env.FULLSCREEN && process.env.FULLSCREEN == 'true' ? true : fullscreen ?? false, // Environment variable is the priority, followed by the variable passed to the function
 		title: 'Paradise',
 		icon: path.join(__dirname, '/../../icon/icon.png'),

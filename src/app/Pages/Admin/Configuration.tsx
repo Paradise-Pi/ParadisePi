@@ -1,5 +1,5 @@
 import { Tabs } from '@mantine/core'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { FaDrum } from '@react-icons/all-files/fa/FaDrum'
 import { FaLightbulb } from '@react-icons/all-files/fa/FaLightbulb'
 import { FaDatabase } from '@react-icons/all-files/fa/FaDatabase'
@@ -11,25 +11,56 @@ import { DatabaseAndLogsConfigurationPage } from './ModuleConfiguration/Database
 import { OSCModuleConfigurationPage } from './ModuleConfiguration/OSC'
 import { ScreensaverConfigurationPage } from './ModuleConfiguration/Screensaver'
 
+// Temporarily removed because it is causing double-scrollbars on the page
+// TODO look at this
+const ScrollAreaForConfigModule = (props: { children: ReactNode }) => <>{props.children}</>
+
 export const ConfigurationPage = () => {
 	return (
 		<>
-			<Tabs grow>
-				<Tabs.Tab label="General" icon={<FaTools />}>
-					<GeneralConfigurationPage />
-				</Tabs.Tab>
-				<Tabs.Tab label="Screensaver" icon={<FaPaintBrush />}>
-					<ScreensaverConfigurationPage />
-				</Tabs.Tab>
-				<Tabs.Tab label="Database & Logs" icon={<FaDatabase />}>
-					<DatabaseAndLogsConfigurationPage />
-				</Tabs.Tab>
-				<Tabs.Tab label="sACN (E1.31)" icon={<FaLightbulb />}>
-					<E131ModuleConfigurationPage />
-				</Tabs.Tab>
-				<Tabs.Tab label="OSC" icon={<FaDrum />}>
-					<OSCModuleConfigurationPage />
-				</Tabs.Tab>
+			<Tabs defaultValue="General">
+				<Tabs.List grow>
+					<Tabs.Tab value="General" icon={<FaTools />}>
+						General
+					</Tabs.Tab>
+					<Tabs.Tab value="Screensaver" icon={<FaPaintBrush />}>
+						Screensaver
+					</Tabs.Tab>
+					<Tabs.Tab value="Logs" icon={<FaDatabase />}>
+						Database & Logs
+					</Tabs.Tab>
+					<Tabs.Tab value="sACN" icon={<FaLightbulb />}>
+						sACN (E1.31)
+					</Tabs.Tab>
+					<Tabs.Tab value="OSC" icon={<FaDrum />}>
+						OSC
+					</Tabs.Tab>
+				</Tabs.List>
+				<Tabs.Panel value="General" pt="xs">
+					<ScrollAreaForConfigModule>
+						<GeneralConfigurationPage />
+					</ScrollAreaForConfigModule>
+				</Tabs.Panel>
+				<Tabs.Panel value="Screensaver" pt="xs">
+					<ScrollAreaForConfigModule>
+						<ScreensaverConfigurationPage />
+					</ScrollAreaForConfigModule>
+				</Tabs.Panel>
+				<Tabs.Panel value="Logs" pt="xs">
+					<ScrollAreaForConfigModule>
+						<DatabaseAndLogsConfigurationPage />
+					</ScrollAreaForConfigModule>
+				</Tabs.Panel>
+				<Tabs.Panel value="sACN" pt="xs">
+					<ScrollAreaForConfigModule>
+						<E131ModuleConfigurationPage />
+					</ScrollAreaForConfigModule>
+				</Tabs.Panel>
+				<Tabs.Panel value="OSC" pt="xs">
+					<ScrollAreaForConfigModule>
+						<OSCModuleConfigurationPage />
+					</ScrollAreaForConfigModule>
+				</Tabs.Panel>
 			</Tabs>
 		</>
 	)

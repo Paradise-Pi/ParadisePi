@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react'
 import { HashRouter, Routes, Route, Outlet } from 'react-router-dom'
 import { AppShell, Container, ScrollArea } from '@mantine/core'
-import { useViewportSize } from '@mantine/hooks'
 import { PresetPage } from './Pages/ControlPanel/Preset'
 import { HelpPage } from './Pages/ControlPanel/Help'
 import { ControlPanelNavigation } from './Navigation/ControlPanelNavigation'
@@ -15,6 +14,7 @@ import { ControlsConfigurationPage } from './Pages/Admin/Controls'
 import { Locked } from './Components/Locked'
 import { ChannelCheckPage } from './Pages/ControlPanel/E131/ChannelCheck'
 import { KeypadPage } from './Pages/ControlPanel/E131/Keypad'
+import { useViewportSize } from '@mantine/hooks'
 
 const Router = () => {
 	return (
@@ -53,7 +53,7 @@ const MainNav = ({ navigation }: { navigation: ReactElement }) => {
 	return (
 		<AppShell navbar={navigation} padding={0}>
 			<ScrollArea style={{ height }} type="auto" offsetScrollbars scrollbarSize={20}>
-				<Container fluid px={'md'} py="md">
+				<Container fluid py={'sm'} px={'sm'}>
 					<Outlet />
 				</Container>
 			</ScrollArea>

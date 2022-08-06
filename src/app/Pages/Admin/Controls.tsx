@@ -8,6 +8,7 @@ import { UsageRings } from './../../Components/Admin/Controls/UsageRings'
 import { useModals } from '@mantine/modals'
 import { SocketClients } from './../../Components/Admin/Controls/SocketClients'
 import { ApiCall } from './../../apis/wrapper'
+import { SmallScreenWarning } from './../../Components/Admin/Controls/SmallScreen'
 const PanelButton = (props: { children: React.ReactNode; onClick?: React.MouseEventHandler<HTMLButtonElement> }) => {
 	return (
 		<Button variant="default" color="dark" size="md" mx="xs" my="xs" onClick={props.onClick}>
@@ -62,6 +63,7 @@ export const ControlsConfigurationPage = () => {
 					<PanelButton onClick={openQuitModal}>Quit to {operatingSystem}</PanelButton>
 				) : null}
 			</Group>
+			<SmallScreenWarning />
 			<Divider my="sm" />
 			<UsageRings />
 			<Divider my="sm" />

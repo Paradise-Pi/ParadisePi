@@ -13,14 +13,13 @@ import {
 	Modal,
 	SelectItem,
 	NumberInput,
-	Chips,
 	Chip,
 	Text,
 	Title,
 	Table,
 	Alert,
 } from '@mantine/core'
-import { useForm, formList } from '@mantine/form'
+import { useForm } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
@@ -31,7 +30,6 @@ import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaRecycle } from '@react-icons/all-files/fa/FaRecycle'
-import { FormList } from '@mantine/form/lib/form-list/form-list'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { DatabasePreset, PresetTypes } from './../../../database/repository/preset'
 import { ApiCall } from './../../apis/wrapper'
@@ -45,7 +43,7 @@ import { showNotification } from '@mantine/notifications'
 import { isValidJson } from './../../Components/Admin/Controls/Presets/EditModal/isValidJson'
 
 interface FormValues {
-	presets: FormList<DatabasePreset>
+	presets: Array<DatabasePreset>
 }
 
 export const PresetsConfigurationPage = () => {
@@ -69,7 +67,7 @@ export const PresetsConfigurationPage = () => {
 	// Setup the form
 	const form = useForm<FormValues>({
 		initialValues: {
-			presets: formList([]),
+			presets: Array<DatabasePreset>(),
 		},
 		validate: {
 			presets: {
@@ -85,7 +83,7 @@ export const PresetsConfigurationPage = () => {
 	})
 	useEffect(() => {
 		if (presets !== false) {
-			const formValues = { presets: formList(presets.map(item => ({ ...item }))) }
+			const formValues = { presets: presets.map(item => ({ ...item })) }
 			form.setValues(formValues) // Make a copy of the presets using map because the object is not extensible
 			setFormOriginalValues(JSON.stringify(formValues))
 			setLoadingOverlayVisible(false)
@@ -116,21 +114,21 @@ export const PresetsConfigurationPage = () => {
 						</Center>
 					</td>
 					<td>
-						<TextInput placeholder="Name" {...form.getListInputProps('presets', index, 'name')} />
+						<TextInput placeholder="Name" {...form.getInputProps(`presets.${index}.name`)} />
 					</td>
 					<td>
 						<Select
 							placeholder="Folder"
 							icon={<FaFolder />}
 							// form.values.presets[index].folderId
-							{...form.getListInputProps('presets', index, 'folderId')}
+							{...form.getInputProps(`presets.${index}.folderId`)}
 							data={foldersForSelect}
 						/>
 					</td>
 					<td>
 						<ColorInput
 							format="hex"
-							{...form.getListInputProps('presets', index, 'color')}
+							{...form.getInputProps(`presets.${index}.color`)}
 							swatches={['#2C2E33', '#C92A2A', '#A61E4D', '#862E9C', '#1864AB', '#2B8A3E', '#E67700']}
 							swatchesPerRow={7}
 						/>
@@ -141,14 +139,14 @@ export const PresetsConfigurationPage = () => {
 							icon={<FaRegClock />}
 							min={0}
 							max={60}
-							{...form.getListInputProps('presets', index, 'fadeTime')}
+							{...form.getInputProps(`presets.${index}.fadeTime`)}
 						/>
 					</td>
 					<td>
 						<Checkbox
 							size={'lg'}
 							title="Visible"
-							{...form.getListInputProps('presets', index, 'enabled', { type: 'checkbox' })}
+							{...form.getInputProps(`presets.${index}.enabled`, { type: 'checkbox' })}
 						/>
 					</td>
 					<td>
@@ -168,27 +166,31 @@ export const PresetsConfigurationPage = () => {
 										placeholder="Universe"
 										icon={<FaSpaceShuttle />}
 										description="Universe number"
-										{...form.getListInputProps('presets', index, 'universe')}
+										{...form.getInputProps(`presets.${index}.universe`)}
 									/>
-									<E131PresetEditModal {...form.getListInputProps('presets', index, 'data')} />
+									<E131PresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 								</>
 							) : null}
 							{form.values.presets[index].type === 'osc' ? (
-								<OSCPresetEditModal {...form.getListInputProps('presets', index, 'data')} />
+								<OSCPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 							) : null}
 							{form.values.presets[index].type === 'http' ? (
-								<HTTPPresetEditModal {...form.getListInputProps('presets', index, 'data')} />
+								<HTTPPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 							) : null}
 							{form.values.presets[index].type === 'macro' ? (
-								<MacroPresetEditModal {...form.getListInputProps('presets', index, 'data')} />
+								<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 							) : null}
 						</Modal>
-						<ActionIcon variant="hover" onClick={() => setModalVisible(index)}>
+						<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
 							<FaPencilAlt />
 						</ActionIcon>
 					</td>
 					<td>
-						<ActionIcon color="red" variant="hover" onClick={() => form.removeListItem('presets', index)}>
+						<ActionIcon
+							color="red"
+							variant="transparent"
+							onClick={() => form.removeListItem('presets', index)}
+						>
 							<FaTrash />
 						</ActionIcon>
 					</td>
@@ -256,11 +258,10 @@ export const PresetsConfigurationPage = () => {
 												const createNewPresetModal = modalManager.openModal({
 													title: 'Please select a preset type',
 													children: (
-														<Chips
-															size={'md'}
+														<Chip.Group
 															multiple={false}
-															onChange={value => {
-																form.addListItem('presets', {
+															onChange={(value: string) => {
+																form.insertListItem('presets', {
 																	id: null,
 																	name: 'New ' + value + ' preset',
 																	enabled: true,
@@ -274,11 +275,19 @@ export const PresetsConfigurationPage = () => {
 																modalManager.closeModal(createNewPresetModal)
 															}}
 														>
-															<Chip value="e131">sACN (E1.31)</Chip>
-															<Chip value="osc">OSC</Chip>
-															<Chip value="http">HTTP</Chip>
-															<Chip value="macro">Macro</Chip>
-														</Chips>
+															<Chip size="md" value="e131">
+																sACN (E1.31)
+															</Chip>
+															<Chip size="md" value="osc">
+																OSC
+															</Chip>
+															<Chip size="md" value="http">
+																HTTP
+															</Chip>
+															<Chip size="md" value="macro">
+																Macro
+															</Chip>
+														</Chip.Group>
 													),
 												})
 											}}
