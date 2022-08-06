@@ -1,4 +1,4 @@
-import { ScrollArea, Tabs } from '@mantine/core'
+import { Tabs } from '@mantine/core'
 import React, { ReactNode } from 'react'
 import { FaDrum } from '@react-icons/all-files/fa/FaDrum'
 import { FaLightbulb } from '@react-icons/all-files/fa/FaLightbulb'
@@ -10,16 +10,10 @@ import { GeneralConfigurationPage } from './ModuleConfiguration/General'
 import { DatabaseAndLogsConfigurationPage } from './ModuleConfiguration/DatabaseAndLogs'
 import { OSCModuleConfigurationPage } from './ModuleConfiguration/OSC'
 import { ScreensaverConfigurationPage } from './ModuleConfiguration/Screensaver'
-import { useViewportSize } from '@mantine/hooks'
 
-const ScrollAreaForConfigModule = (props: { children: ReactNode }) => {
-	const { height } = useViewportSize()
-	return (
-		<ScrollArea style={{ height: height - 80 }} type="auto" offsetScrollbars>
-			{props.children}
-		</ScrollArea>
-	)
-}
+// Temporarily removed because it is causing double-scrollbars on the page
+// TODO look at this
+const ScrollAreaForConfigModule = (props: { children: ReactNode }) => <>{props.children}</>
 
 export const ConfigurationPage = () => {
 	return (
