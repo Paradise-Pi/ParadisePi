@@ -1,6 +1,6 @@
 import React from 'react'
 import { JsonInput, Select, TextInput } from '@mantine/core'
-import { InputProps } from '../../../../../../globals'
+import { InputProps } from '../../../../InputProps'
 
 export const HTTPPresetEditModal = (props: InputProps) => {
 	const preset = JSON.parse(props.value) || {}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { JsonInput, NumberInput, Slider, Table, Tabs } from '@mantine/core'
 import { isValidJson } from './isValidJson'
-import { InputProps } from '../../../../../../globals'
+import { InputProps } from '../../../../InputProps'
 
 const Input = (props: { channel: number; value: number; onChange(channel: number, value: number): void }) => {
 	return (

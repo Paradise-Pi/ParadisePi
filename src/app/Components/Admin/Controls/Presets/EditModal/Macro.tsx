@@ -4,7 +4,7 @@ import { useForm } from '@mantine/form'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { randomId } from '@mantine/hooks'
 import { useAppSelector } from './../../../../../apis/redux/mainStore'
-import { InputProps } from '../../../../../../globals'
+import { InputProps } from '../../../../InputProps'
 interface FormValues {
 	steps: Array<{
 		type: string

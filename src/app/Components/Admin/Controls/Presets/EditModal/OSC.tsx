@@ -5,7 +5,7 @@ import { randomId } from '@mantine/hooks'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { useAppSelector } from '../../../../../../app/apis/redux/mainStore'
 import { isValidJson } from './isValidJson'
-import { InputProps } from '../../../../../../globals'
+import { InputProps } from '../../../../InputProps'
 
 /**
  * List of commands formatted for \@mantine/form
