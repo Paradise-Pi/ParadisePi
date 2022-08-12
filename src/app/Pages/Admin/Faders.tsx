@@ -14,7 +14,7 @@ import {
 	Table,
 	Title,
 } from '@mantine/core'
-import { useForm, formList } from '@mantine/form'
+import { useForm } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
@@ -24,14 +24,13 @@ import { FaIcons } from '@react-icons/all-files/fa/FaIcons'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
-import { FormList } from '@mantine/form/lib/form-list/form-list'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { DatabaseFader } from './../../../database/repository/fader'
 import { ApiCall } from './../../apis/wrapper'
 import { showNotification } from '@mantine/notifications'
 
 interface FormValues {
-	faders: FormList<DatabaseFader>
+	faders: Array<DatabaseFader>
 }
 const FaderChoices = (mixer: string) => {
 	const choices = [
@@ -61,12 +60,12 @@ const FaderChoices = (mixer: string) => {
 			{
 				value: 'main/st',
 				label: 'Stereo Master',
-				group: '',
+				group: 'Outputs',
 			},
 			{
 				value: 'main/m',
 				label: 'Mono Master',
-				group: '',
+				group: 'Outputs',
 			}
 		)
 	}
@@ -74,7 +73,7 @@ const FaderChoices = (mixer: string) => {
 		choices.push({
 			value: 'lr',
 			label: 'Stereo Master',
-			group: '',
+			group: 'Outputs',
 		})
 	}
 	return choices
@@ -99,7 +98,7 @@ export const FadersConfigurationPage = () => {
 	// Setup the form
 	const form = useForm<FormValues>({
 		initialValues: {
-			faders: formList([]),
+			faders: [],
 		},
 		validate: {
 			faders: {
@@ -113,7 +112,7 @@ export const FadersConfigurationPage = () => {
 	useEffect(() => {
 		// Normally called when the database is populated and ready, so we can populate the form
 		if (faders !== false) {
-			const formValues = { faders: formList(faders.map(item => ({ ...item }))) } // Make a copy of the faders using map because the object is not extensible
+			const formValues = { faders: faders.map(item => ({ ...item })) } // Make a copy of the faders using map because the object is not extensible
 			form.setValues(formValues)
 			setFormOriginalValues(JSON.stringify(formValues))
 			setLoadingOverlayVisible(false)
@@ -144,14 +143,14 @@ export const FadersConfigurationPage = () => {
 						</Center>
 					</td>
 					<td>
-						<TextInput placeholder="Name" {...form.getListInputProps('faders', index, 'name')} />
+						<TextInput placeholder="Name" {...form.getInputProps(`faders.${index}.name`)} />
 					</td>
 					<td>
 						<Select
 							placeholder="Folder"
 							icon={<FaFolder />}
 							//
-							{...form.getListInputProps('faders', index, 'folderId')}
+							{...form.getInputProps(`faders.${index}.folderId`)}
 							data={foldersForSelect}
 						/>
 					</td>
@@ -159,7 +158,7 @@ export const FadersConfigurationPage = () => {
 						<Select
 							placeholder="Type"
 							icon={<FaIcons />}
-							{...form.getListInputProps('faders', index, 'type')}
+							{...form.getInputProps(`faders.${index}.type`)}
 							data={mixer !== false ? FaderChoices(mixer.replace('midas-', '')) : []}
 						/>
 					</td>
@@ -170,7 +169,7 @@ export const FadersConfigurationPage = () => {
 								icon={<FaHashtag />}
 								min={1}
 								max={99}
-								{...form.getListInputProps('faders', index, 'channel')}
+								{...form.getInputProps(`faders.${index}.channel`)}
 							/>
 						) : null}
 					</td>
@@ -178,11 +177,15 @@ export const FadersConfigurationPage = () => {
 						<Checkbox
 							size={'lg'}
 							title="Visible"
-							{...form.getListInputProps('faders', index, 'enabled', { type: 'checkbox' })}
+							{...form.getInputProps(`faders.${index}.enabled`, { type: 'checkbox' })}
 						/>
 					</td>
 					<td>
-						<ActionIcon color="red" variant="hover" onClick={() => form.removeListItem('faders', index)}>
+						<ActionIcon
+							color="red"
+							variant="transparent"
+							onClick={() => form.removeListItem('faders', index)}
+						>
 							<FaTrash />
 						</ActionIcon>
 					</td>
@@ -213,7 +216,7 @@ export const FadersConfigurationPage = () => {
 											compact
 											variant="default"
 											onClick={() => {
-												form.addListItem('faders', {
+												form.insertListItem('faders', {
 													id: null,
 													name: 'New Channel fader',
 													channel: 1,

@@ -1,17 +1,17 @@
 import React from 'react'
-import { GetInputProps } from '@mantine/form/lib/types'
 import { ActionIcon, Button, Group, JsonInput, NumberInput, Select, Tabs } from '@mantine/core'
-import { useForm, FormList, formList } from '@mantine/form'
+import { useForm } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { useAppSelector } from '../../../../../../app/apis/redux/mainStore'
 import { isValidJson } from './isValidJson'
+import { InputProps } from '../../../../InputProps'
 
 /**
  * List of commands formatted for \@mantine/form
  */
 export interface OSCFormValues {
-	commands: FormList<OSCFormValue>
+	commands: Array<OSCFormValue>
 }
 
 /**
@@ -80,7 +80,7 @@ interface oscSecondOptions {
 	[key: string]: oscSecondOption[]
 }
 
-export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
+export const OSCPresetEditModal = (props: InputProps) => {
 	const mixer = useAppSelector(state => (state.database ? state.database.config.osc.OSCMixerType : false))
 
 	const oscFirstOption: oscCommands = {
@@ -211,7 +211,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 
 	const form = useForm<OSCFormValues>({
 		initialValues: {
-			commands: formList(preset),
+			commands: preset,
 		},
 	})
 
@@ -226,8 +226,14 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 
 	try {
 		return (
-			<Tabs>
-				<Tabs.Tab label="Edit" disabled={disableForm}>
+			<Tabs defaultValue={disableForm ? 'JSON' : 'Edit'}>
+				<Tabs.List grow>
+					<Tabs.Tab value="Edit" disabled={disableForm}>
+						Edit
+					</Tabs.Tab>
+					<Tabs.Tab value="JSON">JSON Editor</Tabs.Tab>
+				</Tabs.List>
+				<Tabs.Panel value="Edit" pt="xs">
 					{form.values.commands.map((item, index) => {
 						if (mixer !== false) {
 							const part1Index = oscFirstOption[mixer.replace('midas-', '')].findIndex(
@@ -250,7 +256,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 								<Group key={item.key} mt="xs">
 									<Select
 										placeholder="State"
-										{...form.getListInputProps('commands', index, 'command1')}
+										{...form.getInputProps(`commands.${index}.command1`)}
 										label="Part 1"
 										searchable
 										nothingFound="No options"
@@ -261,7 +267,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 										<NumberInput
 											label="Part 1 Value"
 											placeholder="Command Value"
-											{...form.getListInputProps('commands', index, 'value1')}
+											{...form.getInputProps(`commands.${index}.value1`)}
 											min={
 												oscFirstOption[mixer.replace('midas-', '')][part1Index].properties
 													.startVal
@@ -279,7 +285,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 									{form.values.commands[index].command1 && part2Array ? (
 										<Select
 											placeholder="Options"
-											{...form.getListInputProps('commands', index, 'command2')}
+											{...form.getInputProps(`commands.${index}.command2`)}
 											label="Part 2"
 											searchable
 											nothingFound="No options"
@@ -292,7 +298,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 										<NumberInput
 											placeholder="Option Value"
 											label="Part 2 Value"
-											{...form.getListInputProps('commands', index, 'value2')}
+											{...form.getInputProps(`commands.${index}.value2`)}
 											min={oscSecondOptionList[part2Array][part2Index].properties.startVal}
 											max={oscSecondOptionList[part2Array][part2Index].properties.endVal}
 											step={oscSecondOptionList[part2Array][part2Index].properties.step}
@@ -301,7 +307,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 									) : null}
 									<ActionIcon
 										color="red"
-										variant="hover"
+										variant="transparent"
 										onClick={() => form.removeListItem('commands', index)}
 									>
 										<FaTrash />
@@ -313,7 +319,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 					<Group position="center" mt="md">
 						<Button
 							onClick={() =>
-								form.addListItem('commands', {
+								form.insertListItem('commands', {
 									command1: '',
 									value1: '',
 									command2: '',
@@ -326,18 +332,30 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 						</Button>
 						<Button onClick={() => props.onChange(JSON.stringify(form.values.commands))}>Apply</Button>
 					</Group>
-				</Tabs.Tab>
-				<Tabs.Tab label="JSON Mode">
-					<JsonInput formatOnBlur={true} autosize maxRows={20} value={props.value} onChange={doJsonUpdate} />
-				</Tabs.Tab>
+				</Tabs.Panel>
+				<Tabs.Panel value="JSON" pt="xs">
+					<JsonInput
+						formatOnBlur={true}
+						autosize={true}
+						minRows={5}
+						maxRows={20}
+						value={props.value}
+						onChange={doJsonUpdate}
+					/>
+				</Tabs.Panel>
 			</Tabs>
 		)
 	} catch (e) {
 		//something is probably wrong with the custom osc editor, so we'll just show the json editor
 		return (
-			<Tabs>
-				<Tabs.Tab label="Edit" disabled={true}></Tabs.Tab>
-				<Tabs.Tab label="JSON Mode">
+			<Tabs defaultValue="JSON">
+				<Tabs.List>
+					<Tabs.Tab value="Edit" disabled={true}>
+						Edit
+					</Tabs.Tab>
+					<Tabs.Tab value="JSON">JSON Editor</Tabs.Tab>
+				</Tabs.List>
+				<Tabs.Panel value="JSON" pt="xs">
 					<JsonInput
 						formatOnBlur={true}
 						autosize
@@ -345,7 +363,7 @@ export const OSCPresetEditModal = (props: GetInputProps<'input'>) => {
 						value={props.value}
 						onChange={props.onChange}
 					/>
-				</Tabs.Tab>
+				</Tabs.Panel>
 			</Tabs>
 		)
 	}

@@ -47,7 +47,7 @@ export const GeneralConfigurationPage = () => {
 	}
 	if (!generalConfig) return <Loader variant="bars" />
 	return (
-		<Box sx={{ maxWidth: 400 }} mx="auto">
+		<Box sx={{ maxWidth: 380 }} mx="auto">
 			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Button type="submit" leftIcon={<FaSave />}>

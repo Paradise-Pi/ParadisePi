@@ -58,8 +58,8 @@ class ErrorBoundary extends Component<Props, State> {
 							Download Logs
 						</Button>
 					</a>
-					<Accordion offsetIcon={false} initialItem={0}>
-						<Accordion.Item label="How to report this problem">
+					<Accordion defaultValue="How to report this problem">
+						<Accordion.Item value="How to report this problem">
 							<Box
 								sx={{
 									height: 150,
@@ -85,7 +85,7 @@ class ErrorBoundary extends Component<Props, State> {
 								your IT help desk.
 							</Text>
 						</Accordion.Item>
-						<Accordion.Item label="Error Details">
+						<Accordion.Item value="Error Details">
 							<Text>{this.state.error && this.state.error.toString()}</Text>
 							<Divider my="sm" label="Error Stack Trace" labelPosition="center" />
 							<Code block>{this.state.errorInfo.componentStack}</Code>
