@@ -1,8 +1,8 @@
 import React from 'react'
-import { GetInputProps } from '@mantine/form/lib/types'
 import { JsonInput, Select, TextInput } from '@mantine/core'
+import { InputProps } from '../../../../InputProps'
 
-export const HTTPPresetEditModal = (props: GetInputProps<'input'>) => {
+export const HTTPPresetEditModal = (props: InputProps) => {
 	const preset = JSON.parse(props.value) || {}
 	const onChangeFunction = (key: string, value: string) => {
 		const newValue = { ...preset }
@@ -13,12 +13,12 @@ export const HTTPPresetEditModal = (props: GetInputProps<'input'>) => {
 		<>
 			<TextInput
 				label="URL"
-				value={preset.url ?? ''}
+				value={preset.url}
 				onChange={event => onChangeFunction('url', event.currentTarget.value)}
 			/>
 			<Select
 				label="Method"
-				value={preset.method ?? null}
+				value={preset.method}
 				onChange={value => onChangeFunction('method', value)}
 				data={[
 					{ value: 'get', label: 'GET', selected: true },
@@ -32,7 +32,7 @@ export const HTTPPresetEditModal = (props: GetInputProps<'input'>) => {
 				validationError="Invalid json"
 				formatOnBlur
 				autosize
-				value={preset.data ?? null}
+				value={preset.data}
 				onChange={value => onChangeFunction('data', value)}
 				minRows={4}
 			/>
@@ -41,7 +41,7 @@ export const HTTPPresetEditModal = (props: GetInputProps<'input'>) => {
 				validationError="Invalid json"
 				formatOnBlur
 				autosize
-				value={preset.headers ?? null}
+				value={preset.headers}
 				onChange={value => onChangeFunction('headers', value)}
 			/>
 		</>
