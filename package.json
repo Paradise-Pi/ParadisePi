@@ -5,6 +5,7 @@
   "main": ".webpack/main",
   "scripts": {
     "start": "tsc && set DEV_MODE=true && electron-forge start --inspect-electron",
+    "balenastart": "tsc && electron-forge start",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint .",

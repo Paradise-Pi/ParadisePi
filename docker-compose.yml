@@ -2,6 +2,8 @@ version: '2.1'
 networks: {}
 volumes:
   resin-data: {}
+  x11: {}
+
 services:
   main:
     build:
@@ -9,3 +11,17 @@ services:
     privileged: true
     restart: always
     network_mode: host
+    devices:
+      - /dev/dri
+    group_add:
+      - video
+    volumes:
+      - 'x11:/tmp/.X11-unix'
+  xserver:
+    image: balenablocks/xserver
+    restart: always
+    privileged: true
+    volumes:
+      - 'x11:/tmp/.X11-unix'
+    environment:
+      - CURSOR=false

@@ -19,6 +19,7 @@ module.exports = {
 					homepage: 'https://github.com/Jbithell/ParadisePi',
 					icon: 'icon/favicon.ico',
 					name: 'Paradise Pi',
+					bin: 'paradise-pi',
 				},
 			},
 		},
