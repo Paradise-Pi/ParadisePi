@@ -72,6 +72,7 @@ Next, ensure Paradise isn't running - in the administration menu click "exit to 
 
 ```bash
 cd paradisepi
+git pull
 npm i
 npm run make
 sudo reboot
