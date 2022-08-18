@@ -3,6 +3,8 @@ sidebar_position: 3
 title: Raspberry Pi
 ---
 
+## Initial installation
+
 To begin deploying on a Raspberry Pi, setup a fresh install of Raspberry Pi OS and install node.js. Guides are available online, we found [this one](https://www.makersupplies.sg/blogs/tutorials/how-to-install-node-js-and-npm-on-the-raspberry-pi) useful.
 
 Then clone the Paradise Pi repository
@@ -14,6 +16,7 @@ git clone https://github.com/paradise-pi/paradisepi
 Once cloned, install the dependencies 
 
 ```bash
+cd paradisepi
 npm i
 ```
 
@@ -55,3 +58,21 @@ sudo nano /etc/lightdm/lightdm.conf
 Scroll down to the section labelled `[Seat*]` and remove the `#` from the start of the line saying `xserver-command`
 
 Add ` -cursor` to the end of the line. It should now be `xserver-command = X -nocursor`
+
+## Updating
+
+Ensure you have taken a backup of the:
+
+1. Database
+1. Screensaver logo
+
+These will both be deleted during the update
+
+Next, ensure Paradise isn't running - in the administration menu click "exit to Linux" 
+
+```bash
+cd paradisepi
+npm i
+npm run make
+sudo reboot
+```
