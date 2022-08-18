@@ -94,8 +94,8 @@ export class WebServer {
 					})
 				})
 			} else if (req.url == '/logs') {
-				// Allow backup of database
-				const filePath = path.join(__dirname, 'logs/log.log')
+				// Allow  downloading of logs
+				const filePath = path.join(__dirname, '../../logs/log.log')
 				const fileStat = fs.statSync(filePath)
 				const fileRead = fs.readFileSync(filePath)
 				res.writeHead(200, {
@@ -107,6 +107,7 @@ export class WebServer {
 				res.end()
 			} else if (req.url == '/logo/upload' && req.method.toLowerCase() === 'post') {
 				// Allow uploading of logo
+				logger.verbose('Incoming logo upload')
 				new IncomingForm({
 					filename: (_name, ext) => 'logo' + ext,
 					keepExtensions: true,
@@ -140,6 +141,7 @@ export class WebServer {
 							value: files.logo[0].newFilename,
 						})
 							.then(() => {
+								logger.verbose('Incoming logo upload saved')
 								createAndSendImagesObject()
 							})
 							.then(() => {
