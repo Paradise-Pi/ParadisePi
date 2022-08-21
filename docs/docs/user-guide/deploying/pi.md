@@ -74,6 +74,6 @@ Next, ensure Paradise isn't running - in the administration menu click "exit to 
 cd paradisepi
 git pull
 npm i
-npm run make
+npm run package
 sudo reboot
 ```
