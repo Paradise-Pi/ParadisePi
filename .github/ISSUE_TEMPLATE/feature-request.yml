@@ -1,7 +1,7 @@
 name: Feature Request
 description: Suggest an idea or improvement for Paradise Pi
 title: "[FEATURE] <title>"
-labels: [enhancement]
+labels: ["enhancement", "osc"]
 body:
   - type: checkboxes
     attributes:
