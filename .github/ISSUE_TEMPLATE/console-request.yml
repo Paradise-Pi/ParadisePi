@@ -13,13 +13,13 @@ body:
   - type: input
     attributes:
       label: What is the name of the Console?
-      options:
-        required: true
+    validations:
+      required: true
   - type: input
     attributes:
       label: Please provide a link to the manufacturer's website
-      options:
-        required: true
+    validations:
+      required: true
   - type: textarea
     attributes:
       label: Anything else?
