@@ -23,7 +23,7 @@ npm i
 Then create a local build
 
 ```bash
-npm run make
+npm run package
 ```
 
 Ensure the local build can be run
@@ -57,7 +57,7 @@ sudo nano /etc/lightdm/lightdm.conf
 
 Scroll down to the section labelled `[Seat*]` and remove the `#` from the start of the line saying `xserver-command`
 
-Add ` -cursor` to the end of the line. It should now be `xserver-command = X -nocursor`
+Add ` -nocursor` to the end of the line. It should now be `xserver-command = X -nocursor`
 
 ## Updating
 
