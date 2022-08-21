@@ -43,7 +43,9 @@ It is an optional feature of Paradise Pi and can be enabled in the configuration
 More information about sACN can be found [here](https://en.wikipedia.org/wiki/E1.31).
 
 Paradise Pi acts as a sACN transmitter, and so you can control how many universes of lighting data it transmits, along with the sACN priority, name and frequency.  
-It _should_ transmit on any network interface that is available but it is **highly** recommended that you only have one network interface enabled on the device running Paradise Pi.
+It _should_ transmit on the first network interface that is available but it is **highly** recommended that you only have one network interface enabled on the device running Paradise Pi.
+
+The Sampler Time field is used to control how long [Sampling mode](presets/sacn#sampling-mode) runs for.
 
 
 ## OSC
@@ -57,6 +59,6 @@ Every console that supports OSC implements the protocol in a different way, so P
 - Midas M Series
 - Midas MR Series
 
-Please [open an issue on GitHub](https://github.com/Paradise-Pi/ParadisePi/issues/new) if you think there is another console that should be supported.
+Please [open an issue on GitHub](https://github.com/Paradise-Pi/ParadisePi/issues/new?assignees=&labels=enhancement&template=console-request.yml&title=%5BOSC%5D+%3Ctitle%3E) if you think there is another console that should be supported.
 
 You will need to provide the IP address of the console, and then select a supported console from the dropdown in these settings.
