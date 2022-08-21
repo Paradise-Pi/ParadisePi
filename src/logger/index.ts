@@ -4,7 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import { isRunningInDevelopmentMode } from './../electron/developmentMode'
 
-const logDir = path.join(__dirname, 'logs')
+const logDir = path.join(__dirname, '../../logs')
 if (!fs.existsSync(logDir)) {
 	fs.mkdirSync(logDir)
 }
