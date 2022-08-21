@@ -16,7 +16,7 @@ export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 				{props.faders.map(fader => {
 					const faderString = faderArrayToString(fader.type, fader.channel, deviceType)
 					return (
-						<>
+						<div key={fader.id}>
 							<Group position="left" mt="md">
 								<Title order={4} key={'title' + fader.id}>
 									{fader.name}
@@ -51,7 +51,7 @@ export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 									})
 								}
 							/>
-						</>
+						</div>
 					)
 				})}
 			</>

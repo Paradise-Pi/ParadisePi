@@ -74,7 +74,7 @@ export const Fader = (props: {
 	onChange: (value: number) => void
 }) => (
 	<Slider
-		disabled={props.value === false}
+		disabled={props.disabled}
 		onChange={value => (!props.disabled ? props.onChange(value) : false)}
 		value={props.value !== false ? props.value : null}
 		radius={'lg'}
@@ -101,6 +101,7 @@ export const Fader = (props: {
 				width: 1,
 			},
 			thumb: {
+				display: 'block',
 				height: props.disabled ? '1em' : '2em',
 				width: props.disabled ? '0.5em' : '1em',
 				backgroundColor: 'white',
