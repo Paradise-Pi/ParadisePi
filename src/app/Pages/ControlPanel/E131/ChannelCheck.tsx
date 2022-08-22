@@ -1,10 +1,9 @@
-import { Button, Center, Container, NumberInput, SimpleGrid, Space, Text, Title } from '@mantine/core'
+import { Button, Center, Container, NumberInput, SimpleGrid, Slider, Space, Text, Title } from '@mantine/core'
 import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../../app/apis/wrapper'
 import { channelData } from '../../../../output/e131'
 import { useAppSelector } from './../../../apis/redux/mainStore'
-// TODO allow level to be configured
 
 export const ChannelCheckPage = () => {
 	const e131Enabled = useAppSelector(state => (state.database ? state.database.config.e131.e131Enabled : null))
@@ -26,20 +25,21 @@ const ChannelCheckContent = () => {
 	const [universe, setUniverse] = useState<number>(e131Config.e131FirstUniverse)
 	const [channel, setChannel] = useState<number>(-1)
 	const [channelText, setChannelText] = useState<string>('Off')
+	const [intensity, setIntensity] = useState<number>(180)
 
 	useEffect(() => {
 		if (channel > 0) {
 			setChannelText(channel.toString())
-			setChannelE131(channel, 180)
+			setChannelE131(channel, intensity)
 		} else if (channel === 0) {
-			setAllE131(180)
+			setAllE131(intensity)
 			setChannelText('All')
 		} else {
 			setAllE131(0)
 			setChannelText('Off')
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [channel, universe])
+	}, [channel, universe, intensity])
 
 	function setAllE131(intensity: number) {
 		const channels: Array<channelData> = []
@@ -124,6 +124,22 @@ const ChannelCheckContent = () => {
 					All
 				</Button>
 			</SimpleGrid>
+			<Title order={2}>Intensity</Title>
+			<Slider
+				value={intensity}
+				onChange={setIntensity}
+				size="xl"
+				radius="xl"
+				min={0}
+				max={255}
+				marks={[
+					{ value: 0, label: '0%' },
+					{ value: 64, label: '25%' },
+					{ value: 128, label: '50%' },
+					{ value: 192, label: '75%' },
+					{ value: 255, label: '100%' },
+				]}
+			></Slider>
 		</Container>
 	)
 }
