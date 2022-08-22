@@ -3,10 +3,27 @@ import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../../app/apis/wrapper'
 import { channelData } from '../../../../output/e131'
+import { useAppSelector } from './../../../apis/redux/mainStore'
 // TODO allow level to be configured
-// TODO respect first universe
+
 export const ChannelCheckPage = () => {
-	const [universe, setUniverse] = useState<number>(1)
+	const e131Enabled = useAppSelector(state => (state.database ? state.database.config.e131.e131Enabled : null))
+
+	if (e131Enabled) {
+		return <ChannelCheckContent />
+	} else {
+		return (
+			<Container>
+				<Title>sACN (E1.31) is disabled</Title>
+				<Text>Lighting must be set up to use Channel Check</Text>
+			</Container>
+		)
+	}
+}
+
+const ChannelCheckContent = () => {
+	const e131Config = useAppSelector(state => (state.database ? state.database.config.e131 : null))
+	const [universe, setUniverse] = useState<number>(e131Config.e131FirstUniverse)
 	const [channel, setChannel] = useState<number>(-1)
 	const [channelText, setChannelText] = useState<string>('Off')
 
@@ -72,8 +89,8 @@ export const ChannelCheckPage = () => {
 				icon={<FaSpaceShuttle />}
 				description="Universe number"
 				value={universe}
-				min={1}
-				max={63999}
+				min={e131Config.e131FirstUniverse}
+				max={e131Config.e131FirstUniverse + e131Config.e131Universes - 1}
 				onChange={setUniverse}
 			/>
 			<Space h="md" />

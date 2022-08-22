@@ -1,14 +1,31 @@
-import { Button, SimpleGrid, TextInput, Slider, Container, Title, NumberInput } from '@mantine/core'
+import { Button, SimpleGrid, TextInput, Slider, Container, Title, NumberInput, Text } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../apis/wrapper'
 import { channelData } from '../../../../output/e131'
 import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
+import { useAppSelector } from './../../../apis/redux/mainStore'
 
 export const KeypadPage = () => {
+	const e131Enabled = useAppSelector(state => (state.database ? state.database.config.e131.e131Enabled : null))
+
+	if (e131Enabled) {
+		return <KeypadContent />
+	} else {
+		return (
+			<Container>
+				<Title>sACN (E1.31) is disabled</Title>
+				<Text>Lighting must be set up to use the Keypad</Text>
+			</Container>
+		)
+	}
+}
+
+const KeypadContent = () => {
+	const e131Config = useAppSelector(state => (state.database ? state.database.config.e131 : null))
 	const [faderDisabled, setFaderDisabled] = useState<boolean>(true)
 	const [intensity, setIntensity] = useState<number>(0)
 	const [commandText, setCommandText] = useState<string>('')
-	const [universe, setUniverse] = useState<number>(1)
+	const [universe, setUniverse] = useState<number>(e131Config.e131FirstUniverse)
 
 	//Update e131 output on intensity or universe change
 	useEffect(() => {
@@ -83,8 +100,8 @@ export const KeypadPage = () => {
 				icon={<FaSpaceShuttle />}
 				description="Universe number"
 				value={universe}
-				min={1}
-				max={63999}
+				min={e131Config.e131FirstUniverse}
+				max={e131Config.e131FirstUniverse + e131Config.e131Universes - 1}
 				onChange={setUniverse}
 			/>
 			<SimpleGrid cols={3}>
