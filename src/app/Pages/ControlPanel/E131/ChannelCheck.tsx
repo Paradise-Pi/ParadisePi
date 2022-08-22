@@ -1,10 +1,12 @@
-import { Button, Center, Container, SimpleGrid, Space, Text, Title } from '@mantine/core'
+import { Button, Center, Container, NumberInput, SimpleGrid, Space, Text, Title } from '@mantine/core'
+import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../../app/apis/wrapper'
 import { channelData } from '../../../../output/e131'
 // TODO allow level to be configured
 // TODO respect first universe
 export const ChannelCheckPage = () => {
+	const [universe, setUniverse] = useState<number>(1)
 	const [channel, setChannel] = useState<number>(-1)
 	const [channelText, setChannelText] = useState<string>('Off')
 
@@ -20,7 +22,7 @@ export const ChannelCheckPage = () => {
 			setChannelText('Off')
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [channel])
+	}, [channel, universe])
 
 	function setAllE131(intensity: number) {
 		const channels: Array<channelData> = []
@@ -28,7 +30,7 @@ export const ChannelCheckPage = () => {
 			channels.push({ channel: i, level: intensity })
 		}
 		const data: apiObject = {
-			universe: 1,
+			universe: universe,
 			channelData: channels,
 			fadeTime: 0,
 		}
@@ -38,7 +40,7 @@ export const ChannelCheckPage = () => {
 	function setChannelE131(thisChannel: number, intensity: number) {
 		setAllE131(0)
 		const data: apiObject = {
-			universe: 1,
+			universe: universe,
 			channelData: [{ channel: thisChannel, level: intensity }],
 			fadeTime: 0,
 		}
@@ -64,6 +66,16 @@ export const ChannelCheckPage = () => {
 	return (
 		<Container>
 			<Title order={2}>Channel Check</Title>
+			<Space h="md" />
+			<NumberInput
+				py={'md'}
+				icon={<FaSpaceShuttle />}
+				description="Universe number"
+				value={universe}
+				min={1}
+				max={63999}
+				onChange={setUniverse}
+			/>
 			<Space h="md" />
 			<SimpleGrid cols={3}>
 				<Button size="xl" onClick={checkPrevious}>

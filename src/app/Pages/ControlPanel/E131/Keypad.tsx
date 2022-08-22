@@ -1,14 +1,16 @@
-import { Button, SimpleGrid, TextInput, Space, Slider, Container, Title } from '@mantine/core'
+import { Button, SimpleGrid, TextInput, Slider, Container, Title, NumberInput } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../apis/wrapper'
 import { channelData } from '../../../../output/e131'
+import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 
 export const KeypadPage = () => {
 	const [faderDisabled, setFaderDisabled] = useState<boolean>(true)
 	const [intensity, setIntensity] = useState<number>(0)
 	const [commandText, setCommandText] = useState<string>('')
+	const [universe, setUniverse] = useState<number>(1)
 
-	//Update e131 output on intensity change
+	//Update e131 output on intensity or universe change
 	useEffect(() => {
 		const command = commandText.split(' ')
 		const channels: Array<channelData> = []
@@ -22,11 +24,11 @@ export const KeypadPage = () => {
 				channels.push({ channel: parseInt(command[0]), level: intensity })
 			}
 
-			sendLX(1, channels, 0)
+			sendLX(universe, channels, 0)
 		} else {
 			setFaderDisabled(true)
 		}
-	}, [commandText, intensity])
+	}, [commandText, intensity, universe])
 
 	/**
 	 * Verify a command array will actually be able to control fixtures
@@ -75,8 +77,16 @@ export const KeypadPage = () => {
 
 	return (
 		<Container>
-			<TextInput disabled aria-label="Command Output" size="xl" value={commandText} />
-			<Space h="xl" />
+			<TextInput disabled aria-label="Command Output" size="lg" value={commandText} />
+			<NumberInput
+				py={'md'}
+				icon={<FaSpaceShuttle />}
+				description="Universe number"
+				value={universe}
+				min={1}
+				max={63999}
+				onChange={setUniverse}
+			/>
 			<SimpleGrid cols={3}>
 				{['7', '8', '9', '4', '5', '6', '1', '2', '3'].map(number => (
 					<Button
@@ -116,7 +126,6 @@ export const KeypadPage = () => {
 			</SimpleGrid>
 			{!faderDisabled ? (
 				<>
-					<Space h="xl" />
 					<Title order={2}>Intensity</Title>
 					<Slider
 						value={intensity}
