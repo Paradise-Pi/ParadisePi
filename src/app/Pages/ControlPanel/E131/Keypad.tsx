@@ -1,14 +1,33 @@
-import { Button, SimpleGrid, TextInput, Space, Slider, Container, Title } from '@mantine/core'
+import { Button, SimpleGrid, TextInput, Slider, Container, Title, NumberInput, Text } from '@mantine/core'
 import React, { useEffect, useState } from 'react'
 import { ApiCall } from '../../../apis/wrapper'
 import { channelData } from '../../../../output/e131'
+import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
+import { useAppSelector } from './../../../apis/redux/mainStore'
 
 export const KeypadPage = () => {
+	const e131Enabled = useAppSelector(state => (state.database ? state.database.config.e131.e131Enabled : null))
+
+	if (e131Enabled) {
+		return <KeypadContent />
+	} else {
+		return (
+			<Container>
+				<Title>sACN (E1.31) is disabled</Title>
+				<Text>Lighting must be set up to use the Keypad</Text>
+			</Container>
+		)
+	}
+}
+
+const KeypadContent = () => {
+	const e131Config = useAppSelector(state => (state.database ? state.database.config.e131 : null))
 	const [faderDisabled, setFaderDisabled] = useState<boolean>(true)
 	const [intensity, setIntensity] = useState<number>(0)
 	const [commandText, setCommandText] = useState<string>('')
+	const [universe, setUniverse] = useState<number>(e131Config.e131FirstUniverse)
 
-	//Update e131 output on intensity change
+	//Update e131 output on intensity or universe change
 	useEffect(() => {
 		const command = commandText.split(' ')
 		const channels: Array<channelData> = []
@@ -22,11 +41,11 @@ export const KeypadPage = () => {
 				channels.push({ channel: parseInt(command[0]), level: intensity })
 			}
 
-			sendLX(1, channels, 0)
+			sendLX(universe, channels, 0)
 		} else {
 			setFaderDisabled(true)
 		}
-	}, [commandText, intensity])
+	}, [commandText, intensity, universe])
 
 	/**
 	 * Verify a command array will actually be able to control fixtures
@@ -75,8 +94,16 @@ export const KeypadPage = () => {
 
 	return (
 		<Container>
-			<TextInput disabled aria-label="Command Output" size="xl" value={commandText} />
-			<Space h="xl" />
+			<TextInput disabled aria-label="Command Output" size="lg" value={commandText} />
+			<NumberInput
+				py={'md'}
+				icon={<FaSpaceShuttle />}
+				description="Universe number"
+				value={universe}
+				min={e131Config.e131FirstUniverse}
+				max={e131Config.e131FirstUniverse + e131Config.e131Universes - 1}
+				onChange={setUniverse}
+			/>
 			<SimpleGrid cols={3}>
 				{['7', '8', '9', '4', '5', '6', '1', '2', '3'].map(number => (
 					<Button
@@ -116,7 +143,6 @@ export const KeypadPage = () => {
 			</SimpleGrid>
 			{!faderDisabled ? (
 				<>
-					<Space h="xl" />
 					<Title order={2}>Intensity</Title>
 					<Slider
 						value={intensity}
