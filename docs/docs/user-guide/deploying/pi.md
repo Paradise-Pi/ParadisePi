@@ -20,10 +20,16 @@ cd paradisepi
 npm i
 ```
 
+Then compile the dependencies on the new machine
+
+```
+npm run start
+```
+
 Then create a local build
 
 ```bash
-npm run package
+npm run make
 ```
 
 Ensure the local build can be run
@@ -59,6 +65,12 @@ Scroll down to the section labelled `[Seat*]` and remove the `#` from the start 
 
 Add ` -nocursor` to the end of the line. It should now be `xserver-command = X -nocursor`
 
+### Disable the automatic update notification
+
+This will popup every 24hrs to let you know that apt packages can be updated.
+
+To disbale it, right click on the menu bar in Rapsberry Pi OS and select the `preferences` button for updater. This will allow you to set the check frequency to 1000 hours (41 days) and you can then click "remove" to hide it from the taskbar as well
+
 ## Updating
 
 Ensure you have taken a backup of the:
@@ -74,6 +86,6 @@ Next, ensure Paradise isn't running - in the administration menu click "exit to 
 cd paradisepi
 git pull
 npm i
-npm run package
+npm run make
 sudo reboot
 ```
