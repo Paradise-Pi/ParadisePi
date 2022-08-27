@@ -37,9 +37,9 @@ export const presetRouter = (
 					axios({
 						method: value.data.method ?? 'GET',
 						url: value.data.url ?? '',
-						data: value.data.data ? JSON.parse(value.data.data) : {},
-						headers: value.data.headers ? JSON.parse(value.data.headers) : {},
-						timeout: 1000,
+						data: value.data.data ? JSON.parse(value.data.data) : null,
+						headers: value.data.headers ? JSON.parse(value.data.headers) : null,
+						timeout: 60000, // 60 seconds
 					})
 						.catch(err => {
 							logger.info('Preset HTTP request failed', { err })
