@@ -27,5 +27,3 @@ The computer running Paradise creates a web server that can be accessed by other
 If you have Paradise running already and want to know how to use it, head to [Control Panel](control/intro)
 
 If you want to change some settings, head to [Administration Menu](admin/intro)
-
-To setup a new system from scratch please see the guide at [Deploying](deploying/intro)
