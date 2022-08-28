@@ -3,7 +3,7 @@ sidebar_position: 4
 title: HTTP
 ---
 
-HTTP presets are for sending HTTP requests. They are often used to send commands to Projectors and similar devices.
+HTTP presets are for sending HTTP requests (you'll sometimes see these called "curl" requests online). They are often used to send commands to projectors and other AV hardware. They can also be used to send webhooks, using services such as IFTTT.
 
 ![HTTP editing](@site/static/img/tutorial/admin/admin-preset-http.png)
 
