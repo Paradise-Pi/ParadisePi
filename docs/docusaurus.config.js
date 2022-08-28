@@ -7,13 +7,14 @@ const lightCodeTheme = require('prism-react-renderer/themes/github')
 const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
 const production = process.env.CONTEXT === 'production' //Netlify/Cloudflare Pages set environment variable "CONTEXT" to "production"/"deploy-preview"
+const baseUrl = process.env.BASEURL ?? '/' //Netlify/Cloudflare Pages set environment variable "BASEURL" to the base URL of the site
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
 	title: 'ParadisePi',
 	tagline: 'Facility control panel for sACN & OSC, in Electron.',
 	url: process.env.CF_PAGES_URL ?? 'http://localhost',
-	baseUrl: '/',
+	baseUrl: baseUrl,
 	noIndex: !production,
 	onBrokenLinks: production ? 'warn' : 'throw',
 	onBrokenMarkdownLinks: production ? 'warn' : 'throw',
