@@ -1,6 +1,6 @@
 {
   "name": "paradisepi",
-  "version": "2.0.0-beta3",
+  "version": "2.0.0-beta4",
   "description": "Raspberry Pi based sACN lighting/OSC sound facility control panel",
   "main": ".webpack/main",
   "scripts": {

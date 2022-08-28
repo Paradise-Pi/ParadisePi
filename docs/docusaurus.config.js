@@ -65,7 +65,7 @@ const config = {
 					{
 						href: 'https://github.com/Paradise-Pi/ParadisePi/releases/latest',
 						label: 'Download',
-						position: 'right',
+						position: 'left',
 					},
 					{
 						href: 'https://github.com/Paradise-Pi/ParadisePi',
