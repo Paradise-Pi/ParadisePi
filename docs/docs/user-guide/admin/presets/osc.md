@@ -3,10 +3,13 @@ sidebar_position: 3
 title: OSC
 ---
 
-OSC presets allow you to send OSC messages a device on your network. Every OSC-supported device handled OSC in a slightly different way, including what commands are supported by that device. Therefore there are a limited number of devices supported at this time - see [osc setup](../config#osc) for more information.
+OSC presets allow you to send OSC messages a device on your network. 
+
+> Every device that supports OSC handles it a slightly different way, including which commands are supported by each device. For this reason there are a limited number of devices supported at this time - see [OSC setup](../config#osc) for more information.
 
 An OSC preset can contain multiple OSC calls, so can control many parameters at once.
-An OSC call is made up of up to 2 parts in Paradise Pi, some of which may have values associated with them. An editing interface is provided for known OSC calls, and you can create your own OSC calls by using the JSON editor.
+
+An OSC call is made up of up to 2 parts in Paradise, some of which may have values associated with them. An editing interface is provided for known OSC calls, and you can create your own OSC calls by using the JSON editor.
 
 ![OSC editing](@site/static/img/tutorial/admin/admin-preset-osc.png)
 

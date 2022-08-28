@@ -3,11 +3,11 @@ sidebar_position: 20
 title: Faders
 ---
 
-Faders allow you to change the level of a number of controls, in a visual way. They also provide a visual volume indicator, through visual metering around the fader.
+Faders allow you to change the level of a number of controls on an OSC sound console, in a visual way. They also provide a visual volume indicator, through visual metering on the fader itself.
 
 ![faders](@site/static/img/tutorial/control-panel/faders.png)
 
-Faders have the following options:
+Faders have the following configuration options:
 
 - Name
 - [Folder](folders)
@@ -27,6 +27,4 @@ The following fader types are supported:
 
 ## Status
 
----
-
-If Paradise Pi can't connect to the console, it will display a message instead of displaying faders.
+If Paradise can't connect to the console, it will display an error message instead of displaying faders.

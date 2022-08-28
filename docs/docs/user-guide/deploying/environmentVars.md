@@ -9,6 +9,6 @@ You can use the following environment variables to configure Paradise:
 
 | Field | Description |
 |----:|:-----------|
-| `FULLSCREEN` | Fullscreen mode? Set to "true" to enable fullscreen mode. Note that this overrides the setting in the database |
+| `FULLSCREEN` | Set to "true" to enable fullscreen mode. Note that this overrides the setting in the database |
 | `WEB_SERVER_PORT` | Desired port for the webserver mode |
 | `DEV_MODE` | Run in development mode, disable the logging to file functions. Set to "true" to enable |

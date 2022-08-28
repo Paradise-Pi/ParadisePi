@@ -3,7 +3,7 @@ sidebar_position: 2
 title: Remote Control
 ---
 
-The computer running Paradise creates a web server that allows you to access the control panel on any device on the same network that has an internet browser. The most common example of this is to use an iPad or equivalent tablet to remote control the system. This is optional - you can also use the control panel directly from the device it is running on if you would prefer to. 
+Paradise creates a web server that allows you to access the control panel and administration menu on any device on the same network that has an internet browser. The most common example of this is to use an iPad to remote control the system. This is optional - you can also use the control panel directly from the device it is running on if you would prefer to. 
 
 ## Accessing the Control Panel from another device
 

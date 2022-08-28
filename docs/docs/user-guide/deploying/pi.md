@@ -7,7 +7,7 @@ title: Raspberry Pi
 
 To begin deploying on a Raspberry Pi, setup a fresh install of Raspberry Pi OS and install node.js. Guides are available online, we found [this one](https://www.makersupplies.sg/blogs/tutorials/how-to-install-node-js-and-npm-on-the-raspberry-pi) useful.
 
-Then clone the Paradise Pi repository
+Then clone the Paradise repository
 
 ```bash
 git clone https://github.com/paradise-pi/paradisepi

@@ -9,7 +9,11 @@ HTTP presets are for sending HTTP requests (you'll sometimes see these called "c
 
 There are four elements to a HTTP preset:
 
-- URL: The URL or IP address to send the request to
+- URL: The URL or IP address to send the request to - for GET requests you can also put URL parameters in here
 - Method: The HTTP method to use (GET, POST, PUT, DELETE supported)
-- Data: The body of the request
-- Headers: Any headers to send with the request
+- Data: The body of the request - this can be blank
+- Headers: Any headers to send with the request - this can be blank
+
+The default timeout for requests is 60 seconds, this cannot currently be changed. 
+
+It is not possible to capture/view responses to the HTTP requests. 
