@@ -1,3 +1,4 @@
+import { parseJSON } from './../../api/parseUserJson'
 import { In, Not } from 'typeorm'
 import dataSource from './../dataSource'
 import { Preset } from './../model/Preset'
@@ -65,7 +66,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				sort: count + 10, // +10 to make sure that newly inserted ones with null/0/1 end up at the top
 				universe: preset.universe !== null ? parseInt(preset.universe) : null,
 				folder: preset.folderId !== null ? parseInt(preset.folderId) : null,
-				data: preset.data !== null && preset.data.length > 0 ? JSON.parse(preset.data) : null,
+				data: preset.data !== null && preset.data.length > 0 ? parseJSON(preset.data) : null,
 			}
 		})
 		await this.upsert(presetsToInsert, ['id'])

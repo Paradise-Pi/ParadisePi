@@ -1,6 +1,7 @@
 import dataSource from '../dataSource'
 import { Fader } from '../model/Fader'
 import { In, Not } from 'typeorm'
+import { parseJSON } from './../../api/parseUserJson'
 
 export interface DatabaseFader {
 	id?: number
@@ -49,7 +50,7 @@ export const FaderRepository = dataSource.getRepository(Fader).extend({
 				...fader,
 				sort: count + 10, // +10 to make sure that newly inserted ones with null/0/1 end up at the top
 				folder: fader.folderId !== null ? parseInt(fader.folderId) : null,
-				data: fader.data !== null && fader.data.length > 0 ? JSON.parse(fader.data) : null,
+				data: fader.data !== null && fader.data.length > 0 ? parseJSON(fader.data) : null,
 			}
 		})
 		await this.upsert(fadersToInsert, ['id'])
