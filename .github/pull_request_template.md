@@ -1,4 +1,6 @@
+## Changelog
 
+Please describe the changes
 
 ## Checklist
 
@@ -15,16 +17,36 @@
 - [ ] Reboots when reboot clicked
 - [ ] Quits when quit clicked
 
-### Presets
+### Presets/Faders/Folders
 
-- [ ] Presets can be added
-- [ ] Presets can be removed
-- [ ] Presets can be renamed, and this is reflected on the control panel
-- [ ] Presets can be disabled, and they are hidden from the control panel
-- [ ] Presets can be enabled, and they are shown in the control panel
-- [ ] Preset colors can be changed, and this is shown in the control panel
-- [ ] Preset sort order is maintained
+- [ ] Presets/Faders/Folders can be added
+- [ ] Presets/Faders/Folders can be removed
+- [ ] Presets/Faders/Folders can be renamed, and this is reflected on the control panel
+- [ ] Presets/Folders can be disabled, and they are hidden from the control panel
+- [ ] Presets/Faders/Folders can be enabled, and they are shown in the control panel
+- [ ] Preset/Folders colors can be changed, and this is shown in the control panel
+- [ ] Preset/Faders/Folders sort order is maintained
 
-### Folders
+### Preset Types
+
+#### sACN
+
+- [ ] sACN can be enabled/disabled
+- [ ] sACN data is output successfully
+
+#### OSC
+
+- [ ] OSC can be enabled/disabled
+- [ ] OSC data is output successfully
+- [ ] X32 Faders are functional
+
+#### HTTP
+
+- [ ] HTTP requests are made successfully
+
+#### Macros
+
+- [ ] Macros are triggered successfully
+- [ ] Macros can trigger other macros
 
 
