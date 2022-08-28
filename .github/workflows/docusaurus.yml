@@ -26,7 +26,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      baseUrl: "/ParadisePi/"
+      BASEURL: "/ParadisePi/"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
