@@ -2,6 +2,7 @@ import { Preset } from './../../database/model/Preset'
 import { DatabasePreset, PresetRepository } from './../../database/repository/preset'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
 import axios from 'axios'
+import { parseJSON } from '../parseUserJson'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -37,8 +38,8 @@ export const presetRouter = (
 					axios({
 						method: value.data.method ?? 'GET',
 						url: value.data.url ?? '',
-						data: value.data.data ? JSON.parse(value.data.data) : null,
-						headers: value.data.headers ? JSON.parse(value.data.headers) : null,
+						data: value.data.data ? parseJSON(value.data.data) : null,
+						headers: value.data.headers ? parseJSON(value.data.headers) : null,
 						timeout: 60000, // 60 seconds
 					})
 						.catch(err => {
