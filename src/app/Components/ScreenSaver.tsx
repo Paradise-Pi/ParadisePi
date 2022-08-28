@@ -57,6 +57,6 @@ export const ScreenSaver = (props: { children: React.ReactNode }) => {
 		state.database ? state.database.config.general.timeoutTime : defaultTimeoutTime
 	)
 	if (timeoutTime < 4000) timeoutTime = 4000 //Set a lower limit of 4 seconds otherwise it all gets a bit silly really
-	const showScreensaver = useIdle(timeoutTime, { initialState: false })
+	const showScreensaver = useIdle(timeoutTime, { initialState: true })
 	return <>{showScreensaver ? <ScreensaverView /> : props.children}</>
 }
