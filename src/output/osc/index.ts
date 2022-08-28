@@ -243,7 +243,7 @@ export default abstract class OSC {
 		} else if (instanceofOSCFormValue(presetData)) {
 			const address =
 				presetData.command1 +
-				(presetData.value1 ?? String(presetData.value1).padStart(2, '0')) +
+				(presetData.value1 ? String(presetData.value1).padStart(2, '0') : null) +
 				presetData.command2
 			let args = {}
 			if (Number.isInteger(Number(presetData.value2))) {
@@ -256,7 +256,7 @@ export default abstract class OSC {
 
 			//Actual sending
 			logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
-			this.udpPort.send({ address: address, args: args })
+			this.udpPort.send({ address: address, args: [args] })
 			this.manuallyGetFaderPositions() //get the fader positions after a preset is sent, as they might have moved
 		} else {
 			logger.error('sendPreset called with invalid data type', { presetData })
