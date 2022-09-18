@@ -30,7 +30,7 @@ const config = {
 			({
 				docs: {
 					sidebarPath: require.resolve('./sidebars.js'),
-					editUrl: 'https://github.com/Paradise-Pi/ParadisePi',
+					editUrl: 'https://github.com/Paradise-Pi/ParadisePi/tree/main/docs/',
 					editCurrentVersion: true,
 					showLastUpdateTime: true,
 					showLastUpdateAuthor: true,
