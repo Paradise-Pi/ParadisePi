@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
-import { JsonInput, NumberInput, Slider, Table, Tabs } from '@mantine/core'
+import { Button, Col, Grid, JsonInput, NumberInput, Slider, Table, Tabs } from '@mantine/core'
 import { isValidJson } from './isValidJson'
 import { InputProps } from '../../../../InputProps'
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
+import { FaMinus } from '@react-icons/all-files/fa/FaMinus'
 
 const Input = (props: { channel: number; value: number; onChange(channel: number, value: number): void }) => {
 	return (
@@ -46,17 +48,46 @@ export const E131PresetEditModal = (props: InputProps) => {
 				<Tabs.Tab value="JSON">JSON Editor</Tabs.Tab>
 			</Tabs.List>
 			<Tabs.Panel value="Channels" pt="xs">
-				<Slider
-					defaultValue={pagination}
-					onChange={setPagination}
-					label={(value: number) => `${value}-${value + (numberOfParameters - 1)}`}
-					min={1}
-					max={512 - numberOfParameters}
-					px={'lg'}
-					step={numberOfParameters}
-					size={'xl'}
-					showLabelOnHover={true}
-				/>
+				<Grid align={'center'} gutter={0}>
+					<Col span="content">
+						<Button
+							compact
+							onClick={() =>
+								setPagination(value => (value > numberOfParameters ? value - numberOfParameters : 1))
+							}
+						>
+							<FaMinus />
+						</Button>
+					</Col>
+					<Col span={'auto'}>
+						<Slider
+							value={pagination}
+							onChange={setPagination}
+							label={(value: number) => `${value}-${value + (numberOfParameters - 1)}`}
+							min={1}
+							max={513 - numberOfParameters}
+							px={'lg'}
+							step={numberOfParameters}
+							size={'xl'}
+							showLabelOnHover={true}
+						/>
+					</Col>
+					<Col span="content">
+						<Button
+							compact
+							onClick={() =>
+								setPagination(value =>
+									value < 513 - numberOfParameters
+										? value + numberOfParameters
+										: 513 - numberOfParameters
+								)
+							}
+						>
+							<FaPlus />
+						</Button>
+					</Col>
+				</Grid>
+
 				<Table>
 					<thead>
 						<tr>
