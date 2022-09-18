@@ -7,7 +7,14 @@ sACN (e1.31) presets are usually used for lighting control. sACN is based on uni
 
 ![sACN editing](@site/static/img/tutorial/admin/admin-preset-sacn.png)
 
-The 512 parameters in a universe are displayed in banks of 8. If a channel does not have a value, when the preset is recalled, the value of that channel will no be changed from its current value (which will have been set by another preset, or be the default value of 0).
+The 512 channels (parameters) in a universe are displayed in banks for ease of viewing, you can move between banks using the plus and minus buttons. If a channel is blank then when the preset is recalled the value of that channel will not be changed from its current value (which will have been set by another preset, or be 0 if it has not been set by any presets). Channel values can be between 0 and 255.
+
+## Shortcuts
+
+Shortcuts allow you to manipulate the entire universe in bulk. This is useful if you are editing a preset captured, or you want to set all the values you've left blank to a certain value (or want to blank all 0 channels). This is especially useful for editing presets captured from a lighting console using sampling mode.
+
+![Shortcuts in sACN editing](@site/static/img/tutorial/admin/admin-preset-sacn-shortcut.png)
+
 
 ## Sampling Mode
 
@@ -15,4 +22,4 @@ To speed up the creation of lighting presets, Paradise provides a sampling mode.
 
 ## Priority 
 
-It is important to consider the sACN priority set on Paradise - normally this will be lower than another console that outputs sACN, such that Paradise can't override that console's output. If you are not seeing output on your network, set the priority to a higher value.
+It is important to consider the sACN priority set on Paradise - normally this will be lower than another console that outputs sACN, such that Paradise can't override that console's output. If you are not seeing output on your network, set the priority to a higher value. Priorities go from 1 to 200, where 200 is the most important.

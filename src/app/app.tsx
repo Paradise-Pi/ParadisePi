@@ -45,7 +45,7 @@ const App = () => {
 			withGlobalStyles
 		>
 			<ErrorBoundary>
-				<NotificationsProvider>
+				<NotificationsProvider position="top-right" limit={10}>
 					<ModalsProvider>
 						<ScreenSaver>
 							<ConnectionLost>
