@@ -4,7 +4,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/Paradise-Pi/ParadisePi)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Paradise-Pi/ParadisePi)
 
-![Logo](icon/icon.jpg)
+[![Logo](icon/icon.jpg)](https://paradise-pi.github.io/ParadisePi/)
 
 A facility control panel for sACN & OSC, in Electron.
 
