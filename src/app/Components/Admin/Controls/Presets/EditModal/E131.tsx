@@ -30,7 +30,7 @@ const ShortcutButton = (props: { text: string; buttonClick(): void }) => (
 )
 
 export const E131PresetEditModal = (props: InputProps) => {
-	const numberOfParameters = 32 //Number of parameters to show at once in the preset editor
+	const numberOfParameters = 32 //Number of parameters to show at once in the preset editor NB this needs to be a power of 2 otherwise you'll get overhanging values - possible values are 8, 16, 32, 64, 128, 256. Set it too high and performance is poor
 	const numberOfParametersPerRow = 4 //Number of parameters to show per row in the preset editor (this should be a multiple of the number of parameters)
 	let valueObject = JSON.parse('{}')
 	let disableForm = false
