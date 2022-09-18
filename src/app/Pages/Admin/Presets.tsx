@@ -266,7 +266,7 @@ export const PresetsConfigurationPage = () => {
 																	name: 'New ' + value + ' preset',
 																	enabled: true,
 																	type: value as PresetTypes,
-																	universe: null,
+																	universe: 1,
 																	fadeTime: 0,
 																	data: null,
 																	folderId: '0',
