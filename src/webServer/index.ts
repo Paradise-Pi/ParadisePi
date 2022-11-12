@@ -187,6 +187,16 @@ export class WebServer {
 			globalThis.port = port
 			WebServer.server.listen(port)
 			WebServer.socketIoClients = {}
+			WebServer.socketIo.use((socket, next) => {
+				const userPassword = socket.handshake.auth.password
+				ConfigRepository.getItem('remotePassword').then(password => {
+					if (userPassword === password) {
+						next()
+					} else {
+						next(new Error('Password incorrect'))
+					}
+				})
+			})
 			WebServer.socketIo.on('connection', socket => {
 				const os = socket.handshake.query ? (socket.handshake.query.os as string) : 'unknown'
 				WebServer.socketIoClients[socket.id] = {

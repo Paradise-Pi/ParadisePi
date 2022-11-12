@@ -3,11 +3,14 @@ import { useViewportSize } from '@mantine/hooks'
 import React from 'react'
 import { useAppSelector } from './../apis/redux/mainStore'
 import { runningInElectron } from '../apis/utilities/version'
+import { Authentication } from './Authentication'
 
 export const ConnectionLost = (props: { children: React.ReactNode }) => {
 	const viewportSize = useViewportSize()
 	const socketConnected = useAppSelector(state => state.status.socketConnected)
+	const passwordRequired = useAppSelector(state => state.status.passwordRequired)
 	if (socketConnected || runningInElectron()) return <>{props.children}</>
+	else if (passwordRequired) return <Authentication />
 	else
 		return (
 			<Stack

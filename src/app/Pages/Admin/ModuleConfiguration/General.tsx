@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from '@mantine/form'
-import { Checkbox, Button, Box, Divider, Loader, LoadingOverlay, Title, Text } from '@mantine/core'
+import { Checkbox, Button, Box, Divider, Loader, LoadingOverlay, Title, Text, PasswordInput } from '@mantine/core'
 import { useAppSelector } from '../../../apis/redux/mainStore'
 import { ApiCall } from '../../../apis/wrapper'
 import { runningInElectron } from '../../../apis/utilities/version'
@@ -15,7 +15,12 @@ export const GeneralConfigurationPage = () => {
 			deviceLock: false,
 			helpText: '', // This will never be shown - see below
 			adminLinkFromControlPanel: false,
+			adminPin: '',
+			remotePassword: '',
 			fullscreen: false,
+		},
+		validate: {
+			adminPin: value => (value == '' ? null : /^\d+$/.test(value) ? null : 'Invalid pin'),
 		},
 	})
 	useEffect(() => {
@@ -24,6 +29,8 @@ export const GeneralConfigurationPage = () => {
 				deviceLock: generalConfig.deviceLock,
 				helpText: generalConfig.helpText, // This is ignored - see below
 				adminLinkFromControlPanel: generalConfig.adminLinkFromControlPanel,
+				adminPin: generalConfig.adminPin,
+				remotePassword: generalConfig.remotePassword,
 				fullscreen: generalConfig.fullscreen,
 			})
 		}
@@ -66,15 +73,32 @@ export const GeneralConfigurationPage = () => {
 					mt="md"
 					my="md"
 					size="lg"
-					label="Allow access from Control Panel to Admin"
-					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
+					label="Fullscreen mode (requires restart)"
+					{...form.getInputProps('fullscreen', { type: 'checkbox' })}
+				/>
+				<Divider my="sm" />
+				<PasswordInput
+					mt="md"
+					size="lg"
+					label="Remote access password"
+					description="Leave the box empty to not require a password when accessing Paradise from another device on the same network."
+					autoComplete="off"
+					{...form.getInputProps('remotePassword')}
+				/>
+				<PasswordInput
+					mt="md"
+					size="lg"
+					label="Setup & Administration Menu Pin"
+					description="Leave the box empty to not require a pin when accessing the Administration Menu."
+					autoComplete="off"
+					{...form.getInputProps('adminPin')}
 				/>
 				<Checkbox
 					mt="md"
 					my="md"
 					size="lg"
-					label="Fullscreen mode (requires restart)"
-					{...form.getInputProps('fullscreen', { type: 'checkbox' })}
+					label="Allow access from Control Panel to Admin"
+					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
 				/>
 				<Divider my="sm" />
 				<Title order={5}>Help Page</Title>
