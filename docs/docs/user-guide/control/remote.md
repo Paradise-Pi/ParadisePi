@@ -55,7 +55,7 @@ Click "Control Panel" to access the Control Panel remotely.
 
 ## Setting a password for Remote Access
 
-In order to prevent access to the Control Panel from unauthorised devices, you can set a password for remote access. This is done in the [Administration Menu](/docs/user-guide/admin/config)
+In order to prevent access to the Control Panel from unauthorised devices, you can set a password for remote access. This is done in the [Administration Menu](../admin/config)
 
 ![Remote Access Password Entry page](@site/static/img/tutorial/remote-access-password.jpg) 
 

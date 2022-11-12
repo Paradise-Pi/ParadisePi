@@ -14,6 +14,18 @@ Paradise contains a locking function, which disables any control panels stopping
 
 So that you don't lock yourself out, you can only lock the control panel when accessing the config page from an external browser.
 
+### Remote access password
+
+Require a password when accessing Paradise from another device on the same network.
+
+See [Remote Control](../control/remote#setting-a-password-for-remote-access) for more information.
+
+### Setup & Administration Menu Pin
+
+Require a pin when accessing the Setup & Administration Menu. Leave the pin blank to disable.
+
+Only the numbers 0-9 are allowed in the pin
+
 ### Allow access from Control Panel to Admin
 
 See [Remote Control](../control/remote#setup-menu-is-disabled-on-the-device) for more information about disabling access.
