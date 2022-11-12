@@ -1,7 +1,5 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
-/**
- * Folders used to be known as "preset folders" because they were a bit of a last minute bolt on to v1.
- */
+
 export class Fullscreen1657356807729 implements MigrationInterface {
 	name = 'Fullscreen1656867549439'
 

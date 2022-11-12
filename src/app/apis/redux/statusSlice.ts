@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 export interface Status {
 	socketConnected: boolean
+	passwordRequired: boolean
 	socketClients: {
 		[key: string]: {
 			os: string
@@ -10,6 +11,7 @@ export interface Status {
 }
 const initialState: Status = {
 	socketConnected: false,
+	passwordRequired: false,
 	socketClients: {},
 }
 export const statusSlice = createSlice({
@@ -25,10 +27,14 @@ export const statusSlice = createSlice({
 		setSocketClients: (state, action: PayloadAction<{ [key: string]: { os: string; ip: string } }>) => {
 			return { ...state, socketClients: action.payload }
 		},
+		setSocketPasswordRequired: (state, action: PayloadAction<boolean>) => {
+			return { ...state, passwordRequired: action.payload }
+		},
 	},
 })
 
 // Action creators are generated for each case reducer function
-export const { storeManually, setSocketStatusConnection, setSocketClients } = statusSlice.actions
+export const { storeManually, setSocketStatusConnection, setSocketClients, setSocketPasswordRequired } =
+	statusSlice.actions
 
 export default statusSlice.reducer

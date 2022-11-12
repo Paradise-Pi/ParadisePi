@@ -61,6 +61,10 @@ export const routeRequest = (
 				return createImagesObject().then(response => {
 					resolve(response)
 				})
+			case 'ping':
+				// Used to check if password is required/correct
+				resolve({ message: 'Pong' })
+				break
 			case 'reboot':
 				reboot(true, false)
 				resolve({})

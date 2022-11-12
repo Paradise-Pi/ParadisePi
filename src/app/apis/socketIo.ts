@@ -7,7 +7,7 @@ import { refreshImagesDatastore } from './redux/imagesSlice'
 import { appendLogline } from './redux/logsSlice'
 import store from './redux/mainStore'
 import { updateOSCDatastore } from './redux/oscDataSlice'
-import { setSocketClients, setSocketStatusConnection } from './redux/statusSlice'
+import { setSocketClients, setSocketPasswordRequired, setSocketStatusConnection } from './redux/statusSlice'
 import { getOS } from './utilities/os'
 
 export class SocketConnection {
@@ -24,7 +24,33 @@ export class SocketConnection {
 				query: {
 					os: getOS(),
 				},
+				auth: cb => {
+					if (sessionStorage.getItem('paradiseRemotePassword')) {
+						cb({
+							password: sessionStorage.getItem('paradiseRemotePassword'),
+						})
+					} else cb({ password: null })
+				},
 			})
+
+			SocketConnection.socket.on('connect', () => {
+				store.dispatch(setSocketStatusConnection(true))
+				store.dispatch(setSocketPasswordRequired(false))
+			})
+			SocketConnection.socket.on('connect_error', error => {
+				if (error.message === 'Password incorrect') {
+					store.dispatch(setSocketPasswordRequired(true))
+				} else {
+					store.dispatch(setSocketStatusConnection(false))
+				}
+			})
+			SocketConnection.socket.on('disconnect', () => {
+				store.dispatch(setSocketStatusConnection(false))
+			})
+			SocketConnection.socket.io.on('reconnect', () => {
+				store.dispatch(setSocketStatusConnection(true))
+			})
+
 			SocketConnection.socket.on('refreshDatabase', database => {
 				store.dispatch(setFromNode(database))
 			})
@@ -33,12 +59,6 @@ export class SocketConnection {
 			})
 			SocketConnection.socket.on('logging', message => {
 				store.dispatch(appendLogline(JSON.stringify(message)))
-			})
-			SocketConnection.socket.on('connect', () => {
-				store.dispatch(setSocketStatusConnection(true))
-			})
-			SocketConnection.socket.on('disconnect', () => {
-				store.dispatch(setSocketStatusConnection(false))
 			})
 			SocketConnection.socket.on('socketClients', clients => {
 				store.dispatch(setSocketClients(clients))
@@ -52,5 +72,11 @@ export class SocketConnection {
 		}
 
 		SocketConnection.socket.emit('apiCall', path, method, payload, callback)
+	}
+	static destroy() {
+		if (SocketConnection.socket) {
+			SocketConnection.socket.disconnect()
+			SocketConnection.socket = false
+		}
 	}
 }

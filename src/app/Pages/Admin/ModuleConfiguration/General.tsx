@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from '@mantine/form'
-import { Checkbox, Button, Box, Divider, Loader, LoadingOverlay, Title, Text } from '@mantine/core'
+import { Checkbox, Button, Box, Divider, Loader, LoadingOverlay, Title, Text, PasswordInput } from '@mantine/core'
 import { useAppSelector } from '../../../apis/redux/mainStore'
 import { ApiCall } from '../../../apis/wrapper'
 import { runningInElectron } from '../../../apis/utilities/version'
@@ -15,6 +15,7 @@ export const GeneralConfigurationPage = () => {
 			deviceLock: false,
 			helpText: '', // This will never be shown - see below
 			adminLinkFromControlPanel: false,
+			remotePassword: '',
 			fullscreen: false,
 		},
 	})
@@ -24,6 +25,7 @@ export const GeneralConfigurationPage = () => {
 				deviceLock: generalConfig.deviceLock,
 				helpText: generalConfig.helpText, // This is ignored - see below
 				adminLinkFromControlPanel: generalConfig.adminLinkFromControlPanel,
+				remotePassword: generalConfig.remotePassword,
 				fullscreen: generalConfig.fullscreen,
 			})
 		}
@@ -66,15 +68,23 @@ export const GeneralConfigurationPage = () => {
 					mt="md"
 					my="md"
 					size="lg"
-					label="Allow access from Control Panel to Admin"
-					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
+					label="Fullscreen mode (requires restart)"
+					{...form.getInputProps('fullscreen', { type: 'checkbox' })}
+				/>
+				<Divider my="sm" />
+				<PasswordInput
+					mt="md"
+					size="lg"
+					label="Remote access password"
+					description="Leave the box empty to not require a password."
+					{...form.getInputProps('remotePassword')}
 				/>
 				<Checkbox
 					mt="md"
 					my="md"
 					size="lg"
-					label="Fullscreen mode (requires restart)"
-					{...form.getInputProps('fullscreen', { type: 'checkbox' })}
+					label="Allow access from Control Panel to Admin"
+					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
 				/>
 				<Divider my="sm" />
 				<Title order={5}>Help Page</Title>
