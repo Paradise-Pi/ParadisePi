@@ -19,6 +19,9 @@ export const GeneralConfigurationPage = () => {
 			remotePassword: '',
 			fullscreen: false,
 		},
+		validate: {
+			adminPin: value => (value == '' ? null : /^\d+$/.test(value) ? null : 'Invalid pin'),
+		},
 	})
 	useEffect(() => {
 		if (generalConfig !== false) {

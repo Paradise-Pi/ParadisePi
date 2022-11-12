@@ -14,7 +14,7 @@ export const AdminPin = (props: { children: React.ReactNode }) => {
 	const [pinField, setPinField] = useInputState('')
 	const [passwordIncorrectText, setPasswordIncorrectText] = useState('')
 
-	if (currentAdminPin === adminPin) return <>{props.children}</>
+	if (currentAdminPin === adminPin || adminPin === '') return <>{props.children}</>
 
 	return (
 		<Stack
