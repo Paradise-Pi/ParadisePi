@@ -4,6 +4,7 @@ import { useDisclosure, useInputState, useViewportSize } from '@mantine/hooks'
 import { FaLock } from '@react-icons/all-files/fa/FaLock'
 import { FaArrowLeft } from '@react-icons/all-files/fa/FaArrowLeft'
 import { useAppSelector } from './../../apis/redux/mainStore'
+import { Link } from 'react-router-dom'
 
 export const AdminPin = (props: { children: React.ReactNode }) => {
 	const [currentAdminPin, setCurrentAdminPin] = useState('')
@@ -41,11 +42,11 @@ export const AdminPin = (props: { children: React.ReactNode }) => {
 						{number}
 					</Button>
 				))}
-				<a href="/#/controlPanel/help">
+				<Link to="/controlPanel/help">
 					<Button color="gray" size="lg" leftIcon={<FaArrowLeft />}>
 						Back
 					</Button>
-				</a>
+				</Link>
 				<Button size="lg" onClick={() => setPinField(pinField + '0')}>
 					0
 				</Button>
