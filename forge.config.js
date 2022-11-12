@@ -35,7 +35,7 @@ module.exports = {
 			name: '@electron-forge/publisher-github',
 			config: {
 				repository: {
-					owner: 'Jbithell',
+					owner: 'Paradise-Pi',
 					name: 'ParadisePi',
 				},
 				draft: true,
