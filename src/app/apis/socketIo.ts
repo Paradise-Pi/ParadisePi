@@ -73,7 +73,7 @@ export class SocketConnection {
 
 		SocketConnection.socket.emit('apiCall', path, method, payload, callback)
 	}
-	static destroy() {
+	static disconnect() {
 		if (SocketConnection.socket) {
 			SocketConnection.socket.disconnect()
 			SocketConnection.socket = false

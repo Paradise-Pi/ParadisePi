@@ -2,15 +2,13 @@ import { Stack, Title, PasswordInput, Button } from '@mantine/core'
 import React from 'react'
 import { useInputState, useViewportSize } from '@mantine/hooks'
 import { FaLock } from '@react-icons/all-files/fa/FaLock'
-import { FaArrowLeft } from '@react-icons/all-files/fa/FaArrowLeft'
-import { Link } from 'react-router-dom'
 import { ApiCall } from '../apis/wrapper'
 import { SocketConnection } from '../apis/socketIo'
 
 const submitPassword = (password: string) => {
 	if (password !== '') {
 		sessionStorage.setItem('paradiseRemotePassword', password)
-		SocketConnection.destroy()
+		SocketConnection.disconnect()
 		ApiCall.get('/ping', {}).then(() => {
 			window.location.reload()
 		})
@@ -36,11 +34,9 @@ export const Authentication = () => {
 				value={passwordField}
 				onChange={setPasswordField}
 			/>
-			<Button.Group>
-				<Button size="lg" onClick={() => submitPassword(passwordField)} mx={'md'}>
-					Login
-				</Button>
-			</Button.Group>
+			<Button size="lg" onClick={() => submitPassword(passwordField)} m={'md'}>
+				Login
+			</Button>
 		</Stack>
 	)
 }
