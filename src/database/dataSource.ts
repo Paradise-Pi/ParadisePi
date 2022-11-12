@@ -31,6 +31,7 @@ import { PresetFoldersToFolders1656681029002 } from './migration/1656681029002-P
 import { Logo1656867549439 } from './migration/1656867549439-Logo'
 import { Fullscreen1657356807729 } from './migration/1657356807729-Fullscreen'
 import { RemotePassword1668243876000 } from './migration/1668243876000-RemotePassword'
+import { AdminPin1668252943000 } from './migration/1668252943000-AdminPin'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -60,6 +61,7 @@ const dataSource = new DataSource({
 		Logo1656867549439,
 		Fullscreen1657356807729,
 		RemotePassword1668243876000,
+		AdminPin1668252943000,
 	],
 	subscribers: [],
 	logger: new MyCustomLogger(),

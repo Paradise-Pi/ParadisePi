@@ -15,6 +15,7 @@ import { Locked } from './Components/Locked'
 import { ChannelCheckPage } from './Pages/ControlPanel/E131/ChannelCheck'
 import { KeypadPage } from './Pages/ControlPanel/E131/Keypad'
 import { useViewportSize } from '@mantine/hooks'
+import { AdminPin } from './Components/Admin/AdminPin'
 
 const Router = () => {
 	return (
@@ -36,7 +37,14 @@ const Router = () => {
 					</Route>
 				</Route>
 				<Route path="e131sampler" element={<div>Sampling E1.31</div>} />
-				<Route path="admin" element={<MainNav navigation={<AdminNavigation />} />}>
+				<Route
+					path="admin"
+					element={
+						<AdminPin>
+							<MainNav navigation={<AdminNavigation />} />
+						</AdminPin>
+					}
+				>
 					<Route path="configuration" element={<ConfigurationPage />} />
 					<Route path="folders" element={<FoldersConfigurationPage />} />
 					<Route path="presets" element={<PresetsConfigurationPage />} />

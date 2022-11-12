@@ -24,6 +24,7 @@ export interface Database {
 			timeoutTime: number
 			helpText: string
 			adminLinkFromControlPanel: boolean
+			adminPin: string
 			remotePassword: string
 			fullscreen: boolean
 		}
@@ -72,6 +73,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 				timeoutTime: parseInt(await ConfigRepository.getItem('timeoutTime')) * 1000,
 				helpText: await ConfigRepository.getItem('helpText'),
 				adminLinkFromControlPanel: (await ConfigRepository.getItem('adminLinkFromControlPanel')) === 'true',
+				adminPin: await ConfigRepository.getItem('adminPin'),
 				remotePassword: await ConfigRepository.getItem('remotePassword'),
 				fullscreen: (await ConfigRepository.getItem('fullscreen')) === 'true',
 			},

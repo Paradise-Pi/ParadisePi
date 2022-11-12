@@ -15,6 +15,7 @@ export const GeneralConfigurationPage = () => {
 			deviceLock: false,
 			helpText: '', // This will never be shown - see below
 			adminLinkFromControlPanel: false,
+			adminPin: '',
 			remotePassword: '',
 			fullscreen: false,
 		},
@@ -25,6 +26,7 @@ export const GeneralConfigurationPage = () => {
 				deviceLock: generalConfig.deviceLock,
 				helpText: generalConfig.helpText, // This is ignored - see below
 				adminLinkFromControlPanel: generalConfig.adminLinkFromControlPanel,
+				adminPin: generalConfig.adminPin,
 				remotePassword: generalConfig.remotePassword,
 				fullscreen: generalConfig.fullscreen,
 			})
@@ -76,8 +78,17 @@ export const GeneralConfigurationPage = () => {
 					mt="md"
 					size="lg"
 					label="Remote access password"
-					description="Leave the box empty to not require a password."
+					description="Leave the box empty to not require a password when accessing Paradise from another device on the same network."
+					autoComplete="off"
 					{...form.getInputProps('remotePassword')}
+				/>
+				<PasswordInput
+					mt="md"
+					size="lg"
+					label="Setup & Administration Menu Pin"
+					description="Leave the box empty to not require a pin when accessing the Administration Menu."
+					autoComplete="off"
+					{...form.getInputProps('adminPin')}
 				/>
 				<Checkbox
 					mt="md"
