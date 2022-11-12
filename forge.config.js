@@ -43,9 +43,9 @@ module.exports = {
 		},
 	],
 	plugins: [
-		[
-			'@electron-forge/plugin-webpack',
-			{
+		{
+			name: '@electron-forge/plugin-webpack',
+			config: {
 				mainConfig: './webpack.main.config.js',
 				port: 9001, // When developing locally, you can grab the bundled app from port 9001 and use it in the browser
 				loggerPort: 9000, // See the logs from the buildpack job
@@ -63,6 +63,6 @@ module.exports = {
 					],
 				},
 			},
-		],
+		},
 	],
 }
