@@ -31,6 +31,7 @@ export class WebServer {
 		WebServer.staticFileServer = new staticServer.Server(__dirname + '/../renderer/', {
 			cache: false,
 			indexFile: 'main_window/index.html',
+			headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
 		})
 		WebServer.server = http.createServer((req, res) => {
 			if (req.url == '/database/upload' && req.method.toLowerCase() === 'post') {
