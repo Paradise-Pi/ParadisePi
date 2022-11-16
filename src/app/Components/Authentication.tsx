@@ -6,13 +6,11 @@ import { ApiCall } from '../apis/wrapper'
 import { SocketConnection } from '../apis/socketIo'
 
 const submitPassword = (password: string) => {
-	if (password !== '') {
-		sessionStorage.setItem('paradiseRemotePassword', password)
-		SocketConnection.disconnect()
-		ApiCall.get('/ping', {}).then(() => {
-			window.location.reload()
-		})
-	}
+	sessionStorage.setItem('paradiseRemotePassword', password)
+	SocketConnection.disconnect()
+	ApiCall.get('/ping', {}).then(() => {
+		window.location.reload()
+	})
 }
 
 export const Authentication = () => {

@@ -190,7 +190,7 @@ export class WebServer {
 			WebServer.socketIo.use((socket, next) => {
 				const userPassword = socket.handshake.auth.password
 				ConfigRepository.getItem('remotePassword').then(password => {
-					if (userPassword === password) {
+					if (password === null || password === '' || userPassword === password) {
 						next()
 					} else {
 						next(new Error('Password incorrect'))
