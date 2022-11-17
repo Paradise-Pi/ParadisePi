@@ -31,6 +31,7 @@ export class WebServer {
 		WebServer.staticFileServer = new staticServer.Server(__dirname + '/../renderer/', {
 			cache: false,
 			indexFile: 'main_window/index.html',
+			headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
 		})
 		WebServer.server = http.createServer((req, res) => {
 			if (req.url == '/database/upload' && req.method.toLowerCase() === 'post') {
@@ -190,7 +191,7 @@ export class WebServer {
 			WebServer.socketIo.use((socket, next) => {
 				const userPassword = socket.handshake.auth.password
 				ConfigRepository.getItem('remotePassword').then(password => {
-					if (userPassword === password) {
+					if (password === null || password === '' || userPassword === password) {
 						next()
 					} else {
 						next(new Error('Password incorrect'))

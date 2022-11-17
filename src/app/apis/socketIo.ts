@@ -25,7 +25,10 @@ export class SocketConnection {
 					os: getOS(),
 				},
 				auth: cb => {
-					if (sessionStorage.getItem('paradiseRemotePassword')) {
+					if (
+						sessionStorage.getItem('paradiseRemotePassword') &&
+						sessionStorage.getItem('paradiseRemotePassword') != null
+					) {
 						cb({
 							password: sessionStorage.getItem('paradiseRemotePassword'),
 						})
