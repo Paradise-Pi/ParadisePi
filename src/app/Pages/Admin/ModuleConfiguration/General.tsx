@@ -103,22 +103,19 @@ export const GeneralConfigurationPage = () => {
 				<Divider my="sm" />
 				<Title order={5}>Help Page</Title>
 				<Text my="md">Text to display on the help page</Text>
-				{
-					generalConfig ? (
-						<RichTextEditor
-							value={generalConfig.helpText}
-							onChange={form.getInputProps('helpText').onChange}
-							controls={[
-								['bold', 'italic', 'underline', 'strike'],
-								['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-								['unorderedList', 'orderedList'],
-								['sup', 'sub', 'blockquote', 'clean'],
-								['alignLeft', 'alignCenter', 'alignRight'],
-							]}
-							sticky={true}
-						/>
-					) : null /* Slight hack because the RichTextEditor doesn't accept value changes - only the one given when rendered, so force a re-render */
-				}
+				<RichTextEditor
+					value={form.values.helpText}
+					id="rte"
+					onChange={(value: string) => form.setFieldValue('helpText', value)}
+					controls={[
+						['bold', 'italic', 'underline', 'strike'],
+						['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+						['unorderedList', 'orderedList'],
+						['sup', 'sub', 'blockquote', 'clean'],
+						['alignLeft', 'alignCenter', 'alignRight'],
+					]}
+					sticky={true}
+				/>
 			</form>
 		</Box>
 	)
