@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: 18
           cache: npm
+      - run: npm install
       - if: matrix.os == 'windows-latest'
         uses: microsoft/setup-msbuild@v1.1
       - run: npm run publish
