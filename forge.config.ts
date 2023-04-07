@@ -48,7 +48,7 @@ const config: ForgeConfig = {
 					{
 						nodeIntegration: false,
 						html: './src/app/index.html',
-						js: './src/electron/renderer.ts',
+						js: './src/app/app.tsx',
 						name: 'main_window',
 						preload: {
 							js: './src/electron/preload.ts',
