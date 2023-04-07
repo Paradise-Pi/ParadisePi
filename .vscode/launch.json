@@ -5,13 +5,18 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"command": "npm start",
 			"name": "Run npm start",
+			"type": "node",
 			"request": "launch",
-			"type": "node-terminal",
+			"cwd": "${workspaceRoot}",
+			"runtimeExecutable": "npm",
+			"runtimeArgs": [
+					"run-script", "start"
+			],
 			"env": {
         "DEV_MODE": "true"
-      }
+      },
+			"console": "integratedTerminal",
 		}
 	]
 }

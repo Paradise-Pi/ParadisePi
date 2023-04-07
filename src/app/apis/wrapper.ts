@@ -29,23 +29,35 @@ export class ApiCall {
 	): Promise<apiObject> {
 		return new Promise((resolve, reject) => {
 			if (runningInElectron()) {
-				window.ipcApi.send(
-					path,
-					method,
-					payload,
-					(success: boolean, response: apiObject, errorMessage: string | null) => {
-						if (success) {
-							resolve(response)
-						} else {
-							showNotification({
-								autoClose: 10000,
-								message: errorMessage,
-								color: 'red',
-							})
-							reject(new Error(errorMessage))
+				try {
+					window.ipcApi.send(
+						path,
+						method,
+						payload,
+						(success: boolean, response: apiObject, errorMessage: string | null) => {
+							if (success) {
+								resolve(response)
+							} else {
+								showNotification({
+									autoClose: 10000,
+									message: errorMessage,
+									color: 'red',
+								})
+								reject(new Error(errorMessage))
+							}
 						}
-					}
-				)
+					)
+				} catch (error) {
+					showNotification({
+						id: 'ipc-error',
+						autoClose: false,
+						disallowClose: true,
+						title: 'IPC Error',
+						message: 'Paradise cannot connect to its database. Please restart',
+						color: 'red',
+					})
+					reject(error)
+				}
 			} else {
 				// Convert the promise chain to a callback because that's what the socket.io lib supports
 				SocketConnection.send(
