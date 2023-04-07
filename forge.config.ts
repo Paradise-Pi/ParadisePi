@@ -42,8 +42,11 @@ const config: ForgeConfig = {
 			mainConfig,
 			renderer: {
 				config: rendererConfig,
+				nodeIntegration: false,
+				jsonStats: true,
 				entryPoints: [
 					{
+						nodeIntegration: false,
 						html: './src/app/index.html',
 						js: './src/electron/renderer.ts',
 						name: 'main_window',
