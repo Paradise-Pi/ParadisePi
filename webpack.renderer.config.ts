@@ -1,19 +1,20 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-const rules = require('./webpack.rules')
-const plugins = require('./webpack.plugins')
+import type { Configuration } from 'webpack'
+
+import { rules } from './webpack.rules'
+import { plugins } from './webpack.plugins'
 
 rules.push(
 	{
 		test: /\.css$/,
 		use: [
-			'style-loader',
+			{ loader: 'style-loader' },
 			{
 				loader: 'css-loader',
 				options: {
 					importLoaders: 1,
 				},
 			},
-			'postcss-loader',
+			{ loader: 'postcss-loader' },
 		],
 	},
 	{
@@ -26,11 +27,11 @@ rules.push(
 	}
 )
 
-module.exports = {
+export const rendererConfig: Configuration = {
 	module: {
 		rules,
 	},
-	plugins: plugins,
+	plugins,
 	resolve: {
 		extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
 	},
