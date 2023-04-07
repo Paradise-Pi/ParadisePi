@@ -28,6 +28,7 @@ import { useAppSelector } from './../../apis/redux/mainStore'
 import { DatabaseFader } from './../../../database/repository/fader'
 import { ApiCall } from './../../apis/wrapper'
 import { showNotification } from '@mantine/notifications'
+import { usePrompt } from '../../apis/utilities/usePrompt'
 
 interface FormValues {
 	faders: Array<DatabaseFader>
@@ -120,6 +121,8 @@ export const FadersConfigurationPage = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [faders])
 	const saveByUserNeeded = formOriginalValues !== JSON.stringify(form.values) // Does the user have unsaved changes
+	usePrompt(saveByUserNeeded ? 'You have unsaved changes, are you sure you want to leave this page?' : false)
+
 	// Handle the submit button
 	const handleSubmit = (values: FormValues) => {
 		setLoadingOverlayVisible(true)
@@ -133,6 +136,7 @@ export const FadersConfigurationPage = () => {
 			})
 		})
 	}
+
 	const fields = form.values.faders.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (

@@ -30,6 +30,7 @@ import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { showNotification } from '@mantine/notifications'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { usePrompt } from './../../apis/utilities/usePrompt'
 
 interface FormValues {
 	folders: Array<DatabaseFolder>
@@ -105,6 +106,7 @@ export const FoldersConfigurationPage = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [folders])
 	const saveByUserNeeded = formOriginalValues !== JSON.stringify(form.values) // Does the user have unsaved changes
+	usePrompt(saveByUserNeeded ? 'You have unsaved changes, are you sure you want to leave this page?' : false)
 
 	// Handle the submit button
 	const handleSubmit = (values: typeof form.values) => {

@@ -41,6 +41,7 @@ import { useModals } from '@mantine/modals'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { showNotification } from '@mantine/notifications'
 import { isValidJson } from './../../Components/Admin/Controls/Presets/EditModal/isValidJson'
+import { usePrompt } from '../../apis/utilities/usePrompt'
 
 interface FormValues {
 	presets: Array<DatabasePreset>
@@ -91,6 +92,8 @@ export const PresetsConfigurationPage = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [presets])
 	const saveByUserNeeded = formOriginalValues !== JSON.stringify(form.values) // Does the user have unsaved changes
+	usePrompt(saveByUserNeeded ? 'You have unsaved changes, are you sure you want to leave this page?' : false)
+
 	// Handle the submit button
 	const handleSubmit = (values: typeof form.values) => {
 		setLoadingOverlayVisible(true)
