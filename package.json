@@ -4,7 +4,7 @@
   "description": "Raspberry Pi based sACN lighting/OSC sound facility control panel",
   "main": ".webpack/main",
   "scripts": {
-    "start": "set DEV_MODE=true && electron-forge start --inspect-electron",
+    "start": "electron-forge start",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
