@@ -32,8 +32,6 @@ Pre-built packages are provided for Windows, MacOS (Intel) and Linux at the [Lat
 
 ### Docs 
 
-Documentation is provided (style is [TSDoc](https://tsdoc.org)) throughout the codebase. Some markdown files are provided in directors where it might be helpful. 
-
 The Paradise website is hosted on Cloudflare Pages, and is built using Docusaurus. The source is in the `/docs` directory.
 
 ### Running locally
