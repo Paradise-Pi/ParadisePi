@@ -48,5 +48,6 @@ Please describe the changes
 
 - [ ] Macros are triggered successfully
 - [ ] Macros can trigger other macros
+- [ ] Scheduled macros are triggered successfully
 
 

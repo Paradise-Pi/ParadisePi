@@ -54,6 +54,20 @@ export class Preset {
 		[key: string]: any
 	}
 
+	@Column('simple-json', { nullable: true })
+	timeClockTriggers: [
+		{
+			time: string
+			enabled: boolean
+			timeout: number
+		}
+	]
+
+	@Column('boolean', {
+		default: false,
+	})
+	httpTriggerEnabled: boolean
+
 	@Column('integer', { default: 1 })
 	sort: number
 
