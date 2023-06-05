@@ -55,13 +55,9 @@ export class Preset {
 	}
 
 	@Column('simple-json', { nullable: true })
-	timeClockTriggers: [
-		{
-			time: string
-			enabled: boolean
-			timeout: number
-		}
-	]
+	timeClockTriggers: {
+		[key: string]: any
+	}
 
 	@Column('boolean', {
 		default: false,

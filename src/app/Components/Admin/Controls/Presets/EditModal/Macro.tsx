@@ -55,6 +55,7 @@ export const MacroPresetEditModal = (props: InputProps) => {
 						data={[
 							{ value: 'preset', label: 'Trigger Preset' },
 							{ value: 'link', label: 'Open a Page' },
+							{ value: 'link', label: 'Lock the what do we say here??' },
 						]}
 					/>
 					{form.values.steps[index].type === 'preset' ? (

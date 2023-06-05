@@ -41,6 +41,7 @@ import { useModals } from '@mantine/modals'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { showNotification } from '@mantine/notifications'
 import { isValidJson } from './../../Components/Admin/Controls/Presets/EditModal/isValidJson'
+import { TimeClockTriggersEditor } from './../../Components/Admin/Controls/Presets/EditModal/TimeClockTriggers'
 
 interface FormValues {
 	presets: Array<DatabasePreset>
@@ -78,6 +79,8 @@ export const PresetsConfigurationPage = () => {
 						? 'Folder must be selected'
 						: null,
 				data: value => (isValidJson(value) || value === null ? null : 'Data is not valid JSON'),
+				timeClockTriggers: value =>
+					isValidJson(value) || value === null ? null : 'Issue with clock based trigger',
 			},
 		},
 	})
@@ -134,15 +137,6 @@ export const PresetsConfigurationPage = () => {
 						/>
 					</td>
 					<td>
-						<NumberInput
-							placeholder="Fade time"
-							icon={<FaRegClock />}
-							min={0}
-							max={60}
-							{...form.getInputProps(`presets.${index}.fadeTime`)}
-						/>
-					</td>
-					<td>
 						<Checkbox
 							size={'lg'}
 							title="Visible"
@@ -159,8 +153,23 @@ export const PresetsConfigurationPage = () => {
 							title="Edit Preset"
 							overflow="inside"
 						>
+							<Checkbox
+								size={'lg'}
+								title="Visible"
+								description="HTTP trigger enabled"
+								{...form.getInputProps(`presets.${index}.httpTriggerEnabled`, { type: 'checkbox' })}
+							/>
+							<TimeClockTriggersEditor {...form.getInputProps(`presets.${index}.timeClockTriggers`)} />
 							{form.values.presets[index].type === 'e131' ? (
 								<>
+									<NumberInput
+										placeholder="Fade time"
+										icon={<FaRegClock />}
+										min={0}
+										max={60}
+										description="Fade time in seconds"
+										{...form.getInputProps(`presets.${index}.fadeTime`)}
+									/>
 									<TextInput
 										py={'md'}
 										placeholder="Universe"
@@ -269,6 +278,8 @@ export const PresetsConfigurationPage = () => {
 																	universe: 1,
 																	fadeTime: 0,
 																	data: null,
+																	timeClockTriggers: null,
+																	httpTriggerEnabled: false,
 																	folderId: '0',
 																	color: '#2C2E33',
 																})
@@ -298,7 +309,6 @@ export const PresetsConfigurationPage = () => {
 									<th>Name</th>
 									<th>Folder</th>
 									<th>Button Colour</th>
-									<th>Fade Time</th>
 									<th>Visible</th>
 									<th></th>
 									<th></th>
