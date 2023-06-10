@@ -18,6 +18,7 @@ import {
 	Title,
 	Table,
 	Alert,
+	Badge,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -110,10 +111,23 @@ export const PresetsConfigurationPage = () => {
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
 				<tr ref={provided.innerRef} {...provided.draggableProps}>
-					<td>
+					<td style={{ width: '1em' }}>
 						<Center {...provided.dragHandleProps}>
 							<FaGripVertical />
 						</Center>
+					</td>
+					<td style={{ width: '1em' }}>
+						<Badge variant="light">
+							{form.values.presets[index].type === 'e131'
+								? 'sACN (E1.31)'
+								: form.values.presets[index].type === 'osc'
+								? 'OSC'
+								: form.values.presets[index].type === 'http'
+								? 'HTTP'
+								: form.values.presets[index].type === 'macro'
+								? 'Macro'
+								: ''}
+						</Badge>
 					</td>
 					<td>
 						<TextInput placeholder="Name" {...form.getInputProps(`presets.${index}.name`)} />
@@ -127,14 +141,14 @@ export const PresetsConfigurationPage = () => {
 							data={foldersForSelect}
 						/>
 					</td>
-					<td>
+					<td style={{ width: '1em' }}>
 						<Checkbox
 							size={'lg'}
 							title="Visible"
 							{...form.getInputProps(`presets.${index}.enabled`, { type: 'checkbox' })}
 						/>
 					</td>
-					<td>
+					<td style={{ width: '1em' }}>
 						<Modal
 							opened={modalVisible === index}
 							onClose={() => {
@@ -209,7 +223,7 @@ export const PresetsConfigurationPage = () => {
 							<FaPencilAlt />
 						</ActionIcon>
 					</td>
-					<td>
+					<td style={{ width: '1em' }}>
 						<ActionIcon
 							color="red"
 							variant="transparent"
@@ -320,6 +334,7 @@ export const PresetsConfigurationPage = () => {
 											<FaPlus />
 										</Button>
 									</th>
+									<th>Type</th>
 									<th>Name</th>
 									<th>Folder</th>
 									<th>Visible</th>
