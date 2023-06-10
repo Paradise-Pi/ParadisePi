@@ -6,7 +6,6 @@ import { useAppSelector } from './../apis/redux/mainStore'
 
 const LockedMessage = () => {
 	const [count, setCount] = useState(0)
-	const { width } = useViewportSize()
 	const increment = useCallback(() => setCount(c => c + 1), [])
 	const ref = useEventListener('click', increment)
 	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
