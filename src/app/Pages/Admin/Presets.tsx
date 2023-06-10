@@ -41,7 +41,6 @@ import { useModals } from '@mantine/modals'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { showNotification } from '@mantine/notifications'
 import { isValidJson } from './../../Components/Admin/Controls/Presets/EditModal/isValidJson'
-import { TimeClockTriggersEditor } from './../../Components/Admin/Controls/Presets/EditModal/TimeClockTriggers'
 
 interface FormValues {
 	presets: Array<DatabasePreset>
@@ -81,8 +80,6 @@ export const PresetsConfigurationPage = () => {
 						? 'Folder must be selected'
 						: null,
 				data: value => (isValidJson(value) || value === null ? null : 'Data is not valid JSON'),
-				timeClockTriggers: value =>
-					isValidJson(value) || value === null ? null : 'Issue with clock based trigger',
 			},
 		},
 	})
@@ -178,7 +175,6 @@ export const PresetsConfigurationPage = () => {
 									}
 								/>
 							) : null}
-							<TimeClockTriggersEditor {...form.getInputProps(`presets.${index}.timeClockTriggers`)} />
 							{form.values.presets[index].type === 'e131' ? (
 								<>
 									<NumberInput
@@ -297,7 +293,6 @@ export const PresetsConfigurationPage = () => {
 																	universe: 1,
 																	fadeTime: 0,
 																	data: null,
-																	timeClockTriggers: null,
 																	httpTriggerEnabled: false,
 																	folderId: '0',
 																	color: '#2C2E33',

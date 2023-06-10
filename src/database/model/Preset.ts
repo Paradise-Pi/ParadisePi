@@ -54,11 +54,6 @@ export class Preset {
 		[key: string]: any
 	}
 
-	@Column('simple-json', { nullable: true })
-	timeClockTriggers: {
-		[key: string]: any
-	}
-
 	@Column('boolean', {
 		default: false,
 	})
