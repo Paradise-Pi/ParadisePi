@@ -16,11 +16,14 @@ All Presets have the following configuration options:
 
 - Name - this is shown to the user on the control panel
 - [Folder](../folders) - where the preset will be shown on the control panel
-- Button Colour - defaults to dark grey
-- Fade time - this only applies to sACN presets. The default is 0 seconds.
-- Visibility - whether to show the preset on the control panel, or whether to keep it hidden. It's useful to keep it hidden if you want to use it as part of a macro.
 
-The remaining configuration options depend on the preset type. To edit the preset options, click the edit icon for that preset.
+The following options are accessed using the edit icon for that preset: 
+
+- Button Colour - defaults to dark grey
+- Visibility - whether to show the preset on the control panel, or whether to keep it hidden. It's useful to keep it hidden if you want to use it as part of a macro.
+- HTTP Enabled - whether to allow the preset to be recalled over HTTP. This is useful for triggering presets from other software, such as QLab. All presets can be recalled via HTTP, including macros - although macro actions to open pages will be skipped.
+
+The remaining configuration options depend on the preset type.
 
 ## Creating presets
 
