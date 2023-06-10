@@ -3,6 +3,7 @@ import { DatabasePreset, PresetRepository } from './../../database/repository/pr
 import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
 import axios from 'axios'
 import { parseJSON } from '../parseUserJson'
+import { ConfigRepository } from './../../database/repository/config'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -48,15 +49,28 @@ export const presetRouter = (
 						.then(() => resolve({}))
 				} else if (value.type === 'macro' && value.data !== null) {
 					let linkStep: string = null
+					const configUpdate: Array<{ key: string; value: string }> = []
 					value.data.forEach((step: { type: string; value: string; key: string }) => {
 						if (step.type === 'preset' && parseInt(step.value) !== value.id && step.value !== null) {
 							presetRouter(['recall', step.value], 'GET', {}) // Trigger the preset in the macro
 						} else if (step.type === 'link' && step.value !== null) {
 							linkStep = step.value
+						} else if (step.type === 'configuration' && step.value !== null) {
+							if (step.value === 'CONTROLPANEL-LOCKED') {
+								configUpdate.push({ key: 'deviceLock', value: 'LOCKED' })
+							} else if (step.value === 'CONTROLPANEL-UNLOCKED') {
+								configUpdate.push({ key: 'deviceLock', value: 'UNLOCKED' })
+							}
 						}
 					})
-					if (linkStep !== null) resolve({ redirect: linkStep })
-					else resolve({})
+					return ConfigRepository.save(configUpdate)
+						.then(() => {
+							return createDatabaseObject('change of config from macro')
+						})
+						.then((response: Database) => {
+							sendDatabaseObject(response)
+							resolve(linkStep !== null ? { redirect: linkStep } : {})
+						})
 				} else resolve({})
 			})
 		} else if (method === 'PUT') {
