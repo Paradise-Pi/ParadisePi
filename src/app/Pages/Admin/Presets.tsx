@@ -54,6 +54,8 @@ export const PresetsConfigurationPage = () => {
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
+	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
 	const foldersForSelect: Array<SelectItem> = []
 	// Prepare folders list for select dropdown
 	if (folders !== false) {
@@ -129,14 +131,6 @@ export const PresetsConfigurationPage = () => {
 						/>
 					</td>
 					<td>
-						<ColorInput
-							format="hex"
-							{...form.getInputProps(`presets.${index}.color`)}
-							swatches={['#2C2E33', '#C92A2A', '#A61E4D', '#862E9C', '#1864AB', '#2B8A3E', '#E67700']}
-							swatchesPerRow={7}
-						/>
-					</td>
-					<td>
 						<Checkbox
 							size={'lg'}
 							title="Visible"
@@ -153,12 +147,37 @@ export const PresetsConfigurationPage = () => {
 							title="Edit Preset"
 							overflow="inside"
 						>
+							<ColorInput
+								format="hex"
+								{...form.getInputProps(`presets.${index}.color`)}
+								swatches={['#2C2E33', '#C92A2A', '#A61E4D', '#862E9C', '#1864AB', '#2B8A3E', '#E67700']}
+								swatchesPerRow={7}
+								label="Button Colour"
+								my={'md'}
+							/>
 							<Checkbox
+								my={'md'}
 								size={'lg'}
-								title="Visible"
-								description="HTTP trigger enabled"
+								label="HTTP Trigger Enabled"
+								description="Enable this preset to be triggered by HTTP requests"
 								{...form.getInputProps(`presets.${index}.httpTriggerEnabled`, { type: 'checkbox' })}
 							/>
+							{form.values.presets[index].httpTriggerEnabled ? (
+								<TextInput
+									description={'HTTP Trigger URL'}
+									readOnly={true}
+									value={
+										form.values.presets[index].id
+											? 'http://' +
+											  ipAddress +
+											  ':' +
+											  port +
+											  '/trigger/preset/' +
+											  form.values.presets[index].id
+											: 'Save preset to generate URL'
+									}
+								/>
+							) : null}
 							<TimeClockTriggersEditor {...form.getInputProps(`presets.${index}.timeClockTriggers`)} />
 							{form.values.presets[index].type === 'e131' ? (
 								<>
@@ -167,14 +186,14 @@ export const PresetsConfigurationPage = () => {
 										icon={<FaRegClock />}
 										min={0}
 										max={60}
-										description="Fade time in seconds"
+										label="Fade time in seconds"
 										{...form.getInputProps(`presets.${index}.fadeTime`)}
 									/>
 									<TextInput
 										py={'md'}
 										placeholder="Universe"
 										icon={<FaSpaceShuttle />}
-										description="Universe number"
+										label="Universe number"
 										{...form.getInputProps(`presets.${index}.universe`)}
 									/>
 									<E131PresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
@@ -308,7 +327,6 @@ export const PresetsConfigurationPage = () => {
 									</th>
 									<th>Name</th>
 									<th>Folder</th>
-									<th>Button Colour</th>
 									<th>Visible</th>
 									<th></th>
 									<th></th>

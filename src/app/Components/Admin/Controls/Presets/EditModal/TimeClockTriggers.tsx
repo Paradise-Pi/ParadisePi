@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
-import { Group, ActionIcon, Button, Select } from '@mantine/core'
+import { Group, ActionIcon, Button, Text, Checkbox, NumberInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { randomId } from '@mantine/hooks'
 import { InputProps } from '../../../../InputProps'
+
 interface Trigger {
 	time: string
 	enabled: boolean
@@ -27,9 +28,6 @@ export const TimeClockTriggersEditor = (props: InputProps) => {
 			form.setValues({
 				triggers: valueObject.map((item: Trigger) => ({
 					time: item.time,
-					enabled: item.enabled,
-					timeout: item.timeout,
-					countdownWarning: item.countdownWarning,
 					key: item.key,
 				})),
 			})
@@ -38,23 +36,11 @@ export const TimeClockTriggersEditor = (props: InputProps) => {
 	}, [props.value])
 	return (
 		<>
-			{form.values.triggers.map((item, index) => (
-				<Group key={item.key} mt="xs">
-					<Select
-						{...form.getInputProps(`steps.${index}.time`)}
-						data={[
-							{ value: 'preset', label: 'Trigger Preset' },
-							{ value: 'link', label: 'Open a Page' },
-						]}
-					/>
-					<ActionIcon color="red" variant="transparent" onClick={() => form.removeListItem('steps', index)}>
-						<FaTrash />
-					</ActionIcon>
-				</Group>
-			))}
-
-			<Group position="center" mt="md">
+			<Group mt="xs">
+				<Text mt={'md'}>Time Clock Triggers</Text>
 				<Button
+					mt={'md'}
+					size="sm"
 					onClick={() =>
 						form.insertListItem('triggers', {
 							time: '',
@@ -65,10 +51,54 @@ export const TimeClockTriggersEditor = (props: InputProps) => {
 						})
 					}
 				>
-					Add step
+					Add Trigger
 				</Button>
-				<Button onClick={() => props.onChange(JSON.stringify(form.values.triggers))}>Apply</Button>
+				{form.isDirty() ? (
+					<Button mt={'md'} size="sm" onClick={() => props.onChange(JSON.stringify(form.values.triggers))}>
+						Apply
+					</Button>
+				) : null}
 			</Group>
+			<Text size={'sm'}>Time Clock Triggers will recall this preset at the following times (if enabled)</Text>
+			{form.values.triggers.map((item, index) => (
+				<Group key={item.key} mt="xs">
+					<NumberInput
+						label="Trigger Time"
+						max={2359}
+						min={0}
+						parser={value =>
+							value.match(/\d(?=(?:\D*\d){0,3}$)/g) ? value.match(/\d(?=(?:\D*\d){0,3}$)/g).join('') : ''
+						}
+						formatter={value =>
+							!Number.isNaN(parseFloat(value))
+								? value.replace(/\b\d{1,4}\b/g, match => {
+										const paddedNumber = match.padStart(4, '0')
+										const hours = paddedNumber.slice(0, 2)
+										const minutes = paddedNumber.slice(2)
+										return `${hours}:${minutes}`
+								  })
+								: ''
+						}
+						{...form.getInputProps(`triggers.${index}.time`)}
+					/>
+					<Checkbox
+						mt={'lg'}
+						size={'lg'}
+						label="Enabled"
+						{...form.getInputProps(`triggers.${index}.enabled`, { type: 'checkbox' })}
+					/>
+					<ActionIcon
+						mt={'lg'}
+						color="red"
+						variant="transparent"
+						onClick={() => form.removeListItem('triggers', index)}
+					>
+						<FaTrash />
+					</ActionIcon>
+				</Group>
+			))}
+
+			<Group position="center" mt="md"></Group>
 		</>
 	)
 }
