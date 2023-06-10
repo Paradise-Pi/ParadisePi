@@ -14,8 +14,8 @@ const LockedMessage = () => {
 	if (count >= 5) {
 		return (
 			<Text size="sm" mx={'lg'}>
-				Device is locked. To unlock it access the setup and administration area, by ensuring you are on the
-				same network as this device and then navigating to http://
+				Device is locked. To unlock it access the setup and administration area, by ensuring you are on the same
+				network as this device and then navigating to http://
 				{ipAddress + ':' + port ?? ''} with a web browser
 			</Text>
 		)
