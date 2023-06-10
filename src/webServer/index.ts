@@ -162,25 +162,37 @@ export class WebServer {
 						res.write('Preset ID not found')
 						res.end()
 					} else {
-						PresetRepository.findOneOrFail({ where: { id: presetId } }).then((value: Preset) => {
-							if (value.httpTriggerEnabled) {
-								routeRequest('/presets/recall/' + presetId, 'GET', {}).then(() => {
-									res.writeHead(200, { 'Content-Type': 'text/html' })
-									res.write('Preset triggered')
+						PresetRepository.findOneOrFail({ where: { id: presetId } })
+							.then((value: Preset) => {
+								if (value.httpTriggerEnabled) {
+									routeRequest('/presets/recall/' + presetId, 'GET', {})
+										.then(() => {
+											res.writeHead(200, { 'Content-Type': 'text/html' })
+											res.write('Preset triggered')
+											res.end()
+										})
+										.catch(() => {
+											res.writeHead(500, { 'Content-Type': 'text/html' })
+											res.write('Error - preset could not be recalled')
+											res.end()
+										})
+								} else {
+									res.writeHead(403, { 'Content-Type': 'text/html' })
+									res.write('Preset not enabled for trigger via HTTP')
 									res.end()
-								})
-								.catch(error => {
-									res.writeHead(500, { 'Content-Type': 'text/html' })
-									res.write("Error - preset could not be recalled")
-									res.end()
-								})
-							} else {
-								res.writeHead(403, { 'Content-Type': 'text/html' })
-								res.write('Preset not enabled for trigger via HTTP')
+								}
+							})
+							.catch(() => {
+								res.writeHead(404, { 'Content-Type': 'text/html' })
+								res.write('Error - preset not found')
 								res.end()
-							}
-						})
+							})
 					}
+				} else {
+					res.writeHead(404, { 'Content-Type': 'text/html' })
+					res.write('Not found')
+					res.end()
+				}
 			} else {
 				// Serve the react app
 				WebServer.staticFileServer.serve(req, res, (e: Error) => {
