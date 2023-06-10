@@ -103,6 +103,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 						id: preset.id,
 						name: preset.name,
 						enabled: preset.enabled,
+						httpTriggerEnabled: preset.httpTriggerEnabled,
 						color: preset.color !== null ? preset.color : '#2C2E33',
 					}
 				}),
