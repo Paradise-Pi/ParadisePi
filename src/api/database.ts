@@ -1,11 +1,11 @@
-import { DatabasePreset, PresetRepository } from './../database/repository/preset'
-import { DatabaseFolder, FolderRepository } from './../database/repository/folder'
-import { ConfigRepository } from './../database/repository/config'
-import { getOperatingSystemName } from './about/operatingSystem/info'
-import { version } from './../../package.json'
-import { broadcast } from './broadcast'
 import ip from 'ip'
+import { version } from './../../package.json'
+import { ConfigRepository } from './../database/repository/config'
 import { DatabaseFader, FaderRepository } from './../database/repository/fader'
+import { DatabaseFolder, FolderRepository } from './../database/repository/folder'
+import { DatabasePreset, DatabaseTimeClockTrigger, PresetRepository } from './../database/repository/preset'
+import { getOperatingSystemName } from './about/operatingSystem/info'
+import { broadcast } from './broadcast'
 
 export interface Database {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,6 +46,7 @@ export interface Database {
 		}
 	}
 	presets: Array<DatabasePreset>
+	timeClockTriggers: Array<DatabaseTimeClockTrigger>
 	folders: {
 		[key: number]: DatabaseFolder
 	}
@@ -95,6 +96,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 			},
 		},
 		presets: await PresetRepository.getAll(),
+		timeClockTriggers: await PresetRepository.getAllTimeClockTriggers(),
 		folders: await FolderRepository.getAll(),
 		faders: await FaderRepository.getAll(),
 	}

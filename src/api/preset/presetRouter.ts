@@ -1,9 +1,9 @@
-import { Preset } from './../../database/model/Preset'
-import { DatabasePreset, PresetRepository } from './../../database/repository/preset'
-import { createDatabaseObject, Database, sendDatabaseObject } from './../database'
 import axios from 'axios'
 import { parseJSON } from '../parseUserJson'
+import { Preset } from './../../database/model/Preset'
 import { ConfigRepository } from './../../database/repository/config'
+import { DatabasePreset, PresetRepository } from './../../database/repository/preset'
+import { Database, createDatabaseObject, sendDatabaseObject } from './../database'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -73,6 +73,15 @@ export const presetRouter = (
 						})
 				} else resolve({})
 			})
+		} else if (method === 'PUT' && path[0] === 'timeClockTriggers') {
+			return Promise.resolve()
+				.then(() => {
+					return createDatabaseObject('updating all presets in bulk')
+				})
+				.then((response: Database) => {
+					sendDatabaseObject(response)
+					resolve({})
+				})
 		} else if (method === 'PUT') {
 			return PresetRepository.setAllFromApp(payload as Array<DatabasePreset>)
 				.then(() => {

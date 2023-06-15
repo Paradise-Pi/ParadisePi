@@ -19,13 +19,12 @@ import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
-import { Draggable } from 'react-beautiful-dnd'
-import { TimeClockTrigger } from '../../../database/repository/preset'
+import { DatabaseTimeClockTrigger } from '../../../database/repository/preset'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { ApiCall } from '../../apis/wrapper'
 
 interface FormValues {
-	triggers: Array<TimeClockTrigger>
+	triggers: Array<DatabaseTimeClockTrigger>
 }
 
 export const TimeClockTriggersConfigurationPage = () => {
@@ -47,7 +46,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 	// Setup the form
 	const form = useForm<FormValues>({
 		initialValues: {
-			triggers: Array<TimeClockTrigger>(),
+			triggers: Array<DatabaseTimeClockTrigger>(),
 		},
 		validate: {
 			triggers: {
@@ -69,7 +68,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 	// Handle the submit button
 	const handleSubmit = (values: typeof form.values) => {
 		setLoadingOverlayVisible(true)
-		ApiCall.put('/timeClockTriggers', values.triggers).then(() => {
+		ApiCall.put('/presets/timeClockTriggers', values.triggers).then(() => {
 			showNotification({
 				message: 'Your changes have been saved',
 				autoClose: 2000,
@@ -80,49 +79,45 @@ export const TimeClockTriggersConfigurationPage = () => {
 		})
 	}
 	const fields = form.values.triggers.map((_, index) => (
-		<Draggable key={index} index={index} draggableId={index.toString()}>
-			{provided => (
-				<tr ref={provided.innerRef} {...provided.draggableProps}>
-					<td>
-						<TextInput placeholder="Name" {...form.getInputProps(`triggers.${index}.time`)} />
-					</td>
-					<td>
-						<Select
-							placeholder="Preset"
-							{...form.getInputProps(`triggers.${index}.presetId`)}
-							data={presetsForSelect}
-						/>
-					</td>
-					<td style={{ width: 0 }}>
-						<Checkbox
-							my={'md'}
-							size={'lg'}
-							title="Enabled"
-							{...form.getInputProps(`triggers.${index}.enabled`, { type: 'checkbox' })}
-						/>
-					</td>
-					<td style={{ width: 0 }}>
-						<ActionIcon
-							title="Duplicate"
-							variant="transparent"
-							onClick={() => form.insertListItem('triggers', form.values.triggers[index])}
-						>
-							<FaRegClone />
-						</ActionIcon>
-					</td>
-					<td style={{ width: 0 }}>
-						<ActionIcon
-							color="red"
-							title="Delete"
-							variant="transparent"
-							onClick={() => form.removeListItem('triggers', index)}
-						>
-							<FaTrash />
-						</ActionIcon>
-					</td>
-				</tr>
-			)}
-		</Draggable>
+		<tr key={index}>
+			<td>
+				<TextInput placeholder="Name" {...form.getInputProps(`triggers.${index}.time`)} />
+			</td>
+			<td>
+				<Select
+					placeholder="Preset"
+					{...form.getInputProps(`triggers.${index}.presetId`)}
+					data={presetsForSelect}
+				/>
+			</td>
+			<td style={{ width: 0 }}>
+				<Checkbox
+					my={'md'}
+					size={'lg'}
+					title="Enabled"
+					{...form.getInputProps(`triggers.${index}.enabled`, { type: 'checkbox' })}
+				/>
+			</td>
+			<td style={{ width: 0 }}>
+				<ActionIcon
+					title="Duplicate"
+					variant="transparent"
+					onClick={() => form.insertListItem('triggers', form.values.triggers[index])}
+				>
+					<FaRegClone />
+				</ActionIcon>
+			</td>
+			<td style={{ width: 0 }}>
+				<ActionIcon
+					color="red"
+					title="Delete"
+					variant="transparent"
+					onClick={() => form.removeListItem('triggers', index)}
+				>
+					<FaTrash />
+				</ActionIcon>
+			</td>
+		</tr>
 	))
 
 	return (
@@ -145,6 +140,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 									<th>
 										<Button
 											compact
+											mr={'md'}
 											variant="default"
 											onClick={() =>
 												form.insertListItem('triggers', {
@@ -155,10 +151,12 @@ export const TimeClockTriggersConfigurationPage = () => {
 										>
 											<FaPlus />
 										</Button>
+										Time
 									</th>
-									<th>Time</th>
 									<th>Preset</th>
 									<th>Enabled</th>
+									<th></th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>{fields}</tbody>

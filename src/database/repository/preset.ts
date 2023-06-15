@@ -1,5 +1,5 @@
-import { parseJSON } from './../../api/parseUserJson'
 import { In, Not } from 'typeorm'
+import { parseJSON } from './../../api/parseUserJson'
 import dataSource from './../dataSource'
 import { Preset } from './../model/Preset'
 
@@ -18,7 +18,7 @@ export interface DatabasePreset {
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	color?: string
 }
-export interface TimeClockTrigger {
+export interface DatabaseTimeClockTrigger {
 	presetId: number
 	time: string
 	enabled: boolean
@@ -88,5 +88,37 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 			}
 		})
 		await this.upsert(presetsToInsert, ['id'])
+	},
+	/**
+	 * Get all time clock triggers
+	 * @returns An array of all time clock triggers
+	 */
+	async getAllTimeClockTriggers(): Promise<Array<DatabaseTimeClockTrigger>> {
+		const presets = await this.find({
+			select: {
+				id: true,
+				timeClockTriggers: true,
+			},
+			order: {
+				sort: 'ASC',
+			},
+		})
+		const returnTriggers: Array<DatabaseTimeClockTrigger> = []
+		presets.forEach(preset => {
+			if (preset.timeClockTriggers !== null) {
+				preset.timeClockTriggers = JSON.parse(preset.timeClockTriggers)
+				preset.timeClockTriggers.forEach((trigger: DatabaseTimeClockTrigger) => {
+					returnTriggers.push({
+						presetId: preset.id,
+						time: trigger.time,
+						enabled: trigger.enabled,
+						timeout: trigger.timeout !== null ? trigger.timeout : 0,
+						countdownWarning: trigger.countdownWarning !== null ? trigger.countdownWarning : 0,
+						countdownWarningText: trigger.countdownWarningText !== null ? trigger.countdownWarningText : '',
+					})
+				})
+			}
+		})
+		return returnTriggers
 	},
 })
