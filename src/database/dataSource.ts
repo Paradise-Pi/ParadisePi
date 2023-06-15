@@ -32,6 +32,7 @@ import { Logo1656867549439 } from './migration/1656867549439-Logo'
 import { Fullscreen1657356807729 } from './migration/1657356807729-Fullscreen'
 import { RemotePassword1668243876000 } from './migration/1668243876000-RemotePassword'
 import { AdminPin1668252943000 } from './migration/1668252943000-AdminPin'
+import { TimeClockTriggers1685981931584 } from './migration/1685981931584-TimeClockTriggers'
 import { HTTPTriggers1685982219806 } from './migration/1685982219806-HTTPTriggers'
 import { PresetIcons1686849999231 } from './migration/1686849999231-PresetIcons'
 
@@ -64,6 +65,7 @@ const dataSource = new DataSource({
 		Fullscreen1657356807729,
 		RemotePassword1668243876000,
 		AdminPin1668252943000,
+		TimeClockTriggers1685981931584,
 		HTTPTriggers1685982219806,
 		PresetIcons1686849999231,
 	],

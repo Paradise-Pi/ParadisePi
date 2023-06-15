@@ -13,9 +13,18 @@ export interface DatabasePreset {
 	universe?: string | null
 	fadeTime?: number
 	data?: string | null
+	timeClockTriggers?: string | null
 	httpTriggerEnabled: boolean
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	color?: string
+}
+export interface TimeClockTrigger {
+	presetId: number
+	time: string
+	enabled: boolean
+	timeout: number
+	countdownWarning: number
+	countdownWarningText: string
 }
 
 export const PresetRepository = dataSource.getRepository(Preset).extend({
@@ -45,6 +54,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				universe: item.universe,
 				fadeTime: item.fadeTime !== null ? item.fadeTime : 0,
 				data: item.data !== null ? JSON.stringify(item.data) : null,
+				timeClockTriggers: item.timeClockTriggers !== null ? JSON.stringify(item.timeClockTriggers) : null,
 				httpTriggerEnabled: item.httpTriggerEnabled,
 				folderId: item.folder !== null ? item.folder.id.toString() : null,
 				color: item.color !== null ? item.color : '#2C2E33',
@@ -71,6 +81,10 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				universe: preset.universe !== null ? parseInt(preset.universe) : null,
 				folder: preset.folderId !== null ? parseInt(preset.folderId) : null,
 				data: preset.data !== null && preset.data.length > 0 ? parseJSON(preset.data) : null,
+				timeClockTriggers:
+					preset.timeClockTriggers !== null && preset.timeClockTriggers.length > 0
+						? parseJSON(preset.timeClockTriggers)
+						: null,
 			}
 		})
 		await this.upsert(presetsToInsert, ['id'])

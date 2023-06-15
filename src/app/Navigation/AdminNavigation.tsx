@@ -12,6 +12,7 @@ import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
 import { useAppSelector } from './../apis/redux/mainStore'
 import { runningInElectron } from '../apis/utilities/version'
+import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 
 export const AdminNavigation = () => {
 	const { classes, cx } = useStyles()
@@ -36,6 +37,7 @@ export const AdminNavigation = () => {
 				<NavbarItem link="presets" label="Presets" Icon={FaRegPlayCircle} />
 				<NavbarItem link="folders" label="Folders" Icon={FaRegFolder} />
 				<NavbarItem link="faders" label="Faders" Icon={FaLevelUpAlt} />
+				<NavbarItem link="timeClockTriggers" label="Timer Presets" Icon={FaRegClock} />
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>
 				<NavbarItem link="controls" label="Controls" Icon={FaCogs} />

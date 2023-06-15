@@ -26,7 +26,11 @@ Please describe the changes
 - [ ] Presets/Faders/Folders can be enabled, and they are shown in the control panel
 - [ ] Preset/Folders colors can be changed, and this is shown in the control panel
 - [ ] Preset/Faders/Folders sort order is maintained
+
+### Preset Triggers
+
 - [ ] Presets can be triggered by HTTP requests
+- [ ] Time clock triggers recall presets successfully
 
 ### Preset Types
 

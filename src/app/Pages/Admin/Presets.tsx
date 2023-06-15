@@ -255,6 +255,7 @@ export const PresetsConfigurationPage = () => {
 									universe: form.values.presets[index].universe,
 									fadeTime: form.values.presets[index].fadeTime,
 									data: form.values.presets[index].data,
+									timeClockTriggers: null, //Deliberate decision not to copy these
 									httpTriggerEnabled: form.values.presets[index].httpTriggerEnabled,
 									folderId: form.values.presets[index].folderId,
 									color: form.values.presets[index].color,
@@ -350,6 +351,7 @@ export const PresetsConfigurationPage = () => {
 																	universe: 1,
 																	fadeTime: 0,
 																	data: null,
+																	timeClockTriggers: null,
 																	httpTriggerEnabled: false,
 																	folderId: '0',
 																	icon: null,
