@@ -134,6 +134,8 @@ export const FoldersConfigurationPage = () => {
 							placeholder="Folder Icon"
 							{...form.getInputProps(`folders.${index}.icon`)}
 							defaultValue="FaFolder"
+							searchable={true}
+							nothingFound="No icons found"
 							itemComponent={ButtonIconSelectItem}
 							data={Object.entries(AvailableIcons).map(([value, name]) => ({
 								value: value,

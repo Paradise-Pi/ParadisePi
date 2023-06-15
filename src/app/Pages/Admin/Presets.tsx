@@ -43,6 +43,7 @@ import { useModals } from '@mantine/modals'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { showNotification } from '@mantine/notifications'
 import { isValidJson } from './../../Components/Admin/Controls/Presets/EditModal/isValidJson'
+import { AvailableIcons, ButtonIconSelectItem } from './../../Components/ControlPanel/ButtonIcon'
 
 interface FormValues {
 	presets: Array<DatabasePreset>
@@ -159,6 +160,23 @@ export const PresetsConfigurationPage = () => {
 							title="Edit Preset"
 							overflow="inside"
 						>
+							<Select
+								placeholder="Icon"
+								label="Icon"
+								{...form.getInputProps(`presets.${index}.icon`)}
+								itemComponent={ButtonIconSelectItem}
+								searchable={true}
+								nothingFound="No icons found"
+								clearable={true}
+								data={[
+									{ value: null, icon: null, label: '' },
+									...Object.entries(AvailableIcons).map(([value, name]) => ({
+										value: value,
+										icon: value,
+										label: name,
+									})),
+								]}
+							/>
 							<ColorInput
 								format="hex"
 								{...form.getInputProps(`presets.${index}.color`)}
@@ -240,6 +258,7 @@ export const PresetsConfigurationPage = () => {
 									httpTriggerEnabled: form.values.presets[index].httpTriggerEnabled,
 									folderId: form.values.presets[index].folderId,
 									color: form.values.presets[index].color,
+									icon: form.values.presets[index].icon,
 								})
 							}
 						>
@@ -333,6 +352,7 @@ export const PresetsConfigurationPage = () => {
 																	data: null,
 																	httpTriggerEnabled: false,
 																	folderId: '0',
+																	icon: null,
 																	color: '#2C2E33',
 																})
 																modalManager.closeModal(createNewPresetModal)

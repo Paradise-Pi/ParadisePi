@@ -48,6 +48,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					name: true,
 					enabled: true,
 					color: true,
+					icon: true,
 				},
 				faders: {
 					id: true,
@@ -105,6 +106,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 						enabled: preset.enabled,
 						httpTriggerEnabled: preset.httpTriggerEnabled,
 						color: preset.color !== null ? preset.color : '#2C2E33',
+						icon: preset.icon,
 					}
 				}),
 				faders: item.faders.map((fader: Fader) => {
@@ -167,6 +169,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					name: preset.name,
 					enabled: preset.enabled,
 					color: preset.color !== null ? preset.color : '#2C2E33',
+					icon: preset.icon,
 				}
 			}),
 			faders: item.faders.map((fader: Fader) => {

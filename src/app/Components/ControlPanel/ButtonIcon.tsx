@@ -68,11 +68,15 @@ export const ButtonIconSelectItem = forwardRef<HTMLDivElement, ItemProps>(
 	({ icon, label, ...others }: ItemProps, ref) => (
 		<div ref={ref} {...others}>
 			<Group noWrap>
-				<Avatar radius={'xs'} size={'md'}>
-					<ButtonIconReact icon={icon} />
-				</Avatar>
+				{icon ? (
+					<Avatar radius={'xs'} size={'md'}>
+						<ButtonIconReact icon={icon} />
+					</Avatar>
+				) : (
+					''
+				)}
 				<div>
-					<Text size="sm">{label}</Text>
+					<Text size="sm">{label !== '' ? label : 'None'}</Text>
 				</div>
 			</Group>
 		</div>

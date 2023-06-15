@@ -8,6 +8,7 @@ export interface DatabasePreset {
 	id: number
 	name: string
 	enabled: boolean
+	icon?: string | null
 	type?: PresetTypes
 	universe?: string | null
 	fadeTime?: number
@@ -40,6 +41,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				name: item.name,
 				enabled: item.enabled,
 				type: item.type,
+				icon: item.icon !== null ? item.icon : null,
 				universe: item.universe,
 				fadeTime: item.fadeTime !== null ? item.fadeTime : 0,
 				data: item.data !== null ? JSON.stringify(item.data) : null,

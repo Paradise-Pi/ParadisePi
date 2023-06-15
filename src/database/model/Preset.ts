@@ -34,6 +34,14 @@ export class Preset {
 	@Column('text', { nullable: true })
 	universe: string | null
 
+	@Column('text', {
+		nullable: true,
+		default: (): string => {
+			return null
+		},
+	})
+	icon: string | null
+
 	@Column('text', { nullable: true })
 	color: string | null
 
