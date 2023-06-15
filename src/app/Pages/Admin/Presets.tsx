@@ -26,6 +26,7 @@ import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
@@ -141,14 +142,14 @@ export const PresetsConfigurationPage = () => {
 							data={foldersForSelect}
 						/>
 					</td>
-					<td style={{ width: '1em' }}>
+					<td style={{ width: 0 }}>
 						<Checkbox
 							size={'lg'}
 							title="Visible"
 							{...form.getInputProps(`presets.${index}.enabled`, { type: 'checkbox' })}
 						/>
 					</td>
-					<td style={{ width: '1em' }}>
+					<td style={{ width: 0 }}>
 						<Modal
 							opened={modalVisible === index}
 							onClose={() => {
@@ -219,13 +220,36 @@ export const PresetsConfigurationPage = () => {
 								<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 							) : null}
 						</Modal>
-						<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
+						<ActionIcon variant="transparent" title="Edit" onClick={() => setModalVisible(index)}>
 							<FaPencilAlt />
 						</ActionIcon>
 					</td>
-					<td style={{ width: '1em' }}>
+					<td style={{ width: 0 }}>
+						<ActionIcon
+							title="Duplicate"
+							variant="transparent"
+							onClick={() =>
+								form.insertListItem('presets', {
+									id: null,
+									name: 'Copy of ' + form.values.presets[index].name,
+									enabled: form.values.presets[index].enabled,
+									type: form.values.presets[index].type as PresetTypes,
+									universe: form.values.presets[index].universe,
+									fadeTime: form.values.presets[index].fadeTime,
+									data: form.values.presets[index].data,
+									httpTriggerEnabled: form.values.presets[index].httpTriggerEnabled,
+									folderId: form.values.presets[index].folderId,
+									color: form.values.presets[index].color,
+								})
+							}
+						>
+							<FaRegClone />
+						</ActionIcon>
+					</td>
+					<td style={{ width: 0 }}>
 						<ActionIcon
 							color="red"
+							title="Delete"
 							variant="transparent"
 							onClick={() => form.removeListItem('presets', index)}
 						>
@@ -338,6 +362,7 @@ export const PresetsConfigurationPage = () => {
 									<th>Name</th>
 									<th>Folder</th>
 									<th>Visible</th>
+									<th></th>
 									<th></th>
 									<th></th>
 								</tr>
