@@ -6,7 +6,7 @@ import { useStyles } from './Styles'
 import { NavbarItem } from './NavbarItem'
 import { useAppSelector } from './../apis/redux/mainStore'
 import { DatabaseFolder } from './../../database/repository/folder'
-import { FolderIcon } from './../Components/ControlPanel/FolderIcon'
+import { ButtonIcon } from '../Components/ControlPanel/ButtonIcon'
 
 const TopLevelFolders = () => {
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
@@ -31,7 +31,7 @@ const TopLevelFolders = () => {
 					key={item.id}
 					link={'folder/' + item.id.toString()}
 					label={item.name}
-					Icon={FolderIcon(item.icon)}
+					Icon={ButtonIcon(item.icon)}
 				/>
 			))}
 		</>
