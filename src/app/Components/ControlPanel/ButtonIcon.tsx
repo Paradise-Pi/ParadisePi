@@ -13,6 +13,13 @@ import { FaPhoneVolume } from '@react-icons/all-files/fa/FaPhoneVolume'
 import { FaMicrophone } from '@react-icons/all-files/fa/FaMicrophone'
 import { FaMicrophoneAlt } from '@react-icons/all-files/fa/FaMicrophoneAlt'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
+import { FaArrowUp } from '@react-icons/all-files/fa/FaArrowUp'
+import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown'
+import { FaArrowLeft } from '@react-icons/all-files/fa/FaArrowLeft'
+import { FaArrowRight } from '@react-icons/all-files/fa/FaArrowRight'
+import { FaPowerOff } from '@react-icons/all-files/fa/FaPowerOff'
+import { FaToggleOn } from '@react-icons/all-files/fa/FaToggleOn'
+import { FaToggleOff } from '@react-icons/all-files/fa/FaToggleOff'
 
 export const AvailableIcons = {
 	FaLightbulb: 'Lightbulb',
@@ -26,6 +33,13 @@ export const AvailableIcons = {
 	FaMicrophoneAlt: 'Microphone',
 	FaVideo: 'Camera',
 	FaFolder: 'Folder',
+	FaArrowUp: 'Arrow Up',
+	FaArrowDown: 'Arrow Down',
+	FaArrowLeft: 'Arrow Left',
+	FaArrowRight: 'Arrow Right',
+	FaPowerOff: 'Power Off',
+	FaToggleOn: 'Toggle On',
+	FaToggleOff: 'Toggle Off',
 }
 
 export const ButtonIcon = (icon: string): IconType => {
@@ -40,6 +54,13 @@ export const ButtonIcon = (icon: string): IconType => {
 	else if (icon === 'FaMicrophoneAlt') return FaMicrophoneAlt
 	else if (icon === 'FaVideo') return FaVideo
 	else if (icon === 'FaFolder') return FaFolder
+	else if (icon === 'FaArrowUp') return FaArrowUp
+	else if (icon === 'FaArrowDown') return FaArrowDown
+	else if (icon === 'FaArrowLeft') return FaArrowLeft
+	else if (icon === 'FaArrowRight') return FaArrowRight
+	else if (icon === 'FaPowerOff') return FaPowerOff
+	else if (icon === 'FaToggleOn') return FaToggleOn
+	else if (icon === 'FaToggleOff') return FaToggleOff
 	else return null
 }
 // TODO surely we don't need two functions?
@@ -55,6 +76,13 @@ export const ButtonIconReact = (props: { icon: string }) => {
 	else if (props.icon === 'FaMicrophoneAlt') return <FaMicrophoneAlt />
 	else if (props.icon === 'FaVideo') return <FaVideo />
 	else if (props.icon === 'FaFolder') return <FaFolder />
+	else if (props.icon === 'FaArrowUp') return <FaArrowUp />
+	else if (props.icon === 'FaArrowDown') return <FaArrowDown />
+	else if (props.icon === 'FaArrowLeft') return <FaArrowLeft />
+	else if (props.icon === 'FaArrowRight') return <FaArrowRight />
+	else if (props.icon === 'FaPowerOff') return <FaPowerOff />
+	else if (props.icon === 'FaToggleOn') return <FaToggleOn />
+	else if (props.icon === 'FaToggleOff') return <FaToggleOff />
 	else return <></>
 }
 
