@@ -62,7 +62,7 @@ export const PresetsConfigurationPage = () => {
 		Object.entries(folders).forEach(([, value]) => {
 			foldersForSelect.push({
 				value: value.id.toString(),
-				label: value.name,
+				label: (value.parent ? value.parent.name + ' → ' : '') + value.name,
 				group: 'Folder',
 			})
 		})
