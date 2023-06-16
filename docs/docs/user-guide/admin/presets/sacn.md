@@ -9,6 +9,8 @@ sACN (e1.31) presets are usually used for lighting control. sACN is based on uni
 
 The 512 channels (parameters) in a universe are displayed in banks for ease of viewing, you can move between banks using the plus and minus buttons. If a channel is blank then when the preset is recalled the value of that channel will not be changed from its current value (which will have been set by another preset, or be 0 if it has not been set by any presets). Channel values can be between 0 and 255.
 
+The fade time option defaults to 0 seconds. This means that when the preset is recalled, the values will be sent immediately. If you set a fade time, then the values will be sent over that time period. This is useful for slowly fading lights up and down.
+
 ## Shortcuts
 
 Shortcuts allow you to manipulate the entire universe in bulk. This is useful if you are editing a preset captured, or you want to set all the values you've left blank to a certain value (or want to blank all 0 channels). This is especially useful for editing presets captured from a lighting console using sampling mode.

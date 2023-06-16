@@ -7,9 +7,19 @@ import { DangerouslySetHTML } from './../../Components/DangerouslySetHTML'
 import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { ApiCall } from './../../apis/wrapper'
-import { FolderIconReact } from './../../Components/ControlPanel/FolderIcon'
+import { ButtonIconReact } from '../../Components/ControlPanel/ButtonIcon'
 import { PresetFaders } from './../../Components/ControlPanel/PresetFaders'
-const PresetButton = ({ text, presetId, color }: { text: string; presetId: number; color: string }) => {
+const PresetButton = ({
+	text,
+	presetId,
+	color,
+	icon,
+}: {
+	text: string
+	presetId: number
+	color: string
+	icon: string
+}) => {
 	const navigate = useNavigate()
 
 	return (
@@ -30,6 +40,7 @@ const PresetButton = ({ text, presetId, color }: { text: string; presetId: numbe
 			size="xl"
 			mx="xs"
 			my="xs"
+			rightIcon={icon ? <ButtonIconReact icon={icon} /> : null}
 		>
 			{text}
 		</Button>
@@ -53,7 +64,7 @@ const FolderButton = ({
 			size="xl"
 			mx="xs"
 			my="xs"
-			leftIcon={backButton ? <FaLevelUpAlt /> : <FolderIconReact icon={icon} />}
+			leftIcon={backButton ? <FaLevelUpAlt /> : <ButtonIconReact icon={icon ? icon : 'FaFolder'} />}
 		>
 			{text}
 		</Button>
@@ -104,6 +115,7 @@ export const PresetPage = () => {
 							key={'preset' + preset.id}
 							text={preset.name}
 							color={preset.color}
+							icon={preset.icon}
 						/>
 					) : (
 						''

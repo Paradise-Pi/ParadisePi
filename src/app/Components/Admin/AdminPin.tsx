@@ -1,10 +1,10 @@
-import { Stack, Title, PasswordInput, Button, SimpleGrid } from '@mantine/core'
-import React, { useState } from 'react'
+import { Button, PasswordInput, SimpleGrid, Stack, Title } from '@mantine/core'
 import { useDisclosure, useInputState, useViewportSize } from '@mantine/hooks'
-import { FaLock } from '@react-icons/all-files/fa/FaLock'
 import { FaArrowLeft } from '@react-icons/all-files/fa/FaArrowLeft'
-import { useAppSelector } from './../../apis/redux/mainStore'
+import { FaLock } from '@react-icons/all-files/fa/FaLock'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAppSelector } from './../../apis/redux/mainStore'
 
 export const AdminPin = (props: { children: React.ReactNode }) => {
 	const [currentAdminPin, setCurrentAdminPin] = useState('')
@@ -16,7 +16,13 @@ export const AdminPin = (props: { children: React.ReactNode }) => {
 	const [passwordIncorrectText, setPasswordIncorrectText] = useState('')
 
 	if (currentAdminPin === adminPin || adminPin === '') return <>{props.children}</>
-
+	const submitForm = () => {
+		if (pinField !== adminPin) {
+			setPasswordIncorrectText('Incorrect pin')
+		} else {
+			setCurrentAdminPin(pinField)
+		}
+	}
 	return (
 		<Stack
 			style={{ width: viewportSize.width, height: viewportSize.height }}
@@ -35,6 +41,10 @@ export const AdminPin = (props: { children: React.ReactNode }) => {
 				error={passwordIncorrectText}
 				onVisibilityChange={toggle}
 				onChange={setPinField}
+				autoFocus={true}
+				onKeyDown={e => {
+					if (e.key === 'Enter') submitForm()
+				}}
 			/>
 			<SimpleGrid cols={3}>
 				{['7', '8', '9', '4', '5', '6', '1', '2', '3'].map(number => (
@@ -50,17 +60,7 @@ export const AdminPin = (props: { children: React.ReactNode }) => {
 				<Button size="lg" onClick={() => setPinField(pinField + '0')}>
 					0
 				</Button>
-				<Button
-					size="lg"
-					color="teal"
-					onClick={() => {
-						if (pinField !== adminPin) {
-							setPasswordIncorrectText('Incorrect pin')
-						} else {
-							setCurrentAdminPin(pinField)
-						}
-					}}
-				>
+				<Button size="lg" color="teal" onClick={() => submitForm()}>
 					Login
 				</Button>
 			</SimpleGrid>

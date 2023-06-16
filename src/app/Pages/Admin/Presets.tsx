@@ -18,6 +18,7 @@ import {
 	Title,
 	Table,
 	Alert,
+	Badge,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -25,6 +26,7 @@ import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
@@ -42,6 +44,7 @@ import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { showNotification } from '@mantine/notifications'
 import { isValidJson } from './../../Components/Admin/Controls/Presets/EditModal/isValidJson'
 import { usePrompt } from '../../apis/utilities/usePrompt'
+import { AvailableIcons, ButtonIconSelectItem } from './../../Components/ControlPanel/ButtonIcon'
 
 interface FormValues {
 	presets: Array<DatabasePreset>
@@ -54,13 +57,15 @@ export const PresetsConfigurationPage = () => {
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
+	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
 	const foldersForSelect: Array<SelectItem> = []
 	// Prepare folders list for select dropdown
 	if (folders !== false) {
 		Object.entries(folders).forEach(([, value]) => {
 			foldersForSelect.push({
 				value: value.id.toString(),
-				label: value.name,
+				label: (value.parent ? value.parent.name + ' → ' : '') + value.name,
 				group: 'Folder',
 			})
 		})
@@ -111,10 +116,23 @@ export const PresetsConfigurationPage = () => {
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
 				<tr ref={provided.innerRef} {...provided.draggableProps}>
-					<td>
+					<td style={{ width: '1em' }}>
 						<Center {...provided.dragHandleProps}>
 							<FaGripVertical />
 						</Center>
+					</td>
+					<td style={{ width: '1em' }}>
+						<Badge variant="light">
+							{form.values.presets[index].type === 'e131'
+								? 'sACN (E1.31)'
+								: form.values.presets[index].type === 'osc'
+								? 'OSC'
+								: form.values.presets[index].type === 'http'
+								? 'HTTP'
+								: form.values.presets[index].type === 'macro'
+								? 'Macro'
+								: ''}
+						</Badge>
 					</td>
 					<td>
 						<TextInput placeholder="Name" {...form.getInputProps(`presets.${index}.name`)} />
@@ -128,31 +146,14 @@ export const PresetsConfigurationPage = () => {
 							data={foldersForSelect}
 						/>
 					</td>
-					<td>
-						<ColorInput
-							format="hex"
-							{...form.getInputProps(`presets.${index}.color`)}
-							swatches={['#2C2E33', '#C92A2A', '#A61E4D', '#862E9C', '#1864AB', '#2B8A3E', '#E67700']}
-							swatchesPerRow={7}
-						/>
-					</td>
-					<td>
-						<NumberInput
-							placeholder="Fade time"
-							icon={<FaRegClock />}
-							min={0}
-							max={60}
-							{...form.getInputProps(`presets.${index}.fadeTime`)}
-						/>
-					</td>
-					<td>
+					<td style={{ width: 0 }}>
 						<Checkbox
 							size={'lg'}
 							title="Visible"
 							{...form.getInputProps(`presets.${index}.enabled`, { type: 'checkbox' })}
 						/>
 					</td>
-					<td>
+					<td style={{ width: 0 }}>
 						<Modal
 							opened={modalVisible === index}
 							onClose={() => {
@@ -162,13 +163,69 @@ export const PresetsConfigurationPage = () => {
 							title="Edit Preset"
 							overflow="inside"
 						>
+							<Select
+								placeholder="Icon"
+								label="Icon"
+								{...form.getInputProps(`presets.${index}.icon`)}
+								itemComponent={ButtonIconSelectItem}
+								searchable={true}
+								nothingFound="No icons found"
+								clearable={true}
+								data={[
+									{ value: null, icon: null, label: '' },
+									...Object.entries(AvailableIcons).map(([value, name]) => ({
+										value: value,
+										icon: value,
+										label: name,
+									})),
+								]}
+							/>
+							<ColorInput
+								format="hex"
+								{...form.getInputProps(`presets.${index}.color`)}
+								swatches={['#2C2E33', '#C92A2A', '#A61E4D', '#862E9C', '#1864AB', '#2B8A3E', '#E67700']}
+								swatchesPerRow={7}
+								label="Button Colour"
+								my={'md'}
+							/>
+							<Checkbox
+								my={'md'}
+								size={'lg'}
+								label="HTTP Trigger Enabled"
+								description="Enable this preset to be triggered by HTTP requests"
+								{...form.getInputProps(`presets.${index}.httpTriggerEnabled`, { type: 'checkbox' })}
+							/>
+							{form.values.presets[index].httpTriggerEnabled ? (
+								<TextInput
+									description={'HTTP Trigger URL'}
+									readOnly={true}
+									value={
+										form.values.presets[index].id
+											? 'http://' +
+											  ipAddress +
+											  ':' +
+											  port +
+											  '/trigger/preset/' +
+											  form.values.presets[index].id
+											: 'Save preset to generate URL'
+									}
+								/>
+							) : null}
 							{form.values.presets[index].type === 'e131' ? (
 								<>
+									<NumberInput
+										placeholder="Fade time"
+										icon={<FaRegClock />}
+										min={0}
+										max={60}
+										label="Fade time in seconds"
+										{...form.getInputProps(`presets.${index}.fadeTime`)}
+									/>
 									<TextInput
 										py={'md'}
 										placeholder="Universe"
 										icon={<FaSpaceShuttle />}
-										description="Universe number"
+										label="Universe number"
 										{...form.getInputProps(`presets.${index}.universe`)}
 									/>
 									<E131PresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
@@ -184,13 +241,37 @@ export const PresetsConfigurationPage = () => {
 								<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 							) : null}
 						</Modal>
-						<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
+						<ActionIcon variant="transparent" title="Edit" onClick={() => setModalVisible(index)}>
 							<FaPencilAlt />
 						</ActionIcon>
 					</td>
-					<td>
+					<td style={{ width: 0 }}>
+						<ActionIcon
+							title="Duplicate"
+							variant="transparent"
+							onClick={() =>
+								form.insertListItem('presets', {
+									id: null,
+									name: 'Copy of ' + form.values.presets[index].name,
+									enabled: form.values.presets[index].enabled,
+									type: form.values.presets[index].type as PresetTypes,
+									universe: form.values.presets[index].universe,
+									fadeTime: form.values.presets[index].fadeTime,
+									data: form.values.presets[index].data,
+									httpTriggerEnabled: form.values.presets[index].httpTriggerEnabled,
+									folderId: form.values.presets[index].folderId,
+									color: form.values.presets[index].color,
+									icon: form.values.presets[index].icon,
+								})
+							}
+						>
+							<FaRegClone />
+						</ActionIcon>
+					</td>
+					<td style={{ width: 0 }}>
 						<ActionIcon
 							color="red"
+							title="Delete"
 							variant="transparent"
 							onClick={() => form.removeListItem('presets', index)}
 						>
@@ -272,7 +353,9 @@ export const PresetsConfigurationPage = () => {
 																	universe: 1,
 																	fadeTime: 0,
 																	data: null,
+																	httpTriggerEnabled: false,
 																	folderId: '0',
+																	icon: null,
 																	color: '#2C2E33',
 																})
 																modalManager.closeModal(createNewPresetModal)
@@ -298,11 +381,11 @@ export const PresetsConfigurationPage = () => {
 											<FaPlus />
 										</Button>
 									</th>
+									<th>Type</th>
 									<th>Name</th>
 									<th>Folder</th>
-									<th>Button Colour</th>
-									<th>Fade Time</th>
 									<th>Visible</th>
+									<th></th>
 									<th></th>
 									<th></th>
 								</tr>

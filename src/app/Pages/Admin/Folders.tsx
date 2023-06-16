@@ -1,4 +1,4 @@
-import React, { useEffect, useState, forwardRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
 	Group,
 	TextInput,
@@ -9,7 +9,6 @@ import {
 	Select,
 	LoadingOverlay,
 	SelectItem as MantineSelectItem,
-	Avatar,
 	Modal,
 	Text,
 	Table,
@@ -23,7 +22,7 @@ import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { DatabaseFolder } from './../../../database/repository/folder'
 import { ApiCall } from './../../apis/wrapper'
-import { AvailableIcons, FolderIconReact } from './../../Components/ControlPanel/FolderIcon'
+import { AvailableIcons, ButtonIconSelectItem } from '../../Components/ControlPanel/ButtonIcon'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { RichTextEditor } from '@mantine/rte'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
@@ -35,23 +34,7 @@ import { usePrompt } from './../../apis/utilities/usePrompt'
 interface FormValues {
 	folders: Array<DatabaseFolder>
 }
-interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
-	icon: string
-	label: string
-}
-// eslint-disable-next-line react/display-name
-const SelectItem = forwardRef<HTMLDivElement, ItemProps>(({ icon, label, ...others }: ItemProps, ref) => (
-	<div ref={ref} {...others}>
-		<Group noWrap>
-			<Avatar radius={'xs'} size={'md'}>
-				<FolderIconReact icon={icon} />
-			</Avatar>
-			<div>
-				<Text size="sm">{label}</Text>
-			</div>
-		</Group>
-	</div>
-))
+
 export const FoldersConfigurationPage = () => {
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
@@ -94,7 +77,7 @@ export const FoldersConfigurationPage = () => {
 					.map(item => ({
 						name: item[1].name,
 						id: parseInt(item[0]),
-						icon: item[1].icon,
+						icon: item[1].icon ? item[1].icon : 'FaFolder',
 						parentFolderId: item[1].parent ? item[1].parent.id.toString() : null,
 						infoText: item[1].infoText ?? '',
 					})),
@@ -152,7 +135,10 @@ export const FoldersConfigurationPage = () => {
 						<Select
 							placeholder="Folder Icon"
 							{...form.getInputProps(`folders.${index}.icon`)}
-							itemComponent={SelectItem}
+							defaultValue="FaFolder"
+							searchable={true}
+							nothingFound="No icons found"
+							itemComponent={ButtonIconSelectItem}
 							data={Object.entries(AvailableIcons).map(([value, name]) => ({
 								value: value,
 								icon: value,

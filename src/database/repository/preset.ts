@@ -8,10 +8,12 @@ export interface DatabasePreset {
 	id: number
 	name: string
 	enabled: boolean
+	icon?: string | null
 	type?: PresetTypes
 	universe?: string | null
 	fadeTime?: number
 	data?: string | null
+	httpTriggerEnabled: boolean
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	color?: string
 }
@@ -39,9 +41,11 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				name: item.name,
 				enabled: item.enabled,
 				type: item.type,
+				icon: item.icon !== null ? item.icon : null,
 				universe: item.universe,
 				fadeTime: item.fadeTime !== null ? item.fadeTime : 0,
 				data: item.data !== null ? JSON.stringify(item.data) : null,
+				httpTriggerEnabled: item.httpTriggerEnabled,
 				folderId: item.folder !== null ? item.folder.id.toString() : null,
 				color: item.color !== null ? item.color : '#2C2E33',
 			}

@@ -43,7 +43,7 @@ const config: ForgeConfig = {
 			renderer: {
 				config: rendererConfig,
 				nodeIntegration: false,
-				jsonStats: true,
+				jsonStats: false,
 				entryPoints: [
 					{
 						nodeIntegration: false,

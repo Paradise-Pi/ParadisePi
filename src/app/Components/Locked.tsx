@@ -1,8 +1,35 @@
 import { Stack, Title, Collapse, Text } from '@mantine/core'
-import React, { useEffect, useState } from 'react'
-import { useViewportSize } from '@mantine/hooks'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useEventListener, useViewportSize } from '@mantine/hooks'
 import { FaLock } from '@react-icons/all-files/fa/FaLock'
 import { useAppSelector } from './../apis/redux/mainStore'
+
+const LockedMessage = () => {
+	const [count, setCount] = useState(0)
+	const increment = useCallback(() => setCount(c => c + 1), [])
+	const ref = useEventListener('click', increment)
+	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
+	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
+	if (count >= 5) {
+		return (
+			<Text size="sm" mx={'lg'}>
+				Device is locked. To unlock it access the setup and administration area, by ensuring you are on the same
+				network as this device and then navigating to http://
+				{ipAddress + ':' + port ?? ''} with a web browser
+			</Text>
+		)
+	} else {
+		return (
+			<Text
+				size="sm"
+				ref={ref}
+				style={{ userSelect: 'none', MozUserSelect: 'none', WebkitUserSelect: 'none', msUserSelect: 'none' }}
+			>
+				Device is locked, unlock it using the setup and administration area on another device
+			</Text>
+		)
+	}
+}
 const LockedView = () => {
 	/**
 	 * When locked, show a bit more of a message when clicked. The idea is to provide a bit more feedback
@@ -34,7 +61,7 @@ const LockedView = () => {
 				<FaLock />
 			</Title>
 			<Collapse in={showMoreDetails} transitionDuration={500} transitionTimingFunction="linear">
-				<Text>Device is locked, unlock it using the administrator interface</Text>
+				<LockedMessage />
 			</Collapse>
 		</Stack>
 	)
