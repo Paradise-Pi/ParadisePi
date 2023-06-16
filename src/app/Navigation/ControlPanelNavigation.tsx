@@ -1,15 +1,16 @@
-import React from 'react'
 import { Navbar, ScrollArea } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import { FaQuestion } from '@react-icons/all-files/fa/FaQuestion'
-import { useStyles } from './Styles'
-import { NavbarItem } from './NavbarItem'
-import { useAppSelector } from './../apis/redux/mainStore'
-import { DatabaseFolder } from './../../database/repository/folder'
+import React from 'react'
 import { ButtonIcon } from '../Components/ControlPanel/ButtonIcon'
+import { DatabaseFolder } from './../../database/repository/folder'
+import { useAppSelector } from './../apis/redux/mainStore'
+import { NavbarItem } from './NavbarItem'
+import { useStyles } from './Styles'
 
 const TopLevelFolders = () => {
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const { classes } = useStyles()
 	const topLevelFolders: Array<DatabaseFolder> = []
 	if (folders !== false) {
 		Object.entries(folders)
@@ -31,7 +32,11 @@ const TopLevelFolders = () => {
 					key={item.id}
 					link={'folder/' + item.id.toString()}
 					label={item.name}
-					Icon={ButtonIcon(item.icon)}
+					Icon={
+						<span className={classes.linkIcon}>
+							<ButtonIcon icon={item.icon} />
+						</span>
+					}
 				/>
 			))}
 		</>
@@ -46,7 +51,7 @@ export const ControlPanelNavigation = () => {
 				<TopLevelFolders />
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>
-				<NavbarItem link="help" label="Help" Icon={FaQuestion} />
+				<NavbarItem link="help" label="Help" Icon={<FaQuestion className={classes.linkIcon} />} />
 			</Navbar.Section>
 		</Navbar>
 	)

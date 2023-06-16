@@ -1,49 +1,49 @@
-import React, { useEffect, useState } from 'react'
 import {
-	Group,
-	TextInput,
+	ActionIcon,
+	Alert,
+	Badge,
 	Box,
 	Button,
 	Center,
-	ActionIcon,
-	Select,
-	LoadingOverlay,
 	Checkbox,
-	ColorInput,
-	Modal,
-	SelectItem,
-	NumberInput,
 	Chip,
-	Text,
-	Title,
+	ColorInput,
+	Group,
+	LoadingOverlay,
+	Modal,
+	NumberInput,
+	Select,
+	SelectItem,
 	Table,
-	Alert,
-	Badge,
+	Text,
+	TextInput,
+	Title,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { useModals } from '@mantine/modals'
+import { showNotification } from '@mantine/notifications'
+import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
-import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
-import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
-import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
-import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
-import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaRecycle } from '@react-icons/all-files/fa/FaRecycle'
-import { useAppSelector } from './../../apis/redux/mainStore'
+import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
+import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
+import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
+import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import React, { useEffect, useState } from 'react'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { DatabasePreset, PresetTypes } from './../../../database/repository/preset'
-import { ApiCall } from './../../apis/wrapper'
-import { OSCPresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/OSC'
+import { E131PresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/E131'
 import { HTTPPresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/HTTP'
 import { MacroPresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/Macro'
-import { E131PresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/E131'
-import { useModals } from '@mantine/modals'
-import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
-import { showNotification } from '@mantine/notifications'
+import { OSCPresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/OSC'
 import { isValidJson } from './../../Components/Admin/Controls/Presets/EditModal/isValidJson'
-import { AvailableIcons, ButtonIconSelectItem } from './../../Components/ControlPanel/ButtonIcon'
+import { ButtonIconSelectItem, availableIcons } from './../../Components/ControlPanel/ButtonIcon'
+import { useAppSelector } from './../../apis/redux/mainStore'
+import { ApiCall } from './../../apis/wrapper'
 
 interface FormValues {
 	presets: Array<DatabasePreset>
@@ -170,7 +170,7 @@ export const PresetsConfigurationPage = () => {
 								clearable={true}
 								data={[
 									{ value: null, icon: null, label: '' },
-									...Object.entries(AvailableIcons).map(([value, name]) => ({
+									...Object.entries(availableIcons()).map(([value, name]) => ({
 										value: value,
 										icon: value,
 										label: name,

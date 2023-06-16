@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from 'react'
 import {
-	Group,
-	TextInput,
+	ActionIcon,
 	Box,
 	Button,
 	Center,
-	ActionIcon,
-	Select,
+	Group,
 	LoadingOverlay,
 	SelectItem as MantineSelectItem,
 	Modal,
-	Text,
+	Select,
 	Table,
+	Text,
+	TextInput,
 	Title,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { showNotification } from '@mantine/notifications'
+import { RichTextEditor } from '@mantine/rte'
+import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
-import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
-import { useAppSelector } from './../../apis/redux/mainStore'
-import { DatabaseFolder } from './../../../database/repository/folder'
-import { ApiCall } from './../../apis/wrapper'
-import { AvailableIcons, ButtonIconSelectItem } from '../../Components/ControlPanel/ButtonIcon'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
-import { RichTextEditor } from '@mantine/rte'
-import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
-import { showNotification } from '@mantine/notifications'
-import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import React, { useEffect, useState } from 'react'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
+import { DatabaseFolder } from './../../../database/repository/folder'
+import { useAppSelector } from './../../apis/redux/mainStore'
+import { ApiCall } from './../../apis/wrapper'
 
 interface FormValues {
 	folders: Array<DatabaseFolder>
@@ -137,7 +137,7 @@ export const FoldersConfigurationPage = () => {
 							searchable={true}
 							nothingFound="No icons found"
 							itemComponent={ButtonIconSelectItem}
-							data={Object.entries(AvailableIcons).map(([value, name]) => ({
+							data={Object.entries(availableIcons()).map(([value, name]) => ({
 								value: value,
 								icon: value,
 								label: name,

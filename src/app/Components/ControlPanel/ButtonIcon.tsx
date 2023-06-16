@@ -1,5 +1,4 @@
 import { Avatar, Group, Text } from '@mantine/core'
-import { IconType } from '@react-icons/all-files/lib'
 import React, { forwardRef } from 'react'
 
 import { FaArrowDown } from '@react-icons/all-files/fa/FaArrowDown'
@@ -21,68 +20,112 @@ import { FaVolumeMute } from '@react-icons/all-files/fa/FaVolumeMute'
 import { FaVolumeOff } from '@react-icons/all-files/fa/FaVolumeOff'
 import { FaVolumeUp } from '@react-icons/all-files/fa/FaVolumeUp'
 
-export const AvailableIcons = {
-	FaLightbulb: 'Lightbulb',
-	FaRegLightbulb: 'Lightbulb',
-	FaVolumeUp: 'Volume Up',
-	FaVolumeDown: 'Volume Down',
-	FaVolumeMute: 'Volume Mute',
-	FaVolumeOff: 'Volume Off',
-	FaPhoneVolume: 'Phone',
-	FaMicrophone: 'Microphone',
-	FaMicrophoneAlt: 'Microphone',
-	FaVideo: 'Camera',
-	FaFolder: 'Folder',
-	FaArrowUp: 'Arrow Up',
-	FaArrowDown: 'Arrow Down',
-	FaArrowLeft: 'Arrow Left',
-	FaArrowRight: 'Arrow Right',
-	FaPowerOff: 'Power Off',
-	FaToggleOn: 'Toggle On',
-	FaToggleOff: 'Toggle Off',
+const iconDatabase = [
+	{
+		id: 'FaLightbulb',
+		name: 'Lightbulb',
+		icon: <FaLightbulb />,
+	},
+	{
+		id: 'FaRegLightbulb',
+		name: 'Lightbulb',
+		icon: <FaRegLightbulb />,
+	},
+	{
+		id: 'FaVolumeUp',
+		name: 'Volume Up',
+		icon: <FaVolumeUp />,
+	},
+	{
+		id: 'FaVolumeDown',
+		name: 'Volume Down',
+		icon: <FaVolumeDown />,
+	},
+	{
+		id: 'FaVolumeMute',
+		name: 'Volume Mute',
+		icon: <FaVolumeMute />,
+	},
+	{
+		id: 'FaVolumeOff',
+		name: 'Volume Off',
+		icon: <FaVolumeOff />,
+	},
+	{
+		id: 'FaPhoneVolume',
+		name: 'Phone',
+		icon: <FaPhoneVolume />,
+	},
+	{
+		id: 'FaMicrophone',
+		name: 'Microphone',
+		icon: <FaMicrophone />,
+	},
+	{
+		id: 'FaMicrophoneAlt',
+		name: 'Microphone',
+		icon: <FaMicrophoneAlt />,
+	},
+	{
+		id: 'FaVideo',
+		name: 'Camera',
+		icon: <FaVideo />,
+	},
+	{
+		id: 'FaFolder',
+		name: 'Folder',
+		icon: <FaFolder />,
+	},
+	{
+		id: 'FaArrowUp',
+		name: 'Arrow Up',
+		icon: <FaArrowUp />,
+	},
+	{
+		id: 'FaArrowDown',
+		name: 'Arrow Down',
+		icon: <FaArrowDown />,
+	},
+	{
+		id: 'FaArrowLeft',
+		name: 'Arrow Left',
+		icon: <FaArrowLeft />,
+	},
+	{
+		id: 'FaArrowRight',
+		name: 'Arrow Right',
+		icon: <FaArrowRight />,
+	},
+	{
+		id: 'FaPowerOff',
+		name: 'Power Off',
+		icon: <FaPowerOff />,
+	},
+	{
+		id: 'FaToggleOn',
+		name: 'Toggle On',
+		icon: <FaToggleOn />,
+	},
+	{
+		id: 'FaToggleOff',
+		name: 'Toggle Off',
+		icon: <FaToggleOff />,
+	},
+]
+
+export const availableIcons = () => {
+	const icons: {
+		[key: string]: string
+	} = {}
+	iconDatabase.forEach(icon => {
+		icons[icon.id] = icon.name
+	})
+	return icons
 }
 
-export const ButtonIcon = (icon: string): IconType => {
-	if (icon === 'FaLightbulb') return FaLightbulb
-	else if (icon === 'FaRegLightbulb') return FaRegLightbulb
-	else if (icon === 'FaVolumeDown') return FaVolumeDown
-	else if (icon === 'FaVolumeMute') return FaVolumeMute
-	else if (icon === 'FaVolumeOff') return FaVolumeOff
-	else if (icon === 'FaVolumeUp') return FaVolumeUp
-	else if (icon === 'FaPhoneVolume') return FaPhoneVolume
-	else if (icon === 'FaMicrophone') return FaMicrophone
-	else if (icon === 'FaMicrophoneAlt') return FaMicrophoneAlt
-	else if (icon === 'FaVideo') return FaVideo
-	else if (icon === 'FaFolder') return FaFolder
-	else if (icon === 'FaArrowUp') return FaArrowUp
-	else if (icon === 'FaArrowDown') return FaArrowDown
-	else if (icon === 'FaArrowLeft') return FaArrowLeft
-	else if (icon === 'FaArrowRight') return FaArrowRight
-	else if (icon === 'FaPowerOff') return FaPowerOff
-	else if (icon === 'FaToggleOn') return FaToggleOn
-	else if (icon === 'FaToggleOff') return FaToggleOff
-	else return null
-}
-// TODO surely we don't need two functions?
-export const ButtonIconReact = (props: { icon: string }) => {
-	if (props.icon === 'FaLightbulb') return <FaLightbulb />
-	else if (props.icon === 'FaRegLightbulb') return <FaRegLightbulb />
-	else if (props.icon === 'FaVolumeDown') return <FaVolumeDown />
-	else if (props.icon === 'FaVolumeMute') return <FaVolumeMute />
-	else if (props.icon === 'FaVolumeOff') return <FaVolumeOff />
-	else if (props.icon === 'FaVolumeUp') return <FaVolumeUp />
-	else if (props.icon === 'FaPhoneVolume') return <FaPhoneVolume />
-	else if (props.icon === 'FaMicrophone') return <FaMicrophone />
-	else if (props.icon === 'FaMicrophoneAlt') return <FaMicrophoneAlt />
-	else if (props.icon === 'FaVideo') return <FaVideo />
-	else if (props.icon === 'FaFolder') return <FaFolder />
-	else if (props.icon === 'FaArrowUp') return <FaArrowUp />
-	else if (props.icon === 'FaArrowDown') return <FaArrowDown />
-	else if (props.icon === 'FaArrowLeft') return <FaArrowLeft />
-	else if (props.icon === 'FaArrowRight') return <FaArrowRight />
-	else if (props.icon === 'FaPowerOff') return <FaPowerOff />
-	else if (props.icon === 'FaToggleOn') return <FaToggleOn />
-	else if (props.icon === 'FaToggleOff') return <FaToggleOff />
+export const ButtonIcon = (props: { icon: string }) => {
+	const icon = iconDatabase.find(icon => icon.id === props.icon)
+	if (icon) return icon.icon
 	else return <></>
 }
 
@@ -98,7 +141,7 @@ export const ButtonIconSelectItem = forwardRef<HTMLDivElement, ItemProps>(
 			<Group noWrap>
 				{icon ? (
 					<Avatar radius={'xs'} size={'md'}>
-						<ButtonIconReact icon={icon} />
+						<ButtonIcon icon={icon} />
 					</Avatar>
 				) : (
 					''

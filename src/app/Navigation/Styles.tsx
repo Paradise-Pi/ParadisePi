@@ -1,7 +1,6 @@
 import { createStyles } from '@mantine/core'
 
-export const useStyles = createStyles((theme, _params, getRef) => {
-	const icon = getRef('icon')
+export const useStyles = createStyles((theme, _params) => {
 	return {
 		navbar: {
 			backgroundColor: theme.colors.dark[6],
@@ -48,7 +47,6 @@ export const useStyles = createStyles((theme, _params, getRef) => {
 		},
 
 		linkIcon: {
-			ref: icon,
 			color: theme.white,
 			opacity: 0.75,
 			marginRight: theme.spacing.sm,
@@ -58,9 +56,6 @@ export const useStyles = createStyles((theme, _params, getRef) => {
 		linkActive: {
 			'&, &:hover': {
 				backgroundColor: theme.colors.dark[7],
-				[`& .${icon}`]: {
-					opacity: 0.9,
-				},
 			},
 		},
 	}

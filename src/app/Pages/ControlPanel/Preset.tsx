@@ -1,14 +1,14 @@
-import React from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { DatabaseFolder } from './../../../database/repository/folder'
 import { Button, Paper } from '@mantine/core'
 import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
-import { DangerouslySetHTML } from './../../Components/DangerouslySetHTML'
-import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
-import { useAppSelector } from './../../apis/redux/mainStore'
-import { ApiCall } from './../../apis/wrapper'
-import { ButtonIconReact } from '../../Components/ControlPanel/ButtonIcon'
+import React from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { ButtonIcon } from '../../Components/ControlPanel/ButtonIcon'
+import { DatabaseFolder } from './../../../database/repository/folder'
 import { PresetFaders } from './../../Components/ControlPanel/PresetFaders'
+import { DangerouslySetHTML } from './../../Components/DangerouslySetHTML'
+import { useAppSelector } from './../../apis/redux/mainStore'
+import { pickTextColorBasedOnBgColor } from './../../apis/utilities/pickOppositeTextColor'
+import { ApiCall } from './../../apis/wrapper'
 const PresetButton = ({
 	text,
 	presetId,
@@ -40,7 +40,7 @@ const PresetButton = ({
 			size="xl"
 			mx="xs"
 			my="xs"
-			rightIcon={icon ? <ButtonIconReact icon={icon} /> : null}
+			rightIcon={icon ? <ButtonIcon icon={icon} /> : null}
 		>
 			{text}
 		</Button>
@@ -64,7 +64,7 @@ const FolderButton = ({
 			size="xl"
 			mx="xs"
 			my="xs"
-			leftIcon={backButton ? <FaLevelUpAlt /> : <ButtonIconReact icon={icon ? icon : 'FaFolder'} />}
+			leftIcon={backButton ? <FaLevelUpAlt /> : <ButtonIcon icon={icon ? icon : 'FaFolder'} />}
 		>
 			{text}
 		</Button>
