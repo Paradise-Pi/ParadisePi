@@ -1,12 +1,13 @@
-import { aboutRouter } from './about/aboutRouter'
-import { createDatabaseObject } from './database'
-import { presetRouter } from './preset/presetRouter'
-import { folderRouter } from './folder/folderRouter'
-import { configRouter } from './config/configRouter'
-import { outputModulesRouter } from './outputModules/outputModulesRouter'
 import { reboot } from './../electron/windowUtilities'
+import { aboutRouter } from './about/aboutRouter'
+import { configRouter } from './config/configRouter'
+import { createDatabaseObject } from './database'
 import { faderRouter } from './fader/faderRouter'
+import { folderRouter } from './folder/folderRouter'
 import { createImagesObject } from './images'
+import { outputModulesRouter } from './outputModules/outputModulesRouter'
+import { presetRouter } from './preset/presetRouter'
+import { timeClockTriggersRouter } from './timeClockTriggers/timeClockTriggers'
 
 /**
  * This is a REST router that triages all requests and sends them to relevant routers
@@ -51,6 +52,10 @@ export const routeRequest = (
 			case 'config':
 				// {@link configRouter} - this router handles all about requests for the /config path
 				resolve(configRouter(pathArr.slice(1), method, payload))
+				break
+			case 'timeClockTriggers':
+				// {@link timeClockTriggers} - the timeClockTriggers router handles all about requests for the /timeClockTriggers path
+				resolve(timeClockTriggersRouter(pathArr.slice(1), method, payload))
 				break
 			case 'outputModules':
 				// {@link outputModulesRouter} - this router handles all about requests for the /outputModules path

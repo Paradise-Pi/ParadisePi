@@ -1,15 +1,15 @@
+import path from 'path'
 import 'reflect-metadata'
 import { DataSource } from 'typeorm'
-import path from 'path'
 
 /**
  * Manually import each of the models/migrations because otherwise Webpack doesn't spot them
  */
+import { MyCustomLogger } from './logger'
 import { Config } from './model/Config'
-import { Preset } from './model/Preset'
 import { Fader } from './model/Fader'
 import { Folders } from './model/Folder'
-import { MyCustomLogger } from './logger'
+import { Preset } from './model/Preset'
 
 import { Initial1650709558593 } from './migration/1650709558593-Initial'
 import { InsertConfig1650710286405 } from './migration/1650710286405-InsertConfig'
@@ -32,9 +32,10 @@ import { Logo1656867549439 } from './migration/1656867549439-Logo'
 import { Fullscreen1657356807729 } from './migration/1657356807729-Fullscreen'
 import { RemotePassword1668243876000 } from './migration/1668243876000-RemotePassword'
 import { AdminPin1668252943000 } from './migration/1668252943000-AdminPin'
-import { TimeClockTriggers1685981931584 } from './migration/1685981931584-TimeClockTriggers'
 import { HTTPTriggers1685982219806 } from './migration/1685982219806-HTTPTriggers'
 import { PresetIcons1686849999231 } from './migration/1686849999231-PresetIcons'
+import { TimeClockTriggers1686937486497 } from './migration/1686937486497-TimeClockTriggers'
+import { TimeClockTrigger } from './model/TimeClockTrigger'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -42,7 +43,7 @@ const dataSource = new DataSource({
 	synchronize: false,
 	migrationsRun: true,
 	cache: false,
-	entities: [Config, Preset, Folders, Preset, Fader],
+	entities: [Config, Preset, Folders, Preset, Fader, TimeClockTrigger],
 	migrations: [
 		Initial1650709558593,
 		InsertConfig1650710286405,
@@ -65,9 +66,9 @@ const dataSource = new DataSource({
 		Fullscreen1657356807729,
 		RemotePassword1668243876000,
 		AdminPin1668252943000,
-		TimeClockTriggers1685981931584,
 		HTTPTriggers1685982219806,
 		PresetIcons1686849999231,
+		TimeClockTriggers1686937486497,
 	],
 	subscribers: [],
 	logger: new MyCustomLogger(),

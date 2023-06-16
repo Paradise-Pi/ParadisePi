@@ -73,15 +73,6 @@ export const presetRouter = (
 						})
 				} else resolve({})
 			})
-		} else if (method === 'PUT' && path[0] === 'timeClockTriggers') {
-			return Promise.resolve()
-				.then(() => {
-					return createDatabaseObject('updating all presets in bulk')
-				})
-				.then((response: Database) => {
-					sendDatabaseObject(response)
-					resolve({})
-				})
 		} else if (method === 'PUT') {
 			return PresetRepository.setAllFromApp(payload as Array<DatabasePreset>)
 				.then(() => {

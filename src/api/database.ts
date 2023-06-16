@@ -3,7 +3,8 @@ import { version } from './../../package.json'
 import { ConfigRepository } from './../database/repository/config'
 import { DatabaseFader, FaderRepository } from './../database/repository/fader'
 import { DatabaseFolder, FolderRepository } from './../database/repository/folder'
-import { DatabasePreset, DatabaseTimeClockTrigger, PresetRepository } from './../database/repository/preset'
+import { DatabasePreset, PresetRepository } from './../database/repository/preset'
+import { TimeClockTriggersRepository } from './../database/repository/timeClockTrigger'
 import { getOperatingSystemName } from './about/operatingSystem/info'
 import { broadcast } from './broadcast'
 
@@ -96,7 +97,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 			},
 		},
 		presets: await PresetRepository.getAll(),
-		timeClockTriggers: await PresetRepository.getAllTimeClockTriggers(),
+		timeClockTriggers: await TimeClockTriggersRepository.getAll(),
 		folders: await FolderRepository.getAll(),
 		faders: await FaderRepository.getAll(),
 	}

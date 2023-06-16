@@ -1,15 +1,15 @@
-import { app, BrowserWindow, ipcMain, IpcMainEvent, dialog } from 'electron'
+import { BrowserWindow, IpcMainEvent, app, dialog, ipcMain } from 'electron'
 import 'reflect-metadata'
-import createMainWindow from './electron/createMainWindow'
-import dataSource from './database/dataSource'
-import { WebServer } from './webServer'
-import { routeRequest } from './api/router'
 import { IpcRequest } from './api/ipc'
+import { routeRequest } from './api/router'
+import dataSource from './database/dataSource'
+import { ConfigRepository } from './database/repository/config'
+import createMainWindow from './electron/createMainWindow'
+import { isRunningInDevelopmentMode } from './electron/developmentMode'
 import logger, { winstonTransports } from './logger/index'
 import { createE131 } from './output/e131/constructor'
 import { createOSC } from './output/osc/constructor'
-import { isRunningInDevelopmentMode } from './electron/developmentMode'
-import { ConfigRepository } from './database/repository/config'
+import { WebServer } from './webServer'
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
 	// eslint-disable-line global-require
@@ -39,6 +39,9 @@ app.whenReady().then(() => {
 		.then(() => {
 			createE131()
 			createOSC()
+			globalThis.timeClockTriggerLoop = setInterval(() => {
+				logger.log('debug', 'Time Clock Trigger Loop')
+			}, 20000)
 			return ConfigRepository.getItem('fullscreen')
 		})
 		.then((fullscreen: string) => {
@@ -62,6 +65,7 @@ app.whenReady().then(() => {
 // Quit when all windows are closed, except on macOS. There, it's common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
+		clearInterval(globalThis.timeClockTriggerLoop)
 		app.quit()
 	}
 })

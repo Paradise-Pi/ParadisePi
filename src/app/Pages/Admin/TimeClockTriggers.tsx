@@ -5,6 +5,7 @@ import {
 	Checkbox,
 	Group,
 	LoadingOverlay,
+	NumberInput,
 	Select,
 	SelectItem,
 	Table,
@@ -19,7 +20,7 @@ import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
-import { DatabaseTimeClockTrigger } from '../../../database/repository/preset'
+import { DatabaseTimeClockTrigger } from '../../../database/repository/timeClockTrigger'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { ApiCall } from '../../apis/wrapper'
 
@@ -31,15 +32,16 @@ export const TimeClockTriggersConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const [formOriginalValues, setFormOriginalValues] = useState<string>('') // Values used to detect unsaved changes
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
+	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
 	const timeClockTriggers = useAppSelector(state => (state.database ? state.database.timeClockTriggers : false))
 	const presetsForSelect: Array<SelectItem> = []
 	// Prepare folders list for select dropdown
-	if (presets !== false) {
+	if (presets !== false && folders !== false) {
 		Object.entries(presets).forEach(([, value]) => {
 			presetsForSelect.push({
 				value: value.id.toString(),
 				label: value.name,
-				group: value.folderId.toString(),
+				group: folders[value.folderId as unknown as number].name,
 			})
 		})
 	}
@@ -50,8 +52,12 @@ export const TimeClockTriggersConfigurationPage = () => {
 		},
 		validate: {
 			triggers: {
-				timeout: value => (value < 0 ? 'Timeout should be a number' : null),
-				time: value => (value.match(/^\d{1,2}:\d{2}$/) ? null : 'Time should be in hh:mm format'),
+				timeout: (value: number) => (value < 0 ? 'Timeout should be a number' : null),
+				time: (value: string) => (value.match(/^\d{1,2}:\d{2}$/) ? null : 'Time should be in hh:mm format'),
+				presetId: value =>
+					typeof value === 'undefined' || value == null || parseInt(value) == 0
+						? 'Preset must be selected'
+						: null,
 			},
 		},
 	})
@@ -68,7 +74,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 	// Handle the submit button
 	const handleSubmit = (values: typeof form.values) => {
 		setLoadingOverlayVisible(true)
-		ApiCall.put('/presets/timeClockTriggers', values.triggers).then(() => {
+		ApiCall.put('/timeClockTriggers', values.triggers).then(() => {
 			showNotification({
 				message: 'Your changes have been saved',
 				autoClose: 2000,
@@ -80,23 +86,39 @@ export const TimeClockTriggersConfigurationPage = () => {
 	}
 	const fields = form.values.triggers.map((_, index) => (
 		<tr key={index}>
-			<td>
+			<td style={{ width: '7em' }}>
 				<TextInput placeholder="Name" {...form.getInputProps(`triggers.${index}.time`)} />
+			</td>
+			<td style={{ width: '38em' }}>
+				<Group position="left">
+					{['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun'].map((day, i) => (
+						<Checkbox
+							key={i}
+							size={'lg'}
+							description={day}
+							{...form.getInputProps(`triggers.${index}.${day.toLowerCase()}`, { type: 'checkbox' })}
+						/>
+					))}
+				</Group>
 			</td>
 			<td>
 				<Select
 					placeholder="Preset"
+					searchable={true}
+					nothingFound="Preset not found"
 					{...form.getInputProps(`triggers.${index}.presetId`)}
 					data={presetsForSelect}
 				/>
 			</td>
 			<td style={{ width: 0 }}>
 				<Checkbox
-					my={'md'}
 					size={'lg'}
 					title="Enabled"
 					{...form.getInputProps(`triggers.${index}.enabled`, { type: 'checkbox' })}
 				/>
+			</td>
+			<td style={{ width: '4em' }}>
+				<NumberInput {...form.getInputProps(`triggers.${index}.timeout`)} min={0} max={60} step={1} />
 			</td>
 			<td style={{ width: 0 }}>
 				<ActionIcon
@@ -145,6 +167,15 @@ export const TimeClockTriggersConfigurationPage = () => {
 											onClick={() =>
 												form.insertListItem('triggers', {
 													time: '00:00',
+													timeout: 5,
+													enabled: true,
+													mon: true,
+													tues: true,
+													weds: true,
+													thurs: true,
+													fri: true,
+													sat: true,
+													sun: true,
 													presetId: null,
 												})
 											}
@@ -153,8 +184,10 @@ export const TimeClockTriggersConfigurationPage = () => {
 										</Button>
 										Time
 									</th>
+									<th>Days of Week</th>
 									<th>Preset</th>
 									<th>Enabled</th>
+									<th>Timeout</th>
 									<th></th>
 									<th></th>
 								</tr>
