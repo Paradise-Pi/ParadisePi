@@ -13,6 +13,8 @@ import { getAvailablePort } from './availablePorts'
 import { createDatabaseObject, Database, sendDatabaseObject } from './../api/database'
 import { ConfigRepository } from './../database/repository/config'
 import { createAndSendImagesObject } from './../api/images'
+import { PresetRepository } from './../database/repository/preset'
+import { Preset } from './../database/model/Preset'
 /**
  * The webserver is responsible for serving requests from other devices on the network that might want to connect.
  * This includes devices such as iPads who want to use the remote interface, a web browser which wants to
@@ -151,6 +153,46 @@ export class WebServer {
 							})
 					}
 				})
+			} else if (req.url.startsWith('/trigger')) {
+				if (req.url.startsWith('/trigger/preset/')) {
+					// This allows external clients to make HTTP requests to trigger presets
+					const presetId = parseInt(req.url.split('/').pop())
+					if (isNaN(presetId)) {
+						res.writeHead(400, { 'Content-Type': 'text/html' })
+						res.write('Preset ID not found')
+						res.end()
+					} else {
+						PresetRepository.findOneOrFail({ where: { id: presetId } })
+							.then((value: Preset) => {
+								if (value.httpTriggerEnabled) {
+									routeRequest('/presets/recall/' + presetId, 'GET', {})
+										.then(() => {
+											res.writeHead(200, { 'Content-Type': 'text/html' })
+											res.write('Preset triggered')
+											res.end()
+										})
+										.catch(() => {
+											res.writeHead(500, { 'Content-Type': 'text/html' })
+											res.write('Error - preset could not be recalled')
+											res.end()
+										})
+								} else {
+									res.writeHead(403, { 'Content-Type': 'text/html' })
+									res.write('Preset not enabled for trigger via HTTP')
+									res.end()
+								}
+							})
+							.catch(() => {
+								res.writeHead(404, { 'Content-Type': 'text/html' })
+								res.write('Error - preset not found')
+								res.end()
+							})
+					}
+				} else {
+					res.writeHead(404, { 'Content-Type': 'text/html' })
+					res.write('Not found')
+					res.end()
+				}
 			} else {
 				// Serve the react app
 				WebServer.staticFileServer.serve(req, res, (e: Error) => {

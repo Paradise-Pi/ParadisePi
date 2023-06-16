@@ -32,6 +32,8 @@ import { Logo1656867549439 } from './migration/1656867549439-Logo'
 import { Fullscreen1657356807729 } from './migration/1657356807729-Fullscreen'
 import { RemotePassword1668243876000 } from './migration/1668243876000-RemotePassword'
 import { AdminPin1668252943000 } from './migration/1668252943000-AdminPin'
+import { HTTPTriggers1685982219806 } from './migration/1685982219806-HTTPTriggers'
+import { PresetIcons1686849999231 } from './migration/1686849999231-PresetIcons'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -62,6 +64,8 @@ const dataSource = new DataSource({
 		Fullscreen1657356807729,
 		RemotePassword1668243876000,
 		AdminPin1668252943000,
+		HTTPTriggers1685982219806,
+		PresetIcons1686849999231,
 	],
 	subscribers: [],
 	logger: new MyCustomLogger(),

@@ -1,7 +1,8 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "source.organizeImports": true
   },
   "eslint.validate": ["javascript", "typescript", "typescriptreact"],
   "cSpell.language": "en-GB",

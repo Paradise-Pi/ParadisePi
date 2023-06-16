@@ -26,6 +26,7 @@ Please describe the changes
 - [ ] Presets/Faders/Folders can be enabled, and they are shown in the control panel
 - [ ] Preset/Folders colors can be changed, and this is shown in the control panel
 - [ ] Preset/Faders/Folders sort order is maintained
+- [ ] Presets can be triggered by HTTP requests
 
 ### Preset Types
 
@@ -48,5 +49,6 @@ Please describe the changes
 
 - [ ] Macros are triggered successfully
 - [ ] Macros can trigger other macros
+- [ ] Lock macro functions
 
 

@@ -55,6 +55,7 @@ export const MacroPresetEditModal = (props: InputProps) => {
 						data={[
 							{ value: 'preset', label: 'Trigger Preset' },
 							{ value: 'link', label: 'Open a Page' },
+							{ value: 'configuration', label: 'Set Configuration' },
 						]}
 					/>
 					{form.values.steps[index].type === 'preset' ? (
@@ -87,6 +88,23 @@ export const MacroPresetEditModal = (props: InputProps) => {
 									value: '/controlPanel/e131/channelCheck',
 									label: 'Channel Check',
 									group: 'sACN (E1.31)',
+								},
+							]}
+						/>
+					) : form.values.steps[index].type === 'configuration' ? (
+						<Select
+							placeholder="Configuration"
+							{...form.getInputProps(`steps.${index}.value`)}
+							data={[
+								{
+									value: 'CONTROLPANEL-LOCKED',
+									label: 'Set to locked',
+									group: 'Control panel lock',
+								},
+								{
+									value: 'CONTROLPANEL-UNLOCKED',
+									label: 'Set to unlocked',
+									group: 'Control panel lock',
 								},
 							]}
 						/>
