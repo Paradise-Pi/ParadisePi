@@ -7,6 +7,7 @@ export interface DatabaseTimeClockTrigger {
 	presetId: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	time: string
 	enabled: boolean
+	enabledWhenLocked: boolean
 	timeout: number
 	countdownWarning: number // TODO implement
 	countdownWarningText: string // TODO implement
@@ -25,8 +26,21 @@ export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTri
 		const items = await this.find()
 		return items.map((item: TimeClockTrigger) => {
 			return {
-				...item,
+				id: item.id,
+				time: item.time,
 				presetId: item.preset !== null ? item.preset.id.toString() : null,
+				enabled: item.enabled,
+				enabledWhenLocked: item.enabledWhenLocked,
+				timeout: item.timeout,
+				countdownWarning: item.countdownWarning,
+				countdownWarningText: item.countdownWarningText,
+				mon: item.mon,
+				tues: item.tues,
+				weds: item.weds,
+				thurs: item.thurs,
+				fri: item.fri,
+				sat: item.sat,
+				sun: item.sun,
 			}
 		})
 	},
@@ -59,6 +73,7 @@ export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTri
 					...trigger,
 					preset: presetId,
 					countdownWarning: 0,
+					countdownWarningText: '',
 				}
 			}
 		)

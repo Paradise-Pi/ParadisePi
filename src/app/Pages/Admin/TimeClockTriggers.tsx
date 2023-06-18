@@ -5,6 +5,7 @@ import {
 	Checkbox,
 	Group,
 	LoadingOverlay,
+	Modal,
 	NumberInput,
 	Select,
 	SelectItem,
@@ -15,6 +16,7 @@ import {
 import { useForm } from '@mantine/form'
 import { showNotification } from '@mantine/notifications'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { FaCog } from '@react-icons/all-files/fa/FaCog'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
@@ -29,6 +31,7 @@ interface FormValues {
 }
 
 export const TimeClockTriggersConfigurationPage = () => {
+	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const [formOriginalValues, setFormOriginalValues] = useState<string>('') // Values used to detect unsaved changes
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
@@ -53,7 +56,8 @@ export const TimeClockTriggersConfigurationPage = () => {
 		validate: {
 			triggers: {
 				timeout: (value: number) => (value < 0 ? 'Timeout should be a number' : null),
-				time: (value: string) => (value.match(/^\d{1,2}:\d{2}$/) ? null : 'Time should be in hh:mm format'),
+				time: (value: string) =>
+					value.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/) ? null : 'Time should be in hh:mm format',
 				presetId: value =>
 					typeof value === 'undefined' || value == null || parseInt(value) == 0
 						? 'Preset must be selected'
@@ -86,10 +90,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 	}
 	const fields = form.values.triggers.map((_, index) => (
 		<tr key={index}>
-			<td style={{ width: '7em' }}>
-				<TextInput placeholder="Name" {...form.getInputProps(`triggers.${index}.time`)} />
-			</td>
-			<td style={{ width: '38em' }}>
+			<td style={{ width: '36.5em' }}>
 				<Group position="left">
 					{['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun'].map((day, i) => (
 						<Checkbox
@@ -101,6 +102,9 @@ export const TimeClockTriggersConfigurationPage = () => {
 					))}
 				</Group>
 			</td>
+			<td style={{ width: '6em' }}>
+				<TextInput {...form.getInputProps(`triggers.${index}.time`)} />
+			</td>
 			<td>
 				<Select
 					placeholder="Preset"
@@ -111,20 +115,49 @@ export const TimeClockTriggersConfigurationPage = () => {
 				/>
 			</td>
 			<td style={{ width: 0 }}>
-				<Checkbox
-					size={'lg'}
-					title="Enabled"
-					{...form.getInputProps(`triggers.${index}.enabled`, { type: 'checkbox' })}
-				/>
-			</td>
-			<td style={{ width: '4em' }}>
-				<NumberInput {...form.getInputProps(`triggers.${index}.timeout`)} min={0} max={60} step={1} />
+				<Modal
+					opened={modalVisible === index}
+					onClose={() => {
+						setModalVisible(false)
+					}}
+					size="xl"
+					title="Advanced Options"
+					overflow="inside"
+				>
+					<Checkbox
+						size={'lg'}
+						label="Enabled"
+						description="If unchecked, this trigger will never be used"
+						{...form.getInputProps(`triggers.${index}.enabled`, { type: 'checkbox' })}
+					/>
+					<Checkbox
+						size={'lg'}
+						label="Run when locked"
+						description="If unchecked, this trigger will be skipped if the control panel is locked"
+						{...form.getInputProps(`triggers.${index}.enabledWhenLocked`, { type: 'checkbox' })}
+					/>
+					<NumberInput
+						{...form.getInputProps(`triggers.${index}.timeout`)}
+						min={0}
+						max={60}
+						step={1}
+						mt={'lg'}
+					/>
+				</Modal>
+
+				<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
+					<FaCog />
+				</ActionIcon>
 			</td>
 			<td style={{ width: 0 }}>
 				<ActionIcon
 					title="Duplicate"
 					variant="transparent"
-					onClick={() => form.insertListItem('triggers', form.values.triggers[index])}
+					onClick={() => {
+						const newItem = form.values.triggers[index]
+						newItem.id = null
+						form.insertListItem('triggers', newItem)
+					}}
 				>
 					<FaRegClone />
 				</ActionIcon>
@@ -169,6 +202,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 													time: '00:00',
 													timeout: 5,
 													enabled: true,
+													enabledWhenLocked: true,
 													mon: true,
 													tues: true,
 													weds: true,
@@ -182,12 +216,11 @@ export const TimeClockTriggersConfigurationPage = () => {
 										>
 											<FaPlus />
 										</Button>
-										Time
+										Days of Week
 									</th>
-									<th>Days of Week</th>
+									<th>Time</th>
 									<th>Preset</th>
-									<th>Enabled</th>
-									<th>Timeout</th>
+									<th></th>
 									<th></th>
 									<th></th>
 								</tr>

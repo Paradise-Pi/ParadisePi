@@ -22,21 +22,29 @@ export class TimeClockTrigger {
 	@Column('text')
 	time: string
 
-	@Column('numeric', {
+	@Column('integer', {
 		default: 0,
 	})
 	lastTriggered: number
 
-	// Enabled is taken to mean visible - macros can still trigger the preset but it is hidden
 	@Column('boolean', {
 		default: true,
 	})
 	enabled: boolean
 
-	@Column('text')
+	@Column('boolean', {
+		default: true,
+	})
+	enabledWhenLocked: boolean
+
+	@Column('integer', {
+		default: 5,
+	})
 	timeout: number
 
-	@Column('text')
+	@Column('integer', {
+		default: 0,
+	})
 	countdownWarning: number
 
 	@Column('text', { nullable: true })
