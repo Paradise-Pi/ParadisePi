@@ -10,7 +10,9 @@ import {
 	Select,
 	SelectItem,
 	Table,
+	Text,
 	TextInput,
+	Textarea,
 	Title,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
@@ -91,6 +93,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 	const fields = form.values.triggers.map((_, index) => (
 		<tr key={index}>
 			<td style={{ width: '36.5em' }}>
+				{form.values.triggers[index].notes ? <Text mb={'sm'}>{form.values.triggers[index].notes}</Text> : null}
 				<Group position="left">
 					{['Mon', 'Tues', 'Weds', 'Thurs', 'Fri', 'Sat', 'Sun'].map((day, i) => (
 						<Checkbox
@@ -124,14 +127,23 @@ export const TimeClockTriggersConfigurationPage = () => {
 					title="Advanced Options"
 					overflow="inside"
 				>
+					<Textarea
+						{...form.getInputProps(`triggers.${index}.notes`)}
+						label="Notes"
+						description={'Only visible here in the editor'}
+						mt={'md'}
+						rows={3}
+					/>
 					<Checkbox
 						size={'lg'}
+						mt={'md'}
 						label="Enabled"
 						description="If unchecked, this trigger will never be used"
 						{...form.getInputProps(`triggers.${index}.enabled`, { type: 'checkbox' })}
 					/>
 					<Checkbox
 						size={'lg'}
+						mt={'md'}
 						label="Run when locked"
 						description="If unchecked, this trigger will be skipped if the control panel is locked"
 						{...form.getInputProps(`triggers.${index}.enabledWhenLocked`, { type: 'checkbox' })}
@@ -139,6 +151,8 @@ export const TimeClockTriggersConfigurationPage = () => {
 					<NumberInput
 						{...form.getInputProps(`triggers.${index}.timeout`)}
 						min={0}
+						label="Timeout"
+						description="How many minutes after the time stated the trigger can run"
 						max={60}
 						step={1}
 						mt={'lg'}

@@ -22,6 +22,9 @@ export class TimeClockTrigger {
 	@Column('text')
 	time: string
 
+	@Column('text', { nullable: true })
+	notes: string | null
+
 	@Column('integer', {
 		default: 0,
 	})

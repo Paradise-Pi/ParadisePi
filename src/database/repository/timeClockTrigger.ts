@@ -6,6 +6,7 @@ export interface DatabaseTimeClockTrigger {
 	id: number
 	presetId: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	time: string
+	notes: string
 	enabled: boolean
 	enabledWhenLocked: boolean
 	timeout: number
@@ -28,6 +29,7 @@ export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTri
 			return {
 				id: item.id,
 				time: item.time,
+				notes: item.notes,
 				presetId: item.preset !== null ? item.preset.id.toString() : null,
 				enabled: item.enabled,
 				enabledWhenLocked: item.enabledWhenLocked,
