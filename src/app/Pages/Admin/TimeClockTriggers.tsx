@@ -43,11 +43,13 @@ export const TimeClockTriggersConfigurationPage = () => {
 	// Prepare folders list for select dropdown
 	if (presets !== false && folders !== false) {
 		Object.entries(presets).forEach(([, value]) => {
-			presetsForSelect.push({
-				value: value.id.toString(),
-				label: value.name,
-				group: folders[value.folderId as unknown as number].name,
-			})
+			if (value.folderId !== null) {
+				presetsForSelect.push({
+					value: value.id.toString(),
+					label: value.name,
+					group: folders[value.folderId as unknown as number].name,
+				})
+			}
 		})
 	}
 	// Setup the form
@@ -138,7 +140,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 						size={'lg'}
 						mt={'md'}
 						label="Enabled"
-						description="If unchecked, this trigger will never be used"
+						description="If unchecked, this trigger will be skipped every time"
 						{...form.getInputProps(`triggers.${index}.enabled`, { type: 'checkbox' })}
 					/>
 					<Checkbox

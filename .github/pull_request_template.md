@@ -32,6 +32,7 @@ Please describe the changes
 
 - [ ] Presets can be triggered by HTTP requests
 - [ ] Time clock triggers recall presets successfully
+- [ ] Time clock triggers do not recall when device locked
 
 ### Preset Types
 

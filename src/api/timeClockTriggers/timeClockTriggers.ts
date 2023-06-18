@@ -13,7 +13,7 @@ export const timeClockTriggersRouter = (
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 	payload: apiObject
 ): Promise<apiObject> => {
-	logger.debug('Preset router has a request', { path, method, payload })
+	logger.debug('Time clock trigger router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'PUT') {
 			return TimeClockTriggersRepository.setAllFromApp(payload as Array<DatabaseTimeClockTrigger>)

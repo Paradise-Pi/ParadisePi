@@ -40,7 +40,7 @@ export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTri
 				countdownWarningText: item.countdownWarningText,
 				lastTriggeredString:
 					item.lastTriggered !== null && item.lastTriggered > 0
-						? new Date(item.lastTriggered).toISOString().replace(/T/, ' ').replace(/\..+/, '')
+						? new Date(item.lastTriggered).toString()
 						: '',
 				mon: item.mon,
 				tues: item.tues,
