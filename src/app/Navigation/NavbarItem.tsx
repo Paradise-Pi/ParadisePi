@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useStyles } from './Styles';
+import React from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useStyles } from './Styles'
 
 export const NavbarItem = ({ link, label, Icon }: { link: string; label: string; Icon: React.ReactNode }) => {
 	const location = useLocation()
