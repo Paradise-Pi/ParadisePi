@@ -25,7 +25,7 @@ const logLevels = {
 }
 export const winstonTransports = {
 	console: new transports.Console({
-		level: isRunningInDevelopmentMode ? 'verbose' : 'debug',
+		level: isRunningInDevelopmentMode ? 'debug' : 'info',
 		format: format.json(),
 	}),
 	file: new transports.File({
@@ -53,7 +53,7 @@ const logger = createLogger({
 	),
 	transports: [winstonTransports.file],
 	exceptionHandlers: isRunningInDevelopmentMode ? [] : [winstonTransports.file],
-	exitOnError: true,
+	exitOnError: isRunningInDevelopmentMode ? false : true,
 	rejectionHandlers: isRunningInDevelopmentMode ? [] : [winstonTransports.file],
 })
 

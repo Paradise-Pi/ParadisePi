@@ -157,6 +157,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 						step={1}
 						mt={'lg'}
 					/>
+					<Text mt="md">Last Triggered: {form.values.triggers[index].lastTriggeredString}</Text>
 				</Modal>
 
 				<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>

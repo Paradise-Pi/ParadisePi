@@ -9,6 +9,7 @@ import { isRunningInDevelopmentMode } from './electron/developmentMode'
 import logger, { winstonTransports } from './logger/index'
 import { createE131 } from './output/e131/constructor'
 import { createOSC } from './output/osc/constructor'
+import { timeClockTriggerRunner } from './timeClockTriggerRunner'
 import { WebServer } from './webServer'
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -39,9 +40,7 @@ app.whenReady().then(() => {
 		.then(() => {
 			createE131()
 			createOSC()
-			globalThis.timeClockTriggerLoop = setInterval(() => {
-				logger.log('debug', 'Time Clock Trigger Loop')
-			}, 20000)
+			globalThis.timeClockTriggerLoop = setInterval(() => timeClockTriggerRunner(), 20000) // Run every 20 seconds
 			return ConfigRepository.getItem('fullscreen')
 		})
 		.then((fullscreen: string) => {

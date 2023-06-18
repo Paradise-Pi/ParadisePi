@@ -15,7 +15,7 @@ export const configRouter = (
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 	payload: apiObject
 ): Promise<apiObject> => {
-	logger.debug('Preset router has a request', { path, method, payload })
+	logger.debug('Config router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'POST') {
 			let restartE131 = false

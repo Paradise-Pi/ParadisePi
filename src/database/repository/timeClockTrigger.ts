@@ -13,6 +13,8 @@ export interface DatabaseTimeClockTrigger {
 	countdownWarning: number // TODO implement
 	countdownWarningText: string // TODO implement
 
+	lastTriggeredString: string
+
 	mon: boolean
 	tues: boolean
 	weds: boolean
@@ -36,6 +38,10 @@ export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTri
 				timeout: item.timeout,
 				countdownWarning: item.countdownWarning,
 				countdownWarningText: item.countdownWarningText,
+				lastTriggeredString:
+					item.lastTriggered !== null && item.lastTriggered > 0
+						? new Date(item.lastTriggered).toISOString().replace(/T/, ' ').replace(/\..+/, '')
+						: '',
 				mon: item.mon,
 				tues: item.tues,
 				weds: item.weds,
@@ -46,16 +52,47 @@ export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTri
 			}
 		})
 	},
-	async getToRun(): Promise<Array<DatabaseTimeClockTrigger>> {
+	async getToRun(dayOfWeek: string): Promise<
+		Array<{
+			id: number
+			time: string
+			presetId: number
+			timeout: number
+			enabledWhenLocked: boolean
+			lastTriggered: number
+		}>
+	> {
 		const items = await this.find({
+			select: {
+				id: true,
+				time: true,
+				preset: true,
+				timeout: true,
+				enabledWhenLocked: true,
+				lastTriggered: true,
+			},
+			where: {
+				enabled: true,
+				...(dayOfWeek === 'mon' && { mon: true }),
+				...(dayOfWeek === 'tues' && { tues: true }),
+				...(dayOfWeek === 'weds' && { weds: true }),
+				...(dayOfWeek === 'thurs' && { thurs: true }),
+				...(dayOfWeek === 'fri' && { fri: true }),
+				...(dayOfWeek === 'sat' && { sat: true }),
+				...(dayOfWeek === 'sun' && { sun: true }),
+			},
 			order: {
 				time: 'ASC',
 			},
 		})
 		return items.map((item: TimeClockTrigger) => {
 			return {
-				...item,
-				presetId: item.preset !== null ? item.preset.id.toString() : null,
+				id: item.id,
+				time: item.time,
+				timeout: item.timeout,
+				enabledWhenLocked: item.enabledWhenLocked,
+				lastTriggered: item.lastTriggered,
+				presetId: item.preset !== null ? item.preset.id : null,
 			}
 		})
 	},
@@ -71,6 +108,7 @@ export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTri
 			(trigger: DatabaseTimeClockTrigger, count: number) => {
 				const presetId = trigger.presetId !== null ? parseInt(trigger.presetId) : null
 				delete trigger.presetId
+				delete trigger.lastTriggeredString
 				return {
 					...trigger,
 					preset: presetId,

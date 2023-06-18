@@ -4,7 +4,7 @@ import { ConfigRepository } from './../database/repository/config'
 import { DatabaseFader, FaderRepository } from './../database/repository/fader'
 import { DatabaseFolder, FolderRepository } from './../database/repository/folder'
 import { DatabasePreset, PresetRepository } from './../database/repository/preset'
-import { TimeClockTriggersRepository } from './../database/repository/timeClockTrigger'
+import { DatabaseTimeClockTrigger, TimeClockTriggersRepository } from './../database/repository/timeClockTrigger'
 import { getOperatingSystemName } from './about/operatingSystem/info'
 import { broadcast } from './broadcast'
 
