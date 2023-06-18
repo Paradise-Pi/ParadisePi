@@ -1,5 +1,6 @@
 import { createStyles } from '@mantine/core'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const useStyles = createStyles((theme, _params) => {
 	return {
 		navbar: {

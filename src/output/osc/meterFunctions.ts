@@ -20,6 +20,7 @@ const dbToPercentage = (d: number) => {
  * @param f - the OSC float data. f:[0.0, 1.0]
  * @returns - dB float data. d:[-90, +10]
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const percentageToDB = (f: number) => {
 	let d = 0.0
 	if (f >= 0.5) d = f * 40 - 30 // max dB value: +10.

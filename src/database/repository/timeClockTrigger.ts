@@ -104,19 +104,17 @@ export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTri
 			id: Not(In(idsToKeep)),
 		})
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const toInsert: Array<{ [key: string]: any }> = timeClockTriggers.map(
-			(trigger: DatabaseTimeClockTrigger, count: number) => {
-				const presetId = trigger.presetId !== null ? parseInt(trigger.presetId) : null
-				delete trigger.presetId
-				delete trigger.lastTriggeredString
-				return {
-					...trigger,
-					preset: presetId,
-					countdownWarning: 0,
-					countdownWarningText: '',
-				}
+		const toInsert: Array<{ [key: string]: any }> = timeClockTriggers.map((trigger: DatabaseTimeClockTrigger) => {
+			const presetId = trigger.presetId !== null ? parseInt(trigger.presetId) : null
+			delete trigger.presetId
+			delete trigger.lastTriggeredString
+			return {
+				...trigger,
+				preset: presetId,
+				countdownWarning: 0,
+				countdownWarningText: '',
 			}
-		)
+		})
 		await this.upsert(toInsert, ['id'])
 	},
 })
