@@ -43,7 +43,6 @@ export interface Database {
 			e131Frequency: number
 			e131FadeTime: number
 			e131Sampler_time: number
-			e131Sampler_effectMode: number
 		}
 	}
 	presets: Array<DatabasePreset>
@@ -93,7 +92,6 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 				e131Frequency: parseInt(await ConfigRepository.getItem('e131Frequency')),
 				e131FadeTime: parseInt(await ConfigRepository.getItem('e131FadeTime')),
 				e131Sampler_time: parseInt(await ConfigRepository.getItem('e131Sampler_time')),
-				e131Sampler_effectMode: parseInt(await ConfigRepository.getItem('e131Sampler_effectMode')),
 			},
 		},
 		presets: await PresetRepository.getAll(),

@@ -1,16 +1,16 @@
-import { Box, Button, Divider, Loader, LoadingOverlay, TextInput, Checkbox, NumberInput, Text } from '@mantine/core'
+import { Box, Button, Checkbox, Divider, Loader, LoadingOverlay, NumberInput, Text, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import React, { useEffect, useState } from 'react'
-import { ApiCall } from '../../../apis/wrapper'
-import { useAppSelector } from '../../../apis/redux/mainStore'
-import { FaIdBadge } from '@react-icons/all-files/fa/FaIdBadge'
-import { FaPlay } from '@react-icons/all-files/fa/FaPlay'
+import { useModals } from '@mantine/modals'
 import { FaClipboardList } from '@react-icons/all-files/fa/FaClipboardList'
 import { FaCrown } from '@react-icons/all-files/fa/FaCrown'
-import { FaWaveSquare } from '@react-icons/all-files/fa/FaWaveSquare'
+import { FaIdBadge } from '@react-icons/all-files/fa/FaIdBadge'
+import { FaPlay } from '@react-icons/all-files/fa/FaPlay'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
-import { useModals } from '@mantine/modals'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaWaveSquare } from '@react-icons/all-files/fa/FaWaveSquare'
+import React, { useEffect, useState } from 'react'
+import { useAppSelector } from '../../../apis/redux/mainStore'
+import { ApiCall } from '../../../apis/wrapper'
 
 export const E131ModuleConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
@@ -26,7 +26,6 @@ export const E131ModuleConfigurationPage = () => {
 			e131Frequency: 0,
 			e131FadeTime: 0,
 			e131Sampler_time: 0,
-			e131Sampler_effectMode: 0,
 		},
 		validate: {
 			e131SourceName: value => (value.length > 5 ? null : 'Must be longer than 5 characters'),
@@ -43,7 +42,6 @@ export const E131ModuleConfigurationPage = () => {
 				e131Frequency: e131Config.e131Frequency,
 				e131FadeTime: e131Config.e131FadeTime,
 				e131Sampler_time: e131Config.e131Sampler_time,
-				e131Sampler_effectMode: e131Config.e131Sampler_effectMode,
 			})
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
