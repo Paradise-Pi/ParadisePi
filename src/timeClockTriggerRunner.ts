@@ -15,28 +15,20 @@ export const timeClockTriggerRunner = () => {
 			return TimeClockTriggersRepository.getToRun(dayOfWeek)
 		})
 		.then(timeClockTriggers => {
-			console.log(timeClockTriggers)
 			timeClockTriggers.forEach(timeClockTrigger => {
 				const timeClockTriggerTimeStamp = new Date(
-					Date.parse(date.toISOString().split('T')[0] + ' ' + timeClockTrigger.time + ':00 +0000')
+					Date.parse(date.toISOString().split('T')[0] + ' ' + timeClockTrigger.time + ':00')
 				).valueOf()
-				console.log(
-					date.toISOString().split('T')[0] + timeClockTrigger.time + '00:+0000',
-					timeClockTriggerTimeStamp,
-					timeClockTriggerTimeStamp > currentTimeStamp,
-					timeClockTriggerTimeStamp + timeClockTrigger.timeout * 60 * 1000 < currentTimeStamp,
-					timeClockTrigger.lastTriggered < timeClockTriggerTimeStamp
-				)
 				if (
-					timeClockTriggerTimeStamp > currentTimeStamp &&
-					timeClockTriggerTimeStamp + timeClockTrigger.timeout * 60 * 1000 < currentTimeStamp &&
-					timeClockTrigger.lastTriggered < timeClockTriggerTimeStamp
+					currentTimeStamp >= timeClockTriggerTimeStamp && // Time is now after the trigger time
+					currentTimeStamp <= timeClockTriggerTimeStamp + timeClockTrigger.timeout * 60 * 1000 && //Time is before the timeout
+					timeClockTrigger.lastTriggered < timeClockTriggerTimeStamp // Last triggered is before the trigger time
 				) {
 					TimeClockTriggersRepository.update(timeClockTrigger.id, {
 						lastTriggered: currentTimeStamp,
 					}).then(() => {
 						if (!locked || timeClockTrigger.enabledWhenLocked) {
-							logger.log('verbose', 'Triggering time lock trigger', { timeClockTrigger })
+							logger.log('verbose', 'Triggering time clock trigger', { timeClockTrigger })
 							presetRouter(['recall', timeClockTrigger.presetId.toString()], 'GET', {})
 						}
 					})

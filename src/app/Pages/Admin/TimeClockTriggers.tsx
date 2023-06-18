@@ -150,7 +150,7 @@ export const TimeClockTriggersConfigurationPage = () => {
 					/>
 					<NumberInput
 						{...form.getInputProps(`triggers.${index}.timeout`)}
-						min={0}
+						min={1}
 						label="Timeout"
 						description="How many minutes after the time stated the trigger can run"
 						max={60}
