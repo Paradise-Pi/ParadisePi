@@ -159,7 +159,14 @@ export const TimeClockTriggersConfigurationPage = () => {
 						step={1}
 						mt={'lg'}
 					/>
-					<Text mt="md">Last Triggered: {form.values.triggers[index].lastTriggeredString}</Text>
+					{form.values.triggers[index].lastTriggeredString === '' ? null : (
+						<Text mt="md">
+							Last Triggered: {form.values.triggers[index].lastTriggeredString}
+							{form.values.triggers[index].enabledWhenLocked !== true
+								? '. Caution: This does not take into account whether the device was locked at the time the preset was triggered.'
+								: ''}
+						</Text>
+					)}
 				</Modal>
 
 				<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
