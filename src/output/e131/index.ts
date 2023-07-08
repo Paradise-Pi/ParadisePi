@@ -234,7 +234,7 @@ export class E131 {
 
 	/**
 	 * Returns the most common value from an array
-	 * @param arr array
+	 * @param arr - array
 	 * @returns the most common item in the array
 	 */
 	private arrayMode(arr: Array<number>): number {
@@ -265,7 +265,7 @@ export class E131 {
 		const ipAddress = ip.address()
 		//Create our actual server object now port is free
 		const server = new Server(universes, 5568, ipAddress)
-		logger.debug('E1.31 Server started')
+		logger.debug('E1.31 Server (receiver) started')
 
 		server.on('listening', () => {
 			broadcast('e131SamplingMode', {
