@@ -18,6 +18,7 @@ declare global {
 	var e131: E131
 	var osc: OSC
 	var port: number | false
+	var timeClockTriggerLoop: NodeJS.Timer
 	interface apiObject {
 		[key: string]: any
 	}

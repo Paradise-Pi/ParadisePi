@@ -1,17 +1,18 @@
-import React from 'react'
-import { Navbar, Group, Code, Text, ScrollArea } from '@mantine/core'
+import { Code, Group, Navbar, ScrollArea, Text } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
-import { Link } from 'react-router-dom'
 import { FaCogs } from '@react-icons/all-files/fa/FaCogs'
-import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
-import { FaRegFolder } from '@react-icons/all-files/fa/FaRegFolder'
 import { FaDatabase } from '@react-icons/all-files/fa/FaDatabase'
+import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
+import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
+import { FaRegFolder } from '@react-icons/all-files/fa/FaRegFolder'
 import { FaRegPlayCircle } from '@react-icons/all-files/fa/FaRegPlayCircle'
 import { FaWindowClose } from '@react-icons/all-files/fa/FaWindowClose'
-import { useStyles } from './Styles'
-import { NavbarItem } from './NavbarItem'
-import { useAppSelector } from './../apis/redux/mainStore'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { runningInElectron } from '../apis/utilities/version'
+import { useAppSelector } from './../apis/redux/mainStore'
+import { NavbarItem } from './NavbarItem'
+import { useStyles } from './Styles'
 
 export const AdminNavigation = () => {
 	const { classes, cx } = useStyles()
@@ -32,13 +33,22 @@ export const AdminNavigation = () => {
 						<span>Exit</span>
 					</Link>
 				) : null}
-				<NavbarItem link="configuration" label="Configuration" Icon={FaDatabase} />
-				<NavbarItem link="presets" label="Presets" Icon={FaRegPlayCircle} />
-				<NavbarItem link="folders" label="Folders" Icon={FaRegFolder} />
-				<NavbarItem link="faders" label="Faders" Icon={FaLevelUpAlt} />
+				<NavbarItem
+					link="configuration"
+					label="Configuration"
+					Icon={<FaDatabase className={classes.linkIcon} />}
+				/>
+				<NavbarItem link="presets" label="Presets" Icon={<FaRegPlayCircle className={classes.linkIcon} />} />
+				<NavbarItem link="folders" label="Folders" Icon={<FaRegFolder className={classes.linkIcon} />} />
+				<NavbarItem link="faders" label="Faders" Icon={<FaLevelUpAlt className={classes.linkIcon} />} />
+				<NavbarItem
+					link="timeClockTriggers"
+					label="Timer Presets"
+					Icon={<FaRegClock className={classes.linkIcon} />}
+				/>
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>
-				<NavbarItem link="controls" label="Controls" Icon={FaCogs} />
+				<NavbarItem link="controls" label="Controls" Icon={<FaCogs className={classes.linkIcon} />} />
 			</Navbar.Section>
 		</Navbar>
 	)

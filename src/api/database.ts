@@ -1,11 +1,12 @@
-import { DatabasePreset, PresetRepository } from './../database/repository/preset'
-import { DatabaseFolder, FolderRepository } from './../database/repository/folder'
-import { ConfigRepository } from './../database/repository/config'
-import { getOperatingSystemName } from './about/operatingSystem/info'
-import { version } from './../../package.json'
-import { broadcast } from './broadcast'
 import ip from 'ip'
+import { version } from './../../package.json'
+import { ConfigRepository } from './../database/repository/config'
 import { DatabaseFader, FaderRepository } from './../database/repository/fader'
+import { DatabaseFolder, FolderRepository } from './../database/repository/folder'
+import { DatabasePreset, PresetRepository } from './../database/repository/preset'
+import { DatabaseTimeClockTrigger, TimeClockTriggersRepository } from './../database/repository/timeClockTrigger'
+import { getOperatingSystemName } from './about/operatingSystem/info'
+import { broadcast } from './broadcast'
 
 export interface Database {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,10 +43,10 @@ export interface Database {
 			e131Frequency: number
 			e131FadeTime: number
 			e131Sampler_time: number
-			e131Sampler_effectMode: number
 		}
 	}
 	presets: Array<DatabasePreset>
+	timeClockTriggers: Array<DatabaseTimeClockTrigger>
 	folders: {
 		[key: number]: DatabaseFolder
 	}
@@ -91,10 +92,10 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 				e131Frequency: parseInt(await ConfigRepository.getItem('e131Frequency')),
 				e131FadeTime: parseInt(await ConfigRepository.getItem('e131FadeTime')),
 				e131Sampler_time: parseInt(await ConfigRepository.getItem('e131Sampler_time')),
-				e131Sampler_effectMode: parseInt(await ConfigRepository.getItem('e131Sampler_effectMode')),
 			},
 		},
 		presets: await PresetRepository.getAll(),
+		timeClockTriggers: await TimeClockTriggersRepository.getAll(),
 		folders: await FolderRepository.getAll(),
 		faders: await FaderRepository.getAll(),
 	}
