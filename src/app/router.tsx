@@ -16,6 +16,7 @@ import { ChannelCheckPage } from './Pages/ControlPanel/E131/ChannelCheck'
 import { KeypadPage } from './Pages/ControlPanel/E131/Keypad'
 import { useViewportSize } from '@mantine/hooks'
 import { AdminPin } from './Components/Admin/AdminPin'
+import { TimeClockTriggersConfigurationPage } from './Pages/Admin/TimeClockTriggers'
 
 const MainNav = ({ navigation }: { navigation: ReactElement }) => {
 	const { height } = useViewportSize()
@@ -61,6 +62,7 @@ const HashRouter = createHashRouter(
 				<Route path="presets" element={<PresetsConfigurationPage />} />
 				<Route path="faders" element={<FadersConfigurationPage />} />
 				<Route path="controls" element={<ControlsConfigurationPage />} />
+				<Route path="timeClockTriggers" element={<TimeClockTriggersConfigurationPage />} />
 			</Route>
 			<Route path="*" element={<LandingPage />} />
 		</>

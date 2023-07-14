@@ -1,7 +1,7 @@
-import { Stack, Title, Collapse, Text } from '@mantine/core'
-import React, { useCallback, useEffect, useState } from 'react'
+import { Collapse, Stack, Text, Title } from '@mantine/core'
 import { useEventListener, useViewportSize } from '@mantine/hooks'
 import { FaLock } from '@react-icons/all-files/fa/FaLock'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useAppSelector } from './../apis/redux/mainStore'
 
 const LockedMessage = () => {
@@ -12,7 +12,7 @@ const LockedMessage = () => {
 	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
 	if (count >= 5) {
 		return (
-			<Text size="sm" mx={'lg'}>
+			<Text size="sm" mx={'lg'} ta="center">
 				Device is locked. To unlock it access the setup and administration area, by ensuring you are on the same
 				network as this device and then navigating to http://
 				{ipAddress + ':' + port ?? ''} with a web browser
@@ -23,6 +23,7 @@ const LockedMessage = () => {
 			<Text
 				size="sm"
 				ref={ref}
+				ta="center"
 				style={{ userSelect: 'none', MozUserSelect: 'none', WebkitUserSelect: 'none', msUserSelect: 'none' }}
 			>
 				Device is locked, unlock it using the setup and administration area on another device

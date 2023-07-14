@@ -4,11 +4,13 @@ import {
 	CreateDateColumn,
 	Entity,
 	ManyToOne,
+	OneToMany,
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 	VersionColumn,
 } from 'typeorm'
 import { Folders } from './Folder'
+import { TimeClockTrigger } from './TimeClockTrigger'
 
 @Entity('presets', {
 	orderBy: {
@@ -61,6 +63,9 @@ export class Preset {
 	data: {
 		[key: string]: any
 	}
+
+	@OneToMany(() => TimeClockTrigger, TimeClockTrigger => TimeClockTrigger.preset)
+	timeClockTriggers: TimeClockTrigger[]
 
 	@Column('boolean', {
 		default: false,
