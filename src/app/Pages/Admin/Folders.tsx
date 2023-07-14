@@ -28,6 +28,7 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
 import { DatabaseFolder } from './../../../database/repository/folder'
 import { useAppSelector } from './../../apis/redux/mainStore'
+import { usePrompt } from './../../apis/utilities/usePrompt'
 import { ApiCall } from './../../apis/wrapper'
 
 interface FormValues {
@@ -88,6 +89,7 @@ export const FoldersConfigurationPage = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [folders])
 	const saveByUserNeeded = formOriginalValues !== JSON.stringify(form.values) // Does the user have unsaved changes
+	usePrompt(saveByUserNeeded ? 'You have unsaved changes, are you sure you want to leave this page?' : false)
 
 	// Handle the submit button
 	const handleSubmit = (values: typeof form.values) => {

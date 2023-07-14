@@ -35,6 +35,7 @@ import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { usePrompt } from '../../apis/utilities/usePrompt'
 import { DatabasePreset, PresetTypes } from './../../../database/repository/preset'
 import { E131PresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/E131'
 import { HTTPPresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/HTTP'
@@ -96,6 +97,8 @@ export const PresetsConfigurationPage = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [presets])
 	const saveByUserNeeded = formOriginalValues !== JSON.stringify(form.values) // Does the user have unsaved changes
+	usePrompt(saveByUserNeeded ? 'You have unsaved changes, are you sure you want to leave this page?' : false)
+
 	// Handle the submit button
 	const handleSubmit = (values: typeof form.values) => {
 		setLoadingOverlayVisible(true)
