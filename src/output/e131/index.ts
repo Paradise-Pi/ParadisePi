@@ -116,7 +116,7 @@ export class E131 {
 	 * @returns promise that resolves when the termination is done
 	 */
 	public terminate(): Promise<void> {
-		logger.verbose('Terminating E1.31 Connection')
+		logger.verbose('Terminating E1.31 Client')
 		this.running = false // Stop the normal loop to avoid client confusion
 		return [...Array(this.firstUniverse + this.universes - 1)].reduce((previous, _current, i) => {
 			return previous.then(() => {
@@ -135,6 +135,7 @@ export class E131 {
 						this.e131Clients[i + this.firstUniverse]['client'].send(
 							this.e131Clients[i + this.firstUniverse]['packet'],
 							() => {
+								// Close the connection
 								this.e131Clients[i + this.firstUniverse] = undefined
 								resolve()
 							}
@@ -244,8 +245,6 @@ export class E131 {
 	}
 
 	public async sampleE131() {
-		await this.terminate() // Stop light output entirely and clear all universes
-
 		logger.verbose('Starting Sampling Mode - storing most common value for each parameter where effects are in use')
 
 		const numUniverses = this.universes > 20 ? 20 : this.universes // 20 universe limit is enforced due to memory limitations
@@ -258,14 +257,20 @@ export class E131 {
 		broadcast('e131SamplingMode', {
 			messageType: 'START',
 			status: true,
-			duration: sampleModeDuration,
-			message: `Started sampling mode for ${sampleModeDuration / 1000} seconds`,
+			duration: sampleModeDuration + 3000,
+			message: `Launching sampling mode`,
 		})
 		//get our current ip so we know which network interface is usable
 		const ipAddress = ip.address()
-		//Create our actual server object now port is free
+		await this.terminate() // Stop light output entirely and clear all universes
+		await new Promise(resolve => setTimeout(resolve, 2000)) // Wait for other sACN clients to detect that we've stopped sending
+		//Create our actual server object now port is free as we need to wait for the E131 lib to terminate
 		const server = new Server(universes, 5568, ipAddress)
 		logger.debug('E1.31 Server (receiver) started')
+		broadcast('e131SamplingMode', {
+			messageType: 'LOGLINE',
+			message: `Started sampling mode for ${sampleModeDuration / 1000} seconds`,
+		})
 
 		server.on('listening', () => {
 			broadcast('e131SamplingMode', {
@@ -273,6 +278,14 @@ export class E131 {
 				message: 'Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes',
 			})
 			logger.verbose('Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes')
+		})
+
+		server.on('error', (error: unknown) => {
+			broadcast('e131SamplingMode', {
+				messageType: 'LOGLINE',
+				message: 'Encountered error trying to sample data: ' + error,
+			})
+			logger.verbose('Encountered error', error)
 		})
 
 		const universeData: WorkingUniverseData = {}
