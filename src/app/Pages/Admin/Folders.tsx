@@ -28,15 +28,8 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
 import { DatabaseFolder } from './../../../database/repository/folder'
 import { useAppSelector } from './../../apis/redux/mainStore'
-import { ApiCall } from './../../apis/wrapper'
-import { AvailableIcons, ButtonIconSelectItem } from '../../Components/ControlPanel/ButtonIcon'
-import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
-import { RichTextEditor } from '@mantine/rte'
-import { FaSave } from '@react-icons/all-files/fa/FaSave'
-import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
-import { showNotification } from '@mantine/notifications'
-import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { usePrompt } from './../../apis/utilities/usePrompt'
+import { ApiCall } from './../../apis/wrapper'
 
 interface FormValues {
 	folders: Array<DatabaseFolder>

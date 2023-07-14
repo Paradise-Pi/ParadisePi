@@ -35,6 +35,7 @@ import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { usePrompt } from '../../apis/utilities/usePrompt'
 import { DatabasePreset, PresetTypes } from './../../../database/repository/preset'
 import { E131PresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/E131'
 import { HTTPPresetEditModal } from './../../Components/Admin/Controls/Presets/EditModal/HTTP'
@@ -44,8 +45,6 @@ import { isValidJson } from './../../Components/Admin/Controls/Presets/EditModal
 import { ButtonIconSelectItem, availableIcons } from './../../Components/ControlPanel/ButtonIcon'
 import { useAppSelector } from './../../apis/redux/mainStore'
 import { ApiCall } from './../../apis/wrapper'
-import { usePrompt } from '../../apis/utilities/usePrompt'
-import { AvailableIcons, ButtonIconSelectItem } from './../../Components/ControlPanel/ButtonIcon'
 
 interface FormValues {
 	presets: Array<DatabasePreset>
