@@ -26,6 +26,7 @@ import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
+import { FaPlay } from '@react-icons/all-files/fa/FaPlay'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaRecycle } from '@react-icons/all-files/fa/FaRecycle'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
@@ -152,6 +153,16 @@ export const PresetsConfigurationPage = () => {
 							title="Visible"
 							{...form.getInputProps(`presets.${index}.enabled`, { type: 'checkbox' })}
 						/>
+					</td>
+					<td style={{ width: 0 }}>
+						<ActionIcon
+							variant="transparent"
+							title="Recall"
+							disabled={saveByUserNeeded}
+							onClick={() => ApiCall.get('/presets/recall/' + form.values.presets[index].id, {})}
+						>
+							<FaPlay />
+						</ActionIcon>
 					</td>
 					<td style={{ width: 0 }}>
 						<Modal
@@ -387,6 +398,7 @@ export const PresetsConfigurationPage = () => {
 									<th>Name</th>
 									<th>Folder</th>
 									<th>Visible</th>
+									<th></th>
 									<th></th>
 									<th></th>
 									<th></th>
