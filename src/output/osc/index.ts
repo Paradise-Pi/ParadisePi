@@ -257,7 +257,9 @@ export default abstract class OSC {
 			//Actual sending
 			logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
 			this.udpPort.send({ address: address, args: [args] })
-			this.manuallyGetFaderPositions() //get the fader positions after a preset is sent, as they might have moved
+			setTimeout(() => {
+				this.manuallyGetFaderPositions() //get the fader positions after a preset is sent, as they might have moved - but delay for 500ms to allow the preset to be applied
+			}, 500)
 		} else {
 			logger.error('sendPreset called with invalid data type', { presetData })
 		}
