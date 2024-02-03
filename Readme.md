@@ -56,6 +56,10 @@ npm run make
 
 Releases are automatically generated whenever a tag is pushed to the main branch. You can them check them over and publish them.
 
+### Balena
+
+https://blog.balena.io/no-hardware-virtualize-balenaos-devices-on-macos/
+https://docs.balena.io/learn/develop/local-mode/
 
 ## Architecture 
 

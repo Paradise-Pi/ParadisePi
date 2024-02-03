@@ -1,0 +1,4 @@
+FROM balenablocks/aarch64-balena-electron-env
+
+COPY . ./
+RUN npm i --production
