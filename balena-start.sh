@@ -10,4 +10,8 @@ while [ ! -e /tmp/.X11-unix/X${DISPLAY#*:} ]; do sleep 0.5; done
 echo "Setting CPU Scaling Governor to 'performance'"
 echo 'performance' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 
 
-/usr/bin/paradisepi
+chmod a+x /home/paradise/paradisepi/paradisepi
+
+ls -l /home/paradise/paradisepi
+
+./paradisepi

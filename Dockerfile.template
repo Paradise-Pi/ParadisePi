@@ -15,7 +15,8 @@ RUN install_packages \
     libgles2-mesa \
     libxshmfence1 \
     mesa-utils \
-    mesa-utils-extra
+    mesa-utils-extra \ 
+    dos2unix
 
 WORKDIR /opt
 
@@ -26,20 +27,21 @@ RUN JOBS=MAX npm install --unsafe-perm && npm cache clean --force && rm -rf /roo
 
 RUN npm run package
 
-#RUN mv /opt/out/* /opt/out/paradisepi/
-
 RUN find . -name "paradisepi-linux-" -exec mv {} paradisepi/ \;
 
-RUN cd /opt/out/ && ls
+COPY balena-start.sh /opt/out/start.sh
+
+RUN dos2unix /opt/out/start.sh && apt-get --purge remove -y dos2unix && rm -rf /var/lib/apt/lists/*
 
 FROM balenalib/%%BALENA_MACHINE_NAME%%-node:18-run AS run
 
-WORKDIR /
+WORKDIR /home/paradise/
 
-COPY --from=build /opt/out/paradisepi/paradisepi /usr/bin/paradisepi
-COPY balena-start.sh /usr/bin/balena-start.sh
+COPY --from=build /opt/out/paradisepi/ paradisepi/
+COPY --from=build /opt/out/start.sh start.sh
 
-CMD ["bash", "/usr/bin/balena-start.sh"]
+
+CMD ["bash", "/home/paradise/start.sh"]
 
 ENV NODE_ENV=production \
     # this is specific for balena, to let the startup script know we want to use all udev devices (mouse, keyboard, etc)
