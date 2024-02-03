@@ -1,4 +1,39 @@
-FROM balenablocks/aarch64-balena-electron-env
+FROM balenalib/%%BALENA_MACHINE_NAME%%-node:18-build AS build
 
-COPY . ./
-RUN npm i --production
+RUN install_packages \
+    curl \
+    libasound2 \
+    libdrm2 \
+    libgbm1 \
+    libgdk-pixbuf2.0-0 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnss3 \
+    libx11-xcb1 \
+    libxss1 \
+    libxtst6 \
+    libgles2-mesa \
+    libxshmfence1 \
+    mesa-utils \
+    mesa-utils-extra
+
+WORKDIR /opt
+
+# Copy package files
+COPY ./ /opt/
+# Install node dependencies
+RUN JOBS=MAX npm install --unsafe-perm && npm cache clean --force && rm -rf /root/.cache/*
+
+RUN npm run package
+
+FROM balenalib/%%BALENA_MACHINE_NAME%%-node:18-run AS run
+
+COPY --from=build /opt/out/paradisepi-linux-arm64/paradisepi /usr/bin/paradisepi
+COPY balena-start.sh /usr/bin/balena-start.sh
+CMD ["bash", "/usr/bin/balena-start.sh"]
+
+ENV NODE_ENV=production \
+    # this is specific for balena, to let the startup script know we want to use all udev devices (mouse, keyboard, etc)
+    UDEV=1 \
+    # this is very important, we need to tell our environment that we are going to talk to display 0, which is hosted by the xserver block
+    DISPLAY=:0
