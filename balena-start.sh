@@ -12,6 +12,4 @@ echo 'performance' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
 chmod a+x /home/paradise/paradisepi/paradisepi
 
-ls -l /home/paradise/paradisepi
-
-./paradisepi
+./paradisepi/paradisepi
