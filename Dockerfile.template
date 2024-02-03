@@ -26,10 +26,19 @@ RUN JOBS=MAX npm install --unsafe-perm && npm cache clean --force && rm -rf /roo
 
 RUN npm run package
 
+#RUN mv /opt/out/* /opt/out/paradisepi/
+
+RUN find . -name "paradisepi-linux-" -exec mv {} paradisepi/ \;
+
+RUN cd /opt/out/ && ls
+
 FROM balenalib/%%BALENA_MACHINE_NAME%%-node:18-run AS run
 
-COPY --from=build /opt/out/paradisepi-linux-arm64/paradisepi /usr/bin/paradisepi
+WORKDIR /
+
+COPY --from=build /opt/out/paradisepi/paradisepi /usr/bin/paradisepi
 COPY balena-start.sh /usr/bin/balena-start.sh
+
 CMD ["bash", "/usr/bin/balena-start.sh"]
 
 ENV NODE_ENV=production \
