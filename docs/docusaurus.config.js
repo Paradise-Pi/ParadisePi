@@ -3,8 +3,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable tsdoc/syntax */
 
-const lightCodeTheme = require('prism-react-renderer/themes/github')
-const darkCodeTheme = require('prism-react-renderer/themes/dracula')
+import lightCodeTheme from 'prism-react-renderer/themes/github'
+import darkCodeTheme from 'prism-react-renderer/themes/dracula'
 
 const production = process.env.CONTEXT === 'production' //Netlify/Cloudflare Pages set environment variable "CONTEXT" to "production"/"deploy-preview"
 const baseUrl = process.env.BASEURL ?? '/' //Netlify/Cloudflare Pages set environment variable "BASEURL" to the base URL of the site
@@ -128,4 +128,4 @@ const config = {
 	],
 }
 
-module.exports = config
+export default config

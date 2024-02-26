@@ -1,10 +1,8 @@
 /* eslint-disable import/no-unresolved */
-import React from 'react'
-import clsx from 'clsx'
-import Layout from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
-import styles from './index.module.css'
-/* eslint-disable @typescript-eslint/no-var-requires */
+import Layout from '@theme/Layout'
+import React from 'react'
+import './index.css'
 
 type FeatureItem = {
 	title: string
@@ -44,7 +42,7 @@ const FeatureList: FeatureItem[] = [
 
 const Feature = ({ title, description }: FeatureItem) => {
 	return (
-		<div className={clsx('col col--6')}>
+		<div className="col col--6">
 			<div className="text--center padding-horiz--md">
 				<h3>{title}</h3>
 				<p>{description}</p>
@@ -55,7 +53,7 @@ const Feature = ({ title, description }: FeatureItem) => {
 
 const HomepageFeatures = (): JSX.Element => {
 	return (
-		<section className={styles.features}>
+		<section className="features">
 			<div className="container">
 				<div className="row">
 					{FeatureList.map((props, idx) => (
@@ -70,11 +68,11 @@ const HomepageFeatures = (): JSX.Element => {
 const HomepageHeader = () => {
 	const { siteConfig } = useDocusaurusContext()
 	return (
-		<header className={clsx('hero hero--primary', styles.heroBanner)}>
+		<header className="hero hero--primary heroBanner">
 			<div className="container">
 				<h1 className="hero__title">{siteConfig.title}</h1>
 				<p className="hero__subtitle">{siteConfig.tagline}</p>
-				<div className={styles.buttons}>
+				<div className="buttons">
 					<a
 						className="button button--secondary button--lg"
 						href="https://github.com/Paradise-Pi/ParadisePi/releases/latest"
@@ -91,11 +89,11 @@ const HomepageHeader = () => {
 
 const HomepageOpenSourceHero = () => {
 	return (
-		<div className={clsx('hero hero--primary', styles.heroBanner)}>
+		<div className="hero hero--primary heroBanner">
 			<div className="container">
 				<h2 className="hero__title">Free and Open Source</h2>
 				<p className="hero__subtitle">Add your own modules, and contribute to the code.</p>
-				<div className={styles.buttons}>
+				<div className="buttons">
 					<a
 						className="button button--secondary button--lg"
 						href="https://github.com/Paradise-Pi/ParadisePi"
