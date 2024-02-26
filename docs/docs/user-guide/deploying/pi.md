@@ -69,7 +69,7 @@ Add ` -nocursor` to the end of the line. It should now be `xserver-command = X -
 
 This will popup every 24hrs to let you know that apt packages can be updated.
 
-To disbale it, right click on the menu bar in Rapsberry Pi OS and select the `preferences` button for updater. This will allow you to set the check frequency to 1000 hours (41 days) and you can then click "remove" to hide it from the taskbar as well
+To disable it, right click on the menu bar in Raspberry Pi OS and select the `preferences` button for updater. This will allow you to set the check frequency to 1000 hours (41 days) and you can then click "remove" to hide it from the taskbar as well
 
 ## Updating
 
