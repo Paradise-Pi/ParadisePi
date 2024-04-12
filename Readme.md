@@ -61,6 +61,14 @@ Releases are automatically generated whenever a tag is pushed to the main branch
 https://blog.balena.io/no-hardware-virtualize-balenaos-devices-on-macos/
 https://docs.balena.io/learn/develop/local-mode/
 
+#### Build Stages
+
+To build for Balena, the build script creates a larger image that is used to build for the correct architecture. This built file is then copied to a slimmer image the larger image is removed. This is done to reduce the size of the final image.
+
+#### Running out of Storage
+
+Building images on a local device tends to cause it to run out of storage quickly. To get around this, login to the device in local mode by running `balena ssh XXXXX.local` and then running `balena system prune -a -f` on the SSH terminal. This will remove all images and containers from the device, freeing up space.
+
 ## Architecture 
 
 ```mermaid
