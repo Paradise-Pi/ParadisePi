@@ -1,4 +1,4 @@
-FROM balenalib/%%BALENA_MACHINE_NAME%%-node:18-build AS build
+FROM balenalib/%%BALENA_MACHINE_NAME%%-node:19-build AS build
 
 RUN install_packages \
     curl \
@@ -16,24 +16,26 @@ RUN install_packages \
     libxshmfence1 \
     mesa-utils \
     mesa-utils-extra \ 
-    dos2unix
-
-WORKDIR /opt
+    dos2unix \
+    dpkg \
+    fakeroot
 
 # Copy package files
-COPY ./ /opt/
+COPY ./ /usr/src/app
+WORKDIR /usr/src/app
+
 # Install node dependencies
-RUN JOBS=MAX npm install --unsafe-perm && npm cache clean --force && rm -rf /root/.cache/*
+RUN JOBS=MAX npm install --unsafe-perm
 
-RUN npm run package
-
-RUN find . -name "paradisepi-linux-" -exec mv {} paradisepi/ \;
+# Make the package
+RUN npm run make
+RUN mv usr/src/app/out/paradisepi-linux-arm64/paradisepi /opt/out/paradisepi
 
 COPY balena-start.sh /opt/out/start.sh
 
 RUN dos2unix /opt/out/start.sh && apt-get --purge remove -y dos2unix && rm -rf /var/lib/apt/lists/*
 
-FROM balenalib/%%BALENA_MACHINE_NAME%%-node:18-run AS run
+FROM balenalib/%%BALENA_MACHINE_NAME%%-node:19-run AS run
 
 WORKDIR /home/paradise/
 
