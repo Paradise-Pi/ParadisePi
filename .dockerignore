@@ -1,7 +1,9 @@
+# Don't send node_modules the daemon - we want the build server to install these.
 node_modules
 **/node_modules
 node_modules/
 **/node_modules/
+.git
 .vscode/
 .github/
 .webpack/
