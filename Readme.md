@@ -45,8 +45,6 @@ npm start
 
 To use the debugger, you can set the environment variable `DEV_MODE=true` before running the app, or use the vscode launch configuration. Hot reloading is enabled by default, and works for the UI but not for the main process, which will require a manual restart after changes are made.
 
-You can access the rendered output of the app in a browser as well (if helpful) by visiting [http://localhost:9001/main_window/#/main/help](http://localhost:9001/main_window/#/main/help). This doesn't work in production builds.
-
 ### Building Releases
 
 ```bash
