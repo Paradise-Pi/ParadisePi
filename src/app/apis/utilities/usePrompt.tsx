@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useBeforeUnload, unstable_useBlocker as useBlocker } from 'react-router-dom'
+import { useBeforeUnload, useBlocker } from "react-router-dom";
 
 // From https://gist.github.com/chaance/2f3c14ec2351a175024f62fd6ba64aa6
 
