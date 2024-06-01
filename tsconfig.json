@@ -1,22 +1,23 @@
 {
-	"compilerOptions": {
-		"target": "ES6",
-		"allowJs": true,
-		"module": "commonjs",
-		"skipLibCheck": true,
-		"esModuleInterop": true,
-		"noImplicitAny": true,
-		"sourceMap": true,
-		"baseUrl": ".",
-		"outDir": "dist",
-		"moduleResolution": "node",
-		"resolveJsonModule": true,
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"paths": {
-			"*": ["node_modules/*"]
-		},
-		"jsx": "react"
-	},
-	"include": ["src/**/*"]
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "public",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "strict": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "jsx": "react"
+  },
+  "include": ["src"]
 }

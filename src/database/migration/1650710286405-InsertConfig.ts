@@ -75,7 +75,7 @@ export class InsertConfig1650710286405 implements MigrationInterface {
 		count = await queryRunner.query(`SELECT COUNT(*) as count FROM config WHERE key = 'timeoutTime';`)
 		if (count[0].count < 1) {
 			await queryRunner.query(
-				`INSERT INTO config (key, value, name) VALUES ('timeoutTime','5', 'Device Timeout');`
+				`INSERT INTO config (key, value, name) VALUES ('timeoutTime','120', 'Device Timeout');`
 			)
 		}
 		count = await queryRunner.query(`SELECT COUNT(*) as count FROM config WHERE key = 'LXInfo';`)
