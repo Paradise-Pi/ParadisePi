@@ -1,7 +1,7 @@
 import { broadcast } from './../api/broadcast'
 import Transport from 'winston-transport'
 /**
- * Custom transport for Winston that sends logs to the frontend using either the socket or the IPC
+ * Custom transport for Winston that sends logs to the frontend using the socket
  */
 export class BroadcastTransport extends Transport {
 	constructor(opts: Transport.TransportStreamOptions) {

@@ -66,31 +66,3 @@ root.render(
 		<App />
 	</Provider>
 )
-
-if (runningInElectron()) {
-	window.ipcApi.receive('refreshDatabase', (data: Database) => {
-		store.dispatch(setFromNode(data))
-	})
-	window.ipcApi.receive('refreshImagesDatastore', (data: Images) => {
-		store.dispatch(refreshImagesDatastore(data))
-	})
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	window.ipcApi.receive('oscDatastoreUpdate', (data: OSCDatastore) => {
-		store.dispatch(updateOSCDatastore(data))
-	})
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	window.ipcApi.receive('logging', (logLine: { [key: string]: any }) => {
-		store.dispatch(appendLogline(JSON.stringify(logLine)))
-	})
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	window.ipcApi.receive('socketClients', (clients: { [key: string]: any }) => {
-		store.dispatch(setSocketClients(clients))
-	})
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	window.ipcApi.receive(
-		'e131SamplingMode',
-		(message: { messageType: string; status?: boolean; duration?: number; message: string }) => {
-			store.dispatch(setFromAPI(message))
-		}
-	)
-}

@@ -1,6 +1,5 @@
-import { BrowserWindow, IpcMainEvent, app, dialog, ipcMain } from 'electron'
+import { BrowserWindow, app, dialog } from 'electron'
 import 'reflect-metadata'
-import { IpcRequest } from './api/ipc'
 import { routeRequest } from './api/router'
 import dataSource from './database/dataSource'
 import { ConfigRepository } from './database/repository/config'
@@ -74,18 +73,5 @@ app.on('activate', () => {
 	// dock icon is clicked and there are no other windows open.
 	if (BrowserWindow.getAllWindows().length === 0) {
 		createMainWindow('/controlPanel/help')
-	}
-})
-
-ipcMain.handle('apiCall', async (event: IpcMainEvent, args: IpcRequest) => {
-	try {
-		const response = await routeRequest(args.path, args.method, args.payload)
-		return { success: true, response, errorMessage: null }
-	} catch (error) {
-		return {
-			success: false,
-			response: null,
-			errorMessage: error.message,
-		}
 	}
 })

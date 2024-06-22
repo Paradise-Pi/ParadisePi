@@ -248,7 +248,7 @@ export class WebServer {
 				}
 				broadcast('socketClients', WebServer.socketIoClients)
 
-				// This allows the frontend to make requests to the api via socket.io, using the same router as the IPC
+				// This allows the frontend to make requests to the api via socket.io
 				socket.on('apiCall', (path, method, payload, callback) => {
 					routeRequest(path, method, payload)
 						.then(response => {

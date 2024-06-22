@@ -84,10 +84,6 @@ flowchart TB
       socket-- Callback -->wrap2
       repo-->socket-- Push -->rd2
 
-      wrap1-->ipc>IPC Channel]-->rt
-      ipc-- Callback -->wrap1
-      repo-->ipc-- Push -->rd1
-      
     ElectronProcess --> ElectronWindow
     ElectronProcess --> ws>Webserver] --> BrowserWindow
 ```
