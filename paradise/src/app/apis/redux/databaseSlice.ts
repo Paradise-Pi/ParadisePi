@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Database } from './../../../api/database'
-import store from './mainStore'
 import { ApiCall } from './../wrapper'
+import store from './mainStore'
 
 const initialState: Database | null = null
 const getFromAPIFatActionCreator = (): void => {
@@ -18,10 +18,10 @@ export const databaseSlice = createSlice({
 			getFromAPIFatActionCreator()
 		},
 		storeManually: (state, action: PayloadAction<Database>) => {
-			return (state = action.payload)
+			state = action.payload
 		},
 		setFromNode: (state, action: PayloadAction<Database>) => {
-			return (state = action.payload)
+			state = action.payload
 		},
 	},
 })

@@ -1,4 +1,3 @@
-import { reboot } from './../electron/windowUtilities'
 import { aboutRouter } from './about/aboutRouter'
 import { configRouter } from './config/configRouter'
 import { createDatabaseObject } from './database'
@@ -71,11 +70,12 @@ export const routeRequest = (
 				resolve({ message: 'Pong' })
 				break
 			case 'reboot':
-				reboot(true, false)
+				//TODO fix reboot
+				//reboot(true, false)
 				resolve({})
 				break
 			case 'quit':
-				reboot(false, false)
+				//reboot(false, false)
 				resolve({})
 				break
 		}

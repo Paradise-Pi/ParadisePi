@@ -1,20 +1,19 @@
-import staticServer from 'node-static'
-import http from 'http'
 import { IncomingForm } from 'formidable'
 import fs from 'fs'
-import dataSource from './../database/dataSource'
-import { reboot } from './../electron/windowUtilities'
+import http from 'http'
+import staticServer from 'node-static'
 import path from 'path'
-import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './../api/socketIo'
-import { routeRequest } from './../api/router'
 import { Server } from 'socket.io'
 import { broadcast } from './../api/broadcast'
-import { getAvailablePort } from './availablePorts'
-import { createDatabaseObject, Database, sendDatabaseObject } from './../api/database'
-import { ConfigRepository } from './../database/repository/config'
+import { Database, createDatabaseObject, sendDatabaseObject } from './../api/database'
 import { createAndSendImagesObject } from './../api/images'
-import { PresetRepository } from './../database/repository/preset'
+import { routeRequest } from './../api/router'
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './../api/socketIo'
+import dataSource from './../database/dataSource'
 import { Preset } from './../database/model/Preset'
+import { ConfigRepository } from './../database/repository/config'
+import { PresetRepository } from './../database/repository/preset'
+import { getAvailablePort } from './availablePorts'
 /**
  * The webserver is responsible for serving requests from other devices on the network that might want to connect.
  * This includes devices such as iPads who want to use the remote interface, a web browser which wants to
@@ -36,6 +35,7 @@ export class WebServer {
 			headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
 		})
 		WebServer.server = http.createServer((req, res) => {
+			if (!req.url || !req.method) return
 			if (req.url == '/database/upload' && req.method.toLowerCase() === 'post') {
 				res.writeHead(200, { 'Content-Type': 'text/html' })
 				// Allow uploading of the database

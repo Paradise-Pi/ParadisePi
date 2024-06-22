@@ -5,7 +5,7 @@ import { DataSource } from 'typeorm'
 /**
  * Manually import each of the models/migrations because otherwise Webpack doesn't spot them
  */
-import { MyCustomLogger } from './logger'
+import { MyCustomLogger } from '../logger/customLogger'
 import { Config } from './model/Config'
 import { Fader } from './model/Fader'
 import { Folders } from './model/Folder'

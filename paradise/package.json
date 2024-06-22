@@ -8,6 +8,7 @@
     "prepublish": "npm run build",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "develop": "ts-node src/index.ts",
     "lint": "eslint --ext .ts,.tsx .",
     "typeorm": "typeorm-ts-node-commonjs -d src/database/dataSource.ts"
   },
@@ -55,7 +56,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.7",
     "react-router-dom": "^6.11.2",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.1.14",
     "socket.io": "^4.6.2",
     "socket.io-client": "^4.6.2",
     "timeago.js": "^4.0.2",
@@ -64,7 +65,7 @@
   },
   "devDependencies": {
     "@types/formidable": "^2.0.6",
-    "@types/node": "^18.16.16",
+    "@types/node": "^18.19.39",
     "@types/node-static": "^0.7.7",
     "@types/react": "^18.2.8",
     "@types/react-dom": "^18.2.4",

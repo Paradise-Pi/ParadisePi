@@ -1,13 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 import { createLogger, format, transports } from 'winston'
-import { isRunningInDevelopmentMode } from './../electron/developmentMode'
 import { BroadcastTransport } from './broadcastTransport'
 
 const logDir = path.join(__dirname, '../../logs')
 if (!fs.existsSync(logDir)) {
 	fs.mkdirSync(logDir)
 }
+
 const logLevels = {
 	levels: {
 		error: 0, // Errors that cannot be recovered from - these are crashing the app (e.g. multiple interfaces found)
@@ -25,7 +25,7 @@ const logLevels = {
 }
 export const winstonTransports = {
 	console: new transports.Console({
-		level: isRunningInDevelopmentMode ? 'debug' : 'info',
+		level: 'info',
 		format: format.json(),
 	}),
 	file: new transports.File({
@@ -52,9 +52,9 @@ const logger = createLogger({
 		format.json()
 	),
 	transports: [winstonTransports.file],
-	exceptionHandlers: isRunningInDevelopmentMode ? [] : [winstonTransports.file],
-	exitOnError: isRunningInDevelopmentMode ? false : true,
-	rejectionHandlers: isRunningInDevelopmentMode ? [] : [winstonTransports.file],
+	exceptionHandlers: [winstonTransports.file],
+	exitOnError: true,
+	rejectionHandlers: [winstonTransports.file],
 })
 
 export default logger

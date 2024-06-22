@@ -7,7 +7,7 @@ export const createOSC = async () => {
 	if (enabled === 'true') {
 		const OSCTargetIP = await ConfigRepository.getItem('OSCTargetIP')
 		const OSCMixerType = await ConfigRepository.getItem('OSCMixerType')
-
+		if (!OSCTargetIP || !OSCMixerType) return
 		if (OSCMixerType === 'xair' || OSCMixerType === 'midas-xair') globalThis.osc = new behringerXAir(OSCTargetIP)
 		else if (OSCMixerType === 'x32' || OSCMixerType === 'midas-m32') globalThis.osc = new behringerX32(OSCTargetIP)
 		// If no mixer selected then see that as the same as it being disabled

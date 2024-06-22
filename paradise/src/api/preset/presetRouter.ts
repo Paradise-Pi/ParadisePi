@@ -24,7 +24,7 @@ export const presetRouter = (
 				logger.verbose('Preset recalled', { value })
 				if (value.type === 'e131' && value.data !== null && typeof e131 !== 'undefined') {
 					e131.update(
-						parseInt(value.universe),
+						parseInt(value.universe ? value.universe : '1'),
 						e131.convertObjectToChannelData(value.data),
 						value.fadeTime * 1000
 					)
