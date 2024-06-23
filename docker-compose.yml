@@ -5,15 +5,14 @@ services:
   browser:
     restart: always
     image: bh.cr/balenalabs/browser-aarch64
+    network_mode: host
     privileged: true
-    links:
-      - "paradise:paradisepi"
     depends_on:
       - paradise
     environment:
       - KIOSK=1
       - SHOW_CURSOR=0
-      - LAUNCH_URL=http://paradisepi:80
+      - LAUNCH_URL=http://127.0.0.1:80
   paradise:
     build:
       context: .
@@ -23,4 +22,4 @@ services:
     #volumes:
     #  - 'resin-data:/data'
     ports:
-      - "80"
+      - 80:80
