@@ -18,7 +18,7 @@ export const oscDataSlice = createSlice({
 			getFromAPIFatActionCreator()
 		},
 		updateOSCDatastore: (state, action: PayloadAction<OSCDatastore>) => {
-			state = action.payload
+			return (state = action.payload)
 		},
 	},
 })

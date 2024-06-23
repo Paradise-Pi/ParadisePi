@@ -18,10 +18,10 @@ export const databaseSlice = createSlice({
 			getFromAPIFatActionCreator()
 		},
 		storeManually: (state, action: PayloadAction<Database>) => {
-			state = action.payload
+			return (state = action.payload)
 		},
 		setFromNode: (state, action: PayloadAction<Database>) => {
-			state = action.payload
+			return (state = action.payload)
 		},
 	},
 })

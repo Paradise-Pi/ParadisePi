@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import { Box, Button, Checkbox, Divider, Loader, LoadingOverlay, PasswordInput, Text, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { Checkbox, Button, Box, Divider, Loader, LoadingOverlay, Title, Text, PasswordInput } from '@mantine/core'
-import { useAppSelector } from '../../../apis/redux/mainStore'
-import { ApiCall } from '../../../apis/wrapper'
 import { RichTextEditor } from '@mantine/rte'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import React, { useEffect, useState } from 'react'
+import { useAppSelector } from '../../../apis/redux/mainStore'
+import { ApiCall } from '../../../apis/wrapper'
 
 export const GeneralConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const generalConfig = useAppSelector(state => (state.database ? state.database.config.general : false))
+	console.log(generalConfig)
 	const form = useForm({
 		initialValues: {
 			deviceLock: false,

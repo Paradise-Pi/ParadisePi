@@ -17,10 +17,10 @@ export const imagesSlice = createSlice({
 			getFromImageAPIFatActionCreator()
 		},
 		refreshImagesDatastore: (state, action: PayloadAction<Images>) => {
-			state = action.payload
+			return (state = action.payload)
 		},
 		storeManually: (state, action: PayloadAction<Images>) => {
-			state = action.payload
+			return (state = action.payload)
 		},
 	},
 })
