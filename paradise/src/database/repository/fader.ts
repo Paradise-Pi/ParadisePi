@@ -1,6 +1,6 @@
+import { In, Not } from 'typeorm'
 import dataSource from '../dataSource'
 import { Fader } from '../model/Fader'
-import { In, Not } from 'typeorm'
 import { parseJSON } from './../../api/parseUserJson'
 
 export interface DatabaseFader {
@@ -24,7 +24,7 @@ export const FaderRepository = dataSource.getRepository(Fader).extend({
 				name: item.name,
 				enabled: item.enabled,
 				channel: item.channel,
-				data: item.data,
+				data: JSON.stringify(item.data),
 				type: item.type,
 				sort: item.sort,
 				folderId: item.folder !== null ? item.folder.id.toString() : null,

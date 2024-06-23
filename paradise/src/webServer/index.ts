@@ -73,7 +73,8 @@ export class WebServer {
 										)
 									}
 									res.end()
-									reboot(true)
+									//TODO enable reboot
+									//reboot(true)
 								}
 							)
 						})

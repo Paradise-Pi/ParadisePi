@@ -1,7 +1,7 @@
-import { ConfigRepository } from '../database/repository/config'
-import { broadcast } from './broadcast'
 import { existsSync, readFileSync } from 'fs'
 import path, { extname } from 'path'
+import { ConfigRepository } from '../database/repository/config'
+import { broadcast } from './broadcast'
 const base64Image = (path: string) => {
 	const extension = extname(path)
 	const mime = extension === '.png' ? 'image/png' : 'image/jpeg'
@@ -19,7 +19,7 @@ export const createImagesObject = async (): Promise<Images> => {
 	const logoPath = await ConfigRepository.getItem('logoPath')
 	return {
 		logo:
-			logoPath !== 'false' && existsSync(path.join(__dirname, '../../', logoPath))
+			logoPath && logoPath !== 'false' && existsSync(path.join(__dirname, '../../', logoPath))
 				? base64Image(path.join(__dirname, '../../', logoPath))
 				: false,
 	}

@@ -1,10 +1,10 @@
 import { In, Not } from 'typeorm'
 import dataSource from '../dataSource'
-import { Preset } from '../model/Preset'
-import { Folders } from '../model/Folder'
-import { DatabasePreset } from './preset'
-import { DatabaseFader } from './fader'
 import { Fader } from '../model/Fader'
+import { Folders } from '../model/Folder'
+import { Preset } from '../model/Preset'
+import { DatabaseFader } from './fader'
+import { DatabasePreset } from './preset'
 
 export interface DatabaseFolder {
 	name: string
@@ -129,7 +129,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 	 * @returns A specific folder, and it's children, and the presets inside it
 	 */
 	async getOne(id: number): Promise<DatabaseFolder> {
-		const item = await this.find({
+		const items = await this.find({
 			where: {
 				id,
 			},
@@ -146,6 +146,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 				faders: true,
 			},
 		})
+		const item = items[0] // Get the first item from the array
 		return {
 			name: item.name,
 			id: item.id,

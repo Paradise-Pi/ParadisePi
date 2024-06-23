@@ -136,7 +136,7 @@ export default abstract class OSC {
 	 */
 	private setCheckStatusCycle(interval: number) {
 		if (typeof this.statusCheckerTimer === 'object') {
-			clearInterval(this.statusCheckerTimer)
+			clearInterval(this.statusCheckerTimer as unknown as number)
 		}
 		this.statusCheckerTimer = setInterval(() => {
 			this.checkStatusOSC()
@@ -214,8 +214,8 @@ export default abstract class OSC {
 		this.udpPort.close()
 		this.lastOSCMessage = 0
 		this.datastore.status = false
-		clearInterval(this.statusCheckerTimer)
-		clearInterval(this.subscriberTimer)
+		clearInterval(this.statusCheckerTimer as unknown as number)
+		clearInterval(this.subscriberTimer as unknown as number)
 		logger.info('Terminating UPD Port for OSC')
 	}
 
