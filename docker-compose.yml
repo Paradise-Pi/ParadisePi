@@ -1,0 +1,25 @@
+version: '2.1'
+volumes:
+  settings:
+services:
+  browser:
+    restart: always
+    image: bh.cr/balenalabs/browser-aarch64
+    network_mode: host
+    privileged: true
+    depends_on:
+      - paradise
+    environment:
+      - KIOSK=1
+      - SHOW_CURSOR=0
+      - LAUNCH_URL=http://127.0.0.1:80
+  paradise:
+    build:
+      context: .
+    privileged: true
+    restart: always
+    network_mode: host
+    #volumes:
+    #  - 'resin-data:/data'
+    ports:
+      - 80:80

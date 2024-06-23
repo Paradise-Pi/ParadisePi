@@ -1,0 +1,10 @@
+{
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": ["esbenp.prettier-vscode", "christian-kohler.npm-intellisense", "dbaeumer.vscode-eslint"]
+		}
+	}
+}

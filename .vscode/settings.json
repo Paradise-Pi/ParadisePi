@@ -1,29 +1,30 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "editor.formatOnSave": true,
-    "source.organizeImports": true
-  },
-  "eslint.validate": ["javascript", "typescript", "typescriptreact"],
-  "cSpell.language": "en-GB",
-  "cSpell.words": [
-    "Behringer",
-    "clsx",
-    "Colour",
-    "Crestron",
-    "Gilles",
-    "Logline",
-    "Mantine",
-    "Millis",
-    "paradisepi",
-    "portfinder",
-    "postfade",
-    "prefade",
-    "qrcode",
-    "tagline",
-    "xair",
-    "xremote"
-  ],
-  "editor.wordWrap": "on",
-  "files.eol": "\n"
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"editor.formatOnSave": "explicit",
+		"source.organizeImports": "explicit"
+	},
+	"eslint.validate": ["javascript", "typescript", "typescriptreact"],
+	"cSpell.language": "en-GB",
+	"cSpell.words": [
+		"Behringer",
+		"clsx",
+		"Colour",
+		"Crestron",
+		"Gilles",
+		"Logline",
+		"Mantine",
+		"Millis",
+		"paradisepi",
+		"portfinder",
+		"postfade",
+		"prefade",
+		"qrcode",
+		"tagline",
+		"typeorm",
+		"xair",
+		"xremote"
+	],
+	"editor.wordWrap": "on",
+	"files.eol": "\n"
 }
