@@ -133,7 +133,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 			where: {
 				id,
 			},
-			orderBy: {
+			order: {
 				sort: 'ASC',
 				presets: {
 					sort: 'ASC',
@@ -171,6 +171,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					enabled: preset.enabled,
 					color: preset.color !== null ? preset.color : '#2C2E33',
 					icon: preset.icon,
+					httpTriggerEnabled: preset.httpTriggerEnabled,
 				}
 			}),
 			faders: item.faders.map((fader: Fader) => {
@@ -178,6 +179,8 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					id: fader.id,
 					name: fader.name,
 					enabled: fader.enabled,
+					type: fader.type,
+					channel: fader.channel,
 				}
 			}),
 		}

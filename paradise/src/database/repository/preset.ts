@@ -19,19 +19,6 @@ export interface DatabasePreset {
 }
 
 export const PresetRepository = dataSource.getRepository(Preset).extend({
-	//get one preset
-	getItem(key: string): string | null {
-		const item = this.findOne({
-			select: {
-				value: true,
-			},
-			where: {
-				key,
-			},
-		})
-		if (!item) return null
-		else return item.value
-	},
 	//get all presets
 	async getAll(): Promise<Array<DatabasePreset>> {
 		const items = await this.find()
@@ -40,7 +27,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				id: item.id,
 				name: item.name,
 				enabled: item.enabled,
-				type: item.type,
+				type: item.type as PresetTypes,
 				icon: item.icon !== null ? item.icon : null,
 				universe: item.universe,
 				fadeTime: item.fadeTime !== null ? item.fadeTime : 0,

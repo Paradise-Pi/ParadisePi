@@ -31,3 +31,7 @@ export const startParadise = () => {
 			})
 	})
 }
+
+if (require.main === module) {
+	startParadise()
+}

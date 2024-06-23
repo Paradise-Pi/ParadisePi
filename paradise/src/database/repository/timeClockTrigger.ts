@@ -66,7 +66,9 @@ export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTri
 			select: {
 				id: true,
 				time: true,
-				preset: true,
+				preset: {
+					id: true,
+				},
 				timeout: true,
 				enabledWhenLocked: true,
 				lastTriggered: true,
