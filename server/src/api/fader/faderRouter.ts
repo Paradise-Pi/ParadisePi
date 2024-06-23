@@ -1,6 +1,7 @@
-import { DatabaseFader, FaderRepository } from '../../database/repository/fader'
-import { createDatabaseObject, Database, sendDatabaseObject } from '../database'
+import { DatabaseFader } from '../../../../shared/sharedTypes'
+import { FaderRepository } from '../../database/repository/fader'
 import logger from '../../logger'
+import { createDatabaseObject, Database, sendDatabaseObject } from '../database'
 /**
  * This is a REST router for the fader API.
  * @param path - The path requested by the original route requestor

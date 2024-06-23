@@ -1,9 +1,9 @@
 import { In, Not } from 'typeorm'
+import { DatabaseFader } from '../../../../shared/sharedTypes'
 import dataSource from '../dataSource'
 import { Fader } from '../model/Fader'
 import { Folders } from '../model/Folder'
 import { Preset } from '../model/Preset'
-import { DatabaseFader } from './fader'
 import { DatabasePreset } from './preset'
 
 export interface DatabaseFolder {

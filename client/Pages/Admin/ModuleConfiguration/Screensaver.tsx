@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { Alert, Box, Button, Card, Group, Image, Modal, Text, Loader, NumberInput, LoadingOverlay } from '@mantine/core'
-import { runningInElectron } from '../../../apis/utilities/version'
-import { FaFileImage } from '@react-icons/all-files/fa/FaFileImage'
-import { useAppSelector } from '../../../apis/redux/mainStore'
-import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
-import { ApiCall } from '../../../apis/wrapper'
-import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { Alert, Box, Button, Card, Group, Image, Loader, LoadingOverlay, Modal, NumberInput, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { FaFileImage } from '@react-icons/all-files/fa/FaFileImage'
+import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
+import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import React, { useEffect, useState } from 'react'
+import { useAppSelector } from '../../../apis/redux/mainStore'
+import { ApiCall } from '../../../apis/wrapper'
 
 const ScreenSaverSettings = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
@@ -77,27 +76,13 @@ const UploadLogo = () => {
 				>
 					<Text weight={500}>Logo</Text>
 				</Group>
-				{!runningInElectron() ? (
-					<>
-						<Text size="sm" style={{ lineHeight: 1.5 }}>
-							Upload a logo to be shown in the screensaver
-						</Text>
-						<Button
-							variant="default"
-							color="dark"
-							size="md"
-							fullWidth
-							my="xs"
-							onClick={() => setShowModal(true)}
-						>
-							Upload logo
-						</Button>
-					</>
-				) : (
-					<Text size="sm" style={{ lineHeight: 1.5 }}>
-						Use the web interface to upload a new logo
-					</Text>
-				)}
+
+				<Text size="sm" style={{ lineHeight: 1.5 }}>
+					Upload a logo to be shown in the screensaver
+				</Text>
+				<Button variant="default" color="dark" size="md" fullWidth my="xs" onClick={() => setShowModal(true)}>
+					Upload logo
+				</Button>
 			</Card>
 
 			<Modal onClose={() => setShowModal(false)} opened={showModal} title="Logo upload">

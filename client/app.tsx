@@ -12,6 +12,7 @@ import { getDatabaseFromAPI } from './apis/redux/databaseSlice'
 import { getImageDatastoreFromAPI } from './apis/redux/imagesSlice'
 import store, { useAppDispatch } from './apis/redux/mainStore'
 import { getOSCFromAPI } from './apis/redux/oscDataSlice'
+import { getServeraddressInParams } from './apis/utilities/getServerAddressInParams'
 import './app.css'
 import Router from './router'
 
@@ -27,6 +28,13 @@ const App = () => {
 		dispatch(getOSCFromAPI())
 		dispatch(getImageDatastoreFromAPI())
 	}, [dispatch])
+
+	// Allow the session server address to be set in the URL (e.g. http://localhost:80?serverAddress=example.com:8080)
+	const serverAddressInParams = getServeraddressInParams()
+	if (serverAddressInParams !== false) {
+		sessionStorage.setItem('paradiseServerAddress', serverAddressInParams)
+		window.location.href = '/'
+	}
 
 	return (
 		<MantineProvider

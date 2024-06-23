@@ -1,45 +1,12 @@
-import React from 'react'
 import { ActionIcon, Button, Group, JsonInput, NumberInput, Select, Tabs } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import React from 'react'
+import { OSCFormValues } from '../../../../../../shared/sharedTypes'
 import { useAppSelector } from '../../../../../apis/redux/mainStore'
-import { isValidJson } from './isValidJson'
 import { InputProps } from '../../../../InputProps'
-
-/**
- * List of commands formatted for \@mantine/form
- */
-export interface OSCFormValues {
-	commands: Array<OSCFormValue>
-}
-
-/**
- * A single osc command, stored as individual fields to allow editing.
- * The command is combined and formatted when sent using OSC.sendPreset()
- */
-export interface OSCFormValue {
-	command1: string
-	value1: string
-	command2: string
-	value2: string
-	key: string
-}
-
-/**
- * Verify if object is an OSCFormValue
- * @param data - an object
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function instanceofOSCFormValue(data: any): data is OSCFormValue {
-	return (
-		data.command1 !== undefined &&
-		data.value1 !== undefined &&
-		data.command2 !== undefined &&
-		data.value2 !== undefined &&
-		data.key !== undefined
-	)
-}
+import { isValidJson } from './isValidJson'
 
 /**
  * Wrapper for an OSC command initial option - eg '/ch/'
@@ -249,7 +216,7 @@ export const OSCPresetEditModal = (props: InputProps) => {
 								part1Index != -1
 									? oscSecondOptionList[part2Array].findIndex(
 											x => x.value == form.values.commands[index].command2
-									  )
+										)
 									: null
 
 							return (

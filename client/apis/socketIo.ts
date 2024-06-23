@@ -19,7 +19,8 @@ export class SocketConnection {
 		callback: (success: boolean, response: apiObject, errorMessage: string | null) => void
 	) {
 		if (!SocketConnection.socket) {
-			SocketConnection.socket = io({
+			const serverAddress = sessionStorage.getItem('paradiseServerAddress') || window.location.host
+			SocketConnection.socket = io(serverAddress, {
 				autoConnect: true,
 				query: {
 					os: getOS(),

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import oscHandler from 'osc'
 import { clearInterval } from 'timers'
-import { OSCFormValue, instanceofOSCFormValue } from '../../app/Components/Admin/Controls/Presets/EditModal/OSC'
-import { DatabaseFader, FaderRepository } from '../../database/repository/fader'
-import logger from '../../logger'
+import { DatabaseFader, OSCFormValue } from '../../../../shared/sharedTypes'
 import { broadcast } from '../../api/broadcast'
-import { faderArrayToString, faderStringBackToString } from './faderFunctions'
+import { FaderRepository } from '../../database/repository/fader'
+import logger from '../../logger'
+import { faderArrayToString, faderStringBackToString } from '../../../../shared/faderFunctions'
 import { MeterLevels, meter1PacketParser } from './meterFunctions'
 export interface OSCDatastore {
 	status: boolean
@@ -17,6 +17,21 @@ export interface OSCDatastore {
 	faderMutes: {
 		[key: string]: boolean
 	}
+}
+
+/**
+ * Verify if object is an OSCFormValue
+ * @param data - an object
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function instanceofOSCFormValue(data: any): data is OSCFormValue {
+	return (
+		data.command1 !== undefined &&
+		data.value1 !== undefined &&
+		data.command2 !== undefined &&
+		data.value2 !== undefined &&
+		data.key !== undefined
+	)
 }
 
 interface simpleOSCMessage {

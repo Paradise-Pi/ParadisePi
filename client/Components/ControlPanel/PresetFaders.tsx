@@ -1,11 +1,11 @@
-import React from 'react'
 import { Alert, Badge, Group, Title } from '@mantine/core'
-import { useAppSelector } from '../../apis/redux/mainStore'
-import { Fader } from './Fader'
-import { DatabaseFader } from '../../../database/repository/fader'
-import { faderArrayToString } from '../../../output/osc/faderFunctions'
-import { ApiCall } from '../../apis/wrapper'
 import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
+import React from 'react'
+import { faderArrayToString } from '../../../shared/faderFunctions'
+import { DatabaseFader } from '../../../shared/sharedTypes'
+import { useAppSelector } from '../../apis/redux/mainStore'
+import { ApiCall } from '../../apis/wrapper'
+import { Fader } from './Fader'
 
 export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 	const oscDatastore = useAppSelector(state => (state.oscDatastore ? state.oscDatastore : false))

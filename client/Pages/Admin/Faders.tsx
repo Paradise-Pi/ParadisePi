@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from 'react'
 import {
-	Group,
-	TextInput,
+	ActionIcon,
 	Box,
 	Button,
 	Center,
-	ActionIcon,
-	Select,
-	LoadingOverlay,
 	Checkbox,
-	SelectItem,
+	Group,
+	LoadingOverlay,
 	NumberInput,
+	Select,
+	SelectItem,
 	Table,
+	TextInput,
 	Title,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { showNotification } from '@mantine/notifications'
+import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaHashtag } from '@react-icons/all-files/fa/FaHashtag'
-import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { FaIcons } from '@react-icons/all-files/fa/FaIcons'
-import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
-import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import React, { useEffect, useState } from 'react'
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { DatabaseFader } from '../../../shared/sharedTypes'
 import { useAppSelector } from '../../apis/redux/mainStore'
-import { DatabaseFader } from '../../../database/repository/fader'
-import { ApiCall } from '../../apis/wrapper'
-import { showNotification } from '@mantine/notifications'
 import { usePrompt } from '../../apis/utilities/usePrompt'
+import { ApiCall } from '../../apis/wrapper'
 
 interface FormValues {
 	faders: Array<DatabaseFader>

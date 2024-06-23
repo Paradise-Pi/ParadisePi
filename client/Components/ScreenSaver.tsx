@@ -1,6 +1,6 @@
-import { Stack, Title, Space, Image } from '@mantine/core'
-import React, { useEffect, useState } from 'react'
+import { Image, Space, Stack, Title } from '@mantine/core'
 import { useElementSize, useIdle, useViewportSize } from '@mantine/hooks'
+import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '../apis/redux/mainStore'
 
 const ScreensaverView = () => {

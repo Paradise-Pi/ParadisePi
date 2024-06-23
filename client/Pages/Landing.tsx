@@ -2,7 +2,6 @@ import { Button, Stack, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { runningInElectron } from '../apis/utilities/version'
 import { ApiCall } from '../apis/wrapper'
 
 export const LandingPage = () => {
@@ -21,11 +20,6 @@ export const LandingPage = () => {
 						Control Panel
 					</Button>
 				</Link>
-				{runningInElectron() ? (
-					<Button variant="default" size="xl" onClick={() => ApiCall.get('/quit', {})}>
-						Quit
-					</Button>
-				) : null}
 			</Stack>
 		</>
 	)

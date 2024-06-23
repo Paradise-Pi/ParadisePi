@@ -6,10 +6,7 @@ import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { FaRegFolder } from '@react-icons/all-files/fa/FaRegFolder'
 import { FaRegPlayCircle } from '@react-icons/all-files/fa/FaRegPlayCircle'
-import { FaWindowClose } from '@react-icons/all-files/fa/FaWindowClose'
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { runningInElectron } from '../apis/utilities/version'
 import { useAppSelector } from '../apis/redux/mainStore'
 import { NavbarItem } from './NavbarItem'
 import { useStyles } from './Styles'
@@ -27,12 +24,6 @@ export const AdminNavigation = () => {
 					</Text>
 					<Code className={classes.version}>v{version}</Code>
 				</Group>
-				{runningInElectron() ? (
-					<Link className={cx(classes.link)} to="/controlPanel/help" key="Help">
-						<FaWindowClose className={classes.linkIcon} />
-						<span>Exit</span>
-					</Link>
-				) : null}
 				<NavbarItem
 					link="configuration"
 					label="Configuration"

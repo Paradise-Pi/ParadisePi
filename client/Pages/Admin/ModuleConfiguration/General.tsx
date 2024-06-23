@@ -3,7 +3,6 @@ import { useForm } from '@mantine/form'
 import { Checkbox, Button, Box, Divider, Loader, LoadingOverlay, Title, Text, PasswordInput } from '@mantine/core'
 import { useAppSelector } from '../../../apis/redux/mainStore'
 import { ApiCall } from '../../../apis/wrapper'
-import { runningInElectron } from '../../../apis/utilities/version'
 import { RichTextEditor } from '@mantine/rte'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 
@@ -66,7 +65,7 @@ export const GeneralConfigurationPage = () => {
 					size="lg"
 					label="Lock the control panel"
 					{...form.getInputProps('deviceLock', { type: 'checkbox' })}
-					disabled={runningInElectron() && !form.values.deviceLock}
+					disabled={!form.values.deviceLock}
 				/>
 				{/* You can't set the lock or hide the admin button whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
 				<Checkbox

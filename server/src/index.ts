@@ -1,6 +1,10 @@
 import 'reflect-metadata'
 import dataSource from './database/dataSource'
-import logger from './logger/index'
+import logger, { winstonTransports } from './logger/index'
+import { createE131 } from './output/e131/constructor'
+import { createOSC } from './output/osc/constructor'
+import { timeClockTriggerRunner } from './timeClockTriggerRunner'
+import { WebServer } from './webServer'
 
 export const startParadise = () => {
 	const bootData = {}
@@ -8,17 +12,17 @@ export const startParadise = () => {
 		dataSource
 			.initialize()
 			.then(() => {
-				console.log('dataSource initialized')
-				/*logger.profile('boot')
+				logger.profile('boot')
 				if (process.env.NODE_ENV !== 'production') {
 					logger.add(winstonTransports.console) // Turn on console logging if not in production
 				}
+
 				createE131()
 				createOSC()
 				setInterval(() => timeClockTriggerRunner(), 20000) // Run every 20 seconds
 				new WebServer()
 				logger.add(winstonTransports.broadcast) // You can only add the broadcast transport once the webserver has started
-				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })*/
+				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
 				resolve(bootData)
 			})
 			.catch(err => {
@@ -28,7 +32,13 @@ export const startParadise = () => {
 			})
 	})
 }
-
+console.log('here')
 if (require.main === module) {
+	console.log('here2')
 	startParadise()
+	console.log('here3')
+	// eslint-disable-next-line no-constant-condition
+	while (true) {
+		continue
+	}
 }

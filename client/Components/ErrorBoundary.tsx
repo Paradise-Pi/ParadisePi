@@ -1,8 +1,6 @@
-import { Button, Title, Text, Container, Accordion, Divider, Code, Box } from '@mantine/core'
+import { Accordion, Box, Button, Code, Container, Divider, Text, Title } from '@mantine/core'
 import { QRCodeSVG } from 'qrcode.react'
 import React, { Component, ErrorInfo, ReactNode } from 'react'
-import { runningInElectron } from '../apis/utilities/version'
-import { ApiCall } from '../apis/wrapper'
 
 interface Props {
 	children: ReactNode
@@ -42,17 +40,13 @@ class ErrorBoundary extends Component<Props, State> {
 			return (
 				<Container size="sm" px="md">
 					<Title my="md">Something went wrong</Title>
-					{runningInElectron() ? (
-						<Button size="lg" my="md" onClick={() => ApiCall.get('/reboot', {})}>
-							Restart
+
+					<a href="/">
+						<Button size="lg" my="md">
+							Reload
 						</Button>
-					) : (
-						<a href="/">
-							<Button size="lg" my="md">
-								Reload
-							</Button>
-						</a>
-					)}
+					</a>
+
 					<a href="http://localhost/logs" target="_blank" rel="noreferrer">
 						<Button variant="default" color="dark" size="lg" mx="xs">
 							Download Logs

@@ -1,18 +1,8 @@
 import { In, Not } from 'typeorm'
+import { DatabaseFader } from '../../../../shared/sharedTypes'
+import { parseJSON } from '../../api/parseUserJson'
 import dataSource from '../dataSource'
 import { Fader } from '../model/Fader'
-import { parseJSON } from '../../api/parseUserJson'
-
-export interface DatabaseFader {
-	id?: number
-	name: string
-	enabled: boolean
-	channel: number
-	type: string
-	sort?: number
-	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
-	data?: string | null // TODO remove this if we're not using it
-}
 
 export const FaderRepository = dataSource.getRepository(Fader).extend({
 	//get all faders

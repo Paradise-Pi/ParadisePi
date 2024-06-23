@@ -1,15 +1,15 @@
 import { Loader, Stack, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import React from 'react'
+import { SetServerAddress } from '../Pages/SetServerAddress'
 import { useAppSelector } from '../apis/redux/mainStore'
-import { runningInElectron } from '../apis/utilities/version'
 import { Authentication } from './Authentication'
 
 export const ConnectionLost = (props: { children: React.ReactNode }) => {
 	const viewportSize = useViewportSize()
 	const socketConnected = useAppSelector(state => state.status.socketConnected)
 	const passwordRequired = useAppSelector(state => state.status.passwordRequired)
-	if (socketConnected || runningInElectron()) return <>{props.children}</>
+	if (socketConnected) return <>{props.children}</>
 	else if (passwordRequired) return <Authentication />
 	else
 		return (
@@ -20,7 +20,8 @@ export const ConnectionLost = (props: { children: React.ReactNode }) => {
 				justify="center"
 			>
 				<Loader size="xl" variant="bars" />
-				<Title order={1}>Attempting to connect</Title>
+				<Title order={1}>Attempting to connect to Paradise</Title>
+				<SetServerAddress />
 			</Stack>
 		)
 }

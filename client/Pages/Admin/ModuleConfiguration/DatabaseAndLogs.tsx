@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Alert, Blockquote, Button, Divider, Modal, Container } from '@mantine/core'
-import { runningInElectron } from '../../../apis/utilities/version'
 import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
 import { useAppSelector } from '../../../apis/redux/mainStore'
 import { Prism } from '@mantine/prism'
@@ -16,7 +15,6 @@ const Logs = () => {
 				language="json"
 				copyLabel="Copy code to clipboard"
 				copiedLabel="Code copied to clipboard"
-				noCopy={runningInElectron()}
 			>
 				{logs.map(logLine => JSON.stringify(JSON.parse(logLine), null, 2)).join('\n')}
 			</Prism>
@@ -25,8 +23,6 @@ const Logs = () => {
 }
 const Database = () => {
 	const [showModal, setShowModal] = useState(false)
-	if (runningInElectron())
-		return <Blockquote icon={null}>To backup or reset the database, please use the web interface.</Blockquote>
 	return (
 		<>
 			<a href="/database/download" target="_blank">
