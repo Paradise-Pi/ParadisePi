@@ -1,18 +1,17 @@
 import { Tabs } from '@mantine/core'
-import React, { ReactNode } from 'react'
+import { FaDatabase } from '@react-icons/all-files/fa/FaDatabase'
 import { FaDrum } from '@react-icons/all-files/fa/FaDrum'
 import { FaLightbulb } from '@react-icons/all-files/fa/FaLightbulb'
-import { FaDatabase } from '@react-icons/all-files/fa/FaDatabase'
-import { FaTools } from '@react-icons/all-files/fa/FaTools'
 import { FaPaintBrush } from '@react-icons/all-files/fa/FaPaintBrush'
+import { FaTools } from '@react-icons/all-files/fa/FaTools'
+import React, { ReactNode } from 'react'
+import { DatabaseAndLogsConfigurationPage } from './ModuleConfiguration/DatabaseAndLogs'
 import { E131ModuleConfigurationPage } from './ModuleConfiguration/E131'
 import { GeneralConfigurationPage } from './ModuleConfiguration/General'
-import { DatabaseAndLogsConfigurationPage } from './ModuleConfiguration/DatabaseAndLogs'
 import { OSCModuleConfigurationPage } from './ModuleConfiguration/OSC'
 import { ScreensaverConfigurationPage } from './ModuleConfiguration/Screensaver'
 
 // Temporarily removed because it is causing double-scrollbars on the page
-// TODO look at this
 const ScrollAreaForConfigModule = (props: { children: ReactNode }) => <>{props.children}</>
 
 export const ConfigurationPage = () => {

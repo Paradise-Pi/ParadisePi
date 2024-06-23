@@ -8,6 +8,7 @@ import { outputModulesRouter } from './outputModules/outputModulesRouter'
 import { presetRouter } from './preset/presetRouter'
 import { timeClockTriggersRouter } from './timeClockTriggers/timeClockTriggers'
 import logger from '../logger'
+import { reboot } from '../utilities'
 /**
  * This is a REST router that triages all requests and sends them to relevant routers
  * @param path - The path requested by the requestor
@@ -70,12 +71,11 @@ export const routeRequest = (
 				resolve({ message: 'Pong' })
 				break
 			case 'reboot':
-				//TODO fix reboot
-				//reboot(true, false)
+				reboot(true, false)
 				resolve({})
 				break
 			case 'quit':
-				//reboot(false, false)
+				reboot(false, false)
 				resolve({})
 				break
 		}

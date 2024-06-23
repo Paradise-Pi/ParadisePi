@@ -15,6 +15,7 @@ import { Preset } from '../database/model/Preset'
 import { ConfigRepository } from '../database/repository/config'
 import { PresetRepository } from '../database/repository/preset'
 import logger from '../logger'
+import { reboot } from '../utilities'
 import { getAvailablePort } from './availablePorts'
 /**
  * The webserver is responsible for serving requests from other devices on the network that might want to connect.
@@ -76,8 +77,7 @@ export class WebServer {
 										)
 									}
 									res.end()
-									//TODO enable reboot
-									//reboot(true)
+									reboot(true)
 								}
 							)
 						})
