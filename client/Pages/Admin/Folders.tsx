@@ -25,8 +25,8 @@ import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { DatabaseFolder } from '../../../shared/database'
 import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
-import { DatabaseFolder } from '../../../database/repository/folder'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { usePrompt } from '../../apis/utilities/usePrompt'
 import { ApiCall } from '../../apis/wrapper'
@@ -64,8 +64,8 @@ export const FoldersConfigurationPage = () => {
 					value.length < 1
 						? 'Name should have at least 1 character'
 						: value === 'None'
-						? 'Name should not be "None"'
-						: undefined,
+							? 'Name should not be "None"'
+							: undefined,
 			},
 		},
 	})

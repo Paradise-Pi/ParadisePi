@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import store from './mainStore'
+import { OSCDatastore } from '../../../shared/sharedTypes'
 import { ApiCall } from '../wrapper'
-import { OSCDatastore } from '../../../output/osc'
+import store from './mainStore'
 
-const initialState: OSCDatastore | null = null
+const initialState: OSCDatastore | null = null as OSCDatastore | null
 const getFromAPIFatActionCreator = (): void => {
 	// https://redux.js.org/faq/code-structure/#how-should-i-split-my-logic-between-reducers-and-action-creators-where-should-my-business-logic-go
 	ApiCall.get('/outputModules/osc/getDatastore', {}).then(response => {
@@ -18,7 +18,7 @@ export const oscDataSlice = createSlice({
 			getFromAPIFatActionCreator()
 		},
 		updateOSCDatastore: (state, action: PayloadAction<OSCDatastore>) => {
-			return (state = action.payload)
+			state = action.payload
 		},
 	},
 })

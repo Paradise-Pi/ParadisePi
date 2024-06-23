@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import store from './mainStore'
+import { Images } from '../../../shared/sharedTypes'
 import { ApiCall } from '../wrapper'
-import { Images } from '../../../api/images'
-
-const initialState: Images | null = null
+import store from './mainStore'
+const initialState: Images | null = null as Images | null
 const getFromImageAPIFatActionCreator = (): void => {
 	// https://redux.js.org/faq/code-structure/#how-should-i-split-my-logic-between-reducers-and-action-creators-where-should-my-business-logic-go
 	ApiCall.get('/images', {}).then(response => {
@@ -18,10 +17,10 @@ export const imagesSlice = createSlice({
 			getFromImageAPIFatActionCreator()
 		},
 		refreshImagesDatastore: (state, action: PayloadAction<Images>) => {
-			return (state = action.payload)
+			state = action.payload
 		},
 		storeManually: (state, action: PayloadAction<Images>) => {
-			return (state = action.payload)
+			state = action.payload
 		},
 	},
 })

@@ -1,6 +1,7 @@
-import { Database, createDatabaseObject, sendDatabaseObject } from '../database'
-import { DatabaseTimeClockTrigger, TimeClockTriggersRepository } from '../../database/repository/timeClockTrigger'
+import {  createDatabaseObject, sendDatabaseObject } from '../database'
+import {  TimeClockTriggersRepository } from '../../database/repository/timeClockTrigger'
 import logger from '../../logger'
+import { Database, DatabaseTimeClockTrigger } from '../../../../shared/database'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor

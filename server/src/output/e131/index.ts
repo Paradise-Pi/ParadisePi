@@ -2,14 +2,12 @@
 import { Client, Server } from '@paradise-pi/e131'
 import ip from 'ip'
 import { networkInterfaces } from 'os'
+import { ChannelData } from '../../../../shared/sharedTypes'
 import { broadcast } from '../../api/broadcast'
-import { Database, createDatabaseObject, sendDatabaseObject } from '../../api/database'
+import { createDatabaseObject, sendDatabaseObject } from '../../api/database'
 import { PresetRepository } from '../../database/repository/preset'
 import logger from '../../logger'
-export interface channelData {
-	channel: number
-	level: number
-}
+import { Database } from '../../../../shared/database'
 
 interface channelFade {
 	channel: number
@@ -187,7 +185,7 @@ export class E131 {
 	 * @param channelData  - [channel:number, level:number]
 	 * @param fadeTime - (optional) Fade time in ms
 	 */
-	public update(thisUniverse: number, channelData: Array<channelData>, fadeTime = 0) {
+	public update(thisUniverse: number, channelData: Array<ChannelData>, fadeTime = 0) {
 		//Check universe is valid
 		if (this.universes + this.firstUniverse - 1 >= thisUniverse && this.firstUniverse <= thisUniverse) {
 			const dateNow = new Date().getTime()
@@ -217,8 +215,8 @@ export class E131 {
 	 * @param object - object to be converted to an array
 	 * @returns array in the correct format
 	 */
-	public convertObjectToChannelData(object: { [key: string]: string }): Array<channelData> {
-		const returnArray: Array<channelData> = []
+	public convertObjectToChannelData(object: { [key: string]: string }): Array<ChannelData> {
+		const returnArray: Array<ChannelData> = []
 		Object.entries(object).forEach(([key, value]) => {
 			returnArray.push({ channel: parseInt(key), level: parseInt(value) })
 		})

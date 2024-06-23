@@ -1,28 +1,7 @@
 import { In, Not } from 'typeorm'
+import { DatabaseTimeClockTrigger } from '../../../../shared/database'
 import dataSource from '../dataSource'
 import { TimeClockTrigger } from '../model/TimeClockTrigger'
-
-export interface DatabaseTimeClockTrigger {
-	id: number
-	presetId: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
-	time: string
-	notes: string
-	enabled: boolean
-	enabledWhenLocked: boolean
-	timeout: number
-	countdownWarning: number // TODO implement
-	countdownWarningText: string // TODO implement
-
-	lastTriggeredString: string
-
-	mon: boolean
-	tues: boolean
-	weds: boolean
-	thurs: boolean
-	fri: boolean
-	sat: boolean
-	sun: boolean
-}
 
 export const TimeClockTriggersRepository = dataSource.getRepository(TimeClockTrigger).extend({
 	async getAll(): Promise<Array<DatabaseTimeClockTrigger>> {

@@ -1,5 +1,6 @@
-import { FolderRepository, DatabaseFolder } from '../../database/repository/folder'
-import { createDatabaseObject, Database, sendDatabaseObject } from '../database'
+import { Database, DatabaseFolder } from '../../../../shared/database'
+import { FolderRepository } from '../../database/repository/folder'
+import { createDatabaseObject, sendDatabaseObject } from '../database'
 /**
  * This is a REST router for the preset folder API.
  * @param path - The path requested by the original route requestor

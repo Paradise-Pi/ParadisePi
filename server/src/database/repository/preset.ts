@@ -2,21 +2,9 @@ import { In, Not } from 'typeorm'
 import { parseJSON } from '../../api/parseUserJson'
 import dataSource from '../dataSource'
 import { Preset } from '../model/Preset'
+import { DatabasePreset, PresetTypes } from '../../../../shared/database'
 
-export type PresetTypes = 'e131' | 'osc' | 'http' | 'macro'
-export interface DatabasePreset {
-	id: number
-	name: string
-	enabled: boolean
-	icon?: string | null
-	type?: PresetTypes
-	universe?: string | null
-	fadeTime?: number
-	data?: string | null
-	httpTriggerEnabled: boolean
-	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
-	color?: string
-}
+
 
 export const PresetRepository = dataSource.getRepository(Preset).extend({
 	//get all presets

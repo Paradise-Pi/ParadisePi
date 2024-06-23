@@ -4,11 +4,12 @@ import http from 'http'
 import staticServer from 'node-static'
 import path from 'path'
 import { Server } from 'socket.io'
+import { Database } from '../../../shared/database'
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from '../../../shared/socketIo'
 import { broadcast } from '../api/broadcast'
-import { Database, createDatabaseObject, sendDatabaseObject } from '../api/database'
+import { createDatabaseObject, sendDatabaseObject } from '../api/database'
 import { createAndSendImagesObject } from '../api/images'
 import { routeRequest } from '../api/router'
-import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from '../api/socketIo'
 import dataSource from '../database/dataSource'
 import { Preset } from '../database/model/Preset'
 import { ConfigRepository } from '../database/repository/config'
@@ -29,10 +30,11 @@ export class WebServer {
 			ip: string
 		}
 	}
+	static port: number
 	constructor() {
-		WebServer.staticFileServer = new staticServer.Server(__dirname + '/../renderer/', {
+		WebServer.staticFileServer = new staticServer.Server(__dirname + '/', {
 			cache: false,
-			indexFile: 'main_window/index.html',
+			indexFile: 'index.html',
 			headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
 		})
 		WebServer.server = http.createServer((req, res) => {
@@ -202,7 +204,7 @@ export class WebServer {
 						if (e.message == 'Not Found') {
 							WebServer.staticFileServer.serveFile(
 								// 404 Page
-								'/main_window/index.html',
+								'/index.html',
 								200,
 								{},
 								req,
@@ -228,11 +230,9 @@ export class WebServer {
 			}
 		)
 		// Start the webserver and handle requests
-		getAvailablePort().then(port => {
-			//globalThis.port = port
-			// TODO save port
-			logger.info('Webserver running on port ' + port)
+		return getAvailablePort().then(port => {
 			WebServer.server.listen(port)
+			WebServer.port = port
 			WebServer.socketIoClients = {}
 			WebServer.socketIo.use((socket, next) => {
 				const userPassword = socket.handshake.auth.password
@@ -251,7 +251,7 @@ export class WebServer {
 					ip: socket.conn.remoteAddress,
 				}
 				broadcast('socketClients', WebServer.socketIoClients)
-
+				logger.debug('New Socket client connected', WebServer.socketIoClients[socket.id])
 				// This allows the frontend to make requests to the api via socket.io
 				socket.on('apiCall', (path, method, payload, callback) => {
 					routeRequest(path, method, payload)
@@ -271,6 +271,7 @@ export class WebServer {
 			createDatabaseObject('Webserver running').then((response: Database) => {
 				sendDatabaseObject(response)
 			})
+			return this
 		})
 	}
 }

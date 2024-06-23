@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client'
-import { Images } from '../../api/images'
-import { ClientToServerEvents, ServerToClientEvents } from '../../api/socketIo'
+import { Images } from '../../shared/sharedTypes'
+import { ClientToServerEvents, ServerToClientEvents } from '../../shared/socketIo'
 import { setFromNode } from './redux/databaseSlice'
 import { setFromAPI } from './redux/e131SamplingModeSlice'
 import { refreshImagesDatastore } from './redux/imagesSlice'

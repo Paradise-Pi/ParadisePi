@@ -1,8 +1,9 @@
 import { createOSC, destroyOSC } from '../../output/osc/constructor'
 import { ConfigRepository } from '../../database/repository/config'
 import { createE131, destroyE131 } from '../../output/e131/constructor'
-import { createDatabaseObject, Database, sendDatabaseObject } from '../database'
+import { createDatabaseObject, sendDatabaseObject } from '../database'
 import logger from '../../logger'
+import { Database } from '../../../../shared/database'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor

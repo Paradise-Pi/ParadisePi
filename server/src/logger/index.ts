@@ -25,7 +25,7 @@ const logLevels = {
 }
 export const winstonTransports = {
 	console: new transports.Console({
-		level: 'info',
+		level: 'debug',
 		format: format.json(),
 	}),
 	file: new transports.File({

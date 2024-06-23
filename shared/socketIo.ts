@@ -5,7 +5,7 @@
  */
 
 import { Database } from './database'
-import { Images } from './images'
+import { Images } from './sharedTypes'
 
 export interface ServerToClientEvents {
 	refreshDatabase: (database: Database) => void

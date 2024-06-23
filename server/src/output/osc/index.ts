@@ -1,23 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import oscHandler from 'osc'
 import { clearInterval } from 'timers'
-import { DatabaseFader, OSCFormValue } from '../../../../shared/sharedTypes'
+import { faderArrayToString, faderStringBackToString } from '../../../../shared/faderFunctions'
+import { meter1PacketParser } from '../../../../shared/meterFunctions'
+import { DatabaseFader, OSCDatastore, OSCFormValue } from '../../../../shared/sharedTypes'
 import { broadcast } from '../../api/broadcast'
 import { FaderRepository } from '../../database/repository/fader'
 import logger from '../../logger'
-import { faderArrayToString, faderStringBackToString } from '../../../../shared/faderFunctions'
-import { MeterLevels, meter1PacketParser } from './meterFunctions'
-export interface OSCDatastore {
-	status: boolean
-	mixerName: string | false
-	metering: MeterLevels | false
-	faderValues: {
-		[key: string]: number
-	}
-	faderMutes: {
-		[key: string]: boolean
-	}
-}
 
 /**
  * Verify if object is an OSCFormValue

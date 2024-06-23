@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import databaseSliceReducer from './databaseSlice'
-import statusSliceReducer from './statusSlice'
 import e131SamplingModeReducer from './e131SamplingModeSlice'
-import oscDataSliceReducer from './oscDataSlice'
-import logsSliceReducer from './logsSlice'
 import imagesSliceReducer from './imagesSlice'
+import logsSliceReducer from './logsSlice'
+import oscDataSliceReducer from './oscDataSlice'
+import statusSliceReducer from './statusSlice'
 
 const store = configureStore({
 	reducer: {

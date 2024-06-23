@@ -24,9 +24,9 @@ import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
-import { DatabaseTimeClockTrigger } from '../../../database/repository/timeClockTrigger'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { ApiCall } from '../../apis/wrapper'
+import { DatabaseTimeClockTrigger } from '../../../shared/database'
 
 interface FormValues {
 	triggers: Array<DatabaseTimeClockTrigger>

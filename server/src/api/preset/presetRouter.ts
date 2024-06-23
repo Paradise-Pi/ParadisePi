@@ -2,9 +2,10 @@ import axios from 'axios'
 import { parseJSON } from '../parseUserJson'
 import { Preset } from '../../database/model/Preset'
 import { ConfigRepository } from '../../database/repository/config'
-import { DatabasePreset, PresetRepository } from '../../database/repository/preset'
-import { Database, createDatabaseObject, sendDatabaseObject } from '../database'
+import {  PresetRepository } from '../../database/repository/preset'
+import {  createDatabaseObject, sendDatabaseObject } from '../database'
 import logger from '../../logger'
+import { Database, DatabasePreset } from '../../../../shared/database'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor

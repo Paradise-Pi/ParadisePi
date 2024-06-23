@@ -2,15 +2,14 @@ import { existsSync, readFileSync } from 'fs'
 import path, { extname } from 'path'
 import { ConfigRepository } from '../database/repository/config'
 import { broadcast } from './broadcast'
+import { Images } from '../../../shared/sharedTypes'
 const base64Image = (path: string) => {
 	const extension = extname(path)
 	const mime = extension === '.png' ? 'image/png' : 'image/jpeg'
 	const imageAsBase64 = readFileSync(path, 'base64')
 	return 'data:' + mime + ';base64,' + imageAsBase64
 }
-export interface Images {
-	logo: string | false
-}
+
 /**
  * Create a new image object for monitoring by redux
  * @returns A promise that resolves to the image object

@@ -1,3 +1,5 @@
+import ip from 'ip'
+import process from 'process'
 import 'reflect-metadata'
 import dataSource from './database/dataSource'
 import logger, { winstonTransports } from './logger/index'
@@ -6,8 +8,7 @@ import { createOSC } from './output/osc/constructor'
 import { timeClockTriggerRunner } from './timeClockTriggerRunner'
 import { WebServer } from './webServer'
 
-export const startParadise = () => {
-	const bootData = {}
+export const startParadise = (): Promise<{ port: number; ip: string }> => {
 	return new Promise(resolve => {
 		dataSource
 			.initialize()
@@ -20,10 +21,12 @@ export const startParadise = () => {
 				createE131()
 				createOSC()
 				setInterval(() => timeClockTriggerRunner(), 20000) // Run every 20 seconds
-				new WebServer()
+				return new WebServer()
+			})
+			.then(() => {
 				logger.add(winstonTransports.broadcast) // You can only add the broadcast transport once the webserver has started
 				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
-				resolve(bootData)
+				resolve({ port: WebServer.port, ip: ip.address() })
 			})
 			.catch(err => {
 				// Error during Data Source initialization Error: Cannot find module 'undefinedbuild/Release/better_sqlite3.node'  =  https://github.com/electron-userland/electron-forge/issues/2412
@@ -32,13 +35,15 @@ export const startParadise = () => {
 			})
 	})
 }
-console.log('here')
 if (require.main === module) {
-	console.log('here2')
-	startParadise()
-	console.log('here3')
-	// eslint-disable-next-line no-constant-condition
-	while (true) {
-		continue
-	}
+	// eslint-disable-next-line no-console
+	console.log('[CLI] Starting Paradise')
+	startParadise().then(data => {
+		// eslint-disable-next-line no-console
+		console.log(`[CLI] Paradise Running on ${data.ip}:${data.port}`)
+	})
+	process.stdin.resume() // Keep the process alive
+	process.on('SIGINT', () => {
+		process.exit()
+	})
 }

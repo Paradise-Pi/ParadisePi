@@ -1,9 +1,9 @@
-import React from 'react'
-import { FaWindows } from '@react-icons/all-files/fa/FaWindows'
-import { FaApple } from '@react-icons/all-files/fa/FaApple'
-import { FaLinux } from '@react-icons/all-files/fa/FaLinux'
 import { FaAndroid } from '@react-icons/all-files/fa/FaAndroid'
+import { FaApple } from '@react-icons/all-files/fa/FaApple'
 import { FaLaptop } from '@react-icons/all-files/fa/FaLaptop'
+import { FaLinux } from '@react-icons/all-files/fa/FaLinux'
+import { FaWindows } from '@react-icons/all-files/fa/FaWindows'
+import React from 'react'
 export const getOS = () => {
 	const { userAgent } = window.navigator
 	const macosPlatforms = /(Macintosh)|(MacIntel)|(MacPPC)|(Mac68K)/i

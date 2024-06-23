@@ -1,23 +1,9 @@
 import { In, Not } from 'typeorm'
-import { DatabaseFader } from '../../../../shared/sharedTypes'
+import { DatabaseFolder } from '../../../../shared/database'
 import dataSource from '../dataSource'
 import { Fader } from '../model/Fader'
 import { Folders } from '../model/Folder'
 import { Preset } from '../model/Preset'
-import { DatabasePreset } from './preset'
-
-export interface DatabaseFolder {
-	name: string
-	id: number
-	sort?: number
-	icon?: string
-	infoText?: string
-	children?: Array<DatabaseFolder>
-	parent?: DatabaseFolder
-	parentFolderId?: string
-	presets?: Array<DatabasePreset>
-	faders?: Array<DatabaseFader>
-}
 
 export const FolderRepository = dataSource.getRepository(Folders).extend({
 	/**

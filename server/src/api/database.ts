@@ -1,58 +1,15 @@
 import ip from 'ip'
-import { DatabaseFader } from '../../../shared/sharedTypes'
+import { Database } from '../../../shared/database'
 import { version } from '../../package.json'
 import { ConfigRepository } from '../database/repository/config'
 import { FaderRepository } from '../database/repository/fader'
-import { DatabaseFolder, FolderRepository } from '../database/repository/folder'
-import { DatabasePreset, PresetRepository } from '../database/repository/preset'
-import { DatabaseTimeClockTrigger, TimeClockTriggersRepository } from '../database/repository/timeClockTrigger'
+import { FolderRepository } from '../database/repository/folder'
+import { PresetRepository } from '../database/repository/preset'
+import { TimeClockTriggersRepository } from '../database/repository/timeClockTrigger'
+import { WebServer } from '../webServer'
 import { getOperatingSystemName } from './about/operatingSystem/info'
 import { broadcast } from './broadcast'
 
-export interface Database {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	[key: string]: any
-	about: {
-		operatingSystem: {
-			name: string
-		}
-		version: string
-		ipAddress: string
-		port: number | false
-	}
-	config: {
-		general: {
-			deviceLock: boolean
-			timeoutTime: number
-			helpText: string
-			adminLinkFromControlPanel: boolean
-			adminPin: string
-			remotePassword: string
-			fullscreen: boolean
-		}
-		osc: {
-			OSCTargetIP: string
-			OSCMixerType: string
-			OSCEnabled: boolean
-		}
-		e131: {
-			e131Enabled: boolean
-			e131FirstUniverse: number
-			e131Universes: number
-			e131SourceName: string
-			e131Priority: number
-			e131Frequency: number
-			e131FadeTime: number
-			e131Sampler_time: number
-		}
-	}
-	presets: Array<DatabasePreset>
-	timeClockTriggers: Array<DatabaseTimeClockTrigger>
-	folders: {
-		[key: number]: DatabaseFolder
-	}
-	faders: Array<DatabaseFader>
-}
 /**
  * Create a new database object for monitoring by redux
  * @param message - The message to log alongside the database request - this is useful for debugging
@@ -67,8 +24,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 			},
 			version: version,
 			ipAddress: ip.address(),
-			//port: globalThis.port,
-			port: 1000,
+			port: WebServer.port,
 		},
 		config: {
 			general: {

@@ -1,3 +1,5 @@
+import { MeterLevels } from './meterFunctions'
+
 /**
  * List of commands formatted for \@mantine/form
  */
@@ -17,8 +19,6 @@ export interface OSCFormValue {
 	key: string
 }
 
-
-
 export interface DatabaseFader {
 	id?: number
 	name: string
@@ -28,4 +28,25 @@ export interface DatabaseFader {
 	sort?: number
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	data?: string | null // TODO remove this if we're not using it
+}
+
+export interface OSCDatastore {
+	status: boolean
+	mixerName: string | false
+	metering: MeterLevels | false
+	faderValues: {
+		[key: string]: number
+	}
+	faderMutes: {
+		[key: string]: boolean
+	}
+}
+
+export interface Images {
+	logo: string | false
+}
+
+export interface ChannelData {
+	channel: number
+	level: number
 }
