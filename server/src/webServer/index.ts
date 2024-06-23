@@ -33,7 +33,7 @@ export class WebServer {
 	}
 	static port: number
 	constructor() {
-		WebServer.staticFileServer = new staticServer.Server(__dirname + '/', {
+		WebServer.staticFileServer = new staticServer.Server(__dirname + '/static/', {
 			cache: false,
 			indexFile: 'index.html',
 			headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },

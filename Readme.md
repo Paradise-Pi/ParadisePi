@@ -14,13 +14,13 @@ Read about it [on the website](https://paradise-pi.github.io/ParadisePi/)
 
 ## Stack
 
- - [Electron](https://github.com/electron/electron) (with [Electron Forge](https://www.electronforge.io/) and [Webpack](https://webpack.js.org/))
- - Framework: [React](https://github.com/facebook/react) with [Redux](https://github.com/reduxjs/redux)
- - Styling: [Mantine](https://github.com/mantinedev/mantine)
- - Logging: [Winston](https://github.com/winstonjs/winston)
- - ORM: [Typeorm](https://github.com/typeorm/typeorm)
- - Database: [Sqlite3](https://sqlite.org) with [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) driver
- - Website - [Docusaurus 2](https://github.com/facebook/docusaurus)
+-   [Electron](https://github.com/electron/electron) (with [Electron Forge](https://www.electronforge.io/) and [Webpack](https://webpack.js.org/))
+-   Framework: [React](https://github.com/facebook/react) with [Redux](https://github.com/reduxjs/redux)
+-   Styling: [Mantine](https://github.com/mantinedev/mantine)
+-   Logging: [Winston](https://github.com/winstonjs/winston)
+-   ORM: [Typeorm](https://github.com/typeorm/typeorm)
+-   Database: [Sqlite3](https://sqlite.org) with [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) driver
+-   Website - [Docusaurus 2](https://github.com/facebook/docusaurus)
 
 ## Installation
 
@@ -30,7 +30,7 @@ Pre-built packages are provided for Windows, MacOS (Intel) and Linux at the [Lat
 
 ## Developing
 
-### Docs 
+### Docs
 
 The Paradise website is hosted on Cloudflare Pages, and is built using Docusaurus. The source is in the `/docs` directory.
 
@@ -42,9 +42,10 @@ For the OSC library windows build tools are needed. See the instructions here: h
 npm install
 npm start
 ```
+
 To restart the app (hot reloading doesn't work for the preload process itself, only the rendered output) type `rs` into the command line opened by the start command. Hot reloading also doesn't work for the main process, you need to restart it fully.
 
-You can access the rendered output of the app in a browser as well (if helpful) by visiting [http://localhost:9001/main_window/#/main/help](http://localhost:9001/main_window/#/main/help). This doesn't work in production builds. 
+You can access the rendered output of the app in a browser as well (if helpful) by visiting [http://localhost:9001/main_window/#/main/help](http://localhost:9001/main_window/#/main/help). This doesn't work in production builds.
 
 ### Building Releases
 
@@ -56,8 +57,20 @@ npm run make
 
 Releases are automatically generated whenever a tag is pushed to the main branch. You can them check them over and publish them.
 
+### Balena
 
-## Architecture 
+https://blog.balena.io/no-hardware-virtualize-balenaos-devices-on-macos/
+https://docs.balena.io/learn/develop/local-mode/
+
+#### Build Stages
+
+To build for Balena, the build script creates a larger image that is used to build for the correct architecture. This built file is then copied to a slimmer image the larger image is removed. This is done to reduce the size of the final image.
+
+#### Running out of Storage
+
+Building images on a local device tends to cause it to run out of storage quickly. To get around this, login to the device in local mode by running `balena ssh XXXXX.local` and then running `balena system prune -a -f` on the SSH terminal. This will remove all images and containers from the device, freeing up space.
+
+## Architecture
 
 ```mermaid
 flowchart TB
@@ -73,13 +86,13 @@ flowchart TB
       react1(React)-.->rd1 & apiCall1
       rd1(Redux) & apiCall1(Api Call Function)-->wrap1{API Wrapper}
       end
-   
+
       subgraph BrowserWindow ["Browser Window (e.g. over Wifi)"]
       react2(React)-.->rd2 & apiCall2
       rd2(Redux) & apiCall2(Api Call Function)-->wrap2{API Wrapper}
       end
     end
-    
+
       wrap2-->socket>Socket.io]-->rt
       socket-- Callback -->wrap2
       repo-->socket-- Push -->rd2
@@ -93,7 +106,7 @@ flowchart TB
 ```
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or 
+the Free Software Foundation, either version 3 of the License, or
 any later version.
 
 This program is distributed in the hope that it will be useful,

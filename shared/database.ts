@@ -1,3 +1,4 @@
+import { DatabaseFader } from "./sharedTypes"
 
 export interface DatabaseTimeClockTrigger {
 	id: number

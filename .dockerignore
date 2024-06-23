@@ -1,4 +1,17 @@
-node_modules/
+# Don't send node_modules the daemon - we want the build server to install these.
+node_modules
+**/node_modules
+.git
 .vscode/
 .github/
+.webpack/
+.devcontainer/
+# Don't send the documentation - we build these locally
 docs/
+# Don't send the dist folders to the daemon - we want the build server to build these.
+client/dist/
+server/dist/
+# Prevent edits forcing a full rebuild because of copy order
+.dockerignore
+docker-compose.yml
+Dockerfile
