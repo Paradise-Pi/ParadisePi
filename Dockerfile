@@ -12,6 +12,6 @@ FROM balenalib/aarch64-debian-node:18-bookworm-run
 
 WORKDIR /usr/src/app
 
-COPY --from=build /usr/src/app/server/ ./
+COPY --from=build /usr/src/app/server/ .
 
-CMD ["node", "/usr/src/app/server/dist/server/src/index.js"]
+CMD ["node", "/usr/src/app/dist/server/src/index.js"]
