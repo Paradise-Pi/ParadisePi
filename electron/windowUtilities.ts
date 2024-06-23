@@ -1,7 +1,7 @@
-import dataSource from './../database/dataSource'
 import { app } from 'electron'
 import fs from 'fs'
-
+import dataSource from './../database/dataSource'
+import logger from './../logger/index'
 const destroyDatabaseIfExists = (): Promise<void> => {
 	return new Promise<void>(resolve => {
 		if (dataSource.isInitialized) return dataSource.destroy().then(resolve)
