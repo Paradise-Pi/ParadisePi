@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import { createLogger, format, transports } from 'winston'
-import { BroadcastTransport } from './broadcastTransport'
 
 const logDir = path.join(__dirname, '../../logs')
 if (!fs.existsSync(logDir)) {
@@ -36,9 +35,6 @@ export const winstonTransports = {
 		tailable: true,
 		maxsize: 20971520, //20MB
 		maxFiles: 1,
-	}),
-	broadcast: new BroadcastTransport({
-		level: 'verbose',
 	}),
 }
 const logger = createLogger({

@@ -2,6 +2,7 @@ import ip from 'ip'
 import process from 'process'
 import 'reflect-metadata'
 import dataSource from './database/dataSource'
+import { BroadcastTransport } from './logger/broadcastTransport'
 import logger, { winstonTransports } from './logger/index'
 import { createE131 } from './output/e131/constructor'
 import { createOSC } from './output/osc/constructor'
@@ -17,14 +18,17 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 				if (process.env.NODE_ENV !== 'production') {
 					logger.add(winstonTransports.console) // Turn on console logging if not in production
 				}
-
 				createE131()
 				createOSC()
 				setInterval(() => timeClockTriggerRunner(), 20000) // Run every 20 seconds
 				return new WebServer()
 			})
 			.then(() => {
-				logger.add(winstonTransports.broadcast) // You can only add the broadcast transport once the webserver has started
+				logger.add(
+					new BroadcastTransport({
+						level: 'verbose',
+					})
+				) // Turn on broadcast logging (for the frontend)
 				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
 				resolve({ port: WebServer.port, ip: ip.address() })
 			})
