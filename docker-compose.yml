@@ -11,7 +11,7 @@ services:
       - paradise
     environment:
       - KIOSK=1
-      - LAUNCH_URL=http://127.0.0.1:80
+      - LAUNCH_URL=http://127.0.0.1:80/#/controlPanel/help
   paradise:
     build:
       context: .
