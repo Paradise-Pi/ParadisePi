@@ -2,6 +2,12 @@ on:
     push:
         branches:
             - v3
+
+# Allow one concurrent deployment
+concurrency:
+    group: ${{ github.workflow }}
+    cancel-in-progress: true
+
 jobs:
     balena_cloud_build:
         runs-on: ubuntu-latest
