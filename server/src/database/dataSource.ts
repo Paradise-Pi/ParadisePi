@@ -39,7 +39,7 @@ import { TimeClockTrigger } from './model/TimeClockTrigger'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
-	database: path.join(__dirname, '../../database.sqlite'),
+	database: process.env.PARADISE_DATABASE_PATH || path.join(__dirname, '../../../../database.sqlite'),
 	synchronize: false,
 	migrationsRun: true,
 	cache: false,

@@ -14,4 +14,4 @@ server/dist/
 # Prevent edits forcing a full rebuild because of copy order
 .dockerignore
 docker-compose.yml
-Dockerfile
+Dockerfile.template

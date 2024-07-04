@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { createLogger, format, transports } from 'winston'
 
-const logDir = path.join(__dirname, '../../logs')
+const logDir = process.env.PARADISE_LOG_PATH || path.join(__dirname, '../../../../logs')
 if (!fs.existsSync(logDir)) {
 	fs.mkdirSync(logDir)
 }

@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from 'path'
 import dataSource from './database/dataSource'
 const destroyDatabaseIfExists = (): Promise<void> => {
 	return new Promise<void>(resolve => {
@@ -35,7 +36,7 @@ export const reboot = (reboot?: boolean, force?: boolean, flagsAdd?: Array<strin
 
 export const factoryReset = () => {
 	dataSource.destroy().then(() => {
-		fs.unlink('database.sqlite', err => {
+		fs.unlink(process.env.PARADISE_DATABASE_PATH || path.join(__dirname, '../../database.sqlite'), err => {
 			if (err) throw err
 			reboot(true, false)
 		})

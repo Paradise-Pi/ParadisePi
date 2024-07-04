@@ -45,12 +45,12 @@ export class WebServer {
 				// Allow uploading of the database
 				const form = new IncomingForm({
 					filename: () => 'user-uploaded-database.sqlite',
-					uploadDir: path.join(__dirname, '../../'),
+					uploadDir: __dirname,
 					maxFiles: 1,
 					allowEmptyFiles: false,
 				})
 				form.parse(req, err => {
-					if (err || !fs.existsSync(path.join(__dirname, '../../user-uploaded-database.sqlite'))) {
+					if (err || !fs.existsSync('user-uploaded-database.sqlite')) {
 						if (err) {
 							res.write(err)
 							logger.error(err)
@@ -62,8 +62,9 @@ export class WebServer {
 					} else {
 						dataSource.destroy().then(() => {
 							fs.rename(
-								path.join(__dirname, '../../user-uploaded-database.sqlite'),
-								path.join(__dirname, '../../database.sqlite'),
+								'user-uploaded-database.sqlite',
+								process.env.PARADISE_DATABASE_PATH ||
+									path.join(__dirname, '../../../../database.sqlite'),
 								err => {
 									if (err) {
 										res.write(err)
@@ -86,7 +87,8 @@ export class WebServer {
 			} else if (req.url == '/database/download') {
 				// Allow backup of database
 				dataSource.destroy().then(() => {
-					const filePath = path.join(__dirname, '../../database.sqlite')
+					const filePath =
+						process.env.PARADISE_DATABASE_PATH || path.join(__dirname, '../../../../database.sqlite')
 					const fileStat = fs.statSync(filePath)
 					const fileRead = fs.readFileSync(filePath)
 					dataSource.initialize().then(() => {
@@ -102,7 +104,9 @@ export class WebServer {
 				})
 			} else if (req.url == '/logs') {
 				// Allow  downloading of logs
-				const filePath = path.join(__dirname, '../../logs/log.log')
+				const filePath = process.env.PARADISE_LOG_PATH
+					? path.join(process.env.PARADISE_LOG_PATH, '/log.log')
+					: path.join(__dirname, '../../../../logs/log.log')
 				const fileStat = fs.statSync(filePath)
 				const fileRead = fs.readFileSync(filePath)
 				res.writeHead(200, {
@@ -118,7 +122,7 @@ export class WebServer {
 				new IncomingForm({
 					filename: (_name, ext) => 'logo' + ext,
 					keepExtensions: true,
-					uploadDir: path.join(__dirname, '../../'),
+					uploadDir: process.env.PARADISE_IMAGE_PATH || path.join(__dirname, '../../../../'),
 					maxFiles: 1,
 					maxFileSize: 2 * 1024 * 1024, // 2MB
 					allowEmptyFiles: false,
