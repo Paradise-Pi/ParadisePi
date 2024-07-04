@@ -50,9 +50,9 @@ export class WebServer {
 					allowEmptyFiles: false,
 				})
 				form.parse(req, err => {
-					if (err || !fs.existsSync('user-uploaded-database.sqlite')) {
+					if (err || !fs.existsSync(path.join(__dirname, '/user-uploaded-database.sqlite'))) {
 						if (err) {
-							res.write(err)
+							res.write(err.message)
 							logger.error(err)
 						}
 						res.write(
@@ -61,18 +61,23 @@ export class WebServer {
 						res.end()
 					} else {
 						dataSource.destroy().then(() => {
-							fs.rename(
-								'user-uploaded-database.sqlite',
+							fs.copyFile(
+								path.join(__dirname, '/user-uploaded-database.sqlite'),
 								process.env.PARADISE_DATABASE_PATH ||
 									path.join(__dirname, '../../../../database.sqlite'),
 								err => {
 									if (err) {
-										res.write(err)
+										res.write(err.message)
 										logger.error(err)
 										res.write(
 											'<br/>Error encountered - upload failed & system crashed. Please re-install Paradise'
 										)
 									} else {
+										fs.rmSync(path.join(__dirname, '/user-uploaded-database.sqlite'))
+										logger.verbose(
+											'New database uploaded to ' + process.env.PARADISE_DATABASE_PATH ||
+												path.join(__dirname, '../../../../database.sqlite')
+										)
 										res.write(
 											'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30;url=/" />'
 										)
@@ -119,10 +124,11 @@ export class WebServer {
 			} else if (req.url == '/logo/upload' && req.method.toLowerCase() === 'post') {
 				// Allow uploading of logo
 				logger.verbose('Incoming logo upload')
+				const uploadDir = process.env.PARADISE_IMAGE_PATH || path.join(__dirname, '../../../../')
 				new IncomingForm({
 					filename: (_name, ext) => 'logo' + ext,
 					keepExtensions: true,
-					uploadDir: process.env.PARADISE_IMAGE_PATH || path.join(__dirname, '../../../../'),
+					uploadDir: uploadDir,
 					maxFiles: 1,
 					maxFileSize: 2 * 1024 * 1024, // 2MB
 					allowEmptyFiles: false,
@@ -139,24 +145,25 @@ export class WebServer {
 					) {
 						res.writeHead(500, { 'Content-Type': 'text/html' })
 						if (err) {
-							res.write(err)
+							res.write(err.message)
 							logger.error(err)
 						}
 						res.write(
-							'<br/>Error encountered - not continuing with upload. <a href="/">Click here to return to administration</a>'
+							'<br/>Error encountered - not continuing with upload. <a href="/#/admin/configuration">Click here to return to administration</a>'
 						)
 						res.end()
 					} else {
+						const filename = uploadDir + '/' + files.logo[0].newFilename
 						ConfigRepository.save({
 							key: 'logoPath',
-							value: files.logo[0].newFilename,
+							value: filename,
 						})
 							.then(() => {
-								logger.verbose('Incoming logo upload saved')
+								logger.verbose('Incoming logo upload saved to ' + filename)
 								createAndSendImagesObject()
 							})
 							.then(() => {
-								res.writeHead(302, { Location: req.headers.referer })
+								res.writeHead(302, { Location: req.headers.referer + '/#/admin/configuration' })
 								res.end()
 							})
 					}

@@ -15,10 +15,15 @@ data:
         - RESIN_HOST_CONFIG_disable_splash: 0
     applicationEnvironmentVariables:
         - SHOW_CURSOR: 0
+        - ROTATE_DISPLAY: 'normal'
+
     defaultDeviceType: raspberrypi4-64
     supportedDeviceTypes:
         - raspberrypi4-64
         - raspberrypi3-64
         - raspberrypi400-64
         - raspberrypi5
+        - intel-nuc
+        - generic-amd64
+        - generic-aarch64
 version: 3.0.0

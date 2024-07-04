@@ -1,4 +1,5 @@
 import ip from 'ip'
+import path from 'path'
 import process from 'process'
 import 'reflect-metadata'
 import dataSource from './database/dataSource'
@@ -18,6 +19,10 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 				if (process.env.NODE_ENV !== 'production') {
 					logger.add(winstonTransports.console) // Turn on console logging if not in production
 				}
+				logger.verbose(
+					'Booted with database ' + process.env.PARADISE_DATABASE_PATH ||
+						path.join(__dirname, '../../../../database.sqlite')
+				)
 				createE131()
 				createOSC()
 				setInterval(() => timeClockTriggerRunner(), 20000) // Run every 20 seconds

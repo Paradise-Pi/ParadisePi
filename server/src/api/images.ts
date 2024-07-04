@@ -1,8 +1,9 @@
 import { existsSync, readFileSync } from 'fs'
-import path, { extname } from 'path'
+import { extname } from 'path'
+import { Images } from '../../../shared/sharedTypes'
+import logger from '../logger'
 import { ConfigRepository } from '../database/repository/config'
 import { broadcast } from './broadcast'
-import { Images } from '../../../shared/sharedTypes'
 const base64Image = (path: string) => {
 	const extension = extname(path)
 	const mime = extension === '.png' ? 'image/png' : 'image/jpeg'
@@ -16,12 +17,16 @@ const base64Image = (path: string) => {
  */
 export const createImagesObject = async (): Promise<Images> => {
 	const logoPath = await ConfigRepository.getItem('logoPath')
-	return {
-		logo:
-			logoPath && logoPath !== 'false' && existsSync(path.join(__dirname, '../../', logoPath))
-				? base64Image(path.join(__dirname, '../../', logoPath))
-				: false,
-	}
+	if (!logoPath || logoPath === 'false') {
+		logger.verbose('Logo requested but no logo path set')
+		return { logo: false }
+	} else if (!existsSync(logoPath)) {
+		logger.warn('Logo path set does not exist ' + logoPath)
+		return { logo: false }
+	} else
+		return {
+			logo: base64Image(logoPath),
+		}
 }
 /**
  * Sends the image object over both channels to notify all clients of an update
