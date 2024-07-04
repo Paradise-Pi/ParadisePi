@@ -124,11 +124,10 @@ export class WebServer {
 			} else if (req.url == '/logo/upload' && req.method.toLowerCase() === 'post') {
 				// Allow uploading of logo
 				logger.verbose('Incoming logo upload')
-				const uploadDir = process.env.PARADISE_IMAGE_PATH || path.join(__dirname, '../../../../')
 				new IncomingForm({
 					filename: (_name, ext) => 'logo' + ext,
 					keepExtensions: true,
-					uploadDir: uploadDir,
+					uploadDir: path.join(__dirname, '../../../../'),
 					maxFiles: 1,
 					maxFileSize: 2 * 1024 * 1024, // 2MB
 					allowEmptyFiles: false,
@@ -153,13 +152,21 @@ export class WebServer {
 						)
 						res.end()
 					} else {
-						const filename = uploadDir + '/' + files.logo[0].newFilename
+						const filename = files.logo[0].newFilename
+						let filePath = path.join(__dirname, '../../../../', filename)
+						if (!process.env.PARADISE_IMAGE_PATH) {
+							fs.copyFileSync(
+								filePath,
+								path.join(process.env.PARADISE_IMAGE_PATH, files.logo[0].newFilename)
+							)
+							filePath = path.join(process.env.PARADISE_IMAGE_PATH, files.logo[0].newFilename)
+						}
 						ConfigRepository.save({
 							key: 'logoPath',
-							value: filename,
+							value: filePath,
 						})
 							.then(() => {
-								logger.verbose('Incoming logo upload saved to ' + filename)
+								logger.verbose('Incoming logo upload saved to ' + filePath)
 								createAndSendImagesObject()
 							})
 							.then(() => {

@@ -1,8 +1,7 @@
-import { Button, Stack, Title } from '@mantine/core'
+import { Button, Stack, Text, Title } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { ApiCall } from '../apis/wrapper'
 
 export const LandingPage = () => {
 	const { height, width } = useViewportSize()
@@ -10,6 +9,7 @@ export const LandingPage = () => {
 		<>
 			<Stack style={{ width, height }} align="center" spacing="lg" justify="center">
 				<Title order={1}>ParadisePi</Title>
+				<Text>Connected remotely to Paradise Device</Text>
 				<Link to="/admin/controls">
 					<Button variant="default" color="dark" size="xl">
 						Administration
