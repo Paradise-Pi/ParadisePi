@@ -18,8 +18,20 @@ Read about it [on the website](https://paradise-pi.github.io/ParadisePi/)
 -   Database: [Sqlite3](https://sqlite.org) with [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) driver
 -   Website - [Docusaurus 2](https://github.com/facebook/docusaurus)
 
-## Installation
+## Installing
 
+Currently, the recommended installation method is via Balena
+
+[![balena deploy button](https://www.balena.io/deploy.svg)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/Paradise-Pi/ParadisePi)
+
+## Environment variables
+
+| **Variable**              | **Description**                     | **Default**                     |
+| ------------------------- | ----------------------------------- | ------------------------------- |
+| `PARADISE_LOG_LEVEL_FILE` | Log level for the log file          | `warn`                          |
+| `PARADISE_DATABASE_PATH`  | Path of where to store the database | _Directory of paradise install_ |
+| `PARADISE_IMAGE_PATH`     | Path of where to store the database | _Directory of paradise install_ |
+| `PARADISE_LOG_PATH`       | Path of where to store the database | _Directory of paradise install_ |
 
 ---
 
@@ -33,7 +45,7 @@ The Paradise website is hosted on Cloudflare Pages, and is built using Docusauru
 
 For the OSC library windows build tools are needed. See the instructions here: https://github.com/nodejs/node-gyp#on-windows
 
-#### Backend 
+#### Backend
 
 ```bash
 cd server
