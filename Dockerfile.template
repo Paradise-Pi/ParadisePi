@@ -1,4 +1,4 @@
-FROM balenalib/aarch64-debian-node:18-bookworm-build AS build
+FROM balenalib/%%BALENA_ARCH%%-debian-node:18-bookworm-build AS build
 
 WORKDIR /usr/src/app
 
@@ -8,7 +8,7 @@ RUN cd client && npm install && npm run build
 
 RUN cd server && npm install
 
-FROM balenalib/aarch64-debian-node:18-bookworm-run
+FROM balenalib/%%BALENA_ARCH%%-debian-node:18-bookworm-run
 
 WORKDIR /usr/src/app
 
