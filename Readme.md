@@ -20,9 +20,11 @@ Read about it [on the website](https://paradise-pi.github.io/ParadisePi/)
 
 ## Installing
 
-Currently, the recommended installation method is via Balena
+Currently, the recommended installation method is via Balena where an [app](https://hub.balena.io/apps/2141424/ParadisePi) is maintained. This app is updated with the latest version of ParadisePi by Github Actions.
 
-[![balena deploy button](https://www.balena.io/deploy.svg)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/Paradise-Pi/ParadisePi)
+[![balena deploy button](https://www.balena.io/deploy.svg)](https://hub.balena.io/apps/2141424/ParadisePi)
+
+[Alternatively you can deploy manually and provider your own updates](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/Paradise-Pi/ParadisePi)
 
 ## Environment variables
 
