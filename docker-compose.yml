@@ -1,6 +1,6 @@
 version: '2.1'
 volumes:
-  settings:
+  resin-data:
 services:
   browser:
     restart: always
@@ -11,7 +11,6 @@ services:
       - paradise
     environment:
       - KIOSK=1
-      - SHOW_CURSOR=0
       - LAUNCH_URL=http://127.0.0.1:80
   paradise:
     build:
@@ -19,7 +18,14 @@ services:
     privileged: true
     restart: always
     network_mode: host
-    #volumes:
-    #  - 'resin-data:/data'
+    environment:
+      - PARADISE_DATABASE_PATH=/data/database/paradise-database.sqlite
+      - PARADISE_IMAGE_PATH=/data/images
+      - PARADISE_LOG_PATH=/data/logs
+    volumes:
+      - 'resin-data:/data'
+    labels:
+      io.balena.features.supervisor-api: true
+      io.balena.update.strategy: download-then-kill
     ports:
       - 80:80
