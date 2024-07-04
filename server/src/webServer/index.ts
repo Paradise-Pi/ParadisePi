@@ -154,7 +154,10 @@ export class WebServer {
 					} else {
 						const filename = files.logo[0].newFilename
 						let filePath = path.join(__dirname, '../../../../', filename)
-						if (!process.env.PARADISE_IMAGE_PATH) {
+						if (process.env.PARADISE_IMAGE_PATH) {
+							if (!fs.existsSync(process.env.PARADISE_IMAGE_PATH)) {
+								fs.mkdirSync(process.env.PARADISE_IMAGE_PATH)
+							}
 							fs.copyFileSync(
 								filePath,
 								path.join(process.env.PARADISE_IMAGE_PATH, files.logo[0].newFilename)
