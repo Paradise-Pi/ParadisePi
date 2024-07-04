@@ -66,7 +66,6 @@ export const GeneralConfigurationPage = () => {
 					size="lg"
 					label="Lock the control panel"
 					{...form.getInputProps('deviceLock', { type: 'checkbox' })}
-					disabled={!form.values.deviceLock}
 				/>
 				{/* You can't set the lock or hide the admin button whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
 				<Checkbox
