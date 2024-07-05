@@ -28,12 +28,13 @@ Currently, the recommended installation method is via Balena where an [app](http
 
 ## Environment variables
 
-| **Variable**              | **Description**                     | **Default**                     |
-| ------------------------- | ----------------------------------- | ------------------------------- |
-| `PARADISE_LOG_LEVEL_FILE` | Log level for the log file          | `warn`                          |
-| `PARADISE_DATABASE_PATH`  | Path of where to store the database | _Directory of paradise install_ |
-| `PARADISE_IMAGE_PATH`     | Path of where to store the database | _Directory of paradise install_ |
-| `PARADISE_LOG_PATH`       | Path of where to store the database | _Directory of paradise install_ |
+| **Variable**                 | **Description**                     | **Default**                     |
+| ---------------------------- | ----------------------------------- | ------------------------------- |
+| `PARADISE_LOG_LEVEL_FILE`    | Log level for the log file          | `warn`                          |
+| `PARADISE_LOG_LEVEL_CONSOLE` | Log level for the balena console    | `warn`                          |
+| `PARADISE_DATABASE_PATH`     | Path of where to store the database | _Directory of paradise install_ |
+| `PARADISE_IMAGE_PATH`        | Path of where to store the database | _Directory of paradise install_ |
+| `PARADISE_LOG_PATH`          | Path of where to store the database | _Directory of paradise install_ |
 
 ---
 

@@ -16,7 +16,7 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 			.initialize()
 			.then(() => {
 				logger.profile('boot')
-				if (process.env.NODE_ENV !== 'production') {
+				if (process.env.NODE_ENV === 'development' || process.env.PARADISE_LOG_LEVEL_CONSOLE) {
 					logger.add(winstonTransports.console) // Turn on console logging if not in production
 				}
 				logger.verbose(

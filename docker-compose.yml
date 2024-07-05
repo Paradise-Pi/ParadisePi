@@ -23,6 +23,7 @@ services:
       - PARADISE_DATABASE_PATH=/data/database/paradise-database.sqlite
       - PARADISE_IMAGE_PATH=/data/images
       - PARADISE_LOG_PATH=/data/logs
+      - NODE_ENV=production
     volumes:
       - 'resin-data:/data'
     labels:

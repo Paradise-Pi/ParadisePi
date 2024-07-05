@@ -21,6 +21,7 @@ data:
     applicationEnvironmentVariables:
         - SHOW_CURSOR: 0
         - ROTATE_DISPLAY: 'normal'
+        - PARADISE_LOG_LEVEL_CONSOLE: 'warn'
 
     defaultDeviceType: raspberrypi4-64
     supportedDeviceTypes:
