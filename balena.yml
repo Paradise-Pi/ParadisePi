@@ -1,6 +1,9 @@
 name: Paradise
 description: >-
     Raspberry Pi-powered facility control panel for sACN & OSC.
+fleetcta: Raspberry Pi control panel for sACN & OSC.
+post-provisioning: >-
+    Read the full instructions at [ParadisePi](https://paradise-pi.github.io/ParadisePi/)
 type: sw.application
 assets:
     repository:
