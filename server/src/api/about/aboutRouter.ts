@@ -15,7 +15,7 @@ export const aboutRouter = (
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	payload: apiObject
 ): Promise<apiObject> => {
-	logger.debug('About router has a request', { path, method, payload })
+	logger.silly('About router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (path.length === 0) reject(new Error('Invalid path'))
 		switch (path[0]) {

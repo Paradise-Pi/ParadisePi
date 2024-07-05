@@ -16,7 +16,7 @@ export const faderRouter = (
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 	payload: apiObject
 ): Promise<apiObject> => {
-	logger.debug('Fader router has a request', { path, method, payload })
+	logger.silly('Fader router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'PUT') {
 			return FaderRepository.setAllFromApp(payload as Array<DatabaseFader>)

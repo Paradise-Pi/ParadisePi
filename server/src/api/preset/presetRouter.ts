@@ -19,7 +19,7 @@ export const presetRouter = (
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 	payload: apiObject
 ): Promise<apiObject> => {
-	logger.debug('Preset router has a request', { path, method, payload })
+	logger.silly('Preset router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'GET' && path[0] === 'recall') {
 			return PresetRepository.findOneOrFail({ where: { id: parseInt(path[1]) } }).then((value: Preset) => {

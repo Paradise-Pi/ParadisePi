@@ -14,7 +14,7 @@ export const folderRouter = (
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 	payload: apiObject
 ): Promise<apiObject> => {
-	logger.debug('Preset folder router has a request', { path, method, payload })
+	logger.silly('Preset folder router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'PUT') {
 			return FolderRepository.setAllFromApp(payload as Array<DatabaseFolder>)

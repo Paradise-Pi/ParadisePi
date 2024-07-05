@@ -12,7 +12,7 @@ export const outputModulesRouter = (
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 	payload: apiObject
 ): Promise<apiObject> => {
-	logger.debug('e131 router has a request', { path, method, payload })
+	logger.silly('e131 router has a request', { path, method, payload })
 	return new Promise(resolve => {
 		if (path[0] === 'e131') {
 			if (path[1] === 'startSampling') {
