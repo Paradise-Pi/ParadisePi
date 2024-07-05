@@ -1,5 +1,6 @@
 name: Paradise
-description: 'Facility control panel for sACN & OSC'
+description: >-
+    Raspberry Pi-powered facility control panel for sACN & OSC.
 type: sw.application
 assets:
     repository:
@@ -9,7 +10,8 @@ assets:
     logo:
         type: blob.asset
         data:
-            url: 'https://github.com/Paradise-Pi/ParadisePi/blob/cfa040078f2c4d592c611a7313760961e4fdffa5/icon/icon.png'
+            url: >-
+                https://raw.githubusercontent.com/Paradise-Pi/ParadisePi/v3/icon/icon.png
 data:
     applicationConfigVariables:
         - RESIN_HOST_CONFIG_disable_splash: 0
@@ -26,4 +28,4 @@ data:
         - intel-nuc
         - generic-amd64
         - generic-aarch64
-version: 3.0.1
+version: 3.0.2

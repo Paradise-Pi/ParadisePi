@@ -63,6 +63,20 @@ npm install
 npm dev
 ```
 
+### Versioning
+
+To version the project, run
+
+```bash
+cd server
+npm version <major|minor|patch>
+cd ../client
+npm version <major|minor|patch>
+cd ../
+```
+
+Then update the version at the bottom of `balena.yml` and commit the changes to the repository. This will then trigger a build on the Balena Hub.
+
 ### Balena
 
 Setup a developer environment on your local machine by following [the instructions](https://blog.balena.io/no-hardware-virtualize-balenaos-devices-on-macos/) and then run `balena push <device-name> --nolive` to push the code to the device. [Full docs](https://docs.balena.io/learn/develop/local-mode/)
