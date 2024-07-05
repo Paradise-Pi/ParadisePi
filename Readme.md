@@ -28,12 +28,13 @@ Currently, the recommended installation method is via Balena where an [app](http
 
 ## Environment variables
 
-| **Variable**              | **Description**                     | **Default**                     |
-| ------------------------- | ----------------------------------- | ------------------------------- |
-| `PARADISE_LOG_LEVEL_FILE` | Log level for the log file          | `warn`                          |
-| `PARADISE_DATABASE_PATH`  | Path of where to store the database | _Directory of paradise install_ |
-| `PARADISE_IMAGE_PATH`     | Path of where to store the database | _Directory of paradise install_ |
-| `PARADISE_LOG_PATH`       | Path of where to store the database | _Directory of paradise install_ |
+| **Variable**                 | **Description**                     | **Default**                     |
+| ---------------------------- | ----------------------------------- | ------------------------------- |
+| `PARADISE_LOG_LEVEL_FILE`    | Log level for the log file          | `warn`                          |
+| `PARADISE_LOG_LEVEL_CONSOLE` | Log level for the balena console    | `warn`                          |
+| `PARADISE_DATABASE_PATH`     | Path of where to store the database | _Directory of paradise install_ |
+| `PARADISE_IMAGE_PATH`        | Path of where to store the database | _Directory of paradise install_ |
+| `PARADISE_LOG_PATH`          | Path of where to store the database | _Directory of paradise install_ |
 
 ---
 
@@ -74,6 +75,7 @@ cd ../client
 npm version <major|minor|patch>
 cd ../
 ```
+(`cd server/ && npm version patch && cd ../client && npm version patch` for a quick patch bump)
 
 Then update the version at the bottom of `balena.yml` and commit the changes to the repository. This will then trigger a build on the Balena Hub.
 

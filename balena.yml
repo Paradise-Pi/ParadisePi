@@ -1,6 +1,9 @@
 name: Paradise
 description: >-
     Raspberry Pi-powered facility control panel for sACN & OSC.
+fleetcta: Raspberry Pi control panel for sACN & OSC.
+post-provisioning: >-
+    Read the full instructions at [ParadisePi](https://paradise-pi.github.io/ParadisePi/)
 type: sw.application
 assets:
     repository:
@@ -18,6 +21,7 @@ data:
     applicationEnvironmentVariables:
         - SHOW_CURSOR: 0
         - ROTATE_DISPLAY: 'normal'
+        - PARADISE_LOG_LEVEL_CONSOLE: 'warn'
 
     defaultDeviceType: raspberrypi4-64
     supportedDeviceTypes:

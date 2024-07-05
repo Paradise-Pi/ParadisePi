@@ -51,18 +51,15 @@ const sendRebootCommand = () => {
 	} else process.exit(0)
 }
 const balenaSupervisorApiReboot = () => {
-	logger.info('Rebooting device via balena supervisor API')
+	console.log('Rebooting device via balena supervisor API')
 	return axios({
 		method: 'POST',
 		url: `${process.env.BALENA_SUPERVISOR_ADDRESS}/v1/reboot?apikey=${process.env.BALENA_SUPERVISOR_API_KEY}`,
 		data: { 'force ': true },
 		timeout: 2000, // 2 seconds
+	}).then(() => {
+		// Cannot use logger here because it will be closed
+		console.log('Reboot request sent to balena')
+		return
 	})
-		.catch(err => {
-			logger.info('Preset HTTP request failed', { err })
-		})
-		.then(() => {
-			logger.info('Reboot request sent to balena')
-			return
-		})
 }

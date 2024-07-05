@@ -1,3 +1,5 @@
+import logger from '../logger'
+import { reboot } from '../utilities'
 import { aboutRouter } from './about/aboutRouter'
 import { configRouter } from './config/configRouter'
 import { createDatabaseObject } from './database'
@@ -7,8 +9,6 @@ import { createImagesObject } from './images'
 import { outputModulesRouter } from './outputModules/outputModulesRouter'
 import { presetRouter } from './preset/presetRouter'
 import { timeClockTriggersRouter } from './timeClockTriggers/timeClockTriggers'
-import logger from '../logger'
-import { reboot } from '../utilities'
 /**
  * This is a REST router that triages all requests and sends them to relevant routers
  * @param path - The path requested by the requestor

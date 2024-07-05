@@ -1,7 +1,7 @@
-import {  createDatabaseObject, sendDatabaseObject } from '../database'
-import {  TimeClockTriggersRepository } from '../../database/repository/timeClockTrigger'
-import logger from '../../logger'
 import { Database, DatabaseTimeClockTrigger } from '../../../../shared/database'
+import { TimeClockTriggersRepository } from '../../database/repository/timeClockTrigger'
+import logger from '../../logger'
+import { createDatabaseObject, sendDatabaseObject } from '../database'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -15,7 +15,7 @@ export const timeClockTriggersRouter = (
 	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
 	payload: apiObject
 ): Promise<apiObject> => {
-	logger.debug('Time clock trigger router has a request', { path, method, payload })
+	logger.silly('Time clock trigger router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'PUT') {
 			return TimeClockTriggersRepository.setAllFromApp(payload as Array<DatabaseTimeClockTrigger>)

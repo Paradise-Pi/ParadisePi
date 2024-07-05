@@ -24,7 +24,7 @@ const logLevels = {
 }
 export const winstonTransports = {
 	console: new transports.Console({
-		level: 'debug',
+		level: process.env.PARADISE_LOG_LEVEL_CONSOLE || 'debug',
 		format: format.json(),
 	}),
 	file: new transports.File({
