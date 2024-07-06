@@ -48,6 +48,8 @@ The Paradise website is hosted on Cloudflare Pages, and is built using Docusauru
 
 For the OSC library windows build tools are needed. See the instructions here: https://github.com/nodejs/node-gyp#on-windows
 
+VSCode is recommended for development, with launch configurations for both the frontend, backend and docs provided. Alternatively, you can run the following commands:
+
 #### Backend
 
 ```bash
@@ -75,6 +77,7 @@ cd ../client
 npm version <major|minor|patch>
 cd ../
 ```
+
 (`cd server/ && npm version patch && cd ../client && npm version patch` for a quick patch bump)
 
 Then update the version at the bottom of `balena.yml` and commit the changes to the repository. This will then trigger a build on the Balena Hub.

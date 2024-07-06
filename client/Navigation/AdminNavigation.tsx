@@ -34,7 +34,7 @@ export const AdminNavigation = () => {
 				<NavbarItem link="faders" label="Faders" Icon={<FaLevelUpAlt className={classes.linkIcon} />} />
 				<NavbarItem
 					link="timeClockTriggers"
-					label="Timer Presets"
+					label="Scheduled Presets"
 					Icon={<FaRegClock className={classes.linkIcon} />}
 				/>
 			</Navbar.Section>

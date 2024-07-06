@@ -24,7 +24,7 @@ export const Authentication = () => {
 			justify="center"
 		>
 			<Title order={1}>
-				<FaLock /> Remote Access Password Required
+				<FaLock /> Password Required
 			</Title>
 			<PasswordInput
 				size="xl"

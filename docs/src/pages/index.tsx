@@ -75,7 +75,7 @@ const HomepageHeader = () => {
 				<div className="buttons">
 					<a
 						className="button button--secondary button--lg"
-						href="https://github.com/Paradise-Pi/ParadisePi/releases/latest"
+						href="/download"
 						target="_blank"
 						rel="noreferrer"
 					>
