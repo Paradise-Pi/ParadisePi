@@ -18,7 +18,15 @@ export const faderRouter = (
 ): Promise<apiObject> => {
 	logger.silly('Fader router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
-		if (method === 'PUT') {
+		if (path[0] === 'log' && path.length === 1 && method === 'POST') {
+			logger.log('history', `${payload.name} fader changed`, {
+				historyType: 'osc-fader',
+				faderAddress: payload.address,
+				faderValue: Math.floor(osc.getFaderValue(payload.address) * 100),
+				faderId: payload.id,
+				faderName: payload.name,
+			})
+		} else if (method === 'PUT') {
 			return FaderRepository.setAllFromApp(payload as Array<DatabaseFader>)
 				.then(() => {
 					return createDatabaseObject('updating all faders in bulk')
@@ -29,11 +37,6 @@ export const faderRouter = (
 				})
 		} else if (method === 'POST') {
 			if (payload && typeof payload.address !== undefined && typeof payload.value !== undefined) {
-				logger.log('history', `Fader changed`, {
-					historyType: 'osc-fader',
-					faderAddress: payload.address,
-					faderValue: payload.value,
-				})
 				osc.sendFaderValue(payload.address, payload.value)
 				resolve({})
 			} else reject(new Error('Payload not sent'))

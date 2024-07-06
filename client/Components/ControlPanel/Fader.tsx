@@ -1,5 +1,6 @@
-import React from 'react'
 import { MantineTheme, Slider } from '@mantine/core'
+import { useTimeout } from '@mantine/hooks'
+import React from 'react'
 
 /**
  * Notches on the fader used for the metering, available in decibels
@@ -72,44 +73,58 @@ export const Fader = (props: {
 	meterValue: number
 	value: number | false
 	onChange: (value: number) => void
-}) => (
-	<Slider
-		disabled={props.disabled}
-		onChange={value => (!props.disabled ? props.onChange(value) : false)}
-		value={props.value !== false ? props.value : null}
-		radius={'lg'}
-		showLabelOnHover={false}
-		size={'xl'}
-		marks={percentageMarks}
-		step={1}
-		min={0}
-		max={100}
-		precision={0}
-		label={() => null}
-		styles={theme => ({
-			track: {
-				'&:before': {
-					background: metering(theme, props.meterValue),
+	onSettle: () => void
+}) => {
+	// The timeout function debounces the fader for use in the history module, to avoid filling up the logs with every value. This calls a function after a second of inactivity on the fader.
+	const { start, clear } = useTimeout(() => props.onSettle(), 1000, {
+		autoInvoke: false,
+	})
+	return (
+		<Slider
+			disabled={props.disabled}
+			onChange={value => {
+				if (props.disabled) return false
+				else {
+					clear()
+					start()
+					props.onChange(value)
+				}
+			}}
+			value={props.value !== false ? props.value : null}
+			radius={'lg'}
+			showLabelOnHover={false}
+			size={'xl'}
+			marks={percentageMarks}
+			step={1}
+			min={0}
+			max={100}
+			precision={0}
+			label={() => null}
+			styles={theme => ({
+				track: {
+					'&:before': {
+						background: metering(theme, props.meterValue),
+					},
 				},
-			},
-			bar: {
-				backgroundColor: 'transparent',
-			},
-			mark: {
-				border: 0,
-				height: 12,
-				width: 1,
-			},
-			thumb: {
-				display: 'block',
-				height: props.disabled ? '1em' : '2em',
-				width: props.disabled ? '0.5em' : '1em',
-				backgroundColor: 'white',
-			},
-			root: {
-				paddingTop: '1em',
-				paddingBottom: '2em',
-			},
-		})}
-	/>
-)
+				bar: {
+					backgroundColor: 'transparent',
+				},
+				mark: {
+					border: 0,
+					height: 12,
+					width: 1,
+				},
+				thumb: {
+					display: 'block',
+					height: props.disabled ? '1em' : '2em',
+					width: props.disabled ? '0.5em' : '1em',
+					backgroundColor: 'white',
+				},
+				root: {
+					paddingTop: '1em',
+					paddingBottom: '2em',
+				},
+			})}
+		/>
+	)
+}

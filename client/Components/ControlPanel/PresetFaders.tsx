@@ -50,6 +50,13 @@ export const PresetFaders = (props: { faders: Array<DatabaseFader> }) => {
 										value: val / 100,
 									})
 								}
+								onSettle={() =>
+									ApiCall.post('/faders/log', {
+										address: '/' + faderString + '/mix/fader',
+										id: fader.id,
+										name: fader.name,
+									})
+								}
 							/>
 						</div>
 					)

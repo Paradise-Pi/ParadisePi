@@ -235,6 +235,15 @@ export default abstract class OSC {
 	}
 
 	/**
+	 * Retrieve the value of a fader
+	 * @param faderString - string of the fader to get the value of (e.g. /ch/1/mix/fader)
+	 * @returns - a value between 0 and 1
+	 */
+	public getFaderValue(faderString: string) {
+		return this.datastore.faderValues[faderStringBackToString(faderString, this.deviceType)]
+	}
+
+	/**
 	 * Preset sending handler
 	 * @param presetData - a SINGLE OSCFormValue Preset command, single simpleOSCMessage or an address string to send
 	 * A simple OSC message consists of an address and an array of arguments
