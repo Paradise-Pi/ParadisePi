@@ -19,7 +19,7 @@ export const GeneralConfigurationPage = () => {
 			fullscreen: false,
 		},
 		validate: {
-			adminPin: value => (value == '' ? null : /^\d+$/.test(value) ? null : 'Invalid pin'),
+			adminPin: value => (value == '' ? null : /^\d+$/.test(value) ? null : 'Invalid pin - must only contain numbers'),
 		},
 	})
 	useEffect(() => {
