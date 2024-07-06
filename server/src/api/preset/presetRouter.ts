@@ -23,7 +23,12 @@ export const presetRouter = (
 	return new Promise((resolve, reject) => {
 		if (method === 'GET' && path[0] === 'recall') {
 			return PresetRepository.findOneOrFail({ where: { id: parseInt(path[1]) } }).then((value: Preset) => {
-				logger.debug('Preset recalled', { value })
+				logger.log('history', `${value.name} preset recalled`, {
+					historyType: 'preset',
+					presetId: value.id,
+					presetName: value.name,
+					presetType: value.type,
+				})
 				if (value.type === 'e131' && value.data !== null && typeof e131 !== 'undefined') {
 					e131.update(
 						parseInt(value.universe ? value.universe : '1'),

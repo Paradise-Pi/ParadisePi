@@ -29,6 +29,11 @@ export const faderRouter = (
 				})
 		} else if (method === 'POST') {
 			if (payload && typeof payload.address !== undefined && typeof payload.value !== undefined) {
+				logger.log('history', `Fader changed`, {
+					historyType: 'osc-fader',
+					faderAddress: payload.address,
+					faderValue: payload.value,
+				})
 				osc.sendFaderValue(payload.address, payload.value)
 				resolve({})
 			} else reject(new Error('Payload not sent'))

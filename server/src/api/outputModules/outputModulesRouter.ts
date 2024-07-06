@@ -19,6 +19,10 @@ export const outputModulesRouter = (
 				return globalThis.e131.sampleE131().then(() => resolve({}))
 			} else if (path[1] === 'output' && method === 'PUT') {
 				globalThis.e131.update(payload.universe, payload.channelData, payload.fadeTime)
+				logger.log('history', `sACN Value manually changed`, {
+					historyType: 'e131-value',
+					...payload,
+				})
 				return resolve({})
 			}
 		} else if (path[0] === 'osc') {
