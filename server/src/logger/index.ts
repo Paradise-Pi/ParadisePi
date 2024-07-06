@@ -3,7 +3,6 @@ import path from 'path'
 import { createLogger, format, transports } from 'winston'
 
 const logDir = process.env.PARADISE_LOG_PATH || path.join(__dirname, '../../../../logs')
-console.log('logDir', logDir)
 if (!fs.existsSync(logDir)) {
 	fs.mkdirSync(logDir)
 }

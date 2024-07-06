@@ -62,6 +62,12 @@ if (require.main === module) {
 	})
 	process.stdin.resume() // Keep the process alive
 	process.on('SIGINT', () => {
+		// eslint-disable-next-line no-console
+		console.log('[CLI] Paradise Stopping because of user CLI input')
 		process.exit()
+	})
+	process.on('exit', () => {
+		// eslint-disable-next-line no-console
+		console.log('[CLI] Paradise Stopped')
 	})
 }
