@@ -34,7 +34,7 @@ export const ConfigurationPage = () => {
 						OSC
 					</Tabs.Tab>
 					<Tabs.Tab value="history" icon={<FaHistory />}>
-						History
+						History Recording
 					</Tabs.Tab>
 					<Tabs.Tab value="diagnostics" icon={<FaStethoscope />}>
 						Diagnostics
