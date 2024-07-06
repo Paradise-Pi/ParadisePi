@@ -56,8 +56,8 @@ const config: Config = {
 					label: 'User Guide',
 				},
 				{
-					href: 'https://github.com/Paradise-Pi/ParadisePi/releases/latest',
-					label: 'Download',
+					href: '/download',
+					label: 'Get Started',
 					position: 'left',
 				},
 				{

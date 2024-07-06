@@ -1,0 +1,31 @@
+{
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "install",
+			"path": "client",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "NPM Install - Client",
+			"detail": "Install dependencies"
+		},
+		{
+			"type": "npm",
+			"script": "install",
+			"path": "server",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "NPM Install - Server",
+			"detail": "Install dependencies"
+		},
+		{
+			"type": "npm",
+			"script": "install",
+			"path": "docs",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "NPM Install - Docs",
+			"detail": "Install dependencies"
+		}
+	]
+}
