@@ -1,10 +1,59 @@
-import { Box, Button, Checkbox, Divider, Loader, LoadingOverlay, PasswordInput, Text, Title } from '@mantine/core'
+import {
+	Alert,
+	Box,
+	Button,
+	Checkbox,
+	Divider,
+	Loader,
+	LoadingOverlay,
+	Modal,
+	PasswordInput,
+	Text,
+	Title,
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { RichTextEditor } from '@mantine/rte'
+import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import React, { useEffect, useState } from 'react'
 import { useAppSelector } from '../../../apis/redux/mainStore'
 import { ApiCall } from '../../../apis/wrapper'
+const Database = () => {
+	const [showModal, setShowModal] = useState(false)
+	return (
+		<>
+			<a
+				href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/database/download`}
+				target="_blank"
+			>
+				<Button variant="default" color="dark" size="md" mt="xs">
+					Download Database Backup
+				</Button>
+			</a>
+			<Button variant="default" color="dark" size="md" my="xs" onClick={() => setShowModal(true)}>
+				Upload new Database
+			</Button>
+			<Modal onClose={() => setShowModal(false)} opened={showModal} title="Upload new Database">
+				<Alert icon={<FaExclamationTriangle />} title="Danger" color="gray" my="sm">
+					Ensure you are uploading a valid backup file from Paradise as this file will not be checked to
+					ensure it is a valid backup file - if this is not a backup file, you will lose all data and will
+					have to uninstall Paradise and install it again. Please also ensure no other users are currently
+					using the system, as all lighting and sound will be lost.
+				</Alert>
+				<form
+					action={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/database/upload`}
+					method="post"
+					encType="multipart/form-data"
+				>
+					<input type="file" name="fileupload" accept=".sqlite,.sqlite3" />
+					<Button type="submit" color="red">
+						Upload
+					</Button>
+				</form>
+			</Modal>
+		</>
+	)
+}
 
 export const GeneralConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
@@ -19,7 +68,8 @@ export const GeneralConfigurationPage = () => {
 			fullscreen: false,
 		},
 		validate: {
-			adminPin: value => (value == '' ? null : /^\d+$/.test(value) ? null : 'Invalid pin - must only contain numbers'),
+			adminPin: value =>
+				value == '' ? null : /^\d+$/.test(value) ? null : 'Invalid pin - must only contain numbers',
 		},
 	})
 	useEffect(() => {
@@ -55,18 +105,11 @@ export const GeneralConfigurationPage = () => {
 	return (
 		<Box sx={{ maxWidth: 380 }} mx="auto">
 			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
+			<Database />
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Button type="submit" leftIcon={<FaSave />}>
 					Save
 				</Button>
-				<Divider my="sm" />
-				<Checkbox
-					mt="md"
-					size="lg"
-					label="Lock the control panel"
-					{...form.getInputProps('deviceLock', { type: 'checkbox' })}
-				/>
-				{/* You can't set the lock or hide the admin button whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
 				<Checkbox
 					mt="md"
 					my="md"
@@ -75,7 +118,6 @@ export const GeneralConfigurationPage = () => {
 					style={{ display: 'none' }}
 					{...form.getInputProps('fullscreen', { type: 'checkbox' })}
 				/>
-				<Divider my="sm" />
 				<PasswordInput
 					mt="md"
 					size="lg"
@@ -99,6 +141,13 @@ export const GeneralConfigurationPage = () => {
 					label="Allow access from Control Panel to Admin"
 					{...form.getInputProps('adminLinkFromControlPanel', { type: 'checkbox' })}
 				/>
+				<Checkbox
+					mt="md"
+					size="lg"
+					label="Lock the control panel"
+					{...form.getInputProps('deviceLock', { type: 'checkbox' })}
+				/>
+				{/* TODO - develop functionality so you can't set the lock or hide the admin button whilst in electron as it would cause a condition where you can lock yourself out but never get in again */}
 				<Divider my="sm" />
 				<Title order={5}>Help Page</Title>
 				<Text my="md">Text to display on the help page</Text>
