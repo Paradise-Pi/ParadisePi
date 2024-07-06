@@ -75,7 +75,7 @@ const HomepageHeader = () => {
 				<div className="buttons">
 					<a
 						className="button button--secondary button--lg"
-						href="/download"
+						href="https://hub.balena.io/apps/2141424/ParadisePi"
 						target="_blank"
 						rel="noreferrer"
 					>

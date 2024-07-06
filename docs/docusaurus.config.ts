@@ -56,7 +56,7 @@ const config: Config = {
 					label: 'User Guide',
 				},
 				{
-					href: '/download',
+					href: 'https://hub.balena.io/apps/2141424/ParadisePi',
 					label: 'Get Started',
 					position: 'left',
 				},

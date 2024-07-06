@@ -11,6 +11,6 @@ It is recommended you use the admin menu from a [remote browser](./../control/re
 
 ## Pin
 
-A pin can be set for the setup & administration menu, which will be required to access it. This is useful if you want to prevent unauthorised access to the setup menu.
+A pin can be set for the setup & administration menu, which will be required to access it. This is useful if you want to prevent unauthorised access to the setup & administration menu.
 
 ![Enter Admin Pin](@site/static/img/tutorial/admin/enter-admin-pin.jpg)
