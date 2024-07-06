@@ -13,8 +13,7 @@ export class BroadcastTransport extends Transport {
 		setImmediate(() => {
 			this.emit('logged', info)
 		})
-
-		broadcast('logging', { info })
+		broadcast('logging', info as unknown as object)
 
 		callback()
 	}
