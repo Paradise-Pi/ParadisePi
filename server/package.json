@@ -9,7 +9,7 @@
 		"prepare": "npm run build",
 		"build": "tsc && copyfiles --error --follow --up 3 node_modules/paradisepi-client/dist/index.html node_modules/paradisepi-client/dist/favicon.ico node_modules/paradisepi-client/dist/**/* dist/server/src/webServer/static/",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"develop": "tsx src/index.ts",
+		"develop": "tsx watch src/index.ts --clear-screen=false",
 		"lint": "eslint --ext .ts,.tsx .",
 		"typeorm": "typeorm-ts-node-commonjs -d src/database/dataSource.ts"
 	},
