@@ -36,7 +36,7 @@ import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import { usePrompt } from '../../apis/utilities/usePrompt'
+import { DatabasePreset, PresetTypes } from '../../../shared/database'
 import { E131PresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/E131'
 import { HTTPPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/HTTP'
 import { MacroPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/Macro'
@@ -44,8 +44,8 @@ import { OSCPresetEditModal } from '../../Components/Admin/Controls/Presets/Edit
 import { isValidJson } from '../../Components/Admin/Controls/Presets/EditModal/isValidJson'
 import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
 import { useAppSelector } from '../../apis/redux/mainStore'
+import { usePrompt } from '../../apis/utilities/usePrompt'
 import { ApiCall } from '../../apis/wrapper'
-import { DatabasePreset, PresetTypes } from '../../../shared/database'
 
 interface FormValues {
 	presets: Array<DatabasePreset>
@@ -127,12 +127,12 @@ export const PresetsConfigurationPage = () => {
 							{form.values.presets[index].type === 'e131'
 								? 'sACN (E1.31)'
 								: form.values.presets[index].type === 'osc'
-								? 'OSC'
-								: form.values.presets[index].type === 'http'
-								? 'HTTP'
-								: form.values.presets[index].type === 'macro'
-								? 'Macro'
-								: ''}
+									? 'OSC'
+									: form.values.presets[index].type === 'http'
+										? 'HTTP'
+										: form.values.presets[index].type === 'macro'
+											? 'Macro'
+											: ''}
 						</Badge>
 					</td>
 					<td>
@@ -159,7 +159,7 @@ export const PresetsConfigurationPage = () => {
 							variant="transparent"
 							title="Recall"
 							disabled={saveByUserNeeded}
-							onClick={() => ApiCall.get('/presets/recall/' + form.values.presets[index].id, {})}
+							onClick={() => ApiCall.get('/presets/recall-user/' + form.values.presets[index].id, {})}
 						>
 							<FaPlay />
 						</ActionIcon>
@@ -213,11 +213,11 @@ export const PresetsConfigurationPage = () => {
 									value={
 										form.values.presets[index].id
 											? 'http://' +
-											  ipAddress +
-											  ':' +
-											  port +
-											  '/trigger/preset/' +
-											  form.values.presets[index].id
+												ipAddress +
+												':' +
+												port +
+												'/trigger/preset/' +
+												form.values.presets[index].id
 											: 'Save preset to generate URL'
 									}
 								/>

@@ -214,14 +214,40 @@ export class WebServer {
 										.then(() => {
 											res.writeHead(200, { 'Content-Type': 'text/html' })
 											res.write('Preset triggered')
+											logger.log('history', 'External HTTP client triggered preset', {
+												presetId: value.id,
+												presetName: value.name,
+												presetType: value.type,
+												type: 'http-trigger-preset',
+											})
 											res.end()
 										})
 										.catch(() => {
 											res.writeHead(500, { 'Content-Type': 'text/html' })
 											res.write('Error - preset could not be recalled')
+											logger.log(
+												'history',
+												'External HTTP client attempted to trigger present, but an error was encountered',
+												{
+													presetId: value.id,
+													presetName: value.name,
+													presetType: value.type,
+													type: 'http-trigger-preset-fail',
+												}
+											)
 											res.end()
 										})
 								} else {
+									logger.log(
+										'history',
+										'External HTTP client attempted to trigger present, which was disabled from HTTP triggers',
+										{
+											presetId: value.id,
+											presetName: value.name,
+											presetType: value.type,
+											type: 'http-trigger-preset-fail',
+										}
+									)
 									res.writeHead(403, { 'Content-Type': 'text/html' })
 									res.write('Preset not enabled for trigger via HTTP')
 									res.end()

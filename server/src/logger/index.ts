@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { createLogger, format, transports } from 'winston'
+import { addColors, createLogger, format, transports } from 'winston'
 
 const logDir = process.env.PARADISE_LOG_PATH || path.join(__dirname, '../../../../logs')
 if (!fs.existsSync(logDir)) {
@@ -20,6 +20,9 @@ const logLevels = {
 		error: 'red',
 		warn: 'yellow',
 		info: 'green',
+		history: 'blue',
+		debug: 'black',
+		silly: 'black',
 	},
 }
 export const winstonTransports = {
@@ -69,5 +72,6 @@ const logger = createLogger({
 	exitOnError: true,
 	rejectionHandlers: [winstonTransports.file],
 })
+addColors(logLevels.colors)
 
 export default logger
