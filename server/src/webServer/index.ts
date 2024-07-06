@@ -56,7 +56,7 @@ export class WebServer {
 							logger.error(err)
 						}
 						res.write(
-							'<br/>Error encountered - not continuing with upload, so system is still running. <a href="/">Click here to return to administration</a>'
+							`<br/>Error encountered - not continuing with upload, so system is still running. <a href="${req.headers.referer}/#/admin/configuration">Return to administration</a>`
 						)
 						res.end()
 					} else {
@@ -79,7 +79,7 @@ export class WebServer {
 												path.join(__dirname, '../../../../database.sqlite')
 										)
 										res.write(
-											'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30;url=/" />'
+											`<br/>Successfully uploaded new database - system will now reboot. Please wait 30 seconds, then <a href="${req.headers.referer}/#/admin/configuration">click to return to administration</a>`
 										)
 									}
 									res.end()
@@ -148,7 +148,7 @@ export class WebServer {
 							logger.error(err)
 						}
 						res.write(
-							'<br/>Error encountered - not continuing with upload. <a href="/#/admin/configuration">Click here to return to administration</a>'
+							`<br/>Error encountered - not continuing with upload. <a href="${req.headers.referer}/#/admin/configuration">Return to administration</a>`
 						)
 						res.end()
 					} else {
