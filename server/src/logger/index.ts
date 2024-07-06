@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { addColors, createLogger, format, transports } from 'winston'
 
-const logDir = process.env.PARADISE_LOG_PATH || path.join(__dirname, '../../../../logs')
+export const logDir = process.env.PARADISE_LOG_PATH || path.join(__dirname, '../../../../logs')
 if (!fs.existsSync(logDir)) {
 	fs.mkdirSync(logDir)
 }
@@ -47,22 +47,6 @@ export const winstonTransports = {
 		tailable: true,
 		maxsize: 20971520, //20MB
 		maxFiles: 1,
-	}),
-	history: new transports.File({
-		level: 'history',
-		filename: 'history.log',
-		format: format.combine(
-			format.timestamp({
-				format: 'YYYY-MM-DD HH:mm:ss',
-			}),
-			format.errors({ stack: true }),
-			format.json()
-		),
-		dirname: logDir,
-		tailable: true, // history.log will always be the most recent log file
-		maxsize: 20971520, //20MB
-		maxFiles: 12,
-		zippedArchive: true, // Archive the other 11 files in a zip file
 	}),
 }
 const logger = createLogger({

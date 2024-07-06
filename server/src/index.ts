@@ -2,10 +2,10 @@ import ip from 'ip'
 import path from 'path'
 import process from 'process'
 import 'reflect-metadata'
-import { format } from 'winston'
+import { Equal, Or } from 'typeorm'
 import dataSource from './database/dataSource'
 import { ConfigRepository } from './database/repository/config'
-import { BroadcastTransport } from './logger/broadcastTransport'
+import { broadcastTransport, historyTransport } from './logger/additionalTransports'
 import logger, { winstonTransports } from './logger/index'
 import { createE131 } from './output/e131/constructor'
 import { createOSC } from './output/osc/constructor'
@@ -24,12 +24,24 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 				logger.info('Booted with database', {
 					database: process.env.PARADISE_DATABASE_PATH || path.join(__dirname, '../../../../database.sqlite'),
 				})
-				return ConfigRepository.getItem('historyEnabled')
+				return ConfigRepository.find({
+					select: { key: true, value: true },
+					where: {
+						key: Or(Equal('historyEnabled'), Equal('historyLogParameters')),
+					},
+				})
 			})
-			.then(historyEnabled => {
-				if (historyEnabled === 'true') {
+			.then(historyConfig => {
+				if (historyConfig.length !== 2) throw new Error('History configuration not found')
+				let historyEnabled = false
+				let historyLogParameters: string[] = []
+				historyConfig.forEach(config => {
+					if (config.key === 'historyEnabled') historyEnabled = config.value === 'true'
+					if (config.key === 'historyLogParameters') historyLogParameters = config.value.split(',')
+				})
+				if (historyEnabled) {
 					logger.debug('History logging enabled')
-					logger.add(winstonTransports.history) // Turn on history logging
+					logger.add(historyTransport(historyLogParameters)) // Turn on history logging
 				}
 				createE131()
 				createOSC()
@@ -37,13 +49,7 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 				return new WebServer()
 			})
 			.then(() => {
-				logger.add(
-					// Turn on broadcast logging (for the frontend)
-					new BroadcastTransport({
-						level: 'info',
-						format: format.combine(format.errors({ stack: true }), format.json()),
-					})
-				) // Turn on broadcast logging (for the frontend)
+				logger.add(broadcastTransport) // Turn on broadcast logging (for the frontend)
 				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
 				resolve({ port: WebServer.port, ip: ip.address() })
 			})
