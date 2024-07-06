@@ -4,57 +4,60 @@ Please describe the changes
 
 ## Checklist
 
-- [ ] I have added documentation for new/changed functionality in this PR
-- [ ] All active GitHub checks for tests, formatting, and security are passing
-- [ ] The correct base branch is being used, if not `main`
+-   [ ] I have added documentation for new/changed functionality in this PR
+-   [ ] All active GitHub checks for tests, formatting, and security are passing
+-   [ ] The correct base branch is being used, if not `main`
 
-## Test Checklist 
+## Test Checklist
 
 ### Basics
 
-- [ ] Boots with a pre-existing database from the previous release, uploaded using the interface
-- [ ] Boots without a database, successfully creating its own 
-- [ ] Reboots when reboot clicked
-- [ ] Quits when quit clicked
+-   [ ] Boots with a pre-existing database from the previous release, uploaded using the interface
+-   [ ] Boots without a database, successfully creating its own
+-   [ ] Reboots when reboot clicked
+-   [ ] Quits when quit clicked
+
+### Security
+
+-   [ ] Setup & Administration Menu Pin is required when set
+-   [ ] Access password is required when set
 
 ### Presets/Faders/Folders
 
-- [ ] Presets/Faders/Folders can be added
-- [ ] Presets/Faders/Folders can be removed
-- [ ] Presets/Faders/Folders can be renamed, and this is reflected on the control panel
-- [ ] Presets/Folders can be disabled, and they are hidden from the control panel
-- [ ] Presets/Faders/Folders can be enabled, and they are shown in the control panel
-- [ ] Preset/Folders colors can be changed, and this is shown in the control panel
-- [ ] Preset/Faders/Folders sort order is maintained
-- [ ] Presets can be triggered by HTTP requests
+-   [ ] Presets/Faders/Folders can be added
+-   [ ] Presets/Faders/Folders can be removed
+-   [ ] Presets/Faders/Folders can be renamed, and this is reflected on the control panel
+-   [ ] Presets/Folders can be disabled, and they are hidden from the control panel
+-   [ ] Presets/Faders/Folders can be enabled, and they are shown in the control panel
+-   [ ] Preset/Folders colors can be changed, and this is shown in the control panel
+-   [ ] Preset/Faders/Folders sort order is maintained
+-   [ ] Presets can be triggered by HTTP requests
 
 ### Preset Triggers
 
-- [ ] Presets can be triggered by HTTP requests
-- [ ] Time clock triggers recall presets successfully
-- [ ] Time clock triggers do not recall when device locked
+-   [ ] Presets can be triggered by HTTP requests
+-   [ ] Time clock triggers recall presets successfully
+-   [ ] Time clock triggers do not recall when device locked
 
 ### Preset Types
 
 #### sACN
 
-- [ ] sACN can be enabled/disabled
-- [ ] sACN data is output successfully
+-   [ ] sACN can be enabled/disabled
+-   [ ] sACN data is output successfully
 
 #### OSC
 
-- [ ] OSC can be enabled/disabled
-- [ ] OSC data is output successfully
-- [ ] X32 Faders are functional
+-   [ ] OSC can be enabled/disabled
+-   [ ] OSC data is output successfully
+-   [ ] X32 Faders are functional
 
 #### HTTP
 
-- [ ] HTTP requests are made successfully
+-   [ ] HTTP requests are made successfully
 
 #### Macros
 
-- [ ] Macros are triggered successfully
-- [ ] Macros can trigger other macros
-- [ ] Lock macro functions
-
-
+-   [ ] Macros are triggered successfully
+-   [ ] Macros can trigger other macros
+-   [ ] Lock macro functions
