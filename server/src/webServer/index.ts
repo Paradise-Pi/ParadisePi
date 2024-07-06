@@ -74,7 +74,7 @@ export class WebServer {
 										)
 									} else {
 										fs.rmSync(path.join(__dirname, '/user-uploaded-database.sqlite'))
-										logger.verbose(
+										logger.info(
 											'New database uploaded to ' + process.env.PARADISE_DATABASE_PATH ||
 												path.join(__dirname, '../../../../database.sqlite')
 										)
@@ -121,9 +121,29 @@ export class WebServer {
 				})
 				res.write(fileRead)
 				res.end()
+			} else if (req.url == '/history-logs') {
+				// Allow  downloading of logs
+				const filePath = process.env.PARADISE_LOG_PATH
+					? path.join(process.env.PARADISE_LOG_PATH, '/history.log')
+					: path.join(__dirname, '../../../../logs/history.log')
+				if (fs.existsSync(filePath) === false) {
+					res.writeHead(404, { 'Content-Type': 'text/html' })
+					res.write('Error - history mode not enabled or no history logs found')
+					res.end()
+				} else {
+					const fileStat = fs.statSync(filePath)
+					const fileRead = fs.readFileSync(filePath)
+					res.writeHead(200, {
+						'Content-Type': 'application/octet-stream',
+						'Content-Disposition': `attachment;filename="paradise-history-logs-export-${Date.now()}.txt"`,
+						'Content-Length': fileStat.size,
+					})
+					res.write(fileRead)
+					res.end()
+				}
 			} else if (req.url == '/logo/upload' && req.method.toLowerCase() === 'post') {
 				// Allow uploading of logo
-				logger.verbose('Incoming logo upload')
+				logger.debug('Incoming logo upload')
 				new IncomingForm({
 					filename: (_name, ext) => 'logo' + ext,
 					keepExtensions: true,
@@ -169,7 +189,7 @@ export class WebServer {
 							value: filePath,
 						})
 							.then(() => {
-								logger.verbose('Incoming logo upload saved to ' + filePath)
+								logger.info('Incoming logo upload saved to ' + filePath)
 								createAndSendImagesObject()
 							})
 							.then(() => {

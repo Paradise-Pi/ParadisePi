@@ -3,6 +3,7 @@ import path from 'path'
 import process from 'process'
 import 'reflect-metadata'
 import dataSource from './database/dataSource'
+import { ConfigRepository } from './database/repository/config'
 import { BroadcastTransport } from './logger/broadcastTransport'
 import logger, { winstonTransports } from './logger/index'
 import { createE131 } from './output/e131/constructor'
@@ -17,12 +18,19 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 			.then(() => {
 				logger.profile('boot')
 				if (process.env.NODE_ENV === 'development' || process.env.PARADISE_LOG_LEVEL_CONSOLE) {
-					logger.add(winstonTransports.console) // Turn on console logging if not in production
+					logger.add(winstonTransports.developerConsole) // Turn on console logging if not in production
 				}
-				logger.verbose(
+				logger.info(
 					'Booted with database ' + process.env.PARADISE_DATABASE_PATH ||
 						path.join(__dirname, '../../../../database.sqlite')
 				)
+				return ConfigRepository.getItem('historyEnabled')
+			})
+			.then(historyEnabled => {
+				if (historyEnabled === 'true') {
+					logger.debug('History logging enabled')
+					logger.add(winstonTransports.history) // Turn on history logging
+				}
 				createE131()
 				createOSC()
 				setInterval(() => timeClockTriggerRunner(), 20000) // Run every 20 seconds
@@ -30,8 +38,9 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 			})
 			.then(() => {
 				logger.add(
+					// Turn on broadcast logging (for the frontend)
 					new BroadcastTransport({
-						level: 'verbose',
+						level: 'info',
 					})
 				) // Turn on broadcast logging (for the frontend)
 				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })

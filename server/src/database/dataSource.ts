@@ -35,6 +35,7 @@ import { AdminPin1668252943000 } from './migration/1668252943000-AdminPin'
 import { HTTPTriggers1685982219806 } from './migration/1685982219806-HTTPTriggers'
 import { PresetIcons1686849999231 } from './migration/1686849999231-PresetIcons'
 import { TimeClockTriggers1686937486497 } from './migration/1686937486497-TimeClockTriggers'
+import { History1720262576000 } from './migration/1720262576000-History'
 import { TimeClockTrigger } from './model/TimeClockTrigger'
 
 const dataSource = new DataSource({
@@ -69,6 +70,7 @@ const dataSource = new DataSource({
 		HTTPTriggers1685982219806,
 		PresetIcons1686849999231,
 		TimeClockTriggers1686937486497,
+		History1720262576000,
 	],
 	subscribers: [],
 	logger: new CustomTypeORMLogger(),

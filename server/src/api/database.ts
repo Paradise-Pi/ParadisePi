@@ -41,6 +41,12 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 				OSCMixerType: await ConfigRepository.getItem('OSCMixerType'),
 				OSCEnabled: (await ConfigRepository.getItem('OSCEnabled')) === 'true',
 			},
+			history: {
+				historyEnabled: (await ConfigRepository.getItem('historyEnabled')) === 'true',
+				historyLogParameters: (await ConfigRepository.getItem('historyLogParameters'))
+					? (await ConfigRepository.getItem('historyLogParameters')).split(',')
+					: [],
+			},
 			e131: {
 				e131Enabled: (await ConfigRepository.getItem('e131Enabled')) === 'true',
 				e131FirstUniverse: parseInt(await ConfigRepository.getItem('e131FirstUniverse')),

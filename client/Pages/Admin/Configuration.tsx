@@ -9,7 +9,7 @@ import React, { ReactNode } from 'react'
 import { DiagnosticsConfigurationPage } from './ModuleConfiguration/Diagnostics'
 import { E131ModuleConfigurationPage } from './ModuleConfiguration/E131'
 import { GeneralConfigurationPage } from './ModuleConfiguration/General'
-import { LoggingConfigurationPage } from './ModuleConfiguration/Logging'
+import { HistoryConfigurationPage } from './ModuleConfiguration/History'
 import { OSCModuleConfigurationPage } from './ModuleConfiguration/OSC'
 import { ScreensaverConfigurationPage } from './ModuleConfiguration/Screensaver'
 
@@ -33,8 +33,8 @@ export const ConfigurationPage = () => {
 					<Tabs.Tab value="OSC" icon={<FaDrum />}>
 						OSC
 					</Tabs.Tab>
-					<Tabs.Tab value="logging" icon={<FaHistory />}>
-						Logging
+					<Tabs.Tab value="history" icon={<FaHistory />}>
+						History
 					</Tabs.Tab>
 					<Tabs.Tab value="diagnostics" icon={<FaStethoscope />}>
 						Diagnostics
@@ -60,9 +60,9 @@ export const ConfigurationPage = () => {
 						<OSCModuleConfigurationPage />
 					</ScrollAreaForConfigModule>
 				</Tabs.Panel>
-				<Tabs.Panel value="logging" pt="xs">
+				<Tabs.Panel value="history" pt="xs">
 					<ScrollAreaForConfigModule>
-						<LoggingConfigurationPage />
+						<HistoryConfigurationPage />
 					</ScrollAreaForConfigModule>
 				</Tabs.Panel>
 				<Tabs.Panel value="diagnostics" pt="xs">

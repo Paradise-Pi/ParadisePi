@@ -30,7 +30,7 @@ export const DiagnosticsConfigurationPage = () => (
 				Download Diagnostics Logs
 			</Button>
 		</a>
-		<Divider my={'sm'} label="Live Logging" labelPosition="center" />
+		<Divider my={'sm'} label="Live diagnostic logging" labelPosition="center" />
 		<Logs />
 	</>
 )

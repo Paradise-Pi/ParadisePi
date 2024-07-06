@@ -1,4 +1,4 @@
-import { DatabaseFader } from "./sharedTypes"
+import { DatabaseFader } from './sharedTypes'
 
 export interface DatabaseTimeClockTrigger {
 	id: number
@@ -75,6 +75,10 @@ export interface Database {
 			OSCTargetIP: string
 			OSCMixerType: string
 			OSCEnabled: boolean
+		}
+		history: {
+			historyEnabled: boolean
+			historyLogParameters: string[]
 		}
 		e131: {
 			e131Enabled: boolean

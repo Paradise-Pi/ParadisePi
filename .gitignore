@@ -1,6 +1,4 @@
 # Logs
-logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -88,11 +86,9 @@ typings/
 # Electron-Forge
 out/
 dist/
+.idea/
 
 # Project
-
-.idea/
-*.sqlite*
-release-builds/
-/admin/database.sqlite*
-/logo.*
+/serverDevLogs/*
+/serverDevImages/*
+/paradise-development-database.sqlite*

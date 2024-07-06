@@ -12,15 +12,15 @@ export class CustomTypeORMLogger implements Logger {
 		logger.warn({ 'Query error': error, query, parameters })
 	}
 	logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner) {
-		logger.info({ 'query slow': time, query, parameters })
+		logger.warn({ 'query slow': time, query, parameters })
 	}
 	logSchemaBuild(message: string, queryRunner?: QueryRunner) {
-		logger.info({ 'schema build': message })
+		logger.debug({ 'schema build': message })
 	}
 	logMigration(message: string, queryRunner?: QueryRunner) {
 		logger.info({ migration: message })
 	}
 	log(level: 'log' | 'info' | 'warn', message: any, queryRunner?: QueryRunner) {
-		logger.info({ level, message })
+		logger.log({ level, message })
 	}
 }

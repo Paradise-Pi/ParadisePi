@@ -18,7 +18,7 @@ const base64Image = (path: string) => {
 export const createImagesObject = async (): Promise<Images> => {
 	const logoPath = await ConfigRepository.getItem('logoPath')
 	if (!logoPath || logoPath === 'false') {
-		logger.verbose('Logo requested but no logo path set')
+		logger.debug('Logo requested but no logo path set')
 		return { logo: false }
 	} else if (!existsSync(logoPath)) {
 		logger.warn('Logo path set does not exist ' + logoPath)
