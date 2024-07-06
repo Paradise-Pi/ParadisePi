@@ -1,26 +1,32 @@
 {
-	// Use IntelliSense to learn about possible attributes.
-	// Hover to view descriptions of existing attributes.
-	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Run npm start",
+			"name": "Run & Debug Client",
 			"type": "node",
 			"request": "launch",
-			"cwd": "${workspaceRoot}",
+			"cwd": "${workspaceRoot}/client",
 			"runtimeExecutable": "npm",
-			"runtimeArgs": [
-					"run-script", "start"
-			],
-			"env": {
-        "DEV_MODE": "true"
-      },
-			"console": "integratedTerminal",
-			"skipFiles": [
-				"<node_internals>/**/*.js",
-				"${workspaceFolder}/node_modules/**/*.js",
-			]
+			"runtimeArgs": ["run", "dev"],
+			"preLaunchTask": "NPM Install - Client"
+		},
+		{
+			"name": "Run & Debug Server",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceRoot}/server",
+			"runtimeExecutable": "npm",
+			"runtimeArgs": ["run", "develop"],
+			"preLaunchTask": "NPM Install - Server"
+		},
+		{
+			"name": "Run & Debug Docs",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceRoot}/docs",
+			"runtimeExecutable": "npm",
+			"runtimeArgs": ["run", "start"],
+			"preLaunchTask": "NPM Install - Docs"
 		}
 	]
 }
