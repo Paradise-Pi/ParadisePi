@@ -21,6 +21,7 @@
 				"PARADISE_IMAGE_PATH": "${workspaceRoot}/serverDevImages",
 				"PARADISE_DATABASE_PATH": "${workspaceRoot}/paradise-development-database.sqlite"
 			},
+			"outputCapture": "std",
 			"runtimeExecutable": "npm",
 			"runtimeArgs": ["run", "develop"],
 			"preLaunchTask": "NPM Install - Server"
