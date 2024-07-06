@@ -23,7 +23,7 @@ const Logs = () => {
 export const DiagnosticsConfigurationPage = () => (
 	<>
 		<a
-			href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/logs`}
+			href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/error-logs`}
 			target="_blank"
 		>
 			<Button variant="default" color="dark" size="md" mx="xs" my="xs">

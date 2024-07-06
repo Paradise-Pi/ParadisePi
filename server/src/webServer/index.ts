@@ -107,16 +107,16 @@ export class WebServer {
 						res.end()
 					})
 				})
-			} else if (req.url == '/logs') {
+			} else if (req.url == '/error-logs') {
 				// Allow  downloading of logs
 				const filePath = process.env.PARADISE_LOG_PATH
-					? path.join(process.env.PARADISE_LOG_PATH, '/log.log')
-					: path.join(__dirname, '../../../../logs/log.log')
+					? path.join(process.env.PARADISE_LOG_PATH, '/error-log.log')
+					: path.join(__dirname, '../../../../logs/error-log.log')
 				const fileStat = fs.statSync(filePath)
 				const fileRead = fs.readFileSync(filePath)
 				res.writeHead(200, {
 					'Content-Type': 'application/octet-stream',
-					'Content-Disposition': `attachment;filename="paradiselogs-${Date.now()}.txt"`,
+					'Content-Disposition': `attachment;filename="paradise-error-logs-${Date.now()}.txt"`,
 					'Content-Length': fileStat.size,
 				})
 				res.write(fileRead)

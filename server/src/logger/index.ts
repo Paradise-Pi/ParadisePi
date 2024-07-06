@@ -30,7 +30,7 @@ export const winstonTransports = {
 	file: new transports.File({
 		// It's quite important to keep file logging to a minimum to avoid stress on the disk (especially a Pi SD card)
 		level: process.env.PARADISE_LOG_LEVEL_FILE || 'warn',
-		filename: 'log.log',
+		filename: 'error-log.log',
 		dirname: logDir,
 		tailable: true,
 		maxsize: 20971520, //20MB

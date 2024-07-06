@@ -1,5 +1,4 @@
-import { Accordion, Box, Button, Code, Container, Divider, Text, Title } from '@mantine/core'
-import { QRCodeSVG } from 'qrcode.react'
+import { Button, Container, Title } from '@mantine/core'
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 
 interface Props {
@@ -47,7 +46,7 @@ class ErrorBoundary extends Component<Props, State> {
 						</Button>
 					</a>
 
-					<a href="http://localhost/logs" target="_blank" rel="noreferrer">
+					<a href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/error-logs`} target="_blank" rel="noreferrer">
 						<Button variant="default" color="dark" size="lg" mx="xs">
 							Download Logs
 						</Button>
