@@ -58,7 +58,7 @@ export const HistoryConfigurationPage = () => {
 				target="_blank"
 			>
 				<Button variant="default" color="dark" size="md" mx="xs" my="xs">
-					Download Diagnostics Logs
+					Download History
 				</Button>
 			</a>
 		</Box>

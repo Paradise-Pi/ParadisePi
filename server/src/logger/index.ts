@@ -25,12 +25,7 @@ const logLevels = {
 export const winstonTransports = {
 	developerConsole: new transports.Console({
 		level: process.env.PARADISE_LOG_LEVEL_CONSOLE || 'debug',
-		format: format.combine(
-			format.colorize(),
-			format.printf(({ level, message, timestamp }) => {
-				return `${timestamp} ${level}: ${message}`
-			})
-		),
+		format: format.combine(format.colorize({ all: true }), format.simple()),
 		stderrLevels: ['error'],
 		consoleWarnLevels: ['warn'],
 	}),
@@ -38,6 +33,13 @@ export const winstonTransports = {
 		// It's quite important to keep file logging to a minimum to avoid stress on the disk (especially a Pi SD card)
 		level: process.env.PARADISE_LOG_LEVEL_FILE || 'warn',
 		filename: 'error-log.log',
+		format: format.combine(
+			format.timestamp({
+				format: 'YYYY-MM-DD HH:mm:ss',
+			}),
+			format.errors({ stack: true }),
+			format.json()
+		),
 		dirname: logDir,
 		tailable: true,
 		maxsize: 20971520, //20MB
@@ -46,6 +48,13 @@ export const winstonTransports = {
 	history: new transports.File({
 		level: 'verbose',
 		filename: 'history.log',
+		format: format.combine(
+			format.timestamp({
+				format: 'YYYY-MM-DD HH:mm:ss',
+			}),
+			format.errors({ stack: true }),
+			format.json()
+		),
 		dirname: logDir,
 		tailable: true, // history.log will always be the most recent log file
 		maxsize: 20971520, //20MB
@@ -55,14 +64,6 @@ export const winstonTransports = {
 }
 const logger = createLogger({
 	levels: logLevels.levels,
-	format: format.combine(
-		format.timestamp({
-			format: 'YYYY-MM-DD HH:mm:ss',
-		}),
-		format.errors({ stack: true }),
-		format.splat(),
-		format.json()
-	),
 	transports: [winstonTransports.file],
 	exceptionHandlers: [winstonTransports.file],
 	exitOnError: true,

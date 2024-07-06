@@ -2,6 +2,7 @@ import ip from 'ip'
 import path from 'path'
 import process from 'process'
 import 'reflect-metadata'
+import { format } from 'winston'
 import dataSource from './database/dataSource'
 import { ConfigRepository } from './database/repository/config'
 import { BroadcastTransport } from './logger/broadcastTransport'
@@ -20,10 +21,9 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 				if (process.env.NODE_ENV === 'development' || process.env.PARADISE_LOG_LEVEL_CONSOLE) {
 					logger.add(winstonTransports.developerConsole) // Turn on console logging if not in production
 				}
-				logger.info(
-					'Booted with database ' + process.env.PARADISE_DATABASE_PATH ||
-						path.join(__dirname, '../../../../database.sqlite')
-				)
+				logger.info('Booted with database', {
+					database: process.env.PARADISE_DATABASE_PATH || path.join(__dirname, '../../../../database.sqlite'),
+				})
 				return ConfigRepository.getItem('historyEnabled')
 			})
 			.then(historyEnabled => {
@@ -41,6 +41,7 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 					// Turn on broadcast logging (for the frontend)
 					new BroadcastTransport({
 						level: 'info',
+						format: format.combine(format.errors({ stack: true }), format.json()),
 					})
 				) // Turn on broadcast logging (for the frontend)
 				logger.profile('boot', { level: 'debug', message: 'Boot Timer' })
