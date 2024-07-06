@@ -6,19 +6,24 @@ title: Configuration
 Paradise is modular by design, allowing you to use any combination of the available features - turning off ones you are not using.
 
 ## General
+
 ---
+
 ![General Settings](@site/static/img/tutorial/admin/admin-config-general.png)
 
 ### Locking the system
+
 Paradise contains a locking function, which disables any control panels stopping presets from being recalled. This is useful if you want to lock paradise during a performance in a theatre space where a different lighting console is being used for example.
 
 So that you don't lock yourself out, you can only lock the control panel when accessing the config page from an external browser.
 
-### Remote access password
+### Password
 
-Require a password when accessing Paradise from another device on the same network.
+In order to prevent access to the Control Panel from unauthorised users, you can set a password. This is done in the [Administration Menu](../admin/config)
 
-See [Remote Control](../control/remote#setting-a-password-for-remote-access) for more information.
+There is no authentication on screensaver and database uploads, or database and log downloads. Anyone on the same network can access these features without a password.
+
+HTTPs is not supported by Paradise Pi, so it is not possible to encrypt these connections and prevent man-in-the-middle attacks.
 
 ### Setup & Administration Menu Pin
 
@@ -36,7 +41,7 @@ You can provide information about what Paradise is and what you can control, by 
 
 ## Screensaver
 
-Paradise has a built in screensaver, which is activated after a set period of time.  
+Paradise has a built in screensaver, which is activated after a set period of time.
 
 By default, this screensaver is the words "Tap to unlock". However, you can add an image to the screensaver (such as a logo), which will be displayed instead.
 
@@ -46,7 +51,7 @@ The idle time for the screensaver can be set in this menu, and it defaults to 5 
 
 Paradise uses a database to store configuration, presets, faders & folders. This can be backed up by downloading a database backup from the database and logs page - this is **required** when updating, as otherwise all configuration will be lost.
 
-You can also recall a backup from here, by uploading the file to the device. 
+You can also recall a backup from here, by uploading the file to the device.
 
 :::danger
 Paradise will _not_ check the database is valid before applying it, so uploading an invalid file will mean you lose all data from Paradise. Be sure to take a backup before recalling a backup.
@@ -70,10 +75,11 @@ OSC (Open Sound Control) is often used to control sound consoles or other softwa
 It is an optional feature of Paradise and can be enabled in the configuration menu.
 
 Every console that supports OSC implements the protocol in a different way, so Paradise only supports a number of consoles at this time:
-- Behringer X Series (such as the X32)
-- Behringer X AIR Series
-- Midas M Series (such as the M32)
-- Midas MR Series
+
+-   Behringer X Series (such as the X32)
+-   Behringer X AIR Series
+-   Midas M Series (such as the M32)
+-   Midas MR Series
 
 Please [open an issue on GitHub](https://github.com/Paradise-Pi/ParadisePi/issues/new?assignees=&labels=enhancement&template=console-request.yml&title=%5BOSC%5D+%3Ctitle%3E) if you think there is another console that should be supported.
 

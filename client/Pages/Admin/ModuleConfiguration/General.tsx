@@ -72,14 +72,15 @@ export const GeneralConfigurationPage = () => {
 					my="md"
 					size="lg"
 					label="Fullscreen mode (requires restart)"
+					style={{ display: 'none' }}
 					{...form.getInputProps('fullscreen', { type: 'checkbox' })}
 				/>
 				<Divider my="sm" />
 				<PasswordInput
 					mt="md"
 					size="lg"
-					label="Remote access password"
-					description="Leave the box empty to not require a password when accessing Paradise from another device on the same network."
+					label="Password"
+					description="Leave the box empty to not require a password when accessing Paradise."
 					autoComplete="off"
 					{...form.getInputProps('remotePassword')}
 				/>
