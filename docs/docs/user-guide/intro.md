@@ -3,7 +3,7 @@ sidebar_position: 1
 title: Introduction
 ---
 
-Welcome to the user guide for version 2 of Paradise. [Version 1](/v1) is now discontinued. 
+Welcome to the user guide for version 3 of Paradise. [Version 1](/v1) and [Version 2](/v2) are now discontinued. 
 
 ## Basics
 

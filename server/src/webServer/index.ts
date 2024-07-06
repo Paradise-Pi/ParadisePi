@@ -56,7 +56,7 @@ export class WebServer {
 							logger.error(err)
 						}
 						res.write(
-							'<br/>Error encountered - not continuing with upload, so system is still running. <a href="/">Click here to return to administration</a>'
+							`<br/>Error encountered - not continuing with upload, so system is still running. <a href="${req.headers.referer}/#/admin/configuration">Return to administration</a>`
 						)
 						res.end()
 					} else {
@@ -74,12 +74,12 @@ export class WebServer {
 										)
 									} else {
 										fs.rmSync(path.join(__dirname, '/user-uploaded-database.sqlite'))
-										logger.verbose(
+										logger.info(
 											'New database uploaded to ' + process.env.PARADISE_DATABASE_PATH ||
 												path.join(__dirname, '../../../../database.sqlite')
 										)
 										res.write(
-											'System restored from backup. Please wait for the device to reboot and apply the new configuration <meta http-equiv="refresh" content="30;url=/" />'
+											`<br/>Successfully uploaded new database - system will now reboot. Please wait 30 seconds, then <a href="${req.headers.referer}/#/admin/configuration">click to return to administration</a>`
 										)
 									}
 									res.end()
@@ -107,23 +107,43 @@ export class WebServer {
 						res.end()
 					})
 				})
-			} else if (req.url == '/logs') {
+			} else if (req.url == '/error-logs') {
 				// Allow  downloading of logs
 				const filePath = process.env.PARADISE_LOG_PATH
-					? path.join(process.env.PARADISE_LOG_PATH, '/log.log')
-					: path.join(__dirname, '../../../../logs/log.log')
+					? path.join(process.env.PARADISE_LOG_PATH, '/error-log.log')
+					: path.join(__dirname, '../../../../logs/error-log.log')
 				const fileStat = fs.statSync(filePath)
 				const fileRead = fs.readFileSync(filePath)
 				res.writeHead(200, {
 					'Content-Type': 'application/octet-stream',
-					'Content-Disposition': `attachment;filename="paradiselogs-${Date.now()}.txt"`,
+					'Content-Disposition': `attachment;filename="paradise-error-logs-${Date.now()}.txt"`,
 					'Content-Length': fileStat.size,
 				})
 				res.write(fileRead)
 				res.end()
+			} else if (req.url == '/history-logs') {
+				// Allow  downloading of logs
+				const filePath = process.env.PARADISE_LOG_PATH
+					? path.join(process.env.PARADISE_LOG_PATH, '/history.log')
+					: path.join(__dirname, '../../../../logs/history.log')
+				if (fs.existsSync(filePath) === false) {
+					res.writeHead(404, { 'Content-Type': 'text/html' })
+					res.write('Error - history mode not enabled or no history logs found')
+					res.end()
+				} else {
+					const fileStat = fs.statSync(filePath)
+					const fileRead = fs.readFileSync(filePath)
+					res.writeHead(200, {
+						'Content-Type': 'application/octet-stream',
+						'Content-Disposition': `attachment;filename="paradise-history-logs-export-${Date.now()}.txt"`,
+						'Content-Length': fileStat.size,
+					})
+					res.write(fileRead)
+					res.end()
+				}
 			} else if (req.url == '/logo/upload' && req.method.toLowerCase() === 'post') {
 				// Allow uploading of logo
-				logger.verbose('Incoming logo upload')
+				logger.debug('Incoming logo upload')
 				new IncomingForm({
 					filename: (_name, ext) => 'logo' + ext,
 					keepExtensions: true,
@@ -148,7 +168,7 @@ export class WebServer {
 							logger.error(err)
 						}
 						res.write(
-							'<br/>Error encountered - not continuing with upload. <a href="/#/admin/configuration">Click here to return to administration</a>'
+							`<br/>Error encountered - not continuing with upload. <a href="${req.headers.referer}/#/admin/configuration">Return to administration</a>`
 						)
 						res.end()
 					} else {
@@ -169,7 +189,7 @@ export class WebServer {
 							value: filePath,
 						})
 							.then(() => {
-								logger.verbose('Incoming logo upload saved to ' + filePath)
+								logger.info('Incoming logo upload saved to ' + filePath)
 								createAndSendImagesObject()
 							})
 							.then(() => {
@@ -194,14 +214,40 @@ export class WebServer {
 										.then(() => {
 											res.writeHead(200, { 'Content-Type': 'text/html' })
 											res.write('Preset triggered')
+											logger.log('history', 'External HTTP client triggered preset', {
+												presetId: value.id,
+												presetName: value.name,
+												presetType: value.type,
+												type: 'http-trigger-preset',
+											})
 											res.end()
 										})
 										.catch(() => {
 											res.writeHead(500, { 'Content-Type': 'text/html' })
 											res.write('Error - preset could not be recalled')
+											logger.log(
+												'history',
+												'External HTTP client attempted to trigger present, but an error was encountered',
+												{
+													presetId: value.id,
+													presetName: value.name,
+													presetType: value.type,
+													type: 'http-trigger-preset-fail',
+												}
+											)
 											res.end()
 										})
 								} else {
+									logger.log(
+										'history',
+										'External HTTP client attempted to trigger present, which was disabled from HTTP triggers',
+										{
+											presetId: value.id,
+											presetName: value.name,
+											presetType: value.type,
+											type: 'http-trigger-preset-fail',
+										}
+									)
 									res.writeHead(403, { 'Content-Type': 'text/html' })
 									res.write('Preset not enabled for trigger via HTTP')
 									res.end()

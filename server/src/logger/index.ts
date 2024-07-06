@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
-import { createLogger, format, transports } from 'winston'
+import { addColors, createLogger, format, transports } from 'winston'
 
-const logDir = process.env.PARADISE_LOG_PATH || path.join(__dirname, '../../../../logs')
+export const logDir = process.env.PARADISE_LOG_PATH || path.join(__dirname, '../../../../logs')
 if (!fs.existsSync(logDir)) {
 	fs.mkdirSync(logDir)
 }
@@ -10,9 +10,9 @@ if (!fs.existsSync(logDir)) {
 const logLevels = {
 	levels: {
 		error: 0, // Errors that cannot be recovered from - these are crashing the app (e.g. multiple interfaces found)
-		warn: 1, // Errors that can be recovered from - the app knows something is up and is working around it (e.g. port 80 not available)
-		info: 2, // Information that is useful to know - the app is working as expected and started
-		verbose: 3, // As above, but with a bit more detail - e.g. actions taken and requests made. MAX LEVEL SHOWN TO USERS IN UI
+		warn: 1, // Errors that can be recovered from - the app knows something is up and is working around it (e.g. port 80 not available). This is by default the max level for the debug file logging.
+		info: 2, // This is the level that adds a bit more colour around what the logs are showing, e.g. "Server started on port 80"
+		history: 3, // This is the level that the history feature users - it's the level that the user can use to run their analytics against. This is the max level that is to be shown to end users.
 		debug: 4, // Useful to someone trying to develop the app
 		silly: 5, // Quite extreme, logs every single SQL call for example
 	},
@@ -20,17 +20,29 @@ const logLevels = {
 		error: 'red',
 		warn: 'yellow',
 		info: 'green',
+		history: 'blue',
+		debug: 'black',
+		silly: 'black',
 	},
 }
 export const winstonTransports = {
-	console: new transports.Console({
+	developerConsole: new transports.Console({
 		level: process.env.PARADISE_LOG_LEVEL_CONSOLE || 'debug',
-		format: format.json(),
+		format: format.combine(format.colorize({ all: true }), format.simple()),
+		stderrLevels: ['error'],
+		consoleWarnLevels: ['warn'],
 	}),
 	file: new transports.File({
 		// It's quite important to keep file logging to a minimum to avoid stress on the disk (especially a Pi SD card)
 		level: process.env.PARADISE_LOG_LEVEL_FILE || 'warn',
-		filename: 'log.log',
+		filename: 'error-log.log',
+		format: format.combine(
+			format.timestamp({
+				format: 'YYYY-MM-DD HH:mm:ss',
+			}),
+			format.errors({ stack: true }),
+			format.json()
+		),
 		dirname: logDir,
 		tailable: true,
 		maxsize: 20971520, //20MB
@@ -39,18 +51,11 @@ export const winstonTransports = {
 }
 const logger = createLogger({
 	levels: logLevels.levels,
-	format: format.combine(
-		format.timestamp({
-			format: 'YYYY-MM-DD HH:mm:ss',
-		}),
-		format.errors({ stack: true }),
-		format.splat(),
-		format.json()
-	),
 	transports: [winstonTransports.file],
 	exceptionHandlers: [winstonTransports.file],
 	exitOnError: true,
 	rejectionHandlers: [winstonTransports.file],
 })
+addColors(logLevels.colors)
 
 export default logger

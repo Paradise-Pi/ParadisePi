@@ -91,7 +91,11 @@ const UploadLogo = () => {
 					<br /> Only JPEG and PNG can be uploaded
 					<br /> Transparent images with light backgrounds work best
 				</Alert>
-				<form action="/logo/upload" method="post" encType="multipart/form-data">
+				<form
+					action={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/logo/upload`}
+					method="post"
+					encType="multipart/form-data"
+				>
 					<input type="file" name="logo" accept=".jpg,.jpeg,.png" />
 					<Button type="submit" color="red">
 						Upload

@@ -31,7 +31,7 @@ const PresetButton = ({
 				color: pickTextColorBasedOnBgColor(color),
 			})}
 			onClick={() => {
-				ApiCall.get('/presets/recall/' + presetId, {}).then(value => {
+				ApiCall.get('/presets/recall-user/' + presetId, {}).then(value => {
 					if (value.redirect) {
 						navigate(value.redirect)
 					}

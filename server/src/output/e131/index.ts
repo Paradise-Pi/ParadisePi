@@ -2,12 +2,12 @@
 import { Client, Server } from '@paradise-pi/e131'
 import ip from 'ip'
 import { networkInterfaces } from 'os'
+import { Database } from '../../../../shared/database'
 import { ChannelData } from '../../../../shared/sharedTypes'
 import { broadcast } from '../../api/broadcast'
 import { createDatabaseObject, sendDatabaseObject } from '../../api/database'
 import { PresetRepository } from '../../database/repository/preset'
 import logger from '../../logger'
-import { Database } from '../../../../shared/database'
 
 interface channelFade {
 	channel: number
@@ -56,7 +56,7 @@ export class E131 {
 		this.priority = priority
 		this.frequency = frequency
 		this.sampleTime = sampleTime
-		logger.verbose('Opening E1.31 Connection')
+		logger.debug('Opening E1.31 Connection')
 		this.init()
 	}
 
@@ -114,7 +114,7 @@ export class E131 {
 	 * @returns promise that resolves when the termination is done
 	 */
 	public terminate(): Promise<void> {
-		logger.verbose('Terminating E1.31 Client')
+		logger.debug('Terminating E1.31 Client')
 		this.running = false // Stop the normal loop to avoid client confusion
 		return [...Array(this.firstUniverse + this.universes - 1)].reduce((previous, _current, i) => {
 			return previous.then(() => {
@@ -243,7 +243,7 @@ export class E131 {
 	}
 
 	public async sampleE131() {
-		logger.verbose('Starting Sampling Mode - storing most common value for each parameter where effects are in use')
+		logger.debug('Starting Sampling Mode - storing most common value for each parameter where effects are in use')
 
 		const numUniverses = this.universes > 20 ? 20 : this.universes // 20 universe limit is enforced due to memory limitations
 		const universes = Array.from({ length: numUniverses }, (_, i) => i + this.firstUniverse) // Generates an array like [1,2,3,4,5] because that's what the lib likes
@@ -275,7 +275,9 @@ export class E131 {
 				messageType: 'LOGLINE',
 				message: 'Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes',
 			})
-			logger.verbose('Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes')
+			logger.debug(
+				'Sampling mode Listening on port ' + server.getPort() + ' - ' + server.getUniverses() + ' universes'
+			)
 		})
 
 		server.on('error', (error: unknown) => {
@@ -283,7 +285,7 @@ export class E131 {
 				messageType: 'LOGLINE',
 				message: 'Encountered error trying to sample data: ' + error,
 			})
-			logger.verbose('Encountered error', error)
+			logger.warn('Encountered error', error)
 		})
 
 		const universeData: WorkingUniverseData = {}
@@ -302,7 +304,7 @@ export class E131 {
 						messageType: 'LOGLINE',
 						message: 'Found new device ' + sourceName,
 					})
-					logger.verbose('Found new device ' + sourceName)
+					logger.info('Sampling mode found new device ' + sourceName)
 				}
 				if (universeData[sourceName][universe] === undefined) {
 					universeData[sourceName][universe] = {}
@@ -310,7 +312,7 @@ export class E131 {
 						messageType: 'LOGLINE',
 						message: 'Found universe ' + universe + ' for device ' + sourceName,
 					})
-					logger.verbose('Found universe ' + universe + ' for device ' + sourceName)
+					logger.info('Sampling mode found universe ' + universe + ' for device ' + sourceName)
 				}
 				for (let i = 0; i < slotsData.length; i++) {
 					if (universeData[sourceName][universe][i + 1] === undefined) {
@@ -344,12 +346,12 @@ export class E131 {
 					type: 'e131',
 					data: JSON.parse(JSON.stringify(finishedUniverseData)),
 				})
-					.then(() => logger.verbose('Added Preset'))
+					.then(() => logger.info('Sampling mode created a new preset'))
 					.catch(err => logger.error(err))
 			}
 		}
 
-		logger.verbose('Finished sampling - Resuming E1.31 Connection & Uploading Presets')
+		logger.info('Finished sampling - Resuming E1.31 Connection & Uploading Presets')
 
 		server.close()
 		this.init()

@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { parseJSON } from '../parseUserJson'
+import { Database, DatabasePreset } from '../../../../shared/database'
 import { Preset } from '../../database/model/Preset'
 import { ConfigRepository } from '../../database/repository/config'
-import {  PresetRepository } from '../../database/repository/preset'
-import {  createDatabaseObject, sendDatabaseObject } from '../database'
+import { PresetRepository } from '../../database/repository/preset'
 import logger from '../../logger'
-import { Database, DatabasePreset } from '../../../../shared/database'
+import { createDatabaseObject, sendDatabaseObject } from '../database'
+import { parseJSON } from '../parseUserJson'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -21,9 +21,18 @@ export const presetRouter = (
 ): Promise<apiObject> => {
 	logger.silly('Preset router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
-		if (method === 'GET' && path[0] === 'recall') {
+		if (method === 'GET' && (path[0] === 'recall' || path[0] === 'recall-user')) {
 			return PresetRepository.findOneOrFail({ where: { id: parseInt(path[1]) } }).then((value: Preset) => {
-				logger.verbose('Preset recalled', { value })
+				logger.log(
+					'history',
+					`${value.name} preset recalled ${path[0] === 'recall-user' ? 'by user' : 'internally'}`,
+					{
+						historyType: path[0] === 'recall-user' ? 'preset' : 'preset-internal',
+						presetId: value.id,
+						presetName: value.name,
+						presetType: value.type,
+					}
+				)
 				if (value.type === 'e131' && value.data !== null && typeof e131 !== 'undefined') {
 					e131.update(
 						parseInt(value.universe ? value.universe : '1'),
@@ -46,7 +55,7 @@ export const presetRouter = (
 						timeout: 60000, // 60 seconds
 					})
 						.catch(err => {
-							logger.info('Preset HTTP request failed', { err })
+							logger.warn('Preset HTTP request failed', { err })
 						})
 						.then(() => resolve({}))
 				} else if (value.type === 'macro' && value.data !== null) {

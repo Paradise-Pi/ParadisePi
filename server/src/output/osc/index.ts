@@ -220,7 +220,7 @@ export default abstract class OSC {
 		this.datastore.status = false
 		clearInterval(this.statusCheckerTimer as unknown as number)
 		clearInterval(this.subscriberTimer as unknown as number)
-		logger.info('Terminating UPD Port for OSC')
+		logger.debug('Terminating UPD Port for OSC')
 	}
 
 	/**
@@ -232,6 +232,15 @@ export default abstract class OSC {
 		this.udpPort.send({ address: faderString, args: [{ type: 'f', value: [value] }] })
 		this.datastore.faderValues[faderStringBackToString(faderString, this.deviceType)] = value
 		this.datastoreUpdated()
+	}
+
+	/**
+	 * Retrieve the value of a fader
+	 * @param faderString - string of the fader to get the value of (e.g. /ch/1/mix/fader)
+	 * @returns - a value between 0 and 1
+	 */
+	public getFaderValue(faderString: string) {
+		return this.datastore.faderValues[faderStringBackToString(faderString, this.deviceType)]
 	}
 
 	/**
@@ -259,7 +268,7 @@ export default abstract class OSC {
 			}
 
 			//Actual sending
-			logger.verbose('Sending OSC Packet to address from Preset ' + address, { args })
+			logger.debug('Sending OSC Packet to address from Preset ' + address, { args })
 			this.udpPort.send({ address: address, args: [args] })
 			setTimeout(() => {
 				this.manuallyGetFaderPositions() //get the fader positions after a preset is sent, as they might have moved - but delay for 500ms to allow the preset to be applied

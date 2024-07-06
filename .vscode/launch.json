@@ -15,6 +15,13 @@
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceRoot}/server",
+			"env": {
+				"NODE_ENV": "development",
+				"PARADISE_LOG_PATH": "${workspaceRoot}/serverDevLogs",
+				"PARADISE_IMAGE_PATH": "${workspaceRoot}/serverDevImages",
+				"PARADISE_DATABASE_PATH": "${workspaceRoot}/paradise-development-database.sqlite"
+			},
+			"outputCapture": "std",
 			"runtimeExecutable": "npm",
 			"runtimeArgs": ["run", "develop"],
 			"preLaunchTask": "NPM Install - Server"

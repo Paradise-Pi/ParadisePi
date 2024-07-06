@@ -28,7 +28,11 @@ export const timeClockTriggerRunner = () => {
 						lastTriggered: currentTimeStamp,
 					}).then(() => {
 						if (!locked || timeClockTrigger.enabledWhenLocked) {
-							logger.log('verbose', 'Triggering time clock trigger', { timeClockTrigger })
+							logger.debug('Triggering time clock trigger', { timeClockTrigger })
+							logger.log('history', 'Preset recalled by time clock trigger', {
+								historyType: 'preset-timeclocktrigger',
+								presetId: timeClockTrigger.presetId,
+							})
 							presetRouter(['recall', timeClockTrigger.presetId.toString()], 'GET', {})
 						}
 					})
