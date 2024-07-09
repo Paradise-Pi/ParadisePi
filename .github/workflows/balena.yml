@@ -11,15 +11,46 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
+    define-matrix:
+        runs-on: ubuntu-latest
+        name: Gather API keys and fleets
+        outputs:
+            fleets: ${{ steps.setfleets.outputs.result }}
+        steps:
+            - id: fleets
+              run: |
+                  echo 'fleets=["red", "green", "blue"]' >> "$GITHUB_OUTPUT"
+            - uses: actions/github-script@v6
+              id: setfleets
+              env:
+                  # comma-separated values (e.g. john/paradise-fleet1,john/paradise-fleet2,john/paradise-fleet3)
+                  # needs corresponding secrets to be defined for the API keys (e.g. BALENA_TOKEN_FLEET_JOHNPARADISE-FLEET1=apikey BALENA_TOKEN_FLEET_JOHNPARADISE-FLEET2=apikey)
+                  ARRAY_STRING: ${{ vars.BALENA_FLEETS_CSV }}
+              with:
+                  result-encoding: string
+                  script: |
+                      // JavaScript code
+                      const { ARRAY_STRING } = process.env;
+                      var objects = ARRAY_STRING
+                        .split(',')
+                        .map(value => ({secretname: value.replace(/\//g, "").toUpperCase(), fleet: value}) );
+                        return JSON.stringify(objects);
     balena_cloud_build:
         runs-on: ubuntu-latest
+        continue-on-error: true
+        needs: define-matrix
+        strategy:
+            fail-fast: false
+            matrix:
+                fleet: ${{ fromJSON(needs.define-matrix.outputs.fleets) }}
         steps:
+            - run: echo "Building for fleet ${{ matrix.fleet.fleet }}"
             - uses: actions/checkout@v3
             - uses: balena-io/deploy-to-balena-action@master
               id: build
               with:
-                  balena_token: ${{ secrets.BALENA_TOKEN }}
-                  fleet: gh_jbithell/paradisepi
+                  balena_token: ${{ secrets[format('BALENA_TOKEN_FLEET_{0}', matrix.fleet.secretname)] }}
+                  fleet: ${{ matrix.fleet.fleet }}
                   create_tag: true
             - name: Log release ID built
               run: echo "Built release ID ${{ steps.build.outputs.release_id }}"
