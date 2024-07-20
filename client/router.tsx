@@ -1,11 +1,12 @@
-import { AppShell, Container, ScrollArea } from '@mantine/core'
+import { AppShell, Button, Container, MediaQuery, Navbar, ScrollArea } from '@mantine/core'
 import { useViewportSize } from '@mantine/hooks'
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useState } from 'react'
 import { Outlet, Route, RouterProvider, createHashRouter, createRoutesFromElements } from 'react-router-dom'
 import { AdminPin } from './Components/Admin/AdminPin'
 import { Locked } from './Components/Locked'
 import { AdminNavigation } from './Navigation/AdminNavigation'
 import { ControlPanelNavigation } from './Navigation/ControlPanelNavigation'
+import { useStyles } from './Navigation/Styles'
 import { ConfigurationPage } from './Pages/Admin/Configuration'
 import { ControlsConfigurationPage } from './Pages/Admin/Controls'
 import { FadersConfigurationPage } from './Pages/Admin/Faders'
@@ -19,11 +20,38 @@ import { PresetPage } from './Pages/ControlPanel/Preset'
 import { LandingPage } from './Pages/Landing'
 
 const MainNav = ({ navigation }: { navigation: ReactElement }) => {
+	const { classes, cx } = useStyles()
 	const { height } = useViewportSize()
+	const [opened, setOpened] = useState(false)
 	return (
-		<AppShell navbar={navigation} padding={0}>
+		<AppShell
+			navbarOffsetBreakpoint="sm"
+			navbar={
+				<Navbar
+					height={height}
+					hiddenBreakpoint="sm"
+					hidden={!opened}
+					width={{ sm: 200, md: 200 }}
+					p="md"
+					className={classes.navbar}
+				>
+					<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+						<Button fullWidth onClick={() => setOpened(false)} size="lg" mb="sm" variant="outline">
+							Close Menu
+						</Button>
+					</MediaQuery>
+					{navigation}
+				</Navbar>
+			}
+			padding={0}
+		>
 			<ScrollArea style={{ height }} type="auto" offsetScrollbars scrollbarSize={20}>
 				<Container fluid py={'sm'} px={'sm'}>
+					<MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+						<Button onClick={() => setOpened(true)} size="lg" mb="sm" fullWidth variant="outline">
+							Open Menu
+						</Button>
+					</MediaQuery>
 					<Outlet />
 				</Container>
 			</ScrollArea>

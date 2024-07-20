@@ -46,13 +46,13 @@ export const ControlPanelNavigation = () => {
 	const { classes } = useStyles()
 	const { height } = useViewportSize()
 	return (
-		<Navbar height={height} width={{ sm: 200, md: 200 }} p="md" className={classes.navbar}>
+		<>
 			<Navbar.Section grow component={ScrollArea}>
 				<TopLevelFolders />
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>
 				<NavbarItem link="help" label="Help" Icon={<FaQuestion className={classes.linkIcon} />} />
 			</Navbar.Section>
-		</Navbar>
+		</>
 	)
 }
