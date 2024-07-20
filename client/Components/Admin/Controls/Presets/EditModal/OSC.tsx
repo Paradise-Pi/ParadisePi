@@ -78,7 +78,7 @@ export const OSCPresetEditModal = (props: InputProps) => {
 			{
 				value: '/ch/',
 				label: 'Channel',
-				properties: { startVal: 1, endVal: 16, step: 1, secondOption: 'channel' },
+				properties: { startVal: 1, endVal: 32, step: 1, secondOption: 'channel' },
 			},
 			{
 				value: '/config/mute/',

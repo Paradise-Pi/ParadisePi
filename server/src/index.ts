@@ -54,7 +54,11 @@ export const startParadise = (): Promise<{ port: number; ip: string }> => {
 				resolve({ port: WebServer.port, ip: ip.address() })
 			})
 			.catch(err => {
-				// Error during Data Source initialization Error: Cannot find module 'undefinedbuild/Release/better_sqlite3.node'  =  https://github.com/electron-userland/electron-forge/issues/2412
+				if (process.env.NODE_ENV === 'development' || process.env.PARADISE_LOG_LEVEL_CONSOLE) {
+					// Depending on when the error occurs, it might not be possible to log if at the point it occured the logger wasn't started. In which case, throw the error to the console as well.
+					// eslint-disable-next-line no-console
+					console.log('Error during Data Source initialization', err)
+				}
 				logger.error('Error during Data Source initialization', { err })
 				throw err
 			})

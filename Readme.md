@@ -55,7 +55,7 @@ VSCode is recommended for development, with launch configurations for both the f
 ```bash
 cd server
 npm install
-npm develop
+npm run develop
 ```
 
 #### Frontend
@@ -63,7 +63,7 @@ npm develop
 ```bash
 cd client
 npm install
-npm dev
+npm run dev
 ```
 
 ### Versioning

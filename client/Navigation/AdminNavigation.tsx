@@ -16,7 +16,7 @@ export const AdminNavigation = () => {
 	const { height } = useViewportSize()
 	const version = useAppSelector(state => (state.database ? state.database.about.version : ''))
 	return (
-		<Navbar height={height} width={{ xs: 200, sm: 200, md: 200 }} p="md" className={classes.navbar}>
+		<>
 			<Navbar.Section grow component={ScrollArea}>
 				<Group className={classes.header} style={{ gap: 0 }}>
 					<Text className={classes.text} style={{ marginBottom: 0 }}>
@@ -41,6 +41,6 @@ export const AdminNavigation = () => {
 			<Navbar.Section className={classes.footer}>
 				<NavbarItem link="controls" label="Controls" Icon={<FaCogs className={classes.linkIcon} />} />
 			</Navbar.Section>
-		</Navbar>
+		</>
 	)
 }
