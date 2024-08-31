@@ -17,11 +17,8 @@ import { timeClockTriggersRouter } from './timeClockTriggers/timeClockTriggers'
  * @returns the retrieved response from the given route
  * @throws an error if the requested route is not found
  */
-export const routeRequest = (
-	path: string,
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-	payload: apiObject
-): Promise<apiObject> => {
+export type httpMethods = 'GET' | 'POST' | 'PUT' | 'DELETE'
+export const routeRequest = (path: string, method: httpMethods, payload: apiObject): Promise<apiObject> => {
 	return new Promise((resolve, reject) => {
 		// Split the path into an array of strings
 		logger.debug(`Routing request come in to ${path}`, { path, method, payload })

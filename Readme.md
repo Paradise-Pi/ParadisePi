@@ -71,14 +71,14 @@ npm run dev
 To version the project, run
 
 ```bash
-cd server
+cd client
 npm version <major|minor|patch>
-cd ../client
+cd ../server
 npm version <major|minor|patch>
 cd ../
 ```
 
-(`cd server/ && npm version patch && cd ../client && npm version patch` for a quick patch bump)
+(`cd client/ && npm version patch && cd ../server && npm version patch` for a quick patch bump)
 
 Then update the version at the bottom of `balena.yml` and commit the changes to the repository. This will then trigger a build on the Balena Hub.
 

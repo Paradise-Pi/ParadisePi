@@ -1,6 +1,7 @@
 import { Database, DatabaseFolder } from '../../../../shared/database'
 import { FolderRepository } from '../../database/repository/folder'
 import { createDatabaseObject, sendDatabaseObject } from '../database'
+import { httpMethods } from '../router'
 /**
  * This is a REST router for the preset folder API.
  * @param path - The path requested by the original route requestor
@@ -9,11 +10,7 @@ import { createDatabaseObject, sendDatabaseObject } from '../database'
  * @returns the retrieved response from the given route
  * @throws an error if the requested route is not found
  */
-export const folderRouter = (
-	path: Array<string>,
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-	payload: apiObject
-): Promise<apiObject> => {
+export const folderRouter = (path: Array<string>, method: httpMethods, payload: apiObject): Promise<apiObject> => {
 	logger.silly('Preset folder router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'PUT') {
