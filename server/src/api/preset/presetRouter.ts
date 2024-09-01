@@ -43,10 +43,17 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 					})
 					resolve({})
 				} else if (value.type === 'http' && value.data !== null && value.data.url !== null) {
+					let deviceHost = ''
+					// Evaluate if there's a device involved that we need to prefix
+					if (value.device !== null && value.device.id !== null) {
+						if (value.device.ip !== null && value.device.ip !== '') deviceHost = value.device.ip
+						else if (value.device.endpoint !== null && value.device.endpoint !== '')
+							deviceHost = value.device.endpoint
+					}
 					// Make the HTTP request
 					axios({
 						method: value.data.method ?? 'GET',
-						url: value.data.url ?? '',
+						url: `${deviceHost}${value.data.url ?? ''}`,
 						data: value.data.data ? parseJSON(value.data.data) : null,
 						headers: value.data.headers ? parseJSON(value.data.headers) : null,
 						timeout: 60000, // 60 seconds
