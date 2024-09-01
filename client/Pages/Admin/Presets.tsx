@@ -16,6 +16,8 @@ import {
 	Select,
 	SelectItem,
 	Table,
+	Tabs,
+	TabsValue,
 	Text,
 	TextInput,
 	Title,
@@ -24,6 +26,7 @@ import { useForm } from '@mantine/form'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { FaFilter } from '@react-icons/all-files/fa/FaFilter'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
@@ -63,16 +66,24 @@ export const PresetsConfigurationPage = () => {
 	const devices = useAppSelector(state => (state.database ? state.database.devices : false))
 	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
 	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
+	const [folderFilter, setFolderFilter] = useState<TabsValue>('ALL')
 	// Prepare folders list for select dropdown
 	const foldersForSelect: Array<SelectItem> = []
+	const foldersForFilter: Array<{ id: number; name: string }> = []
 	if (folders !== false) {
-		Object.entries(folders).forEach(([, value]) => {
-			foldersForSelect.push({
-				value: value.id.toString(),
-				label: (value.parent ? value.parent.name + ' → ' : '') + value.name,
-				group: 'Folder',
+		Object.entries(folders)
+			.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
+			.forEach(([, value]) => {
+				foldersForSelect.push({
+					value: value.id.toString(),
+					label: (value.parent ? value.parent.name + ' → ' : '') + value.name,
+					group: 'Folder',
+				})
+				foldersForFilter.push({
+					id: value.id,
+					name: (value.parent ? value.parent.name + ' → ' : '') + value.name,
+				})
 			})
-		})
 	}
 	// Prepare folders list for select dropdown
 	const devicesForSelect: Array<SelectItem> = [{ value: '', label: 'None' }]
@@ -139,7 +150,15 @@ export const PresetsConfigurationPage = () => {
 	const fields = form.values.presets.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
-				<tr ref={provided.innerRef} {...provided.draggableProps}>
+				<tr
+					ref={provided.innerRef}
+					{...provided.draggableProps}
+					{...(form.values.presets[index].folderId &&
+					folderFilter !== 'ALL' &&
+					form.values.presets[index].folderId.toString() !== folderFilter
+						? { style: { display: 'none' } }
+						: {})}
+				>
 					<td style={{ width: '1em' }}>
 						<Center {...provided.dragHandleProps}>
 							<FaGripVertical />
@@ -391,6 +410,43 @@ export const PresetsConfigurationPage = () => {
 								)
 							}
 						})}
+						<Tabs value={folderFilter} onTabChange={value => setFolderFilter(value)} mt="sm">
+							<Tabs.List grow>
+								<Tabs.Tab value={'ALL'} color="gray" rightSection={<FaFilter />}>
+									Show All Presets
+								</Tabs.Tab>
+								{foldersForFilter.map(folder => {
+									// If a preset exists in that folder, show it
+									if (
+										form.values.presets.find(preset => preset.folderId === folder.id.toString()) ===
+										undefined
+									)
+										return null
+									return (
+										<Tabs.Tab
+											key={folder.id}
+											value={folder.id.toString()}
+											rightSection={
+												<Badge
+													sx={{ width: 16, height: 16, pointerEvents: 'none' }}
+													variant="outline"
+													size="xs"
+													p={0}
+												>
+													{
+														form.values.presets.filter(
+															preset => preset.folderId === folder.id.toString()
+														).length
+													}
+												</Badge>
+											}
+										>
+											{folder.name}
+										</Tabs.Tab>
+									)
+								})}
+							</Tabs.List>
+						</Tabs>
 						<Table verticalSpacing="sm" fontSize="md">
 							<thead>
 								<tr>
@@ -416,7 +472,8 @@ export const PresetsConfigurationPage = () => {
 																	timeClockTriggers: null,
 																	deviceId: null,
 																	httpTriggerEnabled: false,
-																	folderId: '0',
+																	folderId:
+																		folderFilter === 'ALL' ? '0' : folderFilter,
 																	icon: null,
 																	color: '#2C2E33',
 																})
