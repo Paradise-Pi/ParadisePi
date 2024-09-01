@@ -146,17 +146,25 @@ export const PresetsConfigurationPage = () => {
 						</Center>
 					</td>
 					<td style={{ width: '1em' }}>
-						<Badge variant="light">
-							{form.values.presets[index].type === 'e131'
-								? 'sACN (E1.31)'
-								: form.values.presets[index].type === 'osc'
-									? 'OSC'
-									: form.values.presets[index].type === 'http'
-										? 'HTTP'
-										: form.values.presets[index].type === 'macro'
-											? 'Macro'
-											: ''}
-						</Badge>
+						{form.values.presets[index].type === 'e131' ? (
+							<Badge variant="light" color="red">
+								sACN (E1.31)
+							</Badge>
+						) : form.values.presets[index].type === 'osc' ? (
+							<Badge variant="light" color="orange">
+								OSC
+							</Badge>
+						) : form.values.presets[index].type === 'http' ? (
+							<Badge variant="light" color="teal">
+								HTTP
+							</Badge>
+						) : form.values.presets[index].type === 'macro' ? (
+							<Badge variant="light" color="violet">
+								Macro
+							</Badge>
+						) : (
+							''
+						)}
 					</td>
 					<td>
 						<TextInput placeholder="Name" {...form.getInputProps(`presets.${index}.name`)} />
