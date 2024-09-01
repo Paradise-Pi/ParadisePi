@@ -57,6 +57,8 @@ export const TimeClockTriggersConfigurationPage = () => {
 		initialValues: {
 			triggers: Array<DatabaseTimeClockTrigger>(),
 		},
+		clearInputErrorOnChange: true,
+		validateInputOnBlur: true,
 		validate: {
 			triggers: {
 				timeout: (value: number) => (value < 0 ? 'Timeout should be a number' : null),

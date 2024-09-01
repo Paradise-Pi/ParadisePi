@@ -2,6 +2,7 @@ import ip from 'ip'
 import { Database } from '../../../shared/database'
 import { version } from '../../package.json'
 import { ConfigRepository } from '../database/repository/config'
+import { DeviceRepository } from '../database/repository/device'
 import { FaderRepository } from '../database/repository/fader'
 import { FolderRepository } from '../database/repository/folder'
 import { PresetRepository } from '../database/repository/preset'
@@ -62,6 +63,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 		timeClockTriggers: await TimeClockTriggersRepository.getAll(),
 		folders: await FolderRepository.getAll(),
 		faders: await FaderRepository.getAll(),
+		devices: await DeviceRepository.getAll(),
 	}
 }
 /**

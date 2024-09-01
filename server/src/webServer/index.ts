@@ -9,7 +9,7 @@ import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketDa
 import { broadcast } from '../api/broadcast'
 import { createDatabaseObject, sendDatabaseObject } from '../api/database'
 import { createAndSendImagesObject } from '../api/images'
-import { routeRequest } from '../api/router'
+import { httpMethods, routeRequest } from '../api/router'
 import dataSource from '../database/dataSource'
 import { Preset } from '../database/model/Preset'
 import { ConfigRepository } from '../database/repository/config'
@@ -17,6 +17,7 @@ import { PresetRepository } from '../database/repository/preset'
 import logger from '../logger'
 import { reboot } from '../utilities'
 import { getAvailablePort } from './availablePorts'
+import { monitoringRouter } from './monitoring/router'
 /**
  * The webserver is responsible for serving requests from other devices on the network that might want to connect.
  * This includes devices such as iPads who want to use the remote interface, a web browser which wants to
@@ -264,6 +265,18 @@ export class WebServer {
 					res.write('Not found')
 					res.end()
 				}
+			} else if (req.url.startsWith('/monitoring')) {
+				monitoringRouter(req.url, req.method as httpMethods)
+					.then(response => {
+						res.writeHead(response.statusCode, { 'Content-Type': response.contentType })
+						res.write(response.body)
+						res.end()
+					})
+					.catch(error => {
+						res.writeHead(500, { 'Content-Type': 'text/html' })
+						res.write('Server error')
+						res.end()
+					})
 			} else {
 				// Serve the react app
 				WebServer.staticFileServer.serve(req, res, (e: Error) => {

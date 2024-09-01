@@ -101,6 +101,8 @@ export const FadersConfigurationPage = () => {
 		initialValues: {
 			faders: [],
 		},
+		clearInputErrorOnChange: true,
+		validateInputOnBlur: true,
 		validate: {
 			faders: {
 				name: value => (value.length < 2 ? 'Name should have at least 2 letters' : null),

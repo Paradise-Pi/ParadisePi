@@ -6,6 +6,7 @@ import { PresetRepository } from '../../database/repository/preset'
 import logger from '../../logger'
 import { createDatabaseObject, sendDatabaseObject } from '../database'
 import { parseJSON } from '../parseUserJson'
+import { httpMethods } from '../router'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -14,11 +15,7 @@ import { parseJSON } from '../parseUserJson'
  * @returns the retrieved response from the given route
  * @throws an error if the requested route is not found
  */
-export const presetRouter = (
-	path: Array<string>,
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-	payload: apiObject
-): Promise<apiObject> => {
+export const presetRouter = (path: Array<string>, method: httpMethods, payload: apiObject): Promise<apiObject> => {
 	logger.silly('Preset router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'GET' && (path[0] === 'recall' || path[0] === 'recall-user')) {
@@ -46,10 +43,17 @@ export const presetRouter = (
 					})
 					resolve({})
 				} else if (value.type === 'http' && value.data !== null && value.data.url !== null) {
+					let deviceHost = ''
+					// Evaluate if there's a device involved that we need to prefix
+					if (value.device !== null && value.device.id !== null) {
+						if (value.device.ip !== null && value.device.ip !== '') deviceHost = 'http://' + value.device.ip
+						else if (value.device.endpoint !== null && value.device.endpoint !== '')
+							deviceHost = value.device.endpoint
+					}
 					// Make the HTTP request
 					axios({
 						method: value.data.method ?? 'GET',
-						url: value.data.url ?? '',
+						url: `${deviceHost}${value.data.url ?? ''}`,
 						data: value.data.data ? parseJSON(value.data.data) : null,
 						headers: value.data.headers ? parseJSON(value.data.headers) : null,
 						timeout: 60000, // 60 seconds

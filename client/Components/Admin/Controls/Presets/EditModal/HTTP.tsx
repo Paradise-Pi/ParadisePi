@@ -1,8 +1,8 @@
-import React from 'react'
 import { JsonInput, Select, TextInput } from '@mantine/core'
+import React from 'react'
 import { InputProps } from '../../../../InputProps'
 
-export const HTTPPresetEditModal = (props: InputProps) => {
+export const HTTPPresetEditModal = (props: InputProps & { deviceHost: string }) => {
 	const preset = JSON.parse(props.value) || {}
 	const onChangeFunction = (key: string, value: string) => {
 		const newValue = { ...preset }
@@ -13,6 +13,12 @@ export const HTTPPresetEditModal = (props: InputProps) => {
 		<>
 			<TextInput
 				label="URL"
+				icon={props.deviceHost}
+				iconWidth={
+					props.deviceHost !== null && props.deviceHost !== '' && props.deviceHost !== undefined
+						? props.deviceHost.length * 14 * 0.6
+						: 0
+				}
 				value={preset.url}
 				onChange={event => onChangeFunction('url', event.currentTarget.value)}
 			/>

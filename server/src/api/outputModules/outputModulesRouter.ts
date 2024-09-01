@@ -1,4 +1,5 @@
 import logger from '../../logger'
+import { httpMethods } from '../router'
 /**
  * This is a REST router for the output modules API.
  * @param path - The path requested by the original route requestor
@@ -9,7 +10,7 @@ import logger from '../../logger'
  */
 export const outputModulesRouter = (
 	path: Array<string>,
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+	method: httpMethods,
 	payload: apiObject
 ): Promise<apiObject> => {
 	logger.silly('e131 router has a request', { path, method, payload })

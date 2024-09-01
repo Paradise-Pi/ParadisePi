@@ -1,23 +1,24 @@
-import { Database, DatabaseFolder } from '../../../../shared/database'
-import { FolderRepository } from '../../database/repository/folder'
+import { Database } from '../../../../shared/database'
+import { DatabaseDevice } from '../../../../shared/sharedTypes'
+import { DeviceRepository } from '../../database/repository/device'
 import logger from '../../logger'
 import { createDatabaseObject, sendDatabaseObject } from '../database'
 import { httpMethods } from '../router'
 /**
- * This is a REST router for the preset folder API.
+ * This is a REST router for the device API.
  * @param path - The path requested by the original route requestor
  * @param method - The method requested by the original route requestor
  * @param payload - Any payload sent
  * @returns the retrieved response from the given route
  * @throws an error if the requested route is not found
  */
-export const folderRouter = (path: Array<string>, method: httpMethods, payload: apiObject): Promise<apiObject> => {
-	logger.silly('Preset folder router has a request', { path, method, payload })
+export const deviceRouter = (path: Array<string>, method: httpMethods, payload: apiObject): Promise<apiObject> => {
+	logger.silly('Device router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'PUT') {
-			return FolderRepository.setAllFromApp(payload as Array<DatabaseFolder>)
+			return DeviceRepository.setAllFromApp(payload as Array<DatabaseDevice>)
 				.then(() => {
-					return createDatabaseObject('updating all presets in bulk')
+					return createDatabaseObject('updating all devices in bulk')
 				})
 				.then((response: Database) => {
 					sendDatabaseObject(response)

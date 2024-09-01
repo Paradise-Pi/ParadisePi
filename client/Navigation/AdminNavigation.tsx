@@ -6,6 +6,7 @@ import { FaLevelUpAlt } from '@react-icons/all-files/fa/FaLevelUpAlt'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { FaRegFolder } from '@react-icons/all-files/fa/FaRegFolder'
 import { FaRegPlayCircle } from '@react-icons/all-files/fa/FaRegPlayCircle'
+import { FaServer } from '@react-icons/all-files/fa/FaServer'
 import React from 'react'
 import { useAppSelector } from '../apis/redux/mainStore'
 import { NavbarItem } from './NavbarItem'
@@ -29,6 +30,7 @@ export const AdminNavigation = () => {
 					label="Configuration"
 					Icon={<FaDatabase className={classes.linkIcon} />}
 				/>
+				<NavbarItem link="devices" label="Devices" Icon={<FaServer className={classes.linkIcon} />} />
 				<NavbarItem link="presets" label="Presets" Icon={<FaRegPlayCircle className={classes.linkIcon} />} />
 				<NavbarItem link="folders" label="Folders" Icon={<FaRegFolder className={classes.linkIcon} />} />
 				<NavbarItem link="faders" label="Faders" Icon={<FaLevelUpAlt className={classes.linkIcon} />} />

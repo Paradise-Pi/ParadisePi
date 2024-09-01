@@ -3,6 +3,7 @@ import { reboot } from '../utilities'
 import { aboutRouter } from './about/aboutRouter'
 import { configRouter } from './config/configRouter'
 import { createDatabaseObject } from './database'
+import { deviceRouter } from './device/deviceRouter'
 import { faderRouter } from './fader/faderRouter'
 import { folderRouter } from './folder/folderRouter'
 import { createImagesObject } from './images'
@@ -17,11 +18,8 @@ import { timeClockTriggersRouter } from './timeClockTriggers/timeClockTriggers'
  * @returns the retrieved response from the given route
  * @throws an error if the requested route is not found
  */
-export const routeRequest = (
-	path: string,
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-	payload: apiObject
-): Promise<apiObject> => {
+export type httpMethods = 'GET' | 'POST' | 'PUT' | 'DELETE'
+export const routeRequest = (path: string, method: httpMethods, payload: apiObject): Promise<apiObject> => {
 	return new Promise((resolve, reject) => {
 		// Split the path into an array of strings
 		logger.debug(`Routing request come in to ${path}`, { path, method, payload })
@@ -44,6 +42,10 @@ export const routeRequest = (
 			case 'faders':
 				// {@link faderRouter} - the fader router handles all about requests for the /faders path
 				resolve(faderRouter(pathArr.slice(1), method, payload))
+				break
+			case 'devices':
+				// {@link deviceRouter} - the fader router handles all about requests for the /faders path
+				resolve(deviceRouter(pathArr.slice(1), method, payload))
 				break
 			case 'folders':
 				// {@link folderRouter} - this router handles all about requests for the /folders path

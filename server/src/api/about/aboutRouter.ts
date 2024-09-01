@@ -1,5 +1,6 @@
-import { getOperatingSystemUsage } from './operatingSystem/usage'
 import logger from '../../logger'
+import { httpMethods } from '../router'
+import { getOperatingSystemUsage } from './operatingSystem/usage'
 /**
  * This is a REST router for the about API.
  * @param path - The path requested by the original route requestor
@@ -11,7 +12,7 @@ import logger from '../../logger'
 export const aboutRouter = (
 	path: Array<string>,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+	method: httpMethods,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	payload: apiObject
 ): Promise<apiObject> => {

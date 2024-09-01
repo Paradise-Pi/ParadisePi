@@ -8,6 +8,7 @@ import {
 	Checkbox,
 	Chip,
 	ColorInput,
+	Divider,
 	Group,
 	LoadingOverlay,
 	Modal,
@@ -15,6 +16,8 @@ import {
 	Select,
 	SelectItem,
 	Table,
+	Tabs,
+	TabsValue,
 	Text,
 	TextInput,
 	Title,
@@ -23,6 +26,7 @@ import { useForm } from '@mantine/form'
 import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { FaFilter } from '@react-icons/all-files/fa/FaFilter'
 import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
@@ -32,6 +36,7 @@ import { FaRecycle } from '@react-icons/all-files/fa/FaRecycle'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaServer } from '@react-icons/all-files/fa/FaServer'
 import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
@@ -58,17 +63,44 @@ export const PresetsConfigurationPage = () => {
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const devices = useAppSelector(state => (state.database ? state.database.devices : false))
 	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
 	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
-	const foldersForSelect: Array<SelectItem> = []
+	const [folderFilter, setFolderFilter] = useState<TabsValue>('ALL')
 	// Prepare folders list for select dropdown
+	const foldersForSelect: Array<SelectItem> = []
+	const foldersForFilter: Array<{ id: number; name: string }> = []
 	if (folders !== false) {
-		Object.entries(folders).forEach(([, value]) => {
-			foldersForSelect.push({
-				value: value.id.toString(),
-				label: (value.parent ? value.parent.name + ' → ' : '') + value.name,
-				group: 'Folder',
+		Object.entries(folders)
+			.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
+			.forEach(([, value]) => {
+				foldersForSelect.push({
+					value: value.id.toString(),
+					label: (value.parent ? value.parent.name + ' → ' : '') + value.name,
+					group: 'Folder',
+				})
+				foldersForFilter.push({
+					id: value.id,
+					name: (value.parent ? value.parent.name + ' → ' : '') + value.name,
+				})
 			})
+	}
+	// Prepare folders list for select dropdown
+	const devicesForSelect: Array<SelectItem> = [{ value: '', label: 'None' }]
+	const devicesHosts: {
+		[key: string]: string
+	} = {}
+	if (devices !== false) {
+		Object.entries(devices).forEach(([, value]) => {
+			if (value.id !== undefined) {
+				let deviceHost = value.ip != null && value.ip != '' ? 'http://' + value.ip : value.endpoint
+				devicesForSelect.push({
+					value: value.id.toString(),
+					label: `${value.name} (${deviceHost})`,
+					group: 'Device',
+				})
+				devicesHosts[value.id.toString()] = deviceHost
+			}
 		})
 	}
 	// Setup the form
@@ -76,6 +108,8 @@ export const PresetsConfigurationPage = () => {
 		initialValues: {
 			presets: Array<DatabasePreset>(),
 		},
+		clearInputErrorOnChange: true,
+		validateInputOnBlur: true,
 		validate: {
 			presets: {
 				name: value => (value.length < 2 ? 'Name should have at least 2 letters' : null),
@@ -116,24 +150,40 @@ export const PresetsConfigurationPage = () => {
 	const fields = form.values.presets.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
-				<tr ref={provided.innerRef} {...provided.draggableProps}>
+				<tr
+					ref={provided.innerRef}
+					{...provided.draggableProps}
+					{...(form.values.presets[index].folderId &&
+					folderFilter !== 'ALL' &&
+					form.values.presets[index].folderId.toString() !== folderFilter
+						? { style: { display: 'none' } }
+						: {})}
+				>
 					<td style={{ width: '1em' }}>
 						<Center {...provided.dragHandleProps}>
 							<FaGripVertical />
 						</Center>
 					</td>
 					<td style={{ width: '1em' }}>
-						<Badge variant="light">
-							{form.values.presets[index].type === 'e131'
-								? 'sACN (E1.31)'
-								: form.values.presets[index].type === 'osc'
-									? 'OSC'
-									: form.values.presets[index].type === 'http'
-										? 'HTTP'
-										: form.values.presets[index].type === 'macro'
-											? 'Macro'
-											: ''}
-						</Badge>
+						{form.values.presets[index].type === 'e131' ? (
+							<Badge variant="light" color="red">
+								sACN (E1.31)
+							</Badge>
+						) : form.values.presets[index].type === 'osc' ? (
+							<Badge variant="light" color="orange">
+								OSC
+							</Badge>
+						) : form.values.presets[index].type === 'http' ? (
+							<Badge variant="light" color="teal">
+								HTTP
+							</Badge>
+						) : form.values.presets[index].type === 'macro' ? (
+							<Badge variant="light" color="violet">
+								Macro
+							</Badge>
+						) : (
+							''
+						)}
 					</td>
 					<td>
 						<TextInput placeholder="Name" {...form.getInputProps(`presets.${index}.name`)} />
@@ -203,7 +253,7 @@ export const PresetsConfigurationPage = () => {
 								my={'md'}
 								size={'lg'}
 								label="HTTP Trigger Enabled"
-								description="Enable this preset to be triggered by HTTP requests"
+								description="Enable this preset to be triggered by HTTP requests made to Paradise"
 								{...form.getInputProps(`presets.${index}.httpTriggerEnabled`, { type: 'checkbox' })}
 							/>
 							{form.values.presets[index].httpTriggerEnabled ? (
@@ -246,7 +296,24 @@ export const PresetsConfigurationPage = () => {
 								<OSCPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 							) : null}
 							{form.values.presets[index].type === 'http' ? (
-								<HTTPPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								<>
+									<Divider my="md" label="Configuration" labelPosition="center" />
+									<Select
+										label="Target Device"
+										placeholder="Device"
+										icon={<FaServer />}
+										{...form.getInputProps(`presets.${index}.deviceId`)}
+										data={devicesForSelect}
+									/>
+									<HTTPPresetEditModal
+										{...form.getInputProps(`presets.${index}.data`)}
+										deviceHost={
+											form.values.presets[index].deviceId
+												? devicesHosts[form.values.presets[index].deviceId]
+												: ''
+										}
+									/>
+								</>
 							) : null}
 							{form.values.presets[index].type === 'macro' ? (
 								<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
@@ -343,6 +410,43 @@ export const PresetsConfigurationPage = () => {
 								)
 							}
 						})}
+						<Tabs value={folderFilter} onTabChange={value => setFolderFilter(value)} mt="sm">
+							<Tabs.List grow>
+								<Tabs.Tab value={'ALL'} color="gray" rightSection={<FaFilter />}>
+									Show All Presets
+								</Tabs.Tab>
+								{foldersForFilter.map(folder => {
+									// If a preset exists in that folder, show it
+									if (
+										form.values.presets.find(preset => preset.folderId === folder.id.toString()) ===
+										undefined
+									)
+										return null
+									return (
+										<Tabs.Tab
+											key={folder.id}
+											value={folder.id.toString()}
+											rightSection={
+												<Badge
+													sx={{ width: 16, height: 16, pointerEvents: 'none' }}
+													variant="outline"
+													size="xs"
+													p={0}
+												>
+													{
+														form.values.presets.filter(
+															preset => preset.folderId === folder.id.toString()
+														).length
+													}
+												</Badge>
+											}
+										>
+											{folder.name}
+										</Tabs.Tab>
+									)
+								})}
+							</Tabs.List>
+						</Tabs>
 						<Table verticalSpacing="sm" fontSize="md">
 							<thead>
 								<tr>
@@ -366,8 +470,10 @@ export const PresetsConfigurationPage = () => {
 																	fadeTime: 0,
 																	data: null,
 																	timeClockTriggers: null,
+																	deviceId: null,
 																	httpTriggerEnabled: false,
-																	folderId: '0',
+																	folderId:
+																		folderFilter === 'ALL' ? '0' : folderFilter,
 																	icon: null,
 																	color: '#2C2E33',
 																})

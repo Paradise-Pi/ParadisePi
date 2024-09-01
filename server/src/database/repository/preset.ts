@@ -1,10 +1,8 @@
 import { In, Not } from 'typeorm'
+import { DatabasePreset, PresetTypes } from '../../../../shared/database'
 import { parseJSON } from '../../api/parseUserJson'
 import dataSource from '../dataSource'
 import { Preset } from '../model/Preset'
-import { DatabasePreset, PresetTypes } from '../../../../shared/database'
-
-
 
 export const PresetRepository = dataSource.getRepository(Preset).extend({
 	//get all presets
@@ -22,6 +20,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				data: item.data !== null ? JSON.stringify(item.data) : null,
 				httpTriggerEnabled: item.httpTriggerEnabled,
 				folderId: item.folder !== null ? item.folder.id.toString() : null,
+				deviceId: item.device !== null ? item.device.id.toString() : null,
 				color: item.color !== null ? item.color : '#2C2E33',
 			}
 		})
@@ -45,6 +44,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				sort: count + 10, // +10 to make sure that newly inserted ones with null/0/1 end up at the top
 				universe: preset.universe !== null ? parseInt(preset.universe) : null,
 				folder: preset.folderId !== null ? parseInt(preset.folderId) : null,
+				device: preset.deviceId !== null ? parseInt(preset.deviceId) : null,
 				data: preset.data !== null && preset.data.length > 0 ? parseJSON(preset.data) : null,
 			}
 		})

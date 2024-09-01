@@ -9,6 +9,7 @@ import {
 	UpdateDateColumn,
 	VersionColumn,
 } from 'typeorm'
+import { Device } from './Device'
 import { Folders } from './Folder'
 import { TimeClockTrigger } from './TimeClockTrigger'
 
@@ -58,6 +59,13 @@ export class Preset {
 		eager: true,
 	})
 	folder: Folders
+
+	@ManyToOne(() => Device, Device => Device.presets, {
+		createForeignKeyConstraints: false,
+		eager: true,
+		nullable: true,
+	})
+	device: Device
 
 	@Column('simple-json', { nullable: true })
 	data: {

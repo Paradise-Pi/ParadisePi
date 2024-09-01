@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
-import { Group, ActionIcon, Button, Text, Checkbox, NumberInput } from '@mantine/core'
+import { ActionIcon, Button, Checkbox, Group, NumberInput, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { randomId } from '@mantine/hooks'
+import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import React, { useEffect } from 'react'
 import { InputProps } from '../../../../InputProps'
 
 interface Trigger {
@@ -76,7 +76,7 @@ export const TimeClockTriggersEditor = (props: InputProps) => {
 										const hours = paddedNumber.slice(0, 2)
 										const minutes = paddedNumber.slice(2)
 										return `${hours}:${minutes}`
-								  })
+									})
 								: ''
 						}
 						{...form.getInputProps(`triggers.${index}.time`)}

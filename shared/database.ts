@@ -1,4 +1,4 @@
-import { DatabaseFader } from './sharedTypes'
+import { DatabaseDevice, DatabaseFader } from './sharedTypes'
 
 export interface DatabaseTimeClockTrigger {
 	id: number
@@ -34,6 +34,7 @@ export interface DatabasePreset {
 	data?: string | null
 	httpTriggerEnabled: boolean
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
+	deviceId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	color?: string
 }
 
@@ -93,6 +94,7 @@ export interface Database {
 	}
 	presets: Array<DatabasePreset>
 	timeClockTriggers: Array<DatabaseTimeClockTrigger>
+	devices: Array<DatabaseDevice>
 	folders: {
 		[key: number]: DatabaseFolder
 	}

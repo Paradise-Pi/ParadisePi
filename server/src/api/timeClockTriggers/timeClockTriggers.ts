@@ -2,6 +2,7 @@ import { Database, DatabaseTimeClockTrigger } from '../../../../shared/database'
 import { TimeClockTriggersRepository } from '../../database/repository/timeClockTrigger'
 import logger from '../../logger'
 import { createDatabaseObject, sendDatabaseObject } from '../database'
+import { httpMethods } from '../router'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -12,7 +13,7 @@ import { createDatabaseObject, sendDatabaseObject } from '../database'
  */
 export const timeClockTriggersRouter = (
 	path: Array<string>,
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+	method: httpMethods,
 	payload: apiObject
 ): Promise<apiObject> => {
 	logger.silly('Time clock trigger router has a request', { path, method, payload })
