@@ -62,7 +62,7 @@ export class Preset {
 
 	@ManyToOne(() => Device, Device => Device.presets, {
 		createForeignKeyConstraints: false,
-		eager: false,
+		eager: true,
 		nullable: true,
 	})
 	device: Device

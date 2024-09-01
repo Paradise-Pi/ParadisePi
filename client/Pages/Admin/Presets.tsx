@@ -8,6 +8,7 @@ import {
 	Checkbox,
 	Chip,
 	ColorInput,
+	Divider,
 	Group,
 	LoadingOverlay,
 	Modal,
@@ -32,6 +33,7 @@ import { FaRecycle } from '@react-icons/all-files/fa/FaRecycle'
 import { FaRegClock } from '@react-icons/all-files/fa/FaRegClock'
 import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaServer } from '@react-icons/all-files/fa/FaServer'
 import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
@@ -58,10 +60,11 @@ export const PresetsConfigurationPage = () => {
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const devices = useAppSelector(state => (state.database ? state.database.devices : false))
 	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
 	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
-	const foldersForSelect: Array<SelectItem> = []
 	// Prepare folders list for select dropdown
+	const foldersForSelect: Array<SelectItem> = []
 	if (folders !== false) {
 		Object.entries(folders).forEach(([, value]) => {
 			foldersForSelect.push({
@@ -69,6 +72,24 @@ export const PresetsConfigurationPage = () => {
 				label: (value.parent ? value.parent.name + ' → ' : '') + value.name,
 				group: 'Folder',
 			})
+		})
+	}
+	// Prepare folders list for select dropdown
+	const devicesForSelect: Array<SelectItem> = [{ value: '', label: 'None' }]
+	const devicesHosts: {
+		[key: string]: string
+	} = {}
+	if (devices !== false) {
+		Object.entries(devices).forEach(([, value]) => {
+			if (value.id !== undefined) {
+				let deviceHost = value.ip != null && value.ip != '' ? value.ip : value.endpoint
+				devicesForSelect.push({
+					value: value.id.toString(),
+					label: `${value.name} (${deviceHost})`,
+					group: 'Device',
+				})
+				devicesHosts[value.id.toString()] = deviceHost
+			}
 		})
 	}
 	// Setup the form
@@ -205,7 +226,7 @@ export const PresetsConfigurationPage = () => {
 								my={'md'}
 								size={'lg'}
 								label="HTTP Trigger Enabled"
-								description="Enable this preset to be triggered by HTTP requests"
+								description="Enable this preset to be triggered by HTTP requests made to Paradise"
 								{...form.getInputProps(`presets.${index}.httpTriggerEnabled`, { type: 'checkbox' })}
 							/>
 							{form.values.presets[index].httpTriggerEnabled ? (
@@ -248,7 +269,24 @@ export const PresetsConfigurationPage = () => {
 								<OSCPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 							) : null}
 							{form.values.presets[index].type === 'http' ? (
-								<HTTPPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								<>
+									<Divider my="md" label="Configuration" labelPosition="center" />
+									<Select
+										label="Target Device"
+										placeholder="Device"
+										icon={<FaServer />}
+										{...form.getInputProps(`presets.${index}.deviceId`)}
+										data={devicesForSelect}
+									/>
+									<HTTPPresetEditModal
+										{...form.getInputProps(`presets.${index}.data`)}
+										deviceHost={
+											form.values.presets[index].deviceId
+												? devicesHosts[form.values.presets[index].deviceId]
+												: ''
+										}
+									/>
+								</>
 							) : null}
 							{form.values.presets[index].type === 'macro' ? (
 								<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
