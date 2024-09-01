@@ -1,8 +1,23 @@
-import { ActionIcon, Box, Button, Center, Group, LoadingOverlay, Table, TextInput, Title } from '@mantine/core'
+import {
+	ActionIcon,
+	Box,
+	Button,
+	Center,
+	Divider,
+	Group,
+	LoadingOverlay,
+	Modal,
+	Table,
+	Text,
+	Textarea,
+	TextInput,
+	Title,
+} from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { showNotification } from '@mantine/notifications'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
+import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
@@ -12,12 +27,14 @@ import { DatabaseDevice } from '../../../shared/sharedTypes'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { usePrompt } from '../../apis/utilities/usePrompt'
 import { ApiCall } from '../../apis/wrapper'
-
 interface FormValues {
 	devices: Array<DatabaseDevice>
 }
 export const DevicesConfigurationPage = () => {
+	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
+	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
+	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
 	const [formOriginalValues, setFormOriginalValues] = useState<string>('') // Values used to detect unsaved changes
 	const devices = useAppSelector(state => (state.database ? state.database.devices : false))
 	// Setup the form
@@ -33,6 +50,10 @@ export const DevicesConfigurationPage = () => {
 				ip: (value, values, path) => {
 					if (value == null || value.length < 1) return null
 
+					// Check if the same device has an endpoint set
+					if (values.devices[path.split('.')[1]].endpoint.length > 0)
+						return 'Cannot have both an IP address and an endpoint'
+
 					// Check for duplicates
 					const duplicate = values.devices.findIndex(
 						(item, index) => item.ip === value && index !== parseInt(path.split('.')[1])
@@ -47,10 +68,15 @@ export const DevicesConfigurationPage = () => {
 						return null
 					else return 'IPv4 address not valid'
 				},
-				endpoint: value =>
-					value == null || value.length < 1 || value.startsWith('https://') || value.startsWith('http://')
-						? null
-						: 'Endpoint not valid',
+				endpoint: (value, values, path) => {
+					if (value == null || value.length < 1) return null
+
+					// Check if the same device has an IP set
+					if (values.devices[path.split('.')[1]].ip.length > 0)
+						return 'Cannot have both an IP address and an endpoint'
+
+					return value.startsWith('https://') || value.startsWith('http://') ? null : 'Endpoint not valid'
+				},
 			},
 		},
 	})
@@ -94,25 +120,57 @@ export const DevicesConfigurationPage = () => {
 						<TextInput placeholder="Name" {...form.getInputProps(`devices.${index}.name`)} />
 					</td>
 					<td>
-						<TextInput placeholder="IP" {...form.getInputProps(`devices.${index}.ip`)} />
-					</td>
-					<td>
-						<TextInput placeholder="endpoint" {...form.getInputProps(`devices.${index}.endpoint`)} />
+						<TextInput placeholder="192.168.1.30" {...form.getInputProps(`devices.${index}.ip`)} />
 					</td>
 					<td>
 						<TextInput
-							placeholder="statusCheckPath"
-							{...form.getInputProps(`devices.${index}.statusCheckPath`)}
+							placeholder="https://api.sendgrid.com/v3/"
+							{...form.getInputProps(`devices.${index}.endpoint`)}
 						/>
 					</td>
 					<td>
-						<TextInput
-							placeholder="statusCheckString"
-							{...form.getInputProps(`devices.${index}.statusCheckString`)}
-						/>
-					</td>
-					<td>
-						<TextInput placeholder="notes" {...form.getInputProps(`devices.${index}.notes`)} />
+						<Modal
+							opened={modalVisible === index}
+							onClose={() => {
+								setModalVisible(false)
+							}}
+							size="xl"
+							title={`Edit Device ${form.values.devices[index].name}`}
+							overflow="inside"
+						>
+							<Textarea label="Device Notes" {...form.getInputProps(`devices.${index}.notes`)} />
+							<Divider labelPosition="center" label="Status Check" my="lg" />
+							<TextInput
+								label="Path to Check"
+								placeholder="/v3/ping"
+								description="The path to make a HTTP GET request to to check for the status of the device."
+								{...form.getInputProps(`devices.${index}.statusCheckPath`)}
+							/>
+							<TextInput
+								label="String to Match"
+								placeholder="pong"
+								description="The string to match in the response to determine if the device is online. If the response does not contain this string then the device will be marked as offline."
+								{...form.getInputProps(`devices.${index}.statusCheckString`)}
+							/>
+							{form.values.devices[index].id ? (
+								<TextInput
+									label="Status Check API URL"
+									description="Page returns OK or OFFLINE based on the status check"
+									readOnly={true}
+									value={
+										'http://' +
+										ipAddress +
+										':' +
+										port +
+										'/monitoring/device/' +
+										form.values.devices[index].id
+									}
+								/>
+							) : null}
+						</Modal>
+						<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
+							<FaPencilAlt />
+						</ActionIcon>
 					</td>
 					<td>
 						<ActionIcon
@@ -142,6 +200,11 @@ export const DevicesConfigurationPage = () => {
 								</Button>
 							) : null}
 						</Group>
+						<Text>
+							Devices are used for making HTTP requests in presets, allowing you to store the IP
+							address/host of the device in one place. It also allows you to monitor the status of a
+							device.
+						</Text>
 						<Table verticalSpacing="sm" fontSize="md">
 							<thead>
 								<tr>
@@ -153,11 +216,11 @@ export const DevicesConfigurationPage = () => {
 												form.insertListItem('devices', {
 													id: null,
 													name: 'New device',
-													ip: "",
-													endpoint: "",
-													statusCheckPath: "",
-													statusCheckString: "",
-													notes: "",
+													ip: '',
+													endpoint: '',
+													statusCheckPath: '',
+													statusCheckString: '',
+													notes: '',
 												})
 											}}
 										>
@@ -165,7 +228,9 @@ export const DevicesConfigurationPage = () => {
 										</Button>
 									</th>
 									<th>Name</th>
-									<th>IP</th>
+									<th>IP Address</th>
+									<th>or, Endpoint</th>
+									<th></th>
 									<th></th>
 								</tr>
 							</thead>

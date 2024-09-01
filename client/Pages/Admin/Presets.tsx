@@ -82,7 +82,7 @@ export const PresetsConfigurationPage = () => {
 	if (devices !== false) {
 		Object.entries(devices).forEach(([, value]) => {
 			if (value.id !== undefined) {
-				let deviceHost = value.ip != null && value.ip != '' ? value.ip : value.endpoint
+				let deviceHost = value.ip != null && value.ip != '' ? 'http://' + value.ip : value.endpoint
 				devicesForSelect.push({
 					value: value.id.toString(),
 					label: `${value.name} (${deviceHost})`,
