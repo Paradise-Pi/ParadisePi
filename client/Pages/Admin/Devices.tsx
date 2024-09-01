@@ -153,6 +153,11 @@ export const DevicesConfigurationPage = () => {
 												form.insertListItem('devices', {
 													id: null,
 													name: 'New device',
+													ip: "",
+													endpoint: "",
+													statusCheckPath: "",
+													statusCheckString: "",
+													notes: "",
 												})
 											}}
 										>
