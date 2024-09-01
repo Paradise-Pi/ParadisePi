@@ -76,6 +76,8 @@ export const PresetsConfigurationPage = () => {
 		initialValues: {
 			presets: Array<DatabasePreset>(),
 		},
+		clearInputErrorOnChange: true,
+		validateInputOnBlur: true,
 		validate: {
 			presets: {
 				name: value => (value.length < 2 ? 'Name should have at least 2 letters' : null),

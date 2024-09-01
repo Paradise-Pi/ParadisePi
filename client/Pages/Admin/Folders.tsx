@@ -58,6 +58,8 @@ export const FoldersConfigurationPage = () => {
 		initialValues: {
 			folders: [],
 		},
+		clearInputErrorOnChange: true,
+		validateInputOnBlur: true,
 		validate: {
 			folders: {
 				name: value =>

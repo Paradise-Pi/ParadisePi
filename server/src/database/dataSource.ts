@@ -36,6 +36,8 @@ import { HTTPTriggers1685982219806 } from './migration/1685982219806-HTTPTrigger
 import { PresetIcons1686849999231 } from './migration/1686849999231-PresetIcons'
 import { TimeClockTriggers1686937486497 } from './migration/1686937486497-TimeClockTriggers'
 import { History1720262576000 } from './migration/1720262576000-History'
+import { AddDevices1725184396730 } from './migration/1725184396730-AddDevices'
+import { Device } from './model/Device'
 import { TimeClockTrigger } from './model/TimeClockTrigger'
 
 const dataSource = new DataSource({
@@ -44,7 +46,7 @@ const dataSource = new DataSource({
 	synchronize: false,
 	migrationsRun: true,
 	cache: false,
-	entities: [Config, Preset, Folders, Preset, Fader, TimeClockTrigger],
+	entities: [Config, Preset, Folders, Preset, Fader, TimeClockTrigger, Device],
 	migrations: [
 		Initial1650709558593,
 		InsertConfig1650710286405,
@@ -71,6 +73,7 @@ const dataSource = new DataSource({
 		PresetIcons1686849999231,
 		TimeClockTriggers1686937486497,
 		History1720262576000,
+		AddDevices1725184396730,
 	],
 	subscribers: [],
 	logger: new CustomTypeORMLogger(),

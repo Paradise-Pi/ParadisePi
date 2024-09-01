@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
-import { SelectItem, Group, ActionIcon, Button, Select } from '@mantine/core'
+import { ActionIcon, Button, Group, Select, SelectItem } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import { randomId } from '@mantine/hooks'
+import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
+import React, { useEffect } from 'react'
 import { useAppSelector } from '../../../../../apis/redux/mainStore'
 import { InputProps } from '../../../../InputProps'
 interface FormValues {

@@ -1,134 +1,76 @@
-import {
-	ActionIcon,
-	Box,
-	Button,
-	Center,
-	Checkbox,
-	Group,
-	LoadingOverlay,
-	NumberInput,
-	Select,
-	SelectItem,
-	Table,
-	TextInput,
-	Title,
-} from '@mantine/core'
+import { ActionIcon, Box, Button, Center, Group, LoadingOverlay, Table, TextInput, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { showNotification } from '@mantine/notifications'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
-import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
-import { FaHashtag } from '@react-icons/all-files/fa/FaHashtag'
-import { FaIcons } from '@react-icons/all-files/fa/FaIcons'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import { DatabaseFader } from '../../../shared/sharedTypes'
+import { DatabaseDevice } from '../../../shared/sharedTypes'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { usePrompt } from '../../apis/utilities/usePrompt'
 import { ApiCall } from '../../apis/wrapper'
 
 interface FormValues {
-	faders: Array<DatabaseFader>
+	devices: Array<DatabaseDevice>
 }
-const FaderChoices = (mixer: string) => {
-	const choices = [
-		{
-			value: 'ch',
-			label: 'Channel',
-			group: 'Inputs',
-		},
-		{
-			value: 'auxin',
-			label: 'Aux In',
-			group: 'Inputs',
-		},
-		{
-			value: 'fxrtn',
-			label: 'Effect Return',
-			group: 'Outputs',
-		},
-		{
-			value: 'bus',
-			label: 'Bus',
-			group: 'Outputs',
-		},
-	]
-	if (mixer === 'x32') {
-		choices.push(
-			{
-				value: 'main/st',
-				label: 'Stereo Master',
-				group: 'Outputs',
-			},
-			{
-				value: 'main/m',
-				label: 'Mono Master',
-				group: 'Outputs',
-			}
-		)
-	}
-	if (mixer === 'xair') {
-		choices.push({
-			value: 'lr',
-			label: 'Stereo Master',
-			group: 'Outputs',
-		})
-	}
-	return choices
-}
-export const FadersConfigurationPage = () => {
+export const DevicesConfigurationPage = () => {
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const [formOriginalValues, setFormOriginalValues] = useState<string>('') // Values used to detect unsaved changes
-	const faders = useAppSelector(state => (state.database ? state.database.faders : false))
-	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
-	const mixer = useAppSelector(state => (state.database ? state.database.config.osc.OSCMixerType : false))
-	const foldersForSelect: Array<SelectItem> = []
-	// Prepare fader folders list for select dropdown
-	if (folders !== false) {
-		Object.entries(folders).forEach(([, value]) => {
-			foldersForSelect.push({
-				value: value.id.toString(),
-				label: value.name,
-				group: 'Folder',
-			})
-		})
-	}
+	const devices = useAppSelector(state => (state.database ? state.database.devices : false))
 	// Setup the form
 	const form = useForm<FormValues>({
 		initialValues: {
-			faders: [],
+			devices: [],
 		},
 		clearInputErrorOnChange: true,
 		validateInputOnBlur: true,
 		validate: {
-			faders: {
+			devices: {
 				name: value => (value.length < 2 ? 'Name should have at least 2 letters' : null),
-				folderId: value => (value == null || parseInt(value) == 0 ? 'Folder must be selected' : null),
-				channel: value =>
-					typeof value === 'undefined' || value < 1 || value > 99 ? 'Channel must be between 1 and 99' : null,
+				ip: (value, values, path) => {
+					if (value == null || value.length < 1) return null
+
+					// Check for duplicates
+					const duplicate = values.devices.findIndex(
+						(item, index) => item.ip === value && index !== parseInt(path.split('.')[1])
+					)
+					if (duplicate !== -1) return 'IP address used by another device'
+
+					if (
+						/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+							value
+						)
+					)
+						return null
+					else return 'IPv4 address not valid'
+				},
+				endpoint: value =>
+					value == null || value.length < 1 || value.startsWith('https://') || value.startsWith('http://')
+						? null
+						: 'Endpoint not valid',
 			},
 		},
 	})
 	useEffect(() => {
 		// Normally called when the database is populated and ready, so we can populate the form
-		if (faders !== false) {
-			const formValues = { faders: faders.map(item => ({ ...item })) } // Make a copy of the faders using map because the object is not extensible
+		if (devices !== false) {
+			const formValues = { devices: devices.map(item => ({ ...item })) } // Make a copy of the object using map because the object is not extensible
 			form.setValues(formValues)
 			setFormOriginalValues(JSON.stringify(formValues))
 			setLoadingOverlayVisible(false)
 		} else if (!loadingOverlayVisible) setLoadingOverlayVisible(true)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [faders])
+	}, [devices])
 	const saveByUserNeeded = formOriginalValues !== JSON.stringify(form.values) // Does the user have unsaved changes
 	usePrompt(saveByUserNeeded ? 'You have unsaved changes, are you sure you want to leave this page?' : false)
 
 	// Handle the submit button
 	const handleSubmit = (values: FormValues) => {
 		setLoadingOverlayVisible(true)
-		ApiCall.put('/faders', values.faders).then(() => {
+		ApiCall.put('/devices', values.devices).then(() => {
 			showNotification({
 				message: 'Your changes have been saved',
 				autoClose: 2000,
@@ -139,7 +81,7 @@ export const FadersConfigurationPage = () => {
 		})
 	}
 
-	const fields = form.values.faders.map((_, index) => (
+	const fields = form.values.devices.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
 				<tr ref={provided.innerRef} {...provided.draggableProps}>
@@ -149,48 +91,34 @@ export const FadersConfigurationPage = () => {
 						</Center>
 					</td>
 					<td>
-						<TextInput placeholder="Name" {...form.getInputProps(`faders.${index}.name`)} />
+						<TextInput placeholder="Name" {...form.getInputProps(`devices.${index}.name`)} />
 					</td>
 					<td>
-						<Select
-							placeholder="Folder"
-							icon={<FaFolder />}
-							//
-							{...form.getInputProps(`faders.${index}.folderId`)}
-							data={foldersForSelect}
+						<TextInput placeholder="IP" {...form.getInputProps(`devices.${index}.ip`)} />
+					</td>
+					<td>
+						<TextInput placeholder="endpoint" {...form.getInputProps(`devices.${index}.endpoint`)} />
+					</td>
+					<td>
+						<TextInput
+							placeholder="statusCheckPath"
+							{...form.getInputProps(`devices.${index}.statusCheckPath`)}
 						/>
 					</td>
 					<td>
-						<Select
-							placeholder="Type"
-							icon={<FaIcons />}
-							{...form.getInputProps(`faders.${index}.type`)}
-							data={mixer !== false ? FaderChoices(mixer.replace('midas-', '')) : []}
+						<TextInput
+							placeholder="statusCheckString"
+							{...form.getInputProps(`devices.${index}.statusCheckString`)}
 						/>
 					</td>
 					<td>
-						{!['main/st', 'main/m', 'lr'].includes(form.values.faders[index].type) ? (
-							<NumberInput
-								placeholder="Number"
-								icon={<FaHashtag />}
-								min={1}
-								max={99}
-								{...form.getInputProps(`faders.${index}.channel`)}
-							/>
-						) : null}
-					</td>
-					<td>
-						<Checkbox
-							size={'lg'}
-							title="Visible"
-							{...form.getInputProps(`faders.${index}.enabled`, { type: 'checkbox' })}
-						/>
+						<TextInput placeholder="notes" {...form.getInputProps(`devices.${index}.notes`)} />
 					</td>
 					<td>
 						<ActionIcon
 							color="red"
 							variant="transparent"
-							onClick={() => form.removeListItem('faders', index)}
+							onClick={() => form.removeListItem('devices', index)}
 						>
 							<FaTrash />
 						</ActionIcon>
@@ -204,10 +132,10 @@ export const FadersConfigurationPage = () => {
 		<Box mx="lg">
 			<div style={{ position: 'relative' }}>
 				<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-				{faders !== false && folders !== false && mixer !== false ? (
+				{devices !== false ? (
 					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<Group position="left" mt="md">
-							<Title>Faders</Title>
+							<Title>Devices</Title>
 							{saveByUserNeeded ? (
 								<Button variant="outline" type="submit" leftIcon={<FaSave />}>
 									Save
@@ -222,14 +150,9 @@ export const FadersConfigurationPage = () => {
 											compact
 											variant="default"
 											onClick={() => {
-												form.insertListItem('faders', {
+												form.insertListItem('devices', {
 													id: null,
-													name: 'New Channel fader',
-													channel: 1,
-													enabled: true,
-													type: 'ch',
-													data: null,
-													folderId: '0',
+													name: 'New device',
 												})
 											}}
 										>
@@ -237,16 +160,13 @@ export const FadersConfigurationPage = () => {
 										</Button>
 									</th>
 									<th>Name</th>
-									<th>Folder</th>
-									<th>Type</th>
-									<th>Number</th>
-									<th>Controllable</th>
+									<th>IP</th>
 									<th></th>
 								</tr>
 							</thead>
 							<DragDropContext
 								onDragEnd={({ destination, source }) =>
-									form.reorderListItem('faders', {
+									form.reorderListItem('devices', {
 										from: source.index,
 										to: destination.index,
 									})

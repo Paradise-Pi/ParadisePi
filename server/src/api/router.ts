@@ -3,6 +3,7 @@ import { reboot } from '../utilities'
 import { aboutRouter } from './about/aboutRouter'
 import { configRouter } from './config/configRouter'
 import { createDatabaseObject } from './database'
+import { deviceRouter } from './device/deviceRouter'
 import { faderRouter } from './fader/faderRouter'
 import { folderRouter } from './folder/folderRouter'
 import { createImagesObject } from './images'
@@ -41,6 +42,10 @@ export const routeRequest = (path: string, method: httpMethods, payload: apiObje
 			case 'faders':
 				// {@link faderRouter} - the fader router handles all about requests for the /faders path
 				resolve(faderRouter(pathArr.slice(1), method, payload))
+				break
+			case 'devices':
+				// {@link deviceRouter} - the fader router handles all about requests for the /faders path
+				resolve(deviceRouter(pathArr.slice(1), method, payload))
 				break
 			case 'folders':
 				// {@link folderRouter} - this router handles all about requests for the /folders path

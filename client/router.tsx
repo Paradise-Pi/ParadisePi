@@ -9,6 +9,7 @@ import { ControlPanelNavigation } from './Navigation/ControlPanelNavigation'
 import { useStyles } from './Navigation/Styles'
 import { ConfigurationPage } from './Pages/Admin/Configuration'
 import { ControlsConfigurationPage } from './Pages/Admin/Controls'
+import { DevicesConfigurationPage } from './Pages/Admin/Devices'
 import { FadersConfigurationPage } from './Pages/Admin/Faders'
 import { FoldersConfigurationPage } from './Pages/Admin/Folders'
 import { PresetsConfigurationPage } from './Pages/Admin/Presets'
@@ -88,6 +89,7 @@ const HashRouter = createHashRouter(
 				<Route path="configuration" element={<ConfigurationPage />} />
 				<Route path="folders" element={<FoldersConfigurationPage />} />
 				<Route path="presets" element={<PresetsConfigurationPage />} />
+				<Route path="devices" element={<DevicesConfigurationPage />} />
 				<Route path="faders" element={<FadersConfigurationPage />} />
 				<Route path="controls" element={<ControlsConfigurationPage />} />
 				<Route path="timeClockTriggers" element={<TimeClockTriggersConfigurationPage />} />

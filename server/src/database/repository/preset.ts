@@ -1,10 +1,8 @@
 import { In, Not } from 'typeorm'
+import { DatabasePreset, PresetTypes } from '../../../../shared/database'
 import { parseJSON } from '../../api/parseUserJson'
 import dataSource from '../dataSource'
 import { Preset } from '../model/Preset'
-import { DatabasePreset, PresetTypes } from '../../../../shared/database'
-
-
 
 export const PresetRepository = dataSource.getRepository(Preset).extend({
 	//get all presets

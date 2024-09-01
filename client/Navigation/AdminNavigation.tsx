@@ -29,6 +29,7 @@ export const AdminNavigation = () => {
 					label="Configuration"
 					Icon={<FaDatabase className={classes.linkIcon} />}
 				/>
+				<NavbarItem link="devices" label="Devices" Icon={<FaLevelUpAlt className={classes.linkIcon} />} />
 				<NavbarItem link="presets" label="Presets" Icon={<FaRegPlayCircle className={classes.linkIcon} />} />
 				<NavbarItem link="folders" label="Folders" Icon={<FaRegFolder className={classes.linkIcon} />} />
 				<NavbarItem link="faders" label="Faders" Icon={<FaLevelUpAlt className={classes.linkIcon} />} />

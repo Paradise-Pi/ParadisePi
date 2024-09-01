@@ -30,6 +30,17 @@ export interface DatabaseFader {
 	data?: string | null // TODO remove this if we're not using it
 }
 
+export interface DatabaseDevice {
+	id?: number
+	name: string
+	ip: string
+	endpoint: string
+	statusCheckPath: string
+	statusCheckString: string
+	notes: string
+	sort?: number
+}
+
 export interface OSCDatastore {
 	status: boolean
 	mixerName: string | false
