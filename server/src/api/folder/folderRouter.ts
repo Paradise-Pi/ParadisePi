@@ -1,5 +1,6 @@
 import { Database, DatabaseFolder } from '../../../../shared/database'
 import { FolderRepository } from '../../database/repository/folder'
+import logger from '../../logger'
 import { createDatabaseObject, sendDatabaseObject } from '../database'
 import { httpMethods } from '../router'
 /**
