@@ -414,6 +414,7 @@ export const PresetsConfigurationPage = () => {
 																	fadeTime: 0,
 																	data: null,
 																	timeClockTriggers: null,
+																	deviceId: null,
 																	httpTriggerEnabled: false,
 																	folderId: '0',
 																	icon: null,

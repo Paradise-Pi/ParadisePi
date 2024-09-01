@@ -22,11 +22,11 @@ Please describe the changes
 -   [ ] Setup & Administration Menu Pin is required when set
 -   [ ] Access password is required when set
 
-### Presets/Faders/Folders
+### Presets/Faders/Folders/Devices
 
--   [ ] Presets/Faders/Folders can be added
--   [ ] Presets/Faders/Folders can be removed
--   [ ] Presets/Faders/Folders can be renamed, and this is reflected on the control panel
+-   [ ] Presets/Faders/Folders/Devices can be added
+-   [ ] Presets/Faders/Folders/Devices can be removed
+-   [ ] Presets/Faders/Folders/Devices can be renamed, and this is reflected on the control panel
 -   [ ] Presets/Folders can be disabled, and they are hidden from the control panel
 -   [ ] Presets/Faders/Folders can be enabled, and they are shown in the control panel
 -   [ ] Preset/Folders colors can be changed, and this is shown in the control panel
