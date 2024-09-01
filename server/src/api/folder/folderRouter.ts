@@ -1,5 +1,6 @@
 import { Database, DatabaseFolder } from '../../../../shared/database'
 import { FolderRepository } from '../../database/repository/folder'
+import logger from '../../logger'
 import { createDatabaseObject, sendDatabaseObject } from '../database'
 /**
  * This is a REST router for the preset folder API.
