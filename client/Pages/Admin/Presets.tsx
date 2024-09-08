@@ -339,6 +339,7 @@ export const PresetsConfigurationPage = () => {
 									timeClockTriggers: null, //Deliberate decision not to copy these
 									httpTriggerEnabled: form.values.presets[index].httpTriggerEnabled,
 									folderId: form.values.presets[index].folderId,
+									deviceId: form.values.presets[index].deviceId,
 									color: form.values.presets[index].color,
 									icon: form.values.presets[index].icon,
 								})
