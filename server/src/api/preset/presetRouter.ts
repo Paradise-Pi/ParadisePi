@@ -7,6 +7,7 @@ import logger from '../../logger'
 import { createDatabaseObject, sendDatabaseObject } from '../database'
 import { parseJSON } from '../parseUserJson'
 import { httpMethods } from '../router'
+import { tcpRequest } from './tcpRequest'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -86,6 +87,13 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 							sendDatabaseObject(response)
 							resolve(linkStep !== null ? { redirect: linkStep } : {})
 						})
+				} else if (value.type === 'tcp' && value.data !== null) {
+					// Make the TCP call request
+					tcpRequest(value.data.host, value.data.port, value.data.message, value.data.timeout ?? 60)
+						.catch(err => {
+							logger.warn('Preset TCP request failed', err)
+						})
+						.then(() => resolve({}))
 				} else resolve({})
 			})
 		} else if (method === 'PUT') {

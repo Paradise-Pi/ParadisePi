@@ -61,3 +61,7 @@ Please describe the changes
 -   [ ] Macros are triggered successfully
 -   [ ] Macros can trigger other macros
 -   [ ] Lock macro functions
+
+#### TCP
+
+-   [ ] TCP requests are made successfully
