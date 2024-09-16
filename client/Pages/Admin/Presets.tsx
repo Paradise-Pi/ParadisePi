@@ -46,6 +46,7 @@ import { E131PresetEditModal } from '../../Components/Admin/Controls/Presets/Edi
 import { HTTPPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/HTTP'
 import { MacroPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/Macro'
 import { OSCPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/OSC'
+import { TCPPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/TCP'
 import { isValidJson } from '../../Components/Admin/Controls/Presets/EditModal/isValidJson'
 import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
 import { useAppSelector } from '../../apis/redux/mainStore'
@@ -180,6 +181,10 @@ export const PresetsConfigurationPage = () => {
 						) : form.values.presets[index].type === 'macro' ? (
 							<Badge variant="light" color="violet">
 								Macro
+							</Badge>
+						) : form.values.presets[index].type === 'tcp' ? (
+							<Badge variant="light" color="violet">
+								TCP
 							</Badge>
 						) : (
 							''
@@ -317,6 +322,9 @@ export const PresetsConfigurationPage = () => {
 							) : null}
 							{form.values.presets[index].type === 'macro' ? (
 								<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+							) : null}
+							{form.values.presets[index].type === 'tcp' ? (
+								<TCPPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 							) : null}
 						</Modal>
 						<ActionIcon variant="transparent" title="Edit" onClick={() => setModalVisible(index)}>
@@ -492,6 +500,9 @@ export const PresetsConfigurationPage = () => {
 															</Chip>
 															<Chip size="md" value="macro">
 																Macro
+															</Chip>
+															<Chip size="md" value="tcp">
+																TCP
 															</Chip>
 														</Chip.Group>
 													),

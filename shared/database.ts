@@ -22,7 +22,7 @@ export interface DatabaseTimeClockTrigger {
 	sun: boolean
 }
 
-export type PresetTypes = 'e131' | 'osc' | 'http' | 'macro'
+export type PresetTypes = 'e131' | 'osc' | 'http' | 'macro' | 'tcp'
 export interface DatabasePreset {
 	id: number
 	name: string
