@@ -12,11 +12,6 @@ export const TCPPresetEditModal = (props: InputProps) => {
 	console.log(preset)
 	return (
 		<>
-			<TextInput
-				label="Host"
-				value={preset.host}
-				onChange={event => onChangeFunction('host', event.currentTarget.value)}
-			/>
 			<NumberInput
 				label="Port"
 				value={Number(preset.port)}

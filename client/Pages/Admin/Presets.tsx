@@ -324,7 +324,17 @@ export const PresetsConfigurationPage = () => {
 								<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
 							) : null}
 							{form.values.presets[index].type === 'tcp' ? (
-								<TCPPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								<>
+									<Divider my="md" label="Configuration" labelPosition="center" />
+									<Select
+										label="Target Device"
+										placeholder="Device"
+										icon={<FaServer />}
+										{...form.getInputProps(`presets.${index}.deviceId`)}
+										data={devicesForSelect}
+									/>
+									<TCPPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								</>
 							) : null}
 						</Modal>
 						<ActionIcon variant="transparent" title="Edit" onClick={() => setModalVisible(index)}>

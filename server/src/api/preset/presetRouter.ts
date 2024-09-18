@@ -87,9 +87,15 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 							sendDatabaseObject(response)
 							resolve(linkStep !== null ? { redirect: linkStep } : {})
 						})
-				} else if (value.type === 'tcp' && value.data !== null) {
-					// Make the TCP call request
-					tcpRequest(value.data.host, value.data.port, value.data.message, value.data.timeout ?? 60)
+				} else if (
+					value.type === 'tcp' &&
+					value.data !== null &&
+					value.device !== null &&
+					value.device.id !== null &&
+					value.device.ip !== null &&
+					value.device.ip !== ''
+				) {
+					tcpRequest(value.device.ip, value.data.port, value.data.message, value.data.timeout ?? 60)
 						.catch(err => {
 							logger.warn('Preset TCP request failed', err)
 						})
