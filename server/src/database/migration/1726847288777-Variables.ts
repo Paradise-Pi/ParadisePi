@@ -98,9 +98,23 @@ export class Variables1726847288777 implements MigrationInterface {
 		)
 		await queryRunner.query(`DROP TABLE "faders"`)
 		await queryRunner.query(`ALTER TABLE "temporary_faders" RENAME TO "faders"`)
+
 		await queryRunner.query(
-			`CREATE TABLE "temporary_config" ("key" text PRIMARY KEY NOT NULL, "value" text NOT NULL, "json" text, "createdAt" datetime DEFAULT (datetime('now')), "updatedAt" datetime DEFAULT (datetime('now')), "version" integer, CONSTRAINT "UQ_604248da1c13d8aaa1e145ffb83" UNIQUE ("key"))`
+			`CREATE TABLE "temporary_folders" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" text NOT NULL, "createdAt" datetime DEFAULT (datetime('now')), "updatedAt" datetime DEFAULT (datetime('now')), "version" integer, "parentId" integer, "sort" integer NOT NULL DEFAULT (1), "icon" text, "infoText" text, "displayVariableLogic" text)`
 		)
+		await queryRunner.query(
+			`INSERT INTO "temporary_folders"("id", "name", "createdAt", "updatedAt", "version", "parentId", "sort", "icon", "infoText") SELECT "id", "name", "createdAt", "updatedAt", "version", "parentId", "sort", "icon", "infoText" FROM "folders"`
+		)
+		await queryRunner.query(`DROP TABLE "folders"`)
+		await queryRunner.query(`ALTER TABLE "temporary_folders" RENAME TO "folders"`)
+		await queryRunner.query(
+			`CREATE TABLE "temporary_folders" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "name" text NOT NULL, "createdAt" datetime DEFAULT (datetime('now')), "updatedAt" datetime DEFAULT (datetime('now')), "version" integer, "parentId" integer, "sort" integer NOT NULL DEFAULT (1), "icon" text, "infoText" text, "displayVariableLogic" text)`
+		)
+		await queryRunner.query(
+			`INSERT INTO "temporary_folders"("id", "name", "createdAt", "updatedAt", "version", "parentId", "sort", "icon", "infoText", "displayVariableLogic") SELECT "id", "name", "createdAt", "updatedAt", "version", "parentId", "sort", "icon", "infoText", "displayVariableLogic" FROM "folders"`
+		)
+		await queryRunner.query(`DROP TABLE "folders"`)
+		await queryRunner.query(`ALTER TABLE "temporary_folders" RENAME TO "folders"`)
 	}
 
 	public async down(queryRunner: QueryRunner): Promise<void> {
