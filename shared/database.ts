@@ -32,6 +32,7 @@ export interface DatabasePreset {
 	universe?: string | null
 	fadeTime?: number
 	data?: string | null
+	variableLogic?: string | null
 	httpTriggerEnabled: boolean
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	deviceId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(

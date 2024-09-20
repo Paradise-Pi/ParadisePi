@@ -1,7 +1,9 @@
 import { format, transports } from 'winston'
 import { logDir } from '.'
 import { BroadcastTransport } from './broadcastTransport'
-
+/**
+ * This transport is used to broadcast logs to the frontend via the websocket
+ */
 export const broadcastTransport = new BroadcastTransport({
 	level: 'info',
 	format: format.combine(format.errors({ stack: true }), format.json()),

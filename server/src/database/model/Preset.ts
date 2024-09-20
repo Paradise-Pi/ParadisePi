@@ -72,6 +72,16 @@ export class Preset {
 		[key: string]: any
 	}
 
+	@Column('simple-json', { nullable: true })
+	variableLogic: {
+		[key: string]: any
+	}
+
+	@Column('simple-json', { nullable: true })
+	displayVariableLogic: {
+		[key: string]: any
+	}
+
 	@OneToMany(() => TimeClockTrigger, TimeClockTrigger => TimeClockTrigger.preset)
 	timeClockTriggers: TimeClockTrigger[]
 

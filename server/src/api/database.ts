@@ -7,6 +7,7 @@ import { FaderRepository } from '../database/repository/fader'
 import { FolderRepository } from '../database/repository/folder'
 import { PresetRepository } from '../database/repository/preset'
 import { TimeClockTriggersRepository } from '../database/repository/timeClockTrigger'
+import { VariableRepository } from '../database/repository/variable'
 import { WebServer } from '../webServer'
 import { getOperatingSystemName } from './about/operatingSystem/info'
 import { broadcast } from './broadcast'
@@ -64,6 +65,7 @@ export const createDatabaseObject = async (message: string): Promise<Database> =
 		folders: await FolderRepository.getAll(),
 		faders: await FaderRepository.getAll(),
 		devices: await DeviceRepository.getAll(),
+		variables: await VariableRepository.getAll(),
 	}
 }
 /**

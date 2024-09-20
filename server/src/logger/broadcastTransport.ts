@@ -9,11 +9,11 @@ export class BroadcastTransport extends Transport {
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	log(info: string, callback: () => void) {
+	log(data: string, callback: () => void) {
 		setImmediate(() => {
-			this.emit('logged', info)
+			this.emit('logged', data)
 		})
-		broadcast('logging', info as unknown as object)
+		broadcast('logging', data as unknown as object)
 
 		callback()
 	}

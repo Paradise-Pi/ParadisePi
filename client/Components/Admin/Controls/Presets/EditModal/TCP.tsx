@@ -9,15 +9,8 @@ export const TCPPresetEditModal = (props: InputProps) => {
 		newValue[key] = value
 		props.onChange(JSON.stringify(newValue))
 	}
-	console.log(preset)
 	return (
 		<>
-			<NumberInput
-				label="Port"
-				value={Number(preset.port)}
-				min={0}
-				onChange={(value: number) => onChangeFunction('port', value.toString())}
-			/>
 			<TextInput
 				label="Hex String"
 				value={preset.message}
@@ -26,7 +19,7 @@ export const TCPPresetEditModal = (props: InputProps) => {
 			<NumberInput
 				label="Timeout"
 				description="Timeout in Seconds"
-				value={Number(preset.timeout)}
+				value={isNaN(preset.timeout) ? 60 : Number(preset.timeout)}
 				placeholder="60"
 				min={1}
 				max={60}

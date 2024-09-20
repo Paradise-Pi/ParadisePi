@@ -87,7 +87,7 @@ export const PresetsConfigurationPage = () => {
 			})
 	}
 	// Prepare folders list for select dropdown
-	const devicesForSelect: Array<SelectItem> = [{ value: '', label: 'None' }]
+	const devicesForSelect: Array<SelectItem> = []
 	const devicesHosts: {
 		[key: string]: string
 	} = {}
@@ -120,6 +120,12 @@ export const PresetsConfigurationPage = () => {
 						? 'Folder must be selected'
 						: null,
 				data: value => (isValidJson(value) || value === null ? null : 'Data is not valid JSON'),
+				deviceId(value, values, path) {
+					if (values.presets[path.split('.')[1]].type === 'tcp' && (value === null || value === '')) {
+						return 'Device must be selected for TCP presets'
+					}
+					return null
+				},
 			},
 		},
 	})
@@ -184,7 +190,7 @@ export const PresetsConfigurationPage = () => {
 							</Badge>
 						) : form.values.presets[index].type === 'tcp' ? (
 							<Badge variant="light" color="violet">
-								TCP
+								TCP (Hex)
 							</Badge>
 						) : (
 							''
@@ -201,6 +207,8 @@ export const PresetsConfigurationPage = () => {
 							{...form.getInputProps(`presets.${index}.folderId`)}
 							data={foldersForSelect}
 						/>
+
+						{form.errors.presets && form.errors.presets[index] ? 'Error' : null}
 					</td>
 					<td style={{ width: 0 }}>
 						<Checkbox
@@ -308,7 +316,7 @@ export const PresetsConfigurationPage = () => {
 										placeholder="Device"
 										icon={<FaServer />}
 										{...form.getInputProps(`presets.${index}.deviceId`)}
-										data={devicesForSelect}
+										data={[{ value: '', label: 'None' }, ...devicesForSelect]}
 									/>
 									<HTTPPresetEditModal
 										{...form.getInputProps(`presets.${index}.data`)}
@@ -354,6 +362,7 @@ export const PresetsConfigurationPage = () => {
 									universe: form.values.presets[index].universe,
 									fadeTime: form.values.presets[index].fadeTime,
 									data: form.values.presets[index].data,
+									variableLogic: form.values.presets[index].variableLogic,
 									timeClockTriggers: null, //Deliberate decision not to copy these
 									httpTriggerEnabled: form.values.presets[index].httpTriggerEnabled,
 									folderId: form.values.presets[index].folderId,
@@ -380,7 +389,6 @@ export const PresetsConfigurationPage = () => {
 			)}
 		</Draggable>
 	))
-
 	return (
 		<Box mx="lg">
 			<div style={{ position: 'relative' }}>
@@ -488,6 +496,7 @@ export const PresetsConfigurationPage = () => {
 																	universe: 1,
 																	fadeTime: 0,
 																	data: null,
+																	variableLogic: null,
 																	timeClockTriggers: null,
 																	deviceId: null,
 																	httpTriggerEnabled: false,
@@ -512,7 +521,7 @@ export const PresetsConfigurationPage = () => {
 																Macro
 															</Chip>
 															<Chip size="md" value="tcp">
-																TCP
+																TCP (Hex)
 															</Chip>
 														</Chip.Group>
 													),

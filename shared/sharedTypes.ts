@@ -34,9 +34,8 @@ export interface DatabaseDevice {
 	id?: number
 	name: string
 	ip: string
+	port: number
 	endpoint: string
-	statusCheckPath: string
-	statusCheckString: string
 	notes: string
 	sort?: number
 }
@@ -60,4 +59,12 @@ export interface Images {
 export interface ChannelData {
 	channel: number
 	level: number
+}
+
+export interface DatabaseVariable {
+	id?: number
+	name: string
+	value: string
+	notes: string
+	sort?: number
 }

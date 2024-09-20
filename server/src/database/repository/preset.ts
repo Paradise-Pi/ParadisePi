@@ -18,6 +18,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				universe: item.universe,
 				fadeTime: item.fadeTime !== null ? item.fadeTime : 0,
 				data: item.data !== null ? JSON.stringify(item.data) : null,
+				variableLogic: item.variableLogic !== null ? JSON.stringify(item.variableLogic) : null,
 				httpTriggerEnabled: item.httpTriggerEnabled,
 				folderId: item.folder !== null ? item.folder.id.toString() : null,
 				deviceId: item.device !== null ? item.device.id.toString() : null,

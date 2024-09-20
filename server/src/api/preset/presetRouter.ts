@@ -47,7 +47,8 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 					let deviceHost = ''
 					// Evaluate if there's a device involved that we need to prefix
 					if (value.device !== null && value.device.id !== null) {
-						if (value.device.ip !== null && value.device.ip !== '') deviceHost = 'http://' + value.device.ip
+						if (value.device.ip !== null && value.device.ip !== '')
+							deviceHost = 'http://' + value.device.ip + ':' + value.device.port
 						else if (value.device.endpoint !== null && value.device.endpoint !== '')
 							deviceHost = value.device.endpoint
 					}

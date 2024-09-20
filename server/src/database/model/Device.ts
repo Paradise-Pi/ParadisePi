@@ -25,14 +25,11 @@ export class Device {
 	@Column('text', { nullable: true })
 	ip: string
 
+	@Column('integer', { nullable: true, default: 80 })
+	port: number
+
 	@Column('text', { nullable: true })
 	endpoint: string
-
-	@Column('text', { nullable: true })
-	statusCheckPath: string
-
-	@Column('text', { nullable: true })
-	statusCheckString: string
 
 	@Column('text', { nullable: true })
 	notes: string

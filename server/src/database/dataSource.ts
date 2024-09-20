@@ -37,8 +37,10 @@ import { PresetIcons1686849999231 } from './migration/1686849999231-PresetIcons'
 import { TimeClockTriggers1686937486497 } from './migration/1686937486497-TimeClockTriggers'
 import { History1720262576000 } from './migration/1720262576000-History'
 import { AddDevices1725184396730 } from './migration/1725184396730-AddDevices'
+import { Variables1726847288777 } from './migration/1726847288777-Variables'
 import { Device } from './model/Device'
 import { TimeClockTrigger } from './model/TimeClockTrigger'
+import { Variable } from './model/Variable'
 
 const dataSource = new DataSource({
 	type: 'better-sqlite3',
@@ -46,7 +48,7 @@ const dataSource = new DataSource({
 	synchronize: false,
 	migrationsRun: true,
 	cache: false,
-	entities: [Config, Preset, Folders, Preset, Fader, TimeClockTrigger, Device],
+	entities: [Config, Preset, Folders, Preset, Fader, TimeClockTrigger, Device, Variable],
 	migrations: [
 		Initial1650709558593,
 		InsertConfig1650710286405,
@@ -74,6 +76,7 @@ const dataSource = new DataSource({
 		TimeClockTriggers1686937486497,
 		History1720262576000,
 		AddDevices1725184396730,
+		Variables1726847288777,
 	],
 	subscribers: [],
 	logger: new CustomTypeORMLogger(),
