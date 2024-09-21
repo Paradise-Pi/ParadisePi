@@ -5,6 +5,7 @@ export const tcpRequest = async (host: string, port: number, data: string, timeo
 		data: string
 		speed: number
 	}>((resolve, reject) => {
+		if (data === undefined || data === null || data === '') reject('No hex string set')
 		if (isNaN(timeout) || timeout > 60 || timeout < 0) {
 			timeout = 60 // Max timeout of 60 seconds
 		}

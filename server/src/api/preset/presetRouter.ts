@@ -9,6 +9,7 @@ import { createDatabaseObject, sendDatabaseObject } from '../database'
 import { parseJSON } from '../parseUserJson'
 import { httpMethods } from '../router'
 import { tcpRequest } from './tcpRequest'
+import { VariableLogic, variablesLogicParser } from './variablesLogicParser'
 /**
  * This is a REST router for the preset API.
  * @param path - The path requested by the original route requestor
@@ -64,6 +65,11 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 						.catch(err => {
 							logger.warn('Preset HTTP request failed', { err })
 						})
+						.then(response => {
+							logger.debug('Preset HTTP request succeeded', response ? response.data : null)
+							if (response)
+								return variablesLogicParser(value.variableLogic as VariableLogic, response.data)
+						})
 						.then(() => resolve({}))
 				} else if (value.type === 'macro' && value.data !== null) {
 					let linkStep: string = null
@@ -98,7 +104,7 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 						.then(() => ConfigRepository.save(configUpdate))
 						.then(() => {
 							logger.debug('Macro preset completed')
-							return createDatabaseObject('change of config from macro')
+							return createDatabaseObject('change of config from macro, or change of variables')
 						})
 						.then((response: Database) => {
 							sendDatabaseObject(response)
@@ -112,9 +118,15 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 					value.device.ip !== null &&
 					value.device.ip !== ''
 				) {
-					tcpRequest(value.device.ip, value.data.port, value.data.message, value.data.timeout ?? 60)
+					tcpRequest(value.device.ip, value.device.port, value.data.message, value.data.timeout ?? 60)
 						.catch(err => {
 							logger.warn('Preset TCP request failed', err)
+							resolve({})
+						})
+						.then(response => {
+							logger.debug('Preset TCP request succeeded', response ? response.data : null)
+							if (response)
+								return variablesLogicParser(value.variableLogic as VariableLogic, response.data)
 						})
 						.then(() => resolve({}))
 				} else resolve({})

@@ -20,7 +20,7 @@ interface FormValues {
 
 // Return true to show, false to hide
 export const displayBasedOnVariablesParser = (rules: string, variables: Array<DatabaseVariable>): boolean => {
-	if (typeof rules !== 'undefined' && rules !== null && rules !== '' && variables.length > 0) {
+	if (typeof rules !== 'undefined' && rules !== null && rules !== '') {
 		// Parse the rules string to an object
 		const rulesObject: {
 			rules: Array<{
@@ -48,7 +48,7 @@ export const displayBasedOnVariablesParser = (rules: string, variables: Array<Da
 
 		let countPass = 0
 		let countFail = 0
-		if (rulesObject.rules && rulesObject.rules.length > 0) {
+		if (rulesObject.rules && rulesObject.rules.length > 0 && variables.length > 0) {
 			rulesObject.rules.forEach(rule => {
 				if (!variablesMap.hasOwnProperty(rule.variable)) return
 				else if (rule.logic === 'equal') {
@@ -80,7 +80,9 @@ export const displayBasedOnVariablesParser = (rules: string, variables: Array<Da
 			if (countFail > 0) return true
 			else return false
 		} else return true
-	} else return true
+	} else {
+		return true
+	}
 }
 
 export const DisplayBasedOnVariablesEditor = (props: InputProps) => {

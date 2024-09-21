@@ -41,6 +41,24 @@ export const VariableRepository = dataSource.getRepository(Variable).extend({
 		else return false
 	},
 	/**
+	 * Get a single variable based on the id
+	 */
+	async getOne(id: number): Promise<DatabaseVariable | null> {
+		const item = await this.findOne({
+			where: {
+				id,
+			},
+		})
+		if (!item) return null
+		return {
+			id: item.id,
+			name: item.name,
+			value: item.value,
+			notes: item.notes,
+			sort: item.sort,
+		}
+	},
+	/**
 	 * Delete all existing variables and then upload the given variables
 	 * @param variables - An array of variables to set as the database record
 	 */
