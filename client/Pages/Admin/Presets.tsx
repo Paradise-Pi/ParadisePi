@@ -38,10 +38,15 @@ import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaServer } from '@react-icons/all-files/fa/FaServer'
 import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
+import { FaTimes } from '@react-icons/all-files/fa/FaTimes'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { DatabasePreset, PresetTypes } from '../../../shared/database'
+import {
+	DisplayBasedOnVariablesEditor,
+	displayBasedOnVariablesParser,
+} from '../../Components/Admin/Controls/DisplayBasedOnVariablesEditor'
 import { E131PresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/E131'
 import { HTTPPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/HTTP'
 import { MacroPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/Macro'
@@ -67,6 +72,7 @@ export const PresetsConfigurationPage = () => {
 	const devices = useAppSelector(state => (state.database ? state.database.devices : false))
 	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
 	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
+	const variables = useAppSelector(state => (state.database ? state.database.variables : false))
 	const [folderFilter, setFolderFilter] = useState<TabsValue>('ALL')
 	// Prepare folders list for select dropdown
 	const foldersForSelect: Array<SelectItem> = []
@@ -211,11 +217,11 @@ export const PresetsConfigurationPage = () => {
 						{form.errors.presets && form.errors.presets[index] ? 'Error' : null}
 					</td>
 					<td style={{ width: 0 }}>
-						<Checkbox
-							size={'lg'}
-							title="Visible"
-							{...form.getInputProps(`presets.${index}.enabled`, { type: 'checkbox' })}
-						/>
+						{displayBasedOnVariablesParser(form.values.presets[index].displayVariableLogic, variables) ? (
+							<FaCheck />
+						) : (
+							<FaTimes />
+						)}
 					</td>
 					<td style={{ width: 0 }}>
 						<ActionIcon
@@ -285,8 +291,12 @@ export const PresetsConfigurationPage = () => {
 									}
 								/>
 							) : null}
+							<DisplayBasedOnVariablesEditor
+								{...form.getInputProps(`presets.${index}.displayVariableLogic`)}
+							/>
 							{form.values.presets[index].type === 'e131' ? (
 								<>
+									<Divider my="md" label="sACN (E1.31) Configuration" labelPosition="center" />
 									<NumberInput
 										placeholder="Fade time"
 										icon={<FaRegClock />}
@@ -306,11 +316,14 @@ export const PresetsConfigurationPage = () => {
 								</>
 							) : null}
 							{form.values.presets[index].type === 'osc' ? (
-								<OSCPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								<>
+									<Divider my="md" label="OSC Configuration" labelPosition="center" />
+									<OSCPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								</>
 							) : null}
 							{form.values.presets[index].type === 'http' ? (
 								<>
-									<Divider my="md" label="Configuration" labelPosition="center" />
+									<Divider my="md" label="HTTP Configuration" labelPosition="center" />
 									<Select
 										label="Target Device"
 										placeholder="Device"
@@ -329,11 +342,14 @@ export const PresetsConfigurationPage = () => {
 								</>
 							) : null}
 							{form.values.presets[index].type === 'macro' ? (
-								<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								<>
+									<Divider my="md" label="Macro Steps" labelPosition="center" />
+									<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								</>
 							) : null}
 							{form.values.presets[index].type === 'tcp' ? (
 								<>
-									<Divider my="md" label="Configuration" labelPosition="center" />
+									<Divider my="md" label="TCP Configuration" labelPosition="center" />
 									<Select
 										label="Target Device"
 										placeholder="Device"
@@ -357,12 +373,12 @@ export const PresetsConfigurationPage = () => {
 								form.insertListItem('presets', {
 									id: null,
 									name: 'Copy of ' + form.values.presets[index].name,
-									enabled: form.values.presets[index].enabled,
 									type: form.values.presets[index].type as PresetTypes,
 									universe: form.values.presets[index].universe,
 									fadeTime: form.values.presets[index].fadeTime,
 									data: form.values.presets[index].data,
 									variableLogic: form.values.presets[index].variableLogic,
+									displayVariableLogic: form.values.presets[index].displayVariableLogic,
 									timeClockTriggers: null, //Deliberate decision not to copy these
 									httpTriggerEnabled: form.values.presets[index].httpTriggerEnabled,
 									folderId: form.values.presets[index].folderId,
@@ -491,12 +507,13 @@ export const PresetsConfigurationPage = () => {
 																form.insertListItem('presets', {
 																	id: null,
 																	name: 'New ' + value + ' preset',
-																	enabled: true,
 																	type: value as PresetTypes,
 																	universe: 1,
 																	fadeTime: 0,
 																	data: null,
 																	variableLogic: null,
+																	displayVariableLogic:
+																		'{"showHide":"show","rules":[]}',
 																	timeClockTriggers: null,
 																	deviceId: null,
 																	httpTriggerEnabled: false,

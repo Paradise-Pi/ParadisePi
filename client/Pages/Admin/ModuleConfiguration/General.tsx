@@ -24,7 +24,7 @@ const Database = () => {
 		<>
 			<a
 				href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/database/download`}
-				target="_blank"
+				
 			>
 				<Button variant="default" color="dark" size="md" mt="xs">
 					Download Database Backup

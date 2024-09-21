@@ -52,7 +52,7 @@ export class Folders {
 	})
 	infoText: string | null
 
-	@Column('simple-json', { nullable: true })
+	@Column('simple-json')
 	displayVariableLogic: {
 		[key: string]: any
 	}

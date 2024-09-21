@@ -28,6 +28,7 @@ export interface DatabaseFader {
 	sort?: number
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	data?: string | null // TODO remove this if we're not using it
+	displayVariableLogic: string
 }
 
 export interface DatabaseDevice {

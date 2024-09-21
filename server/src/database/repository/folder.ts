@@ -1,5 +1,6 @@
 import { In, Not } from 'typeorm'
 import { DatabaseFolder } from '../../../../shared/database'
+import { parseJSON } from '../../api/parseUserJson'
 import dataSource from '../dataSource'
 import { Fader } from '../model/Fader'
 import { Folders } from '../model/Folder'
@@ -19,22 +20,25 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 				icon: true,
 				sort: true,
 				infoText: true,
+				displayVariableLogic: true as unknown, // https://github.com/typeorm/typeorm/issues/9465
 				childFolders: {
 					name: true,
 					id: true,
 					icon: true,
+					displayVariableLogic: true as unknown,
 				},
 				parent: {
 					name: true,
 					id: true,
 					icon: true,
+					displayVariableLogic: true as unknown,
 				},
 				presets: {
 					id: true,
 					name: true,
-					enabled: true,
 					color: true,
 					icon: true,
+					displayVariableLogic: true as unknown,
 				},
 				faders: {
 					id: true,
@@ -42,6 +46,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					enabled: true,
 					type: true,
 					channel: true,
+					displayVariableLogic: true as unknown,
 				},
 			},
 			order: {
@@ -71,11 +76,15 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 				icon: item.icon,
 				sort: item.sort,
 				infoText: item.infoText,
+				displayVariableLogic:
+					item.displayVariableLogic !== null ? JSON.stringify(item.displayVariableLogic) : null,
 				children: item.childFolders.map((child: Folders) => {
 					return {
 						name: child.name,
 						id: child.id,
 						icon: child.icon,
+						displayVariableLogic:
+							child.displayVariableLogic !== null ? JSON.stringify(child.displayVariableLogic) : null,
 					}
 				}),
 				parent: item.parent
@@ -83,16 +92,21 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 							name: item.parent.name,
 							id: item.parent.id,
 							icon: item.parent.icon,
+							displayVariableLogic:
+								item.parent.displayVariableLogic !== null
+									? JSON.stringify(item.parent.displayVariableLogic)
+									: null,
 					  }
 					: null,
 				presets: item.presets.map((preset: Preset) => {
 					return {
 						id: preset.id,
 						name: preset.name,
-						enabled: preset.enabled,
 						httpTriggerEnabled: preset.httpTriggerEnabled,
 						color: preset.color !== null ? preset.color : '#2C2E33',
 						icon: preset.icon,
+						displayVariableLogic:
+							preset.displayVariableLogic !== null ? JSON.stringify(preset.displayVariableLogic) : null,
 					}
 				}),
 				faders: item.faders.map((fader: Fader) => {
@@ -102,6 +116,8 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 						enabled: fader.enabled,
 						type: fader.type,
 						channel: fader.channel,
+						displayVariableLogic:
+							fader.displayVariableLogic !== null ? JSON.stringify(fader.displayVariableLogic) : null,
 					}
 				}),
 			}
@@ -137,10 +153,13 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 			name: item.name,
 			id: item.id,
 			icon: item.icon,
+			displayVariableLogic: JSON.stringify(item.displayVariableLogic),
 			children: item.childFolders.map((child: Folders) => {
 				return {
 					name: child.name,
 					id: child.id,
+					displayVariableLogic:
+						child.displayVariableLogic !== null ? JSON.stringify(child.displayVariableLogic) : null,
 				}
 			}),
 			parent: item.parent
@@ -148,16 +167,21 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 						name: item.parent.name,
 						id: item.parent.id,
 						icon: item.parent.icon,
+						displayVariableLogic:
+							item.parent.displayVariableLogic !== null
+								? JSON.stringify(item.parent.displayVariableLogic)
+								: null,
 				  }
 				: null,
 			presets: item.presets.map((preset: Preset) => {
 				return {
 					id: preset.id,
 					name: preset.name,
-					enabled: preset.enabled,
 					color: preset.color !== null ? preset.color : '#2C2E33',
 					icon: preset.icon,
 					httpTriggerEnabled: preset.httpTriggerEnabled,
+					displayVariableLogic:
+						preset.displayVariableLogic !== null ? JSON.stringify(preset.displayVariableLogic) : null,
 				}
 			}),
 			faders: item.faders.map((fader: Fader) => {
@@ -167,6 +191,8 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					enabled: fader.enabled,
 					type: fader.type,
 					channel: fader.channel,
+					displayVariableLogic:
+						fader.displayVariableLogic !== null ? JSON.stringify(fader.displayVariableLogic) : null,
 				}
 			}),
 		}
@@ -191,6 +217,10 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 				icon: folder.icon,
 				sort: count + 1,
 				infoText: folder.infoText,
+				displayVariableLogic:
+					folder.displayVariableLogic !== null && folder.displayVariableLogic.length > 0
+						? parseJSON(folder.displayVariableLogic)
+						: null,
 				parent:
 					folder.parentFolderId !== null && folderIdsToKeep.includes(parseInt(folder.parentFolderId)) // Check the parent folder id exists
 						? parseInt(folder.parentFolderId)

@@ -42,7 +42,7 @@ export const HistoryConfigurationPage = () => {
 			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
 			<a
 				href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/history-logs`}
-				target="_blank"
+				
 			>
 				<Button variant="default" color="dark" my="xs">
 					Download History

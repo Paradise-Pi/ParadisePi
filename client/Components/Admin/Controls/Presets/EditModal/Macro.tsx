@@ -1,6 +1,8 @@
 import { ActionIcon, Button, Group, Select, SelectItem } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { randomId } from '@mantine/hooks'
+import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect } from 'react'
 import { useAppSelector } from '../../../../../apis/redux/mainStore'
@@ -36,10 +38,10 @@ export const MacroPresetEditModal = (props: InputProps) => {
 		if (props.value !== null) {
 			const valueObject = JSON.parse(props.value) || {}
 			form.setValues({
-				steps: valueObject.map((item: { type: string; value: string; key: string }) => ({
+				steps: valueObject.map((item: { type: string; value: string; key: string }, index: number) => ({
 					type: item.type,
 					value: item.value,
-					key: randomId(),
+					key: `key-${index}`,
 				})),
 			})
 		}
@@ -116,10 +118,24 @@ export const MacroPresetEditModal = (props: InputProps) => {
 			))}
 
 			<Group position="center" mt="md">
-				<Button onClick={() => form.insertListItem('steps', { type: '', value: '', key: randomId() })}>
+				<Button
+					rightIcon={<FaPlus />}
+					onClick={() =>
+						form.insertListItem('steps', { type: '', value: '', key: `key-${form.values.steps.length}` })
+					}
+				>
 					Add step
 				</Button>
-				<Button onClick={() => props.onChange(JSON.stringify(form.values.steps))}>Apply</Button>
+				<Button
+					disabled={props.value === JSON.stringify(form.values.steps)}
+					color="red"
+					rightIcon={
+						props.value === JSON.stringify(form.values.steps) ? <FaCheck /> : <FaExclamationTriangle />
+					}
+					onClick={() => props.onChange(JSON.stringify(form.values.steps))}
+				>
+					Apply
+				</Button>
 			</Group>
 		</>
 	)

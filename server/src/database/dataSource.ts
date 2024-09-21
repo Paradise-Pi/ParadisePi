@@ -38,6 +38,7 @@ import { TimeClockTriggers1686937486497 } from './migration/1686937486497-TimeCl
 import { History1720262576000 } from './migration/1720262576000-History'
 import { AddDevices1725184396730 } from './migration/1725184396730-AddDevices'
 import { Variables1726847288777 } from './migration/1726847288777-Variables'
+import { RemoveEnabled1726907045923 } from './migration/1726907045923-RemoveEnabled'
 import { Device } from './model/Device'
 import { TimeClockTrigger } from './model/TimeClockTrigger'
 import { Variable } from './model/Variable'
@@ -77,6 +78,7 @@ const dataSource = new DataSource({
 		History1720262576000,
 		AddDevices1725184396730,
 		Variables1726847288777,
+		RemoveEnabled1726907045923,
 	],
 	subscribers: [],
 	logger: new CustomTypeORMLogger(),

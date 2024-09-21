@@ -341,10 +341,19 @@ export class E131 {
 				}
 				PresetRepository.insert({
 					name: 'Universe ' + universeID + ' sampled from ' + deviceName,
-					enabled: false,
 					universe: universeID,
 					type: 'e131',
 					data: JSON.parse(JSON.stringify(finishedUniverseData)),
+					id: null,
+					fadeTime: 0,
+					variableLogic: null,
+					displayVariableLogic: JSON.parse(JSON.stringify({ showHide: 'show', rules: [] })),
+					timeClockTriggers: null,
+					device: null,
+					httpTriggerEnabled: false,
+					folder: null,
+					icon: null,
+					color: '#2C2E33',
 				})
 					.then(() => logger.info('Sampling mode created a new preset'))
 					.catch(err => logger.error(err))

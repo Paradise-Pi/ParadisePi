@@ -33,7 +33,7 @@ export class Fader {
 		[key: string]: any
 	}
 
-	@Column('simple-json', { nullable: true })
+	@Column('simple-json')
 	displayVariableLogic: {
 		[key: string]: any
 	}

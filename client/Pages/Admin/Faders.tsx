@@ -6,6 +6,7 @@ import {
 	Checkbox,
 	Group,
 	LoadingOverlay,
+	Modal,
 	NumberInput,
 	Select,
 	SelectItem,
@@ -20,8 +21,10 @@ import { FaFolder } from '@react-icons/all-files/fa/FaFolder'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaHashtag } from '@react-icons/all-files/fa/FaHashtag'
 import { FaIcons } from '@react-icons/all-files/fa/FaIcons'
+import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaTimes } from '@react-icons/all-files/fa/FaTimes'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
@@ -29,6 +32,10 @@ import { DatabaseFader } from '../../../shared/sharedTypes'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { usePrompt } from '../../apis/utilities/usePrompt'
 import { ApiCall } from '../../apis/wrapper'
+import {
+	DisplayBasedOnVariablesEditor,
+	displayBasedOnVariablesParser,
+} from '../../Components/Admin/Controls/DisplayBasedOnVariablesEditor'
 
 interface FormValues {
 	faders: Array<DatabaseFader>
@@ -80,6 +87,8 @@ const FaderChoices = (mixer: string) => {
 	return choices
 }
 export const FadersConfigurationPage = () => {
+	const [modalVisible, setModalVisible] = useState<number | false>(false)
+	const variables = useAppSelector(state => (state.database ? state.database.variables : false))
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const [formOriginalValues, setFormOriginalValues] = useState<string>('') // Values used to detect unsaved changes
 	const faders = useAppSelector(state => (state.database ? state.database.faders : false))
@@ -186,6 +195,32 @@ export const FadersConfigurationPage = () => {
 							{...form.getInputProps(`faders.${index}.enabled`, { type: 'checkbox' })}
 						/>
 					</td>
+					<td style={{ width: 0 }}>
+						{displayBasedOnVariablesParser(form.values.faders[index].displayVariableLogic, variables) ? (
+							<FaCheck />
+						) : (
+							<FaTimes />
+						)}
+					</td>
+					<td>
+						<Modal
+							opened={modalVisible === index}
+							onClose={() => {
+								setModalVisible(false)
+							}}
+							size="xl"
+							title="Edit Fader"
+							overflow="inside"
+						>
+							<DisplayBasedOnVariablesEditor
+								{...form.getInputProps(`faders.${index}.displayVariableLogic`)}
+							/>
+						</Modal>
+
+						<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
+							<FaPencilAlt />
+						</ActionIcon>
+					</td>
 					<td>
 						<ActionIcon
 							color="red"
@@ -225,6 +260,7 @@ export const FadersConfigurationPage = () => {
 												form.insertListItem('faders', {
 													id: null,
 													name: 'New Channel fader',
+													displayVariableLogic: '{"showHide":"show","rules":[]}',
 													channel: 1,
 													enabled: true,
 													type: 'ch',
@@ -241,6 +277,7 @@ export const FadersConfigurationPage = () => {
 									<th>Type</th>
 									<th>Number</th>
 									<th>Controllable</th>
+									<th>Visible</th>
 									<th></th>
 								</tr>
 							</thead>
