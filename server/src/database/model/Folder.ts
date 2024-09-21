@@ -52,6 +52,11 @@ export class Folders {
 	})
 	infoText: string | null
 
+	@Column('simple-json')
+	displayVariableLogic: {
+		[key: string]: any
+	}
+
 	@OneToMany(() => Preset, Preset => Preset.folder)
 	presets: Preset[]
 

@@ -11,6 +11,7 @@ import React from 'react'
 import { useAppSelector } from '../apis/redux/mainStore'
 import { NavbarItem } from './NavbarItem'
 import { useStyles } from './Styles'
+import { FaSdCard } from '@react-icons/all-files/fa/FaSdCard'
 
 export const AdminNavigation = () => {
 	const { classes, cx } = useStyles()
@@ -39,6 +40,7 @@ export const AdminNavigation = () => {
 					label="Scheduled Presets"
 					Icon={<FaRegClock className={classes.linkIcon} />}
 				/>
+				<NavbarItem link="variables" label="Variables" Icon={<FaSdCard className={classes.linkIcon} />} />
 			</Navbar.Section>
 			<Navbar.Section className={classes.footer}>
 				<NavbarItem link="controls" label="Controls" Icon={<FaCogs className={classes.linkIcon} />} />

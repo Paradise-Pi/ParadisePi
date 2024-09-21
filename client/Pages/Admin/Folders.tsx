@@ -22,14 +22,19 @@ import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
+import { FaTimes } from '@react-icons/all-files/fa/FaTimes'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { DatabaseFolder } from '../../../shared/database'
-import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { usePrompt } from '../../apis/utilities/usePrompt'
 import { ApiCall } from '../../apis/wrapper'
+import {
+	DisplayBasedOnVariablesEditor,
+	displayBasedOnVariablesParser,
+} from '../../Components/Admin/Controls/DisplayBasedOnVariablesEditor'
+import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
 
 interface FormValues {
 	folders: Array<DatabaseFolder>
@@ -37,6 +42,7 @@ interface FormValues {
 
 export const FoldersConfigurationPage = () => {
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
+	const variables = useAppSelector(state => (state.database ? state.database.variables : false))
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const [formOriginalValues, setFormOriginalValues] = useState<string>('') // Values used to detect unsaved changes
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
@@ -81,6 +87,7 @@ export const FoldersConfigurationPage = () => {
 						id: parseInt(item[0]),
 						icon: item[1].icon ? item[1].icon : 'FaFolder',
 						parentFolderId: item[1].parent ? item[1].parent.id.toString() : null,
+						displayVariableLogic: item[1].displayVariableLogic,
 						infoText: item[1].infoText ?? '',
 					})),
 			}
@@ -148,6 +155,13 @@ export const FoldersConfigurationPage = () => {
 							}))}
 						/>
 					</td>
+					<td style={{ width: 0 }}>
+						{displayBasedOnVariablesParser(form.values.folders[index].displayVariableLogic, variables) ? (
+							<FaCheck />
+						) : (
+							<FaTimes />
+						)}
+					</td>
 					<td>
 						<Modal
 							opened={modalVisible === index}
@@ -155,7 +169,7 @@ export const FoldersConfigurationPage = () => {
 								setModalVisible(false)
 							}}
 							size="xl"
-							title="Edit Folder Help Text"
+							title="Edit Folder"
 							overflow="inside"
 						>
 							<Text my={'xs'}>
@@ -178,6 +192,9 @@ export const FoldersConfigurationPage = () => {
 									/>
 								) : null /* Slight hack because the RichTextEditor doesn't accept value changes - only the one given when rendered, so force a re-render */
 							}
+							<DisplayBasedOnVariablesEditor
+								{...form.getInputProps(`folders.${index}.displayVariableLogic`)}
+							/>
 						</Modal>
 
 						<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
@@ -224,6 +241,7 @@ export const FoldersConfigurationPage = () => {
 													id: null,
 													name: '',
 													parentFolderId: '',
+													displayVariableLogic: '{"showHide":"show","rules":[]}',
 												})
 											}}
 										>
@@ -233,6 +251,7 @@ export const FoldersConfigurationPage = () => {
 									<th>Name</th>
 									<th>Parent Folder</th>
 									<th>Icon</th>
+									<th>Visible</th>
 									<th></th>
 									<th></th>
 								</tr>

@@ -3,6 +3,7 @@ import { useViewportSize } from '@mantine/hooks'
 import { FaQuestion } from '@react-icons/all-files/fa/FaQuestion'
 import React from 'react'
 import { DatabaseFolder } from '../../shared/database'
+import { displayBasedOnVariablesParser } from '../Components/Admin/Controls/DisplayBasedOnVariablesEditor'
 import { ButtonIcon } from '../Components/ControlPanel/ButtonIcon'
 import { useAppSelector } from '../apis/redux/mainStore'
 import { NavbarItem } from './NavbarItem'
@@ -10,13 +11,14 @@ import { useStyles } from './Styles'
 
 const TopLevelFolders = () => {
 	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const variables = useAppSelector(state => (state.database ? state.database.variables : false))
 	const { classes } = useStyles()
 	const topLevelFolders: Array<DatabaseFolder> = []
 	if (folders !== false) {
 		Object.entries(folders)
 			.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
 			.forEach(([, value]) => {
-				if (value.parent === null) {
+				if (value.parent === null && displayBasedOnVariablesParser(value.displayVariableLogic, variables)) {
 					topLevelFolders.push({
 						name: value.name,
 						id: value.id,

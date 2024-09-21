@@ -25,12 +25,6 @@ export class Preset {
 	@Column('text')
 	name: string
 
-	// Enabled is taken to mean visible - macros can still trigger the preset but it is hidden
-	@Column('boolean', {
-		default: true,
-	})
-	enabled: boolean
-
 	@Column('text', { nullable: true })
 	type: string | null
 
@@ -69,6 +63,16 @@ export class Preset {
 
 	@Column('simple-json', { nullable: true })
 	data: {
+		[key: string]: any
+	}
+
+	@Column('simple-json', { nullable: true })
+	variableLogic: {
+		[key: string]: any
+	}
+
+	@Column('simple-json')
+	displayVariableLogic: {
 		[key: string]: any
 	}
 

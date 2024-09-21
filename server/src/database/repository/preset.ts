@@ -12,12 +12,14 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 			return {
 				id: item.id,
 				name: item.name,
-				enabled: item.enabled,
 				type: item.type as PresetTypes,
 				icon: item.icon !== null ? item.icon : null,
 				universe: item.universe,
 				fadeTime: item.fadeTime !== null ? item.fadeTime : 0,
 				data: item.data !== null ? JSON.stringify(item.data) : null,
+				variableLogic: item.variableLogic !== null ? JSON.stringify(item.variableLogic) : null,
+				displayVariableLogic:
+					item.displayVariableLogic !== null ? JSON.stringify(item.displayVariableLogic) : null,
 				httpTriggerEnabled: item.httpTriggerEnabled,
 				folderId: item.folder !== null ? item.folder.id.toString() : null,
 				deviceId: item.device !== null ? item.device.id.toString() : null,
@@ -46,6 +48,14 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 				folder: preset.folderId !== null ? parseInt(preset.folderId) : null,
 				device: preset.deviceId !== null ? parseInt(preset.deviceId) : null,
 				data: preset.data !== null && preset.data.length > 0 ? parseJSON(preset.data) : null,
+				variableLogic:
+					preset.variableLogic !== null && preset.variableLogic.length > 0
+						? parseJSON(preset.variableLogic)
+						: null,
+				displayVariableLogic:
+					preset.displayVariableLogic !== null && preset.displayVariableLogic.length > 0
+						? parseJSON(preset.displayVariableLogic)
+						: null,
 			}
 		})
 		await this.upsert(presetsToInsert, ['id'])

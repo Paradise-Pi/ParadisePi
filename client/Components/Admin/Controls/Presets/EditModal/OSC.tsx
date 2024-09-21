@@ -1,6 +1,9 @@
 import { ActionIcon, Button, Group, JsonInput, NumberInput, Select, Tabs } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { randomId } from '@mantine/hooks'
+import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
+import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React from 'react'
 import { OSCFormValues } from '../../../../../../shared/sharedTypes'
@@ -285,6 +288,7 @@ export const OSCPresetEditModal = (props: InputProps) => {
 					})}
 					<Group position="center" mt="md">
 						<Button
+							rightIcon={<FaPlus />}
 							onClick={() =>
 								form.insertListItem('commands', {
 									command1: '',
@@ -297,7 +301,20 @@ export const OSCPresetEditModal = (props: InputProps) => {
 						>
 							Add OSC Call
 						</Button>
-						<Button onClick={() => props.onChange(JSON.stringify(form.values.commands))}>Apply</Button>
+						<Button
+							disabled={props.value === JSON.stringify(form.values.commands)}
+							color="red"
+							rightIcon={
+								props.value === JSON.stringify(form.values.commands) ? (
+									<FaCheck />
+								) : (
+									<FaExclamationTriangle />
+								)
+							}
+							onClick={() => props.onChange(JSON.stringify(form.values.commands))}
+						>
+							Apply
+						</Button>
 					</Group>
 				</Tabs.Panel>
 				<Tabs.Panel value="JSON" pt="xs">

@@ -33,6 +33,11 @@ export class Fader {
 		[key: string]: any
 	}
 
+	@Column('simple-json')
+	displayVariableLogic: {
+		[key: string]: any
+	}
+
 	@Column('text')
 	type: string
 

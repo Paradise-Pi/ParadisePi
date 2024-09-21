@@ -10,6 +10,7 @@ import { createImagesObject } from './images'
 import { outputModulesRouter } from './outputModules/outputModulesRouter'
 import { presetRouter } from './preset/presetRouter'
 import { timeClockTriggersRouter } from './timeClockTriggers/timeClockTriggers'
+import { variableRouter } from './variable/variableRouter'
 /**
  * This is a REST router that triages all requests and sends them to relevant routers
  * @param path - The path requested by the requestor
@@ -46,6 +47,10 @@ export const routeRequest = (path: string, method: httpMethods, payload: apiObje
 			case 'devices':
 				// {@link deviceRouter} - the fader router handles all about requests for the /faders path
 				resolve(deviceRouter(pathArr.slice(1), method, payload))
+				break
+			case 'variables':
+				// {@link variableRouter} - the fader router handles all about requests for the /faders path
+				resolve(variableRouter(pathArr.slice(1), method, payload))
 				break
 			case 'folders':
 				// {@link folderRouter} - this router handles all about requests for the /folders path

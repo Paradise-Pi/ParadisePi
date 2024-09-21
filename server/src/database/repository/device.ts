@@ -13,9 +13,8 @@ export const DeviceRepository = dataSource.getRepository(Device).extend({
 				name: item.name,
 				notes: item.notes,
 				ip: item.ip,
+				port: item.port,
 				endpoint: item.endpoint,
-				statusCheckPath: item.statusCheckPath,
-				statusCheckString: item.statusCheckString,
 				sort: item.sort,
 			}
 		})

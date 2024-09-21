@@ -18,6 +18,8 @@ export const FaderRepository = dataSource.getRepository(Fader).extend({
 				type: item.type,
 				sort: item.sort,
 				folderId: item.folder !== null ? item.folder.id.toString() : null,
+				displayVariableLogic:
+					item.displayVariableLogic !== null ? JSON.stringify(item.displayVariableLogic) : null,
 			}
 		})
 	},
@@ -41,6 +43,10 @@ export const FaderRepository = dataSource.getRepository(Fader).extend({
 				sort: count + 10, // +10 to make sure that newly inserted ones with null/0/1 end up at the top
 				folder: fader.folderId !== null ? parseInt(fader.folderId) : null,
 				data: fader.data !== null && fader.data.length > 0 ? parseJSON(fader.data) : null,
+				displayVariableLogic:
+					fader.displayVariableLogic !== null && fader.displayVariableLogic.length > 0
+						? parseJSON(fader.displayVariableLogic)
+						: null,
 			}
 		})
 		await this.upsert(fadersToInsert, ['id'])

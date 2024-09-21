@@ -38,16 +38,23 @@ import { FaRegClone } from '@react-icons/all-files/fa/FaRegClone'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaServer } from '@react-icons/all-files/fa/FaServer'
 import { FaSpaceShuttle } from '@react-icons/all-files/fa/FaSpaceShuttle'
+import { FaTimes } from '@react-icons/all-files/fa/FaTimes'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { DatabasePreset, PresetTypes } from '../../../shared/database'
+import {
+	DisplayBasedOnVariablesEditor,
+	displayBasedOnVariablesParser,
+} from '../../Components/Admin/Controls/DisplayBasedOnVariablesEditor'
 import { E131PresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/E131'
 import { HTTPPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/HTTP'
 import { MacroPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/Macro'
 import { OSCPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/OSC'
 import { TCPPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/TCP'
+import { TCPPresetEditModalTestFunction } from '../../Components/Admin/Controls/Presets/EditModal/TCP-test'
 import { isValidJson } from '../../Components/Admin/Controls/Presets/EditModal/isValidJson'
+import { VariablesLogicEditor } from '../../Components/Admin/Controls/VariablesLogicEditor'
 import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { usePrompt } from '../../apis/utilities/usePrompt'
@@ -67,6 +74,7 @@ export const PresetsConfigurationPage = () => {
 	const devices = useAppSelector(state => (state.database ? state.database.devices : false))
 	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
 	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
+	const variables = useAppSelector(state => (state.database ? state.database.variables : false))
 	const [folderFilter, setFolderFilter] = useState<TabsValue>('ALL')
 	// Prepare folders list for select dropdown
 	const foldersForSelect: Array<SelectItem> = []
@@ -87,20 +95,39 @@ export const PresetsConfigurationPage = () => {
 			})
 	}
 	// Prepare folders list for select dropdown
-	const devicesForSelect: Array<SelectItem> = [{ value: '', label: 'None' }]
-	const devicesHosts: {
+	const devicesForHTTPSelect: Array<SelectItem> = []
+	const devicesHTTPHosts: {
 		[key: string]: string
+	} = {}
+	const devicesForTCPSelect: Array<SelectItem> = []
+	const devicesTCPHosts: {
+		[key: string]: {
+			ip: string
+			port: number
+		}
 	} = {}
 	if (devices !== false) {
 		Object.entries(devices).forEach(([, value]) => {
 			if (value.id !== undefined) {
-				let deviceHost = value.ip != null && value.ip != '' ? 'http://' + value.ip : value.endpoint
-				devicesForSelect.push({
+				let deviceHost =
+					value.ip != null && value.ip != '' ? `http://${value.ip}:${value.port}` : value.endpoint
+				devicesForHTTPSelect.push({
 					value: value.id.toString(),
 					label: `${value.name} (${deviceHost})`,
 					group: 'Device',
 				})
-				devicesHosts[value.id.toString()] = deviceHost
+				devicesHTTPHosts[value.id.toString()] = deviceHost
+				if (value.ip != null && value.ip != '') {
+					devicesForTCPSelect.push({
+						value: value.id.toString(),
+						label: `${value.name} (${value.ip}:${value.port})`,
+						group: 'Device',
+					})
+					devicesTCPHosts[value.id.toString()] = {
+						ip: value.ip,
+						port: value.port,
+					}
+				}
 			}
 		})
 	}
@@ -120,6 +147,12 @@ export const PresetsConfigurationPage = () => {
 						? 'Folder must be selected'
 						: null,
 				data: value => (isValidJson(value) || value === null ? null : 'Data is not valid JSON'),
+				deviceId(value, values, path) {
+					if (values.presets[path.split('.')[1]].type === 'tcp' && (value === null || value === '')) {
+						return 'Device must be selected for TCP presets'
+					}
+					return null
+				},
 			},
 		},
 	})
@@ -184,7 +217,7 @@ export const PresetsConfigurationPage = () => {
 							</Badge>
 						) : form.values.presets[index].type === 'tcp' ? (
 							<Badge variant="light" color="violet">
-								TCP
+								TCP (Hex)
 							</Badge>
 						) : (
 							''
@@ -201,13 +234,15 @@ export const PresetsConfigurationPage = () => {
 							{...form.getInputProps(`presets.${index}.folderId`)}
 							data={foldersForSelect}
 						/>
+
+						{form.errors.presets && form.errors.presets[index] ? 'Error' : null}
 					</td>
 					<td style={{ width: 0 }}>
-						<Checkbox
-							size={'lg'}
-							title="Visible"
-							{...form.getInputProps(`presets.${index}.enabled`, { type: 'checkbox' })}
-						/>
+						{displayBasedOnVariablesParser(form.values.presets[index].displayVariableLogic, variables) ? (
+							<FaCheck />
+						) : (
+							<FaTimes />
+						)}
 					</td>
 					<td style={{ width: 0 }}>
 						<ActionIcon
@@ -277,8 +312,12 @@ export const PresetsConfigurationPage = () => {
 									}
 								/>
 							) : null}
+							<DisplayBasedOnVariablesEditor
+								{...form.getInputProps(`presets.${index}.displayVariableLogic`)}
+							/>
 							{form.values.presets[index].type === 'e131' ? (
 								<>
+									<Divider my="md" label="sACN (E1.31) Configuration" labelPosition="center" />
 									<NumberInput
 										placeholder="Fade time"
 										icon={<FaRegClock />}
@@ -298,33 +337,68 @@ export const PresetsConfigurationPage = () => {
 								</>
 							) : null}
 							{form.values.presets[index].type === 'osc' ? (
-								<OSCPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								<>
+									<Divider my="md" label="OSC Configuration" labelPosition="center" />
+									<OSCPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								</>
 							) : null}
 							{form.values.presets[index].type === 'http' ? (
 								<>
-									<Divider my="md" label="Configuration" labelPosition="center" />
+									<Divider my="md" label="HTTP Configuration" labelPosition="center" />
 									<Select
 										label="Target Device"
 										placeholder="Device"
 										icon={<FaServer />}
 										{...form.getInputProps(`presets.${index}.deviceId`)}
-										data={devicesForSelect}
+										data={[{ value: '', label: 'None' }, ...devicesForHTTPSelect]}
 									/>
 									<HTTPPresetEditModal
 										{...form.getInputProps(`presets.${index}.data`)}
 										deviceHost={
 											form.values.presets[index].deviceId
-												? devicesHosts[form.values.presets[index].deviceId]
+												? devicesHTTPHosts[form.values.presets[index].deviceId]
 												: ''
 										}
 									/>
 								</>
 							) : null}
 							{form.values.presets[index].type === 'macro' ? (
-								<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								<>
+									<Divider my="md" label="Macro Steps" labelPosition="center" />
+									<MacroPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								</>
 							) : null}
 							{form.values.presets[index].type === 'tcp' ? (
-								<TCPPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+								<>
+									<Divider my="md" label="TCP Configuration" labelPosition="center" />
+									<Select
+										label="Target Device"
+										placeholder="Device"
+										icon={<FaServer />}
+										{...form.getInputProps(`presets.${index}.deviceId`)}
+										data={devicesForTCPSelect}
+									/>
+									<TCPPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+									<TCPPresetEditModalTestFunction
+										disabled={
+											(form.values.presets[index].deviceId == '' &&
+												devicesTCPHosts[form.values.presets[index].deviceId].ip != '') ||
+											form.values.presets[index].data === undefined
+										}
+										data={{
+											deviceHost: form.values.presets[index].deviceId
+												? devicesTCPHosts[form.values.presets[index].deviceId]
+												: '',
+											data: form.values.presets[index].data,
+										}}
+									/>
+								</>
+							) : null}
+							{form.values.presets[index].type === 'tcp' || form.values.presets[index].type === 'http' ? (
+								<>
+									<Divider my="md" label="Response Handling" labelPosition="center" />
+									<VariablesLogicEditor {...form.getInputProps(`presets.${index}.variableLogic`)} />
+								</>
 							) : null}
 						</Modal>
 						<ActionIcon variant="transparent" title="Edit" onClick={() => setModalVisible(index)}>
@@ -339,11 +413,12 @@ export const PresetsConfigurationPage = () => {
 								form.insertListItem('presets', {
 									id: null,
 									name: 'Copy of ' + form.values.presets[index].name,
-									enabled: form.values.presets[index].enabled,
 									type: form.values.presets[index].type as PresetTypes,
 									universe: form.values.presets[index].universe,
 									fadeTime: form.values.presets[index].fadeTime,
 									data: form.values.presets[index].data,
+									variableLogic: form.values.presets[index].variableLogic,
+									displayVariableLogic: form.values.presets[index].displayVariableLogic,
 									timeClockTriggers: null, //Deliberate decision not to copy these
 									httpTriggerEnabled: form.values.presets[index].httpTriggerEnabled,
 									folderId: form.values.presets[index].folderId,
@@ -370,7 +445,6 @@ export const PresetsConfigurationPage = () => {
 			)}
 		</Draggable>
 	))
-
 	return (
 		<Box mx="lg">
 			<div style={{ position: 'relative' }}>
@@ -473,11 +547,13 @@ export const PresetsConfigurationPage = () => {
 																form.insertListItem('presets', {
 																	id: null,
 																	name: 'New ' + value + ' preset',
-																	enabled: true,
 																	type: value as PresetTypes,
 																	universe: 1,
 																	fadeTime: 0,
 																	data: null,
+																	variableLogic: null,
+																	displayVariableLogic:
+																		'{"showHide":"show","rules":[]}',
 																	timeClockTriggers: null,
 																	deviceId: null,
 																	httpTriggerEnabled: false,
@@ -502,7 +578,7 @@ export const PresetsConfigurationPage = () => {
 																Macro
 															</Chip>
 															<Chip size="md" value="tcp">
-																TCP
+																TCP (Hex)
 															</Chip>
 														</Chip.Group>
 													),

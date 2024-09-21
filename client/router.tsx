@@ -14,6 +14,7 @@ import { FadersConfigurationPage } from './Pages/Admin/Faders'
 import { FoldersConfigurationPage } from './Pages/Admin/Folders'
 import { PresetsConfigurationPage } from './Pages/Admin/Presets'
 import { TimeClockTriggersConfigurationPage } from './Pages/Admin/TimeClockTriggers'
+import { VariablesConfigurationPage } from './Pages/Admin/Variables'
 import { ChannelCheckPage } from './Pages/ControlPanel/E131/ChannelCheck'
 import { KeypadPage } from './Pages/ControlPanel/E131/Keypad'
 import { HelpPage } from './Pages/ControlPanel/Help'
@@ -93,6 +94,7 @@ const HashRouter = createHashRouter(
 				<Route path="faders" element={<FadersConfigurationPage />} />
 				<Route path="controls" element={<ControlsConfigurationPage />} />
 				<Route path="timeClockTriggers" element={<TimeClockTriggersConfigurationPage />} />
+				<Route path="variables" element={<VariablesConfigurationPage />} />
 			</Route>
 			<Route path="*" element={<LandingPage />} />
 		</>

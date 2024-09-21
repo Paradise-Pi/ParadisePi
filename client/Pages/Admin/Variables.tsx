@@ -3,10 +3,10 @@ import {
 	Box,
 	Button,
 	Center,
+	CopyButton,
 	Group,
 	LoadingOverlay,
 	Modal,
-	NumberInput,
 	Table,
 	Text,
 	Textarea,
@@ -16,6 +16,7 @@ import {
 import { useForm } from '@mantine/form'
 import { showNotification } from '@mantine/notifications'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
+import { FaCopy } from '@react-icons/all-files/fa/FaCopy'
 import { FaGripVertical } from '@react-icons/all-files/fa/FaGripVertical'
 import { FaPencilAlt } from '@react-icons/all-files/fa/FaPencilAlt'
 import { FaPlus } from '@react-icons/all-files/fa/FaPlus'
@@ -23,80 +24,64 @@ import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import { FaTrash } from '@react-icons/all-files/fa/FaTrash'
 import React, { useEffect, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
-import { DatabaseDevice } from '../../../shared/sharedTypes'
+import { DatabaseVariable } from '../../../shared/sharedTypes'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { usePrompt } from '../../apis/utilities/usePrompt'
 import { ApiCall } from '../../apis/wrapper'
 interface FormValues {
-	devices: Array<DatabaseDevice>
+	variables: Array<DatabaseVariable>
 }
-export const DevicesConfigurationPage = () => {
+export const VariablesConfigurationPage = () => {
 	const [modalVisible, setModalVisible] = useState<number | false>(false)
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const ipAddress = useAppSelector(state => (state.database ? state.database.about.ipAddress : null))
 	const port = useAppSelector(state => (state.database ? state.database.about.port : false))
 	const [formOriginalValues, setFormOriginalValues] = useState<string>('') // Values used to detect unsaved changes
-	const devices = useAppSelector(state => (state.database ? state.database.devices : false))
+	const variables = useAppSelector(state => (state.database ? state.database.variables : false))
 	// Setup the form
 	const form = useForm<FormValues>({
 		initialValues: {
-			devices: [],
+			variables: [],
 		},
 		clearInputErrorOnChange: true,
 		validateInputOnBlur: true,
 		validate: {
-			devices: {
-				name: value => (value.length < 2 ? 'Name should have at least 2 letters' : null),
-				ip: (value, values, path) => {
-					if (value == null || value.length < 1) return null
+			variables: {
+				name(value, values, path) {
+					if (value === '') return 'Name is required'
+					// Check for duplicate names, must be unique
+					const names = values.variables.map(item => item.name)
+					if (names.filter(name => name === value).length > 1) return 'Name must be unique'
 
-					// Check if the same device has an endpoint set
-					if (values.devices[path.split('.')[1]].endpoint.length > 0)
-						return 'Cannot have both an IP address and an endpoint'
-
-					// Check for duplicates
-					const duplicate = values.devices.findIndex(
-						(item, index) => item.ip === value && index !== parseInt(path.split('.')[1])
-					)
-					if (duplicate !== -1) return 'IP address used by another device'
-
-					if (
-						/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
-							value
-						)
-					)
-						return null
-					else return 'IPv4 address not valid'
-				},
-				endpoint: (value, values, path) => {
-					if (value == null || value.length < 1) return null
-
-					// Check if the same device has an IP set
-					if (values.devices[path.split('.')[1]].ip.length > 0)
-						return 'Cannot have both an IP address and an endpoint'
-
-					return value.startsWith('https://') || value.startsWith('http://') ? null : 'Endpoint not valid'
+					if (value.length < 2) return 'Name is too short'
+					value = value.replace(/ /g, '_') // Remove spaces
+					value = value.toUpperCase() // Convert to uppercase
+					if (!/^[A-Z0-9_]*$/.test(value))
+						return 'Name can only contain uppercase letters, numbers and underscores'
+					if (value.length > 100) 'Name is too long'
+					values.variables[path.split('.')[1]].name = value
+					return null
 				},
 			},
 		},
 	})
 	useEffect(() => {
 		// Normally called when the database is populated and ready, so we can populate the form
-		if (devices !== false) {
-			const formValues = { devices: devices.map(item => ({ ...item })) } // Make a copy of the object using map because the object is not extensible
+		if (variables !== false) {
+			const formValues = { variables: variables.map(item => ({ ...item })) } // Make a copy of the object using map because the object is not extensible
 			form.setValues(formValues)
 			setFormOriginalValues(JSON.stringify(formValues))
 			setLoadingOverlayVisible(false)
 		} else if (!loadingOverlayVisible) setLoadingOverlayVisible(true)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [devices])
+	}, [variables])
 	const saveByUserNeeded = formOriginalValues !== JSON.stringify(form.values) // Does the user have unsaved changes
 	usePrompt(saveByUserNeeded ? 'You have unsaved changes, are you sure you want to leave this page?' : false)
 
 	// Handle the submit button
 	const handleSubmit = (values: FormValues) => {
 		setLoadingOverlayVisible(true)
-		ApiCall.put('/devices', values.devices).then(() => {
+		ApiCall.put('/variables', values.variables).then(() => {
 			showNotification({
 				message: 'Your changes have been saved',
 				autoClose: 2000,
@@ -106,8 +91,7 @@ export const DevicesConfigurationPage = () => {
 			})
 		})
 	}
-
-	const fields = form.values.devices.map((_, index) => (
+	const fields = form.values.variables.map((_, index) => (
 		<Draggable key={index} index={index} draggableId={index.toString()}>
 			{provided => (
 				<tr ref={provided.innerRef} {...provided.draggableProps}>
@@ -117,24 +101,35 @@ export const DevicesConfigurationPage = () => {
 						</Center>
 					</td>
 					<td>
-						<TextInput placeholder="Name" {...form.getInputProps(`devices.${index}.name`)} />
+						{form.values.variables[index].id ? (
+							<>
+								<Text span c="dimmed">
+									{'{{ VARIABLES.'}
+								</Text>
+								<Text span>{form.values.variables[index].name}</Text>
+								<Text span c="dimmed">
+									{' }}'}
+								</Text>
+								<CopyButton value={`{{ VARIABLES.${form.values.variables[index].name} }}`}>
+									{({ copied, copy }) => (
+										<ActionIcon
+											variant="transparent"
+											onClick={copy}
+											ml={'sm'}
+											style={{ display: 'inline-block' }}
+										>
+											{copied ? <FaCheck /> : <FaCopy />}
+										</ActionIcon>
+									)}
+								</CopyButton>
+								<input type="hidden" {...form.getInputProps(`variables.${index}.name`)} />
+							</>
+						) : (
+							<TextInput placeholder="Name" {...form.getInputProps(`variables.${index}.name`)} />
+						)}
 					</td>
 					<td>
-						<TextInput placeholder="192.168.1.30" {...form.getInputProps(`devices.${index}.ip`)} />
-					</td>
-					<td>
-						<NumberInput
-							placeholder="Port"
-							{...form.getInputProps(`devices.${index}.port`)}
-							min={1}
-							max={65535}
-						/>
-					</td>
-					<td>
-						<TextInput
-							placeholder="https://api.sendgrid.com/v3/"
-							{...form.getInputProps(`devices.${index}.endpoint`)}
-						/>
+						<TextInput placeholder="Value" {...form.getInputProps(`variables.${index}.value`)} />
 					</td>
 					<td>
 						<Modal
@@ -143,10 +138,42 @@ export const DevicesConfigurationPage = () => {
 								setModalVisible(false)
 							}}
 							size="xl"
-							title={`Edit Device ${form.values.devices[index].name}`}
+							title={`Edit Variable ${form.values.variables[index].name}`}
 							overflow="inside"
 						>
-							<Textarea label="Device Notes" {...form.getInputProps(`devices.${index}.notes`)} />
+							<Textarea label="Variable Notes" {...form.getInputProps(`variables.${index}.notes`)} />
+							{form.values.variables[index].id ? (
+								<>
+									<Text my={'md'} fz="lg">
+										Status Check API URL - returns value of the variable
+									</Text>
+									<Text span c="dimmed">
+										{'http://' + ipAddress + ':' + port + '/monitoring/variable/'}
+									</Text>
+									<Text span>{form.values.variables[index].name}</Text>
+									<CopyButton
+										value={
+											'http://' +
+											ipAddress +
+											':' +
+											port +
+											'/monitoring/variable/' +
+											form.values.variables[index].name
+										}
+									>
+										{({ copied, copy }) => (
+											<ActionIcon
+												variant="transparent"
+												onClick={copy}
+												ml={'sm'}
+												style={{ display: 'inline-block' }}
+											>
+												{copied ? <FaCheck /> : <FaCopy />}
+											</ActionIcon>
+										)}
+									</CopyButton>
+								</>
+							) : null}
 						</Modal>
 						<ActionIcon variant="transparent" onClick={() => setModalVisible(index)}>
 							<FaPencilAlt />
@@ -156,7 +183,7 @@ export const DevicesConfigurationPage = () => {
 						<ActionIcon
 							color="red"
 							variant="transparent"
-							onClick={() => form.removeListItem('devices', index)}
+							onClick={() => form.removeListItem('variables', index)}
 						>
 							<FaTrash />
 						</ActionIcon>
@@ -170,21 +197,17 @@ export const DevicesConfigurationPage = () => {
 		<Box mx="lg">
 			<div style={{ position: 'relative' }}>
 				<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-				{devices !== false ? (
+				{variables !== false ? (
 					<form onSubmit={form.onSubmit(handleSubmit)}>
 						<Group position="left" mt="md">
-							<Title>Devices</Title>
+							<Title>Variables</Title>
 							{saveByUserNeeded ? (
 								<Button variant="outline" type="submit" leftIcon={<FaSave />}>
 									Save
 								</Button>
 							) : null}
 						</Group>
-						<Text>
-							Devices are used for making HTTP requests in presets, allowing you to store the IP
-							address/host of the device in one place. It also allows you to monitor the status of a
-							device.
-						</Text>
+						<Text>Variables are used to store values that can be used in various places in Paradise</Text>
 						<Table verticalSpacing="sm" fontSize="md">
 							<thead>
 								<tr>
@@ -193,12 +216,10 @@ export const DevicesConfigurationPage = () => {
 											compact
 											variant="default"
 											onClick={() => {
-												form.insertListItem('devices', {
+												form.insertListItem('variables', {
 													id: null,
-													name: 'New device',
-													ip: '',
-													port: 80,
-													endpoint: '',
+													name: 'New variable',
+													value: '',
 													notes: '',
 												})
 											}}
@@ -207,16 +228,14 @@ export const DevicesConfigurationPage = () => {
 										</Button>
 									</th>
 									<th>Name</th>
-									<th>IP Address</th>
-									<th>Port</th>
-									<th>or, Endpoint</th>
+									<th>Value</th>
 									<th></th>
 									<th></th>
 								</tr>
 							</thead>
 							<DragDropContext
 								onDragEnd={({ destination, source }) =>
-									form.reorderListItem('devices', {
+									form.reorderListItem('variables', {
 										from: source.index,
 										to: destination.index,
 									})

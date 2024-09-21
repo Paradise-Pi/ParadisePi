@@ -28,15 +28,15 @@ export interface DatabaseFader {
 	sort?: number
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	data?: string | null // TODO remove this if we're not using it
+	displayVariableLogic: string
 }
 
 export interface DatabaseDevice {
 	id?: number
 	name: string
 	ip: string
+	port: number
 	endpoint: string
-	statusCheckPath: string
-	statusCheckString: string
 	notes: string
 	sort?: number
 }
@@ -60,4 +60,12 @@ export interface Images {
 export interface ChannelData {
 	channel: number
 	level: number
+}
+
+export interface DatabaseVariable {
+	id?: number
+	name: string
+	value: string
+	notes: string
+	sort?: number
 }

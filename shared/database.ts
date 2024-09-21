@@ -26,12 +26,13 @@ export type PresetTypes = 'e131' | 'osc' | 'http' | 'macro' | 'tcp'
 export interface DatabasePreset {
 	id: number
 	name: string
-	enabled: boolean
 	icon?: string | null
 	type?: PresetTypes
 	universe?: string | null
 	fadeTime?: number
 	data?: string | null
+	variableLogic?: string | null
+	displayVariableLogic: string
 	httpTriggerEnabled: boolean
 	folderId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
 	deviceId?: string // An unfortunate feature of the mantine select is that it requires a string instead of a number :(
@@ -49,6 +50,7 @@ export interface DatabaseFolder {
 	parentFolderId?: string
 	presets?: Array<DatabasePreset>
 	faders?: Array<DatabaseFader>
+	displayVariableLogic: string
 }
 
 export interface Database {

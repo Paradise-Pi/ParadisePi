@@ -28,7 +28,6 @@ Please describe the changes
 -   [ ] Presets/Faders/Folders/Devices can be removed
 -   [ ] Presets/Faders/Folders/Devices can be renamed, and this is reflected on the control panel
 -   [ ] Presets/Folders can be disabled, and they are hidden from the control panel
--   [ ] Presets/Faders/Folders can be enabled, and they are shown in the control panel
 -   [ ] Preset/Folders colors can be changed, and this is shown in the control panel
 -   [ ] Preset/Faders/Folders sort order is maintained
 -   [ ] Presets can be triggered by HTTP requests
