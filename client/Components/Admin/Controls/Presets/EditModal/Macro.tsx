@@ -28,6 +28,21 @@ export const MacroPresetEditModal = (props: InputProps) => {
 		})
 	}
 
+	// Prepare folders list for select dropdown
+	const folders = useAppSelector(state => (state.database ? state.database.folders : false))
+	const foldersForSelect: Array<SelectItem> = []
+	if (folders !== false) {
+		Object.entries(folders)
+			.sort(([, folderA], [, folderB]) => folderA.sort - folderB.sort)
+			.forEach(([, value]) => {
+				foldersForSelect.push({
+					value: value.id.toString(),
+					label: (value.parent ? value.parent.name + ' → ' : '') + value.name,
+					group: 'Folder',
+				})
+			})
+	}
+
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
 	const presetsForSelect: Array<SelectItem> = []
 	// Prepare folders list for select dropdown
@@ -72,6 +87,7 @@ export const MacroPresetEditModal = (props: InputProps) => {
 						data={[
 							{ value: 'preset', label: 'Trigger Preset' },
 							{ value: 'link', label: 'Open a Page' },
+							{ value: 'folder', label: 'Open a Folder' },
 							{ value: 'configuration', label: 'Set Configuration' },
 							{ value: 'variable', label: 'Set a Variable' },
 						]}
@@ -143,6 +159,15 @@ export const MacroPresetEditModal = (props: InputProps) => {
 								data={variablesForSelect}
 							/>
 							<TextInput {...form.getInputProps(`steps.${index}.valueTwo`)} placeholder="Value" />
+						</>
+					) : form.values.steps[index].type === 'folder' ? (
+						<>
+							<Select
+								placeholder="Folder"
+								{...form.getInputProps(`steps.${index}.value`)}
+								data={foldersForSelect}
+							/>
+							<input type="hidden" {...form.getInputProps(`steps.${index}.valueTwo`)} />
 						</>
 					) : null}
 					<ActionIcon color="red" variant="transparent" onClick={() => form.removeListItem('steps', index)}>

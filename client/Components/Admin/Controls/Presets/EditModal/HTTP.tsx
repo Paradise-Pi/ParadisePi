@@ -1,6 +1,7 @@
 import { JsonInput, Select, TextInput } from '@mantine/core'
 import React from 'react'
 import { InputProps } from '../../../../InputProps'
+import { HTTPPresetEditModalTestFunction } from './HTTP-test'
 
 export const HTTPPresetEditModal = (props: InputProps & { deviceHost: string }) => {
 	const preset = JSON.parse(props.value) || {}
@@ -49,6 +50,17 @@ export const HTTPPresetEditModal = (props: InputProps & { deviceHost: string }) 
 				autosize
 				value={preset.headers}
 				onChange={value => onChangeFunction('headers', value)}
+			/>
+			<HTTPPresetEditModalTestFunction
+				disabled={
+					(props.deviceHost == '' && preset.url == '') ||
+					props.deviceHost === undefined ||
+					preset.url === undefined
+				}
+				data={{
+					deviceHost: props.deviceHost,
+					data: preset,
+				}}
 			/>
 		</>
 	)

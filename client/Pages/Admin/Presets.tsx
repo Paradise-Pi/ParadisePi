@@ -52,7 +52,9 @@ import { HTTPPresetEditModal } from '../../Components/Admin/Controls/Presets/Edi
 import { MacroPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/Macro'
 import { OSCPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/OSC'
 import { TCPPresetEditModal } from '../../Components/Admin/Controls/Presets/EditModal/TCP'
+import { TCPPresetEditModalTestFunction } from '../../Components/Admin/Controls/Presets/EditModal/TCP-test'
 import { isValidJson } from '../../Components/Admin/Controls/Presets/EditModal/isValidJson'
+import { VariablesLogicEditor } from '../../Components/Admin/Controls/VariablesLogicEditor'
 import { ButtonIconSelectItem, availableIcons } from '../../Components/ControlPanel/ButtonIcon'
 import { useAppSelector } from '../../apis/redux/mainStore'
 import { usePrompt } from '../../apis/utilities/usePrompt'
@@ -93,20 +95,39 @@ export const PresetsConfigurationPage = () => {
 			})
 	}
 	// Prepare folders list for select dropdown
-	const devicesForSelect: Array<SelectItem> = []
-	const devicesHosts: {
+	const devicesForHTTPSelect: Array<SelectItem> = []
+	const devicesHTTPHosts: {
 		[key: string]: string
+	} = {}
+	const devicesForTCPSelect: Array<SelectItem> = []
+	const devicesTCPHosts: {
+		[key: string]: {
+			ip: string
+			port: number
+		}
 	} = {}
 	if (devices !== false) {
 		Object.entries(devices).forEach(([, value]) => {
 			if (value.id !== undefined) {
-				let deviceHost = value.ip != null && value.ip != '' ? 'http://' + value.ip : value.endpoint
-				devicesForSelect.push({
+				let deviceHost =
+					value.ip != null && value.ip != '' ? `http://${value.ip}:${value.port}` : value.endpoint
+				devicesForHTTPSelect.push({
 					value: value.id.toString(),
 					label: `${value.name} (${deviceHost})`,
 					group: 'Device',
 				})
-				devicesHosts[value.id.toString()] = deviceHost
+				devicesHTTPHosts[value.id.toString()] = deviceHost
+				if (value.ip != null && value.ip != '') {
+					devicesForTCPSelect.push({
+						value: value.id.toString(),
+						label: `${value.name} (${value.ip}:${value.port})`,
+						group: 'Device',
+					})
+					devicesTCPHosts[value.id.toString()] = {
+						ip: value.ip,
+						port: value.port,
+					}
+				}
 			}
 		})
 	}
@@ -329,13 +350,13 @@ export const PresetsConfigurationPage = () => {
 										placeholder="Device"
 										icon={<FaServer />}
 										{...form.getInputProps(`presets.${index}.deviceId`)}
-										data={[{ value: '', label: 'None' }, ...devicesForSelect]}
+										data={[{ value: '', label: 'None' }, ...devicesForHTTPSelect]}
 									/>
 									<HTTPPresetEditModal
 										{...form.getInputProps(`presets.${index}.data`)}
 										deviceHost={
 											form.values.presets[index].deviceId
-												? devicesHosts[form.values.presets[index].deviceId]
+												? devicesHTTPHosts[form.values.presets[index].deviceId]
 												: ''
 										}
 									/>
@@ -355,9 +376,28 @@ export const PresetsConfigurationPage = () => {
 										placeholder="Device"
 										icon={<FaServer />}
 										{...form.getInputProps(`presets.${index}.deviceId`)}
-										data={devicesForSelect}
+										data={devicesForTCPSelect}
 									/>
 									<TCPPresetEditModal {...form.getInputProps(`presets.${index}.data`)} />
+									<TCPPresetEditModalTestFunction
+										disabled={
+											(form.values.presets[index].deviceId == '' &&
+												devicesTCPHosts[form.values.presets[index].deviceId].ip != '') ||
+											form.values.presets[index].data === undefined
+										}
+										data={{
+											deviceHost: form.values.presets[index].deviceId
+												? devicesTCPHosts[form.values.presets[index].deviceId]
+												: '',
+											data: form.values.presets[index].data,
+										}}
+									/>
+								</>
+							) : null}
+							{form.values.presets[index].type === 'tcp' || form.values.presets[index].type === 'http' ? (
+								<>
+									<Divider my="md" label="Response Handling" labelPosition="center" />
+									<VariablesLogicEditor {...form.getInputProps(`presets.${index}.variableLogic`)} />
 								</>
 							) : null}
 						</Modal>

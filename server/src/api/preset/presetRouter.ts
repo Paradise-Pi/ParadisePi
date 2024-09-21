@@ -49,11 +49,11 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 					// Evaluate if there's a device involved that we need to prefix
 					if (value.device !== null && value.device.id !== null) {
 						if (value.device.ip !== null && value.device.ip !== '')
-							deviceHost = 'http://' + value.device.ip + ':' + value.device.port
+							deviceHost = `http://${value.device.ip}:${value.device.port}`
 						else if (value.device.endpoint !== null && value.device.endpoint !== '')
 							deviceHost = value.device.endpoint
 					}
-					// Make the HTTP request
+					// Make the HTTP request - DON'T FORGET THIS IS ALSO DUPLICATED BELOW
 					axios({
 						method: value.data.method ?? 'GET',
 						url: `${deviceHost}${value.data.url ?? ''}`,
@@ -74,6 +74,9 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 								return presetRouter(['recall', step.value], 'GET', {}) // Trigger the preset in the macro
 							} else if (step.type === 'link' && step.value !== null) {
 								linkStep = step.value
+								return Promise.resolve()
+							} else if (step.type === 'folder' && step.value !== null) {
+								linkStep = `/controlPanel/folder/${step.value}`
 								return Promise.resolve()
 							} else if (step.type === 'configuration' && step.value !== null) {
 								if (step.value === 'CONTROLPANEL-LOCKED') {
@@ -116,6 +119,41 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 						.then(() => resolve({}))
 				} else resolve({})
 			})
+		}
+		if (method === 'GET' && path[0] === 'test') {
+			if (path[1] === 'http' && payload.data !== null && payload.data.url !== null) {
+				// Make the HTTP request
+				logger.debug('Testing HTTP request', { payload })
+				axios({
+					method: payload.data.method ?? 'GET',
+					url: `${payload.deviceHost}${payload.data.url ?? ''}`,
+					data: payload.data.data ? parseJSON(payload.data.data) : null,
+					headers: payload.data.headers ? parseJSON(payload.data.headers) : null,
+					timeout: 60000, // 60 seconds
+				})
+					.catch(err => {
+						logger.warn('Preset HTTP request failed', { err })
+						resolve({ error: err.message })
+					})
+					.then(response => {
+						logger.debug('Preset HTTP request succeeded', response ? response.data : null)
+						resolve({ response: response ? response.data : null })
+					})
+			} else if (path[1] === 'tcp' && payload.ip !== null && payload.deviceHost !== null) {
+				// Make the TCP request
+				if (payload.message === null) resolve({ error: 'Blank' })
+				logger.debug('Testing TCP request', { payload })
+				tcpRequest(payload.ip, payload.port, payload.message, payload.timeout ?? 60)
+					.catch(err => {
+						logger.warn('Preset TCP request failed', err)
+						resolve({ error: err })
+					})
+					.then(response => {
+						logger.debug('Preset TCP request succeeded', response ? response.data : null)
+						if (response) resolve({ data: response.data, speed: response.speed })
+						else resolve({ data: null, speed: null })
+					})
+			} else reject(new Error('Path not found'))
 		} else if (method === 'PUT') {
 			return PresetRepository.setAllFromApp(payload as Array<DatabasePreset>)
 				.then(() => {

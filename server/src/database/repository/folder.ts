@@ -20,25 +20,25 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 				icon: true,
 				sort: true,
 				infoText: true,
-				displayVariableLogic: true as unknown, // https://github.com/typeorm/typeorm/issues/9465
+				displayVariableLogic: true as any, // https://github.com/typeorm/typeorm/issues/9465
 				childFolders: {
 					name: true,
 					id: true,
 					icon: true,
-					displayVariableLogic: true as unknown,
+					displayVariableLogic: true as any,
 				},
 				parent: {
 					name: true,
 					id: true,
 					icon: true,
-					displayVariableLogic: true as unknown,
+					displayVariableLogic: true as any,
 				},
 				presets: {
 					id: true,
 					name: true,
 					color: true,
 					icon: true,
-					displayVariableLogic: true as unknown,
+					displayVariableLogic: true as any,
 				},
 				faders: {
 					id: true,
@@ -46,7 +46,7 @@ export const FolderRepository = dataSource.getRepository(Folders).extend({
 					enabled: true,
 					type: true,
 					channel: true,
-					displayVariableLogic: true as unknown,
+					displayVariableLogic: true as any,
 				},
 			},
 			order: {
