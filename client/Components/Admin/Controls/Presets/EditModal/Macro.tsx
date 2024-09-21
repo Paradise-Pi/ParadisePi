@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Group, Select, SelectItem } from '@mantine/core'
+import { ActionIcon, Button, Group, Select, SelectItem, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { FaCheck } from '@react-icons/all-files/fa/FaCheck'
 import { FaExclamationTriangle } from '@react-icons/all-files/fa/FaExclamationTriangle'
@@ -11,11 +11,23 @@ interface FormValues {
 	steps: Array<{
 		type: string
 		value: string
+		valueTwo: string
 		key: string
 	}>
 }
 
 export const MacroPresetEditModal = (props: InputProps) => {
+	const variables = useAppSelector(state => (state.database ? state.database.variables : false))
+	const variablesForSelect: Array<SelectItem> = []
+	if (variables !== false) {
+		Object.entries(variables).forEach(([, value]) => {
+			variablesForSelect.push({
+				value: value.id.toString(),
+				label: value.name + ' (' + value.value + ')',
+			})
+		})
+	}
+
 	const presets = useAppSelector(state => (state.database ? state.database.presets : false))
 	const presetsForSelect: Array<SelectItem> = []
 	// Prepare folders list for select dropdown
@@ -38,11 +50,14 @@ export const MacroPresetEditModal = (props: InputProps) => {
 		if (props.value !== null) {
 			const valueObject = JSON.parse(props.value) || {}
 			form.setValues({
-				steps: valueObject.map((item: { type: string; value: string; key: string }, index: number) => ({
-					type: item.type,
-					value: item.value,
-					key: `key-${index}`,
-				})),
+				steps: valueObject.map(
+					(item: { type: string; value: string; valueTwo: string; key: string }, index: number) => ({
+						type: item.type,
+						value: item.value,
+						valueTwo: item.valueTwo,
+						key: `key-${index}`,
+					})
+				),
 			})
 		}
 
@@ -58,58 +73,77 @@ export const MacroPresetEditModal = (props: InputProps) => {
 							{ value: 'preset', label: 'Trigger Preset' },
 							{ value: 'link', label: 'Open a Page' },
 							{ value: 'configuration', label: 'Set Configuration' },
+							{ value: 'variable', label: 'Set a Variable' },
 						]}
 					/>
 					{form.values.steps[index].type === 'preset' ? (
-						<Select
-							placeholder="Preset"
-							{...form.getInputProps(`steps.${index}.value`)}
-							data={presetsForSelect}
-						/>
+						<>
+							<Select
+								placeholder="Preset"
+								{...form.getInputProps(`steps.${index}.value`)}
+								data={presetsForSelect}
+							/>
+							<input type="hidden" {...form.getInputProps(`steps.${index}.valueTwo`)} />
+						</>
 					) : form.values.steps[index].type === 'link' ? (
-						<Select
-							placeholder="Page"
-							{...form.getInputProps(`steps.${index}.value`)}
-							data={[
-								{
-									value: '/controlPanel/help',
-									label: 'Help',
-									group: 'General',
-								},
-								{
-									value: '/admin/controls',
-									label: 'Setup & Administration Menu',
-									group: 'General',
-								},
-								{
-									value: '/controlPanel/e131/lxKeypad',
-									label: 'Keypad',
-									group: 'sACN (E1.31)',
-								},
-								{
-									value: '/controlPanel/e131/channelCheck',
-									label: 'Channel Check',
-									group: 'sACN (E1.31)',
-								},
-							]}
-						/>
+						<>
+							<Select
+								placeholder="Page"
+								{...form.getInputProps(`steps.${index}.value`)}
+								data={[
+									{
+										value: '/controlPanel/help',
+										label: 'Help',
+										group: 'General',
+									},
+									{
+										value: '/admin/controls',
+										label: 'Setup & Administration Menu',
+										group: 'General',
+									},
+									{
+										value: '/controlPanel/e131/lxKeypad',
+										label: 'Keypad',
+										group: 'sACN (E1.31)',
+									},
+									{
+										value: '/controlPanel/e131/channelCheck',
+										label: 'Channel Check',
+										group: 'sACN (E1.31)',
+									},
+								]}
+							/>
+							<input type="hidden" {...form.getInputProps(`steps.${index}.valueTwo`)} />
+						</>
 					) : form.values.steps[index].type === 'configuration' ? (
-						<Select
-							placeholder="Configuration"
-							{...form.getInputProps(`steps.${index}.value`)}
-							data={[
-								{
-									value: 'CONTROLPANEL-LOCKED',
-									label: 'Set to locked',
-									group: 'Control panel lock',
-								},
-								{
-									value: 'CONTROLPANEL-UNLOCKED',
-									label: 'Set to unlocked',
-									group: 'Control panel lock',
-								},
-							]}
-						/>
+						<>
+							<Select
+								placeholder="Configuration"
+								{...form.getInputProps(`steps.${index}.value`)}
+								data={[
+									{
+										value: 'CONTROLPANEL-LOCKED',
+										label: 'Set to locked',
+										group: 'Control panel lock',
+									},
+									{
+										value: 'CONTROLPANEL-UNLOCKED',
+										label: 'Set to unlocked',
+										group: 'Control panel lock',
+									},
+								]}
+							/>
+							<input type="hidden" {...form.getInputProps(`steps.${index}.valueTwo`)} />
+						</>
+					) : form.values.steps[index].type === 'variable' ? (
+						<>
+							<Select
+								placeholder="Variable"
+								{...form.getInputProps(`steps.${index}.value`)}
+								data={variablesForSelect}
+							/>
+							<TextInput {...form.getInputProps(`steps.${index}.valueTwo`)} placeholder="Value" />
+						</>
 					) : null}
 					<ActionIcon color="red" variant="transparent" onClick={() => form.removeListItem('steps', index)}>
 						<FaTrash />
@@ -121,7 +155,12 @@ export const MacroPresetEditModal = (props: InputProps) => {
 				<Button
 					rightIcon={<FaPlus />}
 					onClick={() =>
-						form.insertListItem('steps', { type: '', value: '', key: `key-${form.values.steps.length}` })
+						form.insertListItem('steps', {
+							type: '',
+							value: '',
+							valueTwo: '',
+							key: `key-${form.values.steps.length}`,
+						})
 					}
 				>
 					Add step

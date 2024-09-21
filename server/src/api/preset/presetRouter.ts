@@ -3,6 +3,7 @@ import { Database, DatabasePreset } from '../../../../shared/database'
 import { Preset } from '../../database/model/Preset'
 import { ConfigRepository } from '../../database/repository/config'
 import { PresetRepository } from '../../database/repository/preset'
+import { VariableRepository } from '../../database/repository/variable'
 import logger from '../../logger'
 import { createDatabaseObject, sendDatabaseObject } from '../database'
 import { parseJSON } from '../parseUserJson'
@@ -67,21 +68,33 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 				} else if (value.type === 'macro' && value.data !== null) {
 					let linkStep: string = null
 					const configUpdate: Array<{ key: string; value: string }> = []
-					value.data.forEach((step: { type: string; value: string; key: string }) => {
-						if (step.type === 'preset' && parseInt(step.value) !== value.id && step.value !== null) {
-							presetRouter(['recall', step.value], 'GET', {}) // Trigger the preset in the macro
-						} else if (step.type === 'link' && step.value !== null) {
-							linkStep = step.value
-						} else if (step.type === 'configuration' && step.value !== null) {
-							if (step.value === 'CONTROLPANEL-LOCKED') {
-								configUpdate.push({ key: 'deviceLock', value: 'LOCKED' })
-							} else if (step.value === 'CONTROLPANEL-UNLOCKED') {
-								configUpdate.push({ key: 'deviceLock', value: 'UNLOCKED' })
+					return Promise.all(
+						value.data.map((step: { type: string; value: string; valueTwo: string; key: string }) => {
+							if (step.type === 'preset' && parseInt(step.value) !== value.id && step.value !== null) {
+								return presetRouter(['recall', step.value], 'GET', {}) // Trigger the preset in the macro
+							} else if (step.type === 'link' && step.value !== null) {
+								linkStep = step.value
+								return Promise.resolve()
+							} else if (step.type === 'configuration' && step.value !== null) {
+								if (step.value === 'CONTROLPANEL-LOCKED') {
+									configUpdate.push({ key: 'deviceLock', value: 'LOCKED' })
+									return Promise.resolve()
+								} else if (step.value === 'CONTROLPANEL-UNLOCKED') {
+									configUpdate.push({ key: 'deviceLock', value: 'UNLOCKED' })
+									return Promise.resolve()
+								}
+							} else if (step.type === 'variable' && step.value !== null && step.valueTwo !== null) {
+								logger.debug('Setting variable from macro preset', {
+									key: step.value,
+									value: step.valueTwo,
+								})
+								return VariableRepository.setOne(parseInt(step.value), step.valueTwo)
 							}
-						}
-					})
-					return ConfigRepository.save(configUpdate)
+						})
+					)
+						.then(() => ConfigRepository.save(configUpdate))
 						.then(() => {
+							logger.debug('Macro preset completed')
 							return createDatabaseObject('change of config from macro')
 						})
 						.then((response: Database) => {

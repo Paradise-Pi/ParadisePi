@@ -18,6 +18,29 @@ export const VariableRepository = dataSource.getRepository(Variable).extend({
 		})
 	},
 	/**
+	 * Set a single variable based on the id
+	 * @param id - The id of the variable to set
+	 * @param value - The value to set the variable to
+	 * @returns A promise that resolves to true if the variable was set, false if it was not
+	 */
+	async setOne(id: number, value: string): Promise<boolean> {
+		if (id === null) return false
+		const item = await this.findOne({
+			select: {
+				id: true,
+			},
+			where: {
+				id,
+			},
+		})
+		if (!item) return false
+		const response = await this.update(id, {
+			value: value,
+		})
+		if (response.affected === 1) return true
+		else return false
+	},
+	/**
 	 * Delete all existing variables and then upload the given variables
 	 * @param variables - An array of variables to set as the database record
 	 */
