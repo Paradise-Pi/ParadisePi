@@ -97,6 +97,7 @@ export const MacroPresetEditModal = (props: InputProps) => {
 							<Select
 								placeholder="Preset"
 								{...form.getInputProps(`steps.${index}.value`)}
+								searchable={true}
 								data={presetsForSelect}
 							/>
 							<input type="hidden" {...form.getInputProps(`steps.${index}.valueTwo`)} />

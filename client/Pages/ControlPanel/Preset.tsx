@@ -22,7 +22,7 @@ const PresetButton = ({
 	icon: string
 }) => {
 	const navigate = useNavigate()
-
+	const [loading, setLoading] = React.useState<boolean>(false)
 	return (
 		<Button
 			variant="default"
@@ -31,8 +31,11 @@ const PresetButton = ({
 				'&:hover': { backgroundColor: color },
 				color: pickTextColorBasedOnBgColor(color),
 			})}
+			loading={loading}
 			onClick={() => {
+				setLoading(true)
 				ApiCall.get('/presets/recall-user/' + presetId, {}).then(value => {
+					setLoading(false)
 					if (value.redirect) {
 						navigate(value.redirect)
 					}
