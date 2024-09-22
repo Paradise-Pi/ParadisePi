@@ -86,7 +86,7 @@ export const VariablesLogicEditor = (props: InputProps) => {
 					{['isnull', 'isnotnull'].includes(form.values.rules[index].logic) ? (
 						<input type="hidden" {...form.getInputProps(`rules.${index}.match`)} />
 					) : (
-						<TextInput {...form.getInputProps(`rules.${index}.match`)} placeholder="to" />
+						<TextInput {...form.getInputProps(`rules.${index}.match`)} placeholder="this string" />
 					)}
 					<Select
 						placeholder="Then set variable"
