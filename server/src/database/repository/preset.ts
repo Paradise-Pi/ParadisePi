@@ -44,10 +44,13 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 			return {
 				...preset,
 				sort: count + 10, // +10 to make sure that newly inserted ones with null/0/1 end up at the top
-				universe: preset.universe !== null ? parseInt(preset.universe) : null,
-				folder: preset.folderId !== null ? parseInt(preset.folderId) : null,
-				device: preset.deviceId !== null ? parseInt(preset.deviceId) : null,
-				data: preset.data !== null && preset.data.length > 0 ? parseJSON(preset.data) : null,
+				universe:
+					preset.universe !== null && !isNaN(parseInt(preset.universe)) ? parseInt(preset.universe) : null,
+				folder:
+					preset.folderId !== null && !isNaN(parseInt(preset.folderId)) ? parseInt(preset.folderId) : null,
+				device:
+					preset.deviceId !== null && !isNaN(parseInt(preset.deviceId)) ? parseInt(preset.deviceId) : null,
+				data: preset.data != null && preset.data.length > 0 ? parseJSON(preset.data) : null,
 				variableLogic:
 					preset.variableLogic !== null && preset.variableLogic.length > 0
 						? parseJSON(preset.variableLogic)
@@ -58,6 +61,7 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 						: null,
 			}
 		})
+		console.log(presetsToInsert)
 		await this.upsert(presetsToInsert, ['id'])
 	},
 })
