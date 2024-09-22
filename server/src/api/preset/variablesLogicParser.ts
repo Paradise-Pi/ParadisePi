@@ -8,6 +8,14 @@ export interface VariableLogic {
 	}>
 }
 export const variablesLogicParser = (variableLogic: VariableLogic, response: string) => {
+	if (
+		variableLogic === undefined ||
+		variableLogic == null ||
+		!Object.prototype.hasOwnProperty.call(variableLogic, 'rules') ||
+		variableLogic.rules === undefined ||
+		variableLogic.rules.length === 0
+	)
+		return Promise.resolve()
 	return Promise.all(
 		variableLogic.rules.map(value => {
 			return VariableRepository.getOne(parseInt(value.variable)).then(variable => {
@@ -24,6 +32,24 @@ export const variablesLogicParser = (variableLogic: VariableLogic, response: str
 					}
 				} else if (value.logic === 'notequal') {
 					if (response != value.match && variable.value != value.value) {
+						return VariableRepository.setOne(variable.id, value.value)
+							.then(() => createDatabaseObject('setting a variable'))
+							.then((response: Database) => {
+								sendDatabaseObject(response)
+								return Promise.resolve()
+							})
+					}
+				} else if (value.logic === 'contains') {
+					if (response.includes(value.match) && variable.value != value.value) {
+						return VariableRepository.setOne(variable.id, value.value)
+							.then(() => createDatabaseObject('setting a variable'))
+							.then((response: Database) => {
+								sendDatabaseObject(response)
+								return Promise.resolve()
+							})
+					}
+				} else if (value.logic === 'notcontains') {
+					if (!response.includes(value.match) && variable.value != value.value) {
 						return VariableRepository.setOne(variable.id, value.value)
 							.then(() => createDatabaseObject('setting a variable'))
 							.then((response: Database) => {

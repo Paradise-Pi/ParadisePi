@@ -12,6 +12,7 @@ import { createAndSendImagesObject } from '../api/images'
 import { httpMethods, routeRequest } from '../api/router'
 import dataSource from '../database/dataSource'
 import { Preset } from '../database/model/Preset'
+import { Variable } from '../database/model/Variable'
 import { ConfigRepository } from '../database/repository/config'
 import { PresetRepository } from '../database/repository/preset'
 import logger from '../logger'
@@ -210,11 +211,48 @@ export class WebServer {
 					} else {
 						PresetRepository.findOneOrFail({ where: { id: presetId } })
 							.then((value: Preset) => {
+								// Check if they have provided a get parameter to request a variable in response, and if so, return the value
+								let returnVariable = null
+								let returnResponse = false
+								try {
+									const url = new URL(req.url, `http://${req.headers.host}`)
+									if (
+										url.searchParams.has('returnVariable') &&
+										url.searchParams.get('returnVariable') != null &&
+										url.searchParams.get('returnVariable') != ''
+									) {
+										returnVariable = url.searchParams.get('returnVariable')
+									} else if (
+										url.searchParams.has('returnResponse') &&
+										url.searchParams.get('returnResponse') != null
+									) {
+										// This isn't actually supported below, but it's here for future use
+										returnResponse = url.searchParams.get('returnResponse') === 'true'
+									}
+								} catch (e) {
+									logger.debug('Error parsing URL for response', e)
+								}
+
 								if (value.httpTriggerEnabled) {
 									routeRequest('/presets/recall/' + presetId, 'GET', {})
 										.then(() => {
+											if (returnVariable !== null) {
+												return dataSource
+													.getRepository(Variable)
+													.findOne({
+														where: {
+															name: returnVariable,
+														},
+													})
+													.then(variable => {
+														if (!variable) return Promise.resolve('Variable not found')
+														else return Promise.resolve(variable.value)
+													})
+											} else return Promise.resolve('Preset triggered')
+										})
+										.then(response => {
 											res.writeHead(200, { 'Content-Type': 'text/html' })
-											res.write('Preset triggered')
+											res.write(response)
 											logger.log('history', 'External HTTP client triggered preset', {
 												presetId: value.id,
 												presetName: value.name,

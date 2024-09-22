@@ -551,7 +551,7 @@ export const PresetsConfigurationPage = () => {
 																	universe: 1,
 																	fadeTime: 0,
 																	data: null,
-																	variableLogic: null,
+																	variableLogic: '{"rules":[]}',
 																	displayVariableLogic:
 																		'{"showHide":"show","rules":[]}',
 																	timeClockTriggers: null,

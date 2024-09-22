@@ -77,6 +77,8 @@ export const VariablesLogicEditor = (props: InputProps) => {
 						data={[
 							{ value: 'equal', label: 'If response is equal to' },
 							{ value: 'notequal', label: 'If response is not equal to' },
+							{ value: 'contains', label: 'If response contains' },
+							{ value: 'notcontains', label: 'If response does not contain' },
 							{ value: 'isnull', label: 'If response is blank' },
 							{ value: 'isnotnull', label: 'If response is not blank' },
 						]}
@@ -84,7 +86,7 @@ export const VariablesLogicEditor = (props: InputProps) => {
 					{['isnull', 'isnotnull'].includes(form.values.rules[index].logic) ? (
 						<input type="hidden" {...form.getInputProps(`rules.${index}.match`)} />
 					) : (
-						<TextInput {...form.getInputProps(`rules.${index}.match`)} placeholder="to" />
+						<TextInput {...form.getInputProps(`rules.${index}.match`)} placeholder="this string" />
 					)}
 					<Select
 						placeholder="Then set variable"
