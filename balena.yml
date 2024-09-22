@@ -32,4 +32,4 @@ data:
         - intel-nuc
         - generic-amd64
         - generic-aarch64
-version: 3.4.2
+version: 3.4.3
