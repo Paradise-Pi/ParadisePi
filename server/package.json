@@ -1,7 +1,7 @@
 {
 	"name": "paradisepi-server",
 	"private": false,
-	"version": "3.4.1",
+	"version": "3.4.2",
 	"description": "Raspberry Pi based sACN lighting/OSC sound facility control panel",
 	"main": "dist/server/src/index.js",
 	"types": "dist/server/src/index.d.ts",

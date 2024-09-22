@@ -22,122 +22,133 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 	logger.silly('Preset router has a request', { path, method, payload })
 	return new Promise((resolve, reject) => {
 		if (method === 'GET' && (path[0] === 'recall' || path[0] === 'recall-user')) {
-			return PresetRepository.findOneOrFail({ where: { id: parseInt(path[1]) } }).then((value: Preset) => {
-				logger.log(
-					'history',
-					`${value.name} preset recalled ${path[0] === 'recall-user' ? 'by user' : 'internally'}`,
-					{
-						historyType: path[0] === 'recall-user' ? 'preset' : 'preset-internal',
-						presetId: value.id,
-						presetName: value.name,
-						presetType: value.type,
-					}
-				)
-				if (value.type === 'e131' && value.data !== null && typeof e131 !== 'undefined') {
-					e131.update(
-						parseInt(value.universe ? value.universe : '1'),
-						e131.convertObjectToChannelData(value.data),
-						value.fadeTime * 1000
+			return PresetRepository.findOneOrFail({ where: { id: parseInt(path[1]) } })
+				.then((value: Preset) => {
+					logger.log(
+						'history',
+						`${value.name} preset recalled ${path[0] === 'recall-user' ? 'by user' : 'internally'}`,
+						{
+							historyType: path[0] === 'recall-user' ? 'preset' : 'preset-internal',
+							presetId: value.id,
+							presetName: value.name,
+							presetType: value.type,
+						}
 					)
-					resolve({})
-				} else if (value.type === 'osc' && value.data !== null && typeof osc !== 'undefined') {
-					Object.entries(value.data).forEach(presetData => {
-						osc.sendPreset(presetData[1]) //we want the object part of each entry
-					})
-					resolve({})
-				} else if (value.type === 'http' && value.data !== null && value.data.url !== null) {
-					let deviceHost = ''
-					// Evaluate if there's a device involved that we need to prefix
-					if (value.device !== null && value.device.id !== null) {
-						if (value.device.ip !== null && value.device.ip !== '')
-							deviceHost = `http://${value.device.ip}:${value.device.port}`
-						else if (value.device.endpoint !== null && value.device.endpoint !== '')
-							deviceHost = value.device.endpoint
-					}
-					// Make the HTTP request - DON'T FORGET THIS IS ALSO DUPLICATED BELOW
-					axios({
-						method: value.data.method ?? 'GET',
-						url: `${deviceHost}${value.data.url ?? ''}`,
-						data: value.data.data ? parseJSON(value.data.data) : null,
-						headers: value.data.headers ? parseJSON(value.data.headers) : null,
-						timeout: 60000, // 60 seconds
-						transformResponse: x => x, // Prevent axios from trying to parse the response into an object
-					})
-						.catch(err => {
-							logger.warn('Preset HTTP request failed', { err })
+					if (value.type === 'e131' && value.data !== null && typeof e131 !== 'undefined') {
+						e131.update(
+							parseInt(value.universe ? value.universe : '1'),
+							e131.convertObjectToChannelData(value.data),
+							value.fadeTime * 1000
+						)
+						resolve({})
+					} else if (value.type === 'osc' && value.data !== null && typeof osc !== 'undefined') {
+						Object.entries(value.data).forEach(presetData => {
+							osc.sendPreset(presetData[1]) //we want the object part of each entry
 						})
-						.then(response => {
-							logger.debug('Preset HTTP request succeeded', response ? response.data : null)
-							if (response)
-								return variablesLogicParser(value.variableLogic as VariableLogic, response.data).then(
-									() => Promise.resolve()
-								)
-							else return Promise.resolve()
+						resolve({})
+					} else if (value.type === 'http' && value.data !== null && value.data.url !== null) {
+						let deviceHost = ''
+						// Evaluate if there's a device involved that we need to prefix
+						if (value.device !== null && value.device.id !== null) {
+							if (value.device.ip !== null && value.device.ip !== '')
+								deviceHost = `http://${value.device.ip}:${value.device.port}`
+							else if (value.device.endpoint !== null && value.device.endpoint !== '')
+								deviceHost = value.device.endpoint
+						}
+						// Make the HTTP request - DON'T FORGET THIS IS ALSO DUPLICATED BELOW
+						axios({
+							method: value.data.method ?? 'GET',
+							url: `${deviceHost}${value.data.url ?? ''}`,
+							data: value.data.data ? parseJSON(value.data.data) : null,
+							headers: value.data.headers ? parseJSON(value.data.headers) : null,
+							timeout: 60000, // 60 seconds
+							transformResponse: x => x, // Prevent axios from trying to parse the response into an object
 						})
-						.then(() => resolve({}))
-				} else if (value.type === 'macro' && value.data !== null) {
-					let linkStep: string = null
-					const configUpdate: Array<{ key: string; value: string }> = []
-					return Promise.all(
-						value.data.map((step: { type: string; value: string; valueTwo: string; key: string }) => {
-							if (step.type === 'preset' && parseInt(step.value) !== value.id && step.value !== null) {
-								return presetRouter(['recall', step.value], 'GET', {}) // Trigger the preset in the macro
-							} else if (step.type === 'link' && step.value !== null) {
-								linkStep = step.value
-								return Promise.resolve()
-							} else if (step.type === 'folder' && step.value !== null) {
-								linkStep = `/controlPanel/folder/${step.value}`
-								return Promise.resolve()
-							} else if (step.type === 'configuration' && step.value !== null) {
-								if (step.value === 'CONTROLPANEL-LOCKED') {
-									configUpdate.push({ key: 'deviceLock', value: 'LOCKED' })
+							.catch(err => {
+								logger.warn('Preset HTTP request failed', { err })
+							})
+							.then(response => {
+								logger.debug('Preset HTTP request succeeded', response ? response.data : null)
+								if (response)
+									return variablesLogicParser(
+										value.variableLogic as VariableLogic,
+										response.data
+									).then(() => Promise.resolve())
+								else return Promise.resolve()
+							})
+							.then(() => resolve({}))
+					} else if (value.type === 'macro' && value.data !== null) {
+						let linkStep: string = null
+						const configUpdate: Array<{ key: string; value: string }> = []
+						return Promise.all(
+							value.data.map((step: { type: string; value: string; valueTwo: string; key: string }) => {
+								if (
+									step.type === 'preset' &&
+									parseInt(step.value) !== value.id &&
+									step.value !== null
+								) {
+									return presetRouter(['recall', step.value], 'GET', {}) // Trigger the preset in the macro
+								} else if (step.type === 'link' && step.value !== null) {
+									linkStep = step.value
 									return Promise.resolve()
-								} else if (step.value === 'CONTROLPANEL-UNLOCKED') {
-									configUpdate.push({ key: 'deviceLock', value: 'UNLOCKED' })
+								} else if (step.type === 'folder' && step.value !== null) {
+									linkStep = `/controlPanel/folder/${step.value}`
 									return Promise.resolve()
+								} else if (step.type === 'configuration' && step.value !== null) {
+									if (step.value === 'CONTROLPANEL-LOCKED') {
+										configUpdate.push({ key: 'deviceLock', value: 'LOCKED' })
+										return Promise.resolve()
+									} else if (step.value === 'CONTROLPANEL-UNLOCKED') {
+										configUpdate.push({ key: 'deviceLock', value: 'UNLOCKED' })
+										return Promise.resolve()
+									}
+								} else if (step.type === 'variable' && step.value !== null && step.valueTwo !== null) {
+									logger.debug('Setting variable from macro preset', {
+										key: step.value,
+										value: step.valueTwo,
+									})
+									return VariableRepository.setOne(parseInt(step.value), step.valueTwo)
 								}
-							} else if (step.type === 'variable' && step.value !== null && step.valueTwo !== null) {
-								logger.debug('Setting variable from macro preset', {
-									key: step.value,
-									value: step.valueTwo,
-								})
-								return VariableRepository.setOne(parseInt(step.value), step.valueTwo)
-							}
-						})
-					)
-						.then(() => ConfigRepository.save(configUpdate))
-						.then(() => {
-							logger.debug('Macro preset completed')
-							return createDatabaseObject('change of config from macro, or change of variables')
-						})
-						.then((response: Database) => {
-							sendDatabaseObject(response)
-							resolve(linkStep !== null ? { redirect: linkStep } : {})
-						})
-				} else if (
-					value.type === 'tcp' &&
-					value.data !== null &&
-					value.device !== null &&
-					value.device.id !== null &&
-					value.device.ip !== null &&
-					value.device.ip !== ''
-				) {
-					tcpRequest(value.device.ip, value.device.port, value.data.message, value.data.timeout ?? 60)
-						.catch(err => {
-							logger.warn('Preset TCP request failed', err)
-							resolve({})
-						})
-						.then(response => {
-							logger.debug('Preset TCP request succeeded', response ? response.data : null)
-							if (response)
-								return variablesLogicParser(value.variableLogic as VariableLogic, response.data).then(
-									() => Promise.resolve()
-								)
-							else return Promise.resolve()
-						})
-						.then(() => resolve({}))
-				} else resolve({})
-			})
+							})
+						)
+							.then(() => ConfigRepository.save(configUpdate))
+							.then(() => {
+								logger.debug('Macro preset completed')
+								return createDatabaseObject('change of config from macro, or change of variables')
+							})
+							.then((response: Database) => {
+								sendDatabaseObject(response)
+								resolve(linkStep !== null ? { redirect: linkStep } : {})
+							})
+					} else if (
+						value.type === 'tcp' &&
+						value.data !== null &&
+						value.device !== null &&
+						value.device.id !== null &&
+						value.device.ip !== null &&
+						value.device.ip !== ''
+					) {
+						tcpRequest(value.device.ip, value.device.port, value.data.message, value.data.timeout ?? 60)
+							.catch(err => {
+								logger.warn('Preset TCP request failed', err)
+								resolve({})
+							})
+							.then(response => {
+								logger.debug('Preset TCP request succeeded', response ? response.data : null)
+								if (response)
+									return variablesLogicParser(
+										value.variableLogic as VariableLogic,
+										response.data
+									).then(() => Promise.resolve())
+								else return Promise.resolve()
+							})
+							.then(() => resolve({}))
+					} else resolve({})
+				})
+				.catch(err => {
+					logger.warn('Preset recall failed - preset not found', err)
+					resolve({})
+				})
 		}
 		if (method === 'GET' && path[0] === 'test') {
 			if (path[1] === 'http' && payload.data !== null && payload.data.url !== null) {
