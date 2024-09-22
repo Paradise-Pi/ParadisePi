@@ -61,6 +61,7 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 						data: value.data.data ? parseJSON(value.data.data) : null,
 						headers: value.data.headers ? parseJSON(value.data.headers) : null,
 						timeout: 60000, // 60 seconds
+						transformResponse: x => x, // Prevent axios from trying to parse the response into an object
 					})
 						.catch(err => {
 							logger.warn('Preset HTTP request failed', { err })
@@ -68,7 +69,10 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 						.then(response => {
 							logger.debug('Preset HTTP request succeeded', response ? response.data : null)
 							if (response)
-								return variablesLogicParser(value.variableLogic as VariableLogic, response.data)
+								return variablesLogicParser(value.variableLogic as VariableLogic, response.data).then(
+									() => Promise.resolve()
+								)
+							else return Promise.resolve()
 						})
 						.then(() => resolve({}))
 				} else if (value.type === 'macro' && value.data !== null) {
@@ -126,7 +130,10 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 						.then(response => {
 							logger.debug('Preset TCP request succeeded', response ? response.data : null)
 							if (response)
-								return variablesLogicParser(value.variableLogic as VariableLogic, response.data)
+								return variablesLogicParser(value.variableLogic as VariableLogic, response.data).then(
+									() => Promise.resolve()
+								)
+							else return Promise.resolve()
 						})
 						.then(() => resolve({}))
 				} else resolve({})
@@ -134,7 +141,7 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 		}
 		if (method === 'GET' && path[0] === 'test') {
 			if (path[1] === 'http' && payload.data !== null && payload.data.url !== null) {
-				// Make the HTTP request
+				// Make the test HTTP request - DONT FORGET DUPLICATED ABOVE
 				logger.debug('Testing HTTP request', { payload })
 				axios({
 					method: payload.data.method ?? 'GET',
@@ -142,6 +149,7 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 					data: payload.data.data ? parseJSON(payload.data.data) : null,
 					headers: payload.data.headers ? parseJSON(payload.data.headers) : null,
 					timeout: 60000, // 60 seconds
+					transformResponse: x => x, // Prevent axios from trying to parse the response into an object
 				})
 					.catch(err => {
 						logger.warn('Preset HTTP request failed', { err })

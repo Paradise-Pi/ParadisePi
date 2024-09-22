@@ -346,7 +346,7 @@ export class E131 {
 					data: JSON.parse(JSON.stringify(finishedUniverseData)),
 					id: null,
 					fadeTime: 0,
-					variableLogic: null,
+					variableLogic: JSON.parse(JSON.stringify({ rules: [] })),
 					displayVariableLogic: JSON.parse(JSON.stringify({ showHide: 'show', rules: [] })),
 					timeClockTriggers: null,
 					device: null,
