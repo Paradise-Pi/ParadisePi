@@ -212,7 +212,7 @@ export class WebServer {
 						PresetRepository.findOneOrFail({ where: { id: presetId } })
 							.then((value: Preset) => {
 								// Check if they have provided a get parameter to request a variable in response, and if so, return the value
-								let returnVariable = null
+								let returnVariable: string = null
 								let returnResponse = false
 								try {
 									const url = new URL(req.url, `http://${req.headers.host}`)
