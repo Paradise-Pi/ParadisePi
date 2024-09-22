@@ -61,7 +61,6 @@ export const PresetRepository = dataSource.getRepository(Preset).extend({
 						: null,
 			}
 		})
-		console.log(presetsToInsert)
 		await this.upsert(presetsToInsert, ['id'])
 	},
 })
