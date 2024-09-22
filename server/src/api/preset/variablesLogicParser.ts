@@ -21,8 +21,8 @@ export const variablesLogicParser = (variableLogic: VariableLogic, response: str
 			return VariableRepository.getOne(parseInt(value.variable)).then(variable => {
 				logger.debug('Evaluating variable logic', { variable, value, response })
 				if (variable === null) return Promise.resolve()
-				if (value.logic === 'equal') {
-					if (response == value.match && variable.value != value.value) {
+				else if (value.logic === 'error' && errorEncountered) {
+					if (variable.value != value.value) {
 						return VariableRepository.setOne(variable.id, value.value)
 							.then(() => createDatabaseObject('setting a variable'))
 							.then((response: Database) => {
@@ -30,60 +30,62 @@ export const variablesLogicParser = (variableLogic: VariableLogic, response: str
 								return Promise.resolve()
 							})
 					}
-				} else if (value.logic === 'notequal') {
-					if (response != value.match && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'contains') {
-					if (response.includes(value.match) && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'notcontains') {
-					if (!response.includes(value.match) && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'isnull') {
-					if (response == '' && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'isnotnull') {
-					if (response != '' && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'error') {
-					if (errorEncountered && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
+				} else if (!errorEncountered) {
+					if (value.logic === 'equal') {
+						if (response == value.match && variable.value != value.value) {
+							return VariableRepository.setOne(variable.id, value.value)
+								.then(() => createDatabaseObject('setting a variable'))
+								.then((response: Database) => {
+									sendDatabaseObject(response)
+									return Promise.resolve()
+								})
+						}
+					} else if (value.logic === 'notequal') {
+						if (response != value.match && variable.value != value.value) {
+							return VariableRepository.setOne(variable.id, value.value)
+								.then(() => createDatabaseObject('setting a variable'))
+								.then((response: Database) => {
+									sendDatabaseObject(response)
+									return Promise.resolve()
+								})
+						}
+					} else if (value.logic === 'contains') {
+						if (response.includes(value.match) && variable.value != value.value) {
+							return VariableRepository.setOne(variable.id, value.value)
+								.then(() => createDatabaseObject('setting a variable'))
+								.then((response: Database) => {
+									sendDatabaseObject(response)
+									return Promise.resolve()
+								})
+						}
+					} else if (value.logic === 'notcontains') {
+						if (!response.includes(value.match) && variable.value != value.value) {
+							return VariableRepository.setOne(variable.id, value.value)
+								.then(() => createDatabaseObject('setting a variable'))
+								.then((response: Database) => {
+									sendDatabaseObject(response)
+									return Promise.resolve()
+								})
+						}
+					} else if (value.logic === 'isnull') {
+						if (response == '' && variable.value != value.value) {
+							return VariableRepository.setOne(variable.id, value.value)
+								.then(() => createDatabaseObject('setting a variable'))
+								.then((response: Database) => {
+									sendDatabaseObject(response)
+									return Promise.resolve()
+								})
+						}
+					} else if (value.logic === 'isnotnull') {
+						if (response != '' && variable.value != value.value) {
+							return VariableRepository.setOne(variable.id, value.value)
+								.then(() => createDatabaseObject('setting a variable'))
+								.then((response: Database) => {
+									sendDatabaseObject(response)
+									return Promise.resolve()
+								})
+						}
+					} else return Promise.resolve()
 				} else return Promise.resolve()
 			})
 		})
