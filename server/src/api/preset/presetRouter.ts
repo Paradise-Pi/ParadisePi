@@ -66,15 +66,22 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 						})
 							.catch(err => {
 								logger.warn('Preset HTTP request failed', { err })
+								return variablesLogicParser(value.variableLogic as VariableLogic, null, true).then(() =>
+									Promise.resolve()
+								)
 							})
 							.then(response => {
 								logger.debug('Preset HTTP request succeeded', response ? response.data : null)
 								if (response)
 									return variablesLogicParser(
 										value.variableLogic as VariableLogic,
-										response.data
+										response.data,
+										false
 									).then(() => Promise.resolve())
-								else return Promise.resolve()
+								else
+									return variablesLogicParser(value.variableLogic as VariableLogic, null, true).then(
+										() => Promise.resolve()
+									)
 							})
 							.then(() => resolve({}))
 					} else if (value.type === 'macro' && value.data !== null) {
@@ -131,16 +138,22 @@ export const presetRouter = (path: Array<string>, method: httpMethods, payload: 
 						tcpRequest(value.device.ip, value.device.port, value.data.message, value.data.timeout ?? 60)
 							.catch(err => {
 								logger.warn('Preset TCP request failed', err)
-								resolve({})
+								return variablesLogicParser(value.variableLogic as VariableLogic, null, true).then(() =>
+									Promise.resolve()
+								)
 							})
 							.then(response => {
 								logger.debug('Preset TCP request succeeded', response ? response.data : null)
 								if (response)
 									return variablesLogicParser(
 										value.variableLogic as VariableLogic,
-										response.data
+										response.data,
+										false
 									).then(() => Promise.resolve())
-								else return Promise.resolve()
+								else
+									return variablesLogicParser(value.variableLogic as VariableLogic, null, true).then(
+										() => Promise.resolve()
+									)
 							})
 							.then(() => resolve({}))
 					} else resolve({})

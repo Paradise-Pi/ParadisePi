@@ -7,7 +7,7 @@ export interface VariableLogic {
 		[key: string]: any
 	}>
 }
-export const variablesLogicParser = (variableLogic: VariableLogic, response: string) => {
+export const variablesLogicParser = (variableLogic: VariableLogic, response: string, errorEncountered: boolean) => {
 	if (
 		variableLogic === undefined ||
 		variableLogic == null ||
@@ -18,65 +18,81 @@ export const variablesLogicParser = (variableLogic: VariableLogic, response: str
 		return Promise.resolve()
 	return Promise.all(
 		variableLogic.rules.map(value => {
-			return VariableRepository.getOne(parseInt(value.variable)).then(variable => {
-				logger.debug('Evaluating variable logic', { variable, value, response })
-				if (variable === null) return Promise.resolve()
-				if (value.logic === 'equal') {
-					if (response == value.match && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'notequal') {
-					if (response != value.match && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'contains') {
-					if (response.includes(value.match) && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'notcontains') {
-					if (!response.includes(value.match) && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'isnull') {
-					if (response == '' && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else if (value.logic === 'isnotnull') {
-					if (response != '' && variable.value != value.value) {
-						return VariableRepository.setOne(variable.id, value.value)
-							.then(() => createDatabaseObject('setting a variable'))
-							.then((response: Database) => {
-								sendDatabaseObject(response)
-								return Promise.resolve()
-							})
-					}
-				} else return Promise.resolve()
-			})
+			return VariableRepository.getOne(parseInt(value.variable))
+				.then(variable => {
+					logger.debug('Evaluating variable logic', { variable, value, response })
+					if (variable === null) return Promise.resolve()
+					else if (value.logic === 'error' && errorEncountered) {
+						if (variable.value != value.value) {
+							return VariableRepository.setOne(variable.id, value.value)
+								.then(() => createDatabaseObject('setting a variable'))
+								.then((response: Database) => {
+									sendDatabaseObject(response)
+									return Promise.resolve()
+								})
+						}
+					} else if (!errorEncountered) {
+						if (value.logic === 'equal') {
+							if (response == value.match && variable.value != value.value) {
+								return VariableRepository.setOne(variable.id, value.value)
+									.then(() => createDatabaseObject('setting a variable'))
+									.then((response: Database) => {
+										sendDatabaseObject(response)
+										return Promise.resolve()
+									})
+							}
+						} else if (value.logic === 'notequal') {
+							if (response != value.match && variable.value != value.value) {
+								return VariableRepository.setOne(variable.id, value.value)
+									.then(() => createDatabaseObject('setting a variable'))
+									.then((response: Database) => {
+										sendDatabaseObject(response)
+										return Promise.resolve()
+									})
+							}
+						} else if (value.logic === 'contains') {
+							if (response.includes(value.match) && variable.value != value.value) {
+								return VariableRepository.setOne(variable.id, value.value)
+									.then(() => createDatabaseObject('setting a variable'))
+									.then((response: Database) => {
+										sendDatabaseObject(response)
+										return Promise.resolve()
+									})
+							}
+						} else if (value.logic === 'notcontains') {
+							if (!response.includes(value.match) && variable.value != value.value) {
+								return VariableRepository.setOne(variable.id, value.value)
+									.then(() => createDatabaseObject('setting a variable'))
+									.then((response: Database) => {
+										sendDatabaseObject(response)
+										return Promise.resolve()
+									})
+							}
+						} else if (value.logic === 'isnull') {
+							if (response == '' && variable.value != value.value) {
+								return VariableRepository.setOne(variable.id, value.value)
+									.then(() => createDatabaseObject('setting a variable'))
+									.then((response: Database) => {
+										sendDatabaseObject(response)
+										return Promise.resolve()
+									})
+							}
+						} else if (value.logic === 'isnotnull') {
+							if (response != '' && variable.value != value.value) {
+								return VariableRepository.setOne(variable.id, value.value)
+									.then(() => createDatabaseObject('setting a variable'))
+									.then((response: Database) => {
+										sendDatabaseObject(response)
+										return Promise.resolve()
+									})
+							}
+						} else return Promise.resolve()
+					} else return Promise.resolve()
+				})
+				.catch(error => {
+					logger.error('Error making database call whilst evaluating variable logic', { error })
+					return Promise.resolve()
+				})
 		})
 	)
 }
