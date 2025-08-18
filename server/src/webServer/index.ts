@@ -127,9 +127,9 @@ export class WebServer {
 				// Allow  downloading of history logging feature
 				let historyFileRequested = '/history.log'
 				try {
-					const parts = req.url.split('/')
-					if (parts.length == 2) {
-						const maybeNumber = parseInt(parts[1], 10)
+					const parts = req.url.split('/') // In 3 parts like [ '', 'history-logs', '5' ]
+					if (parts.length == 3) {
+						const maybeNumber = parseInt(parts[2], 10)
 						if (!isNaN(maybeNumber)) {
 							historyFileRequested = `/history${maybeNumber}.log.gz`
 							if (maybeNumber > 11) historyFileRequested = `/history${11}.log.gz` // Only 11 files are stored
@@ -273,7 +273,7 @@ export class WebServer {
 												presetId: value.id,
 												presetName: value.name,
 												presetType: value.type,
-												type: 'http-trigger-preset',
+												historyType: 'http-trigger-preset',
 											})
 											res.end()
 										})
