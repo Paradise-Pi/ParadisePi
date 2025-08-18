@@ -273,7 +273,7 @@ export class WebServer {
 												presetId: value.id,
 												presetName: value.name,
 												presetType: value.type,
-												type: 'http-trigger-preset',
+												historyType: 'http-trigger-preset',
 											})
 											res.end()
 										})
