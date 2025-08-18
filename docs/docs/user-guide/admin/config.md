@@ -91,6 +91,8 @@ The history feature allows you to track user input. This is useful for analysing
 
 It can also be used to track how often presets are being recalled.
 
+An [analysis tool is provided on this website](/historyParser) to help you analyse the history files.
+
 ## Diagnostics
 
 The diagnostics page is used to track the logs Paradise is generating, which can be useful for debugging purposes.
