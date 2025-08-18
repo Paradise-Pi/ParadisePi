@@ -1,5 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import Link from '@docusaurus/Link'
+import Admonition from '@theme/Admonition'
 import Layout from '@theme/Layout'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
@@ -54,6 +55,7 @@ const Page = (): JSX.Element => {
 	const [search, setSearch] = useState<string>('')
 	const [selectedTypes, setSelectedTypes] = useState<string[]>([])
 	const [displayCount, setDisplayCount] = useState<number>(200)
+	const [fileName, setFileName] = useState<string>('')
 
 	const typeLabelMap = useMemo(() => {
 		const m = new Map<string, string>()
@@ -70,6 +72,7 @@ const Page = (): JSX.Element => {
 		setDisplayCount(200)
 		const file = e.target.files?.[0]
 		if (!file) return
+		setFileName(file.name)
 		if (file.size > MAX_BYTES) {
 			setError('File is larger than 25MB. Please choose a smaller file.')
 			return
@@ -186,27 +189,33 @@ const Page = (): JSX.Element => {
 					understanding the history recording feature. Learn more about this feature{' '}
 					<Link to="/docs/user-guide/admin/config#history-recording">in the documentation</Link>
 				</p>
-				<p>
+				<Admonition type="note" title="Security">
 					All parsing and analysis is performed entirely in your browser on this device. Your history files
 					never leave your computer, are never uploaded, and nothing is stored or transmitted anywhere.
-				</p>
+				</Admonition>
 				<section style={{ marginBottom: 16 }}>
 					<div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
 						<input
+							id="historyFileInput"
 							ref={fileInputRef}
 							type="file"
 							accept=".json,application/json,.txt"
 							onChange={onFileChange}
-							style={{ padding: '6px 10px' }}
+							style={{ display: 'none' }}
 						/>
+						<label htmlFor="historyFileInput" className="button button--primary button--sm">
+							Choose file
+						</label>
+						<span style={{ color: '#666' }}>{fileName || 'No file chosen'}</span>
 						<button
 							onClick={() => {
 								if (fileInputRef.current) fileInputRef.current.value = ''
 								setAllRows([])
 								setLoadInfo('')
 								setError('')
+								setFileName('')
 							}}
-							style={{ padding: '6px 10px' }}
+							className="button button--secondary button--sm"
 						>
 							Clear File
 						</button>
@@ -227,7 +236,7 @@ const Page = (): JSX.Element => {
 									onChange={e => setSearch(e.target.value)}
 									style={{ padding: 6, minWidth: 260 }}
 								/>
-								<button onClick={clearFilters} style={{ padding: '6px 10px' }}>
+								<button onClick={clearFilters} className="button button--secondary button--sm">
 									Clear Filters
 								</button>
 								<span style={{ color: '#666' }}>
@@ -286,7 +295,7 @@ const Page = (): JSX.Element => {
 													padding: '8px 6px',
 												}}
 											>
-												Timestamp
+												Timestamp (normally UTC)
 											</th>
 											<th
 												style={{
@@ -347,7 +356,7 @@ const Page = (): JSX.Element => {
 								<div style={{ marginTop: 12 }}>
 									<button
 										onClick={() => setDisplayCount(c => c + 200)}
-										style={{ padding: '8px 12px' }}
+										className="button button--primary button--sm"
 									>
 										Show more
 									</button>
