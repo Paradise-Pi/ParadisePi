@@ -7,7 +7,7 @@
 			"request": "launch",
 			"cwd": "${workspaceRoot}/client",
 			"runtimeExecutable": "npm",
-			"runtimeArgs": ["run", "dev"],
+			"runtimeArgs": ["run", "dev", "--", "--host=127.0.0.1"],
 			"preLaunchTask": "NPM Install - Client"
 		},
 		{
@@ -27,12 +27,28 @@
 			"preLaunchTask": "NPM Install - Server"
 		},
 		{
+			"name": "gENERATE MIGRATIONr",
+			"type": "node",
+			"request": "launch",
+			"cwd": "${workspaceRoot}/server",
+			"env": {
+				"NODE_ENV": "development",
+				"PARADISE_LOG_PATH": "${workspaceRoot}/serverDevLogs",
+				"PARADISE_IMAGE_PATH": "${workspaceRoot}/serverDevImages",
+				"PARADISE_DATABASE_PATH": "${workspaceRoot}/paradise-development-database.sqlite"
+			},
+			"outputCapture": "std",
+			"runtimeExecutable": "npm",
+			"runtimeArgs": ["run", "typeorm", "migration:generate", "AddDevices"],
+			"preLaunchTask": "NPM Install - Server"
+		},
+		{
 			"name": "Run & Debug Docs",
 			"type": "node",
 			"request": "launch",
 			"cwd": "${workspaceRoot}/docs",
 			"runtimeExecutable": "npm",
-			"runtimeArgs": ["run", "start"],
+			"runtimeArgs": ["run", "start", "--", "--host=127.0.0.1"],
 			"preLaunchTask": "NPM Install - Docs"
 		}
 	]
