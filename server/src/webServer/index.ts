@@ -123,21 +123,37 @@ export class WebServer {
 				})
 				res.write(fileRead)
 				res.end()
-			} else if (req.url == '/history-logs') {
-				// Allow  downloading of logs
+			} else if (req.url.startsWith('/history-logs')) {
+				// Allow  downloading of history logging feature
+				let historyFileRequested = '/history.log'
+				try {
+					const parts = req.url.split('/')
+					if (parts.length == 2) {
+						const maybeNumber = parseInt(parts[1], 10)
+						if (!isNaN(maybeNumber)) {
+							historyFileRequested = `/history${maybeNumber}.log.gz`
+							if (maybeNumber > 11) historyFileRequested = `/history${11}.log.gz` // Only 11 files are stored
+						}
+					}
+				} catch (e) {
+					logger.debug('Error parsing history logs URL', e)
+				}
+
 				const filePath = process.env.PARADISE_LOG_PATH
-					? path.join(process.env.PARADISE_LOG_PATH, '/history.log')
-					: path.join(__dirname, '../../../../logs/history.log')
+					? path.join(process.env.PARADISE_LOG_PATH, historyFileRequested)
+					: path.join(__dirname, '../../../../logs', historyFileRequested)
 				if (fs.existsSync(filePath) === false) {
 					res.writeHead(404, { 'Content-Type': 'text/html' })
-					res.write('Error - history mode not enabled or no history logs found')
+					res.write('Error - history mode not enabled or requested history log file not found')
 					res.end()
 				} else {
 					const fileStat = fs.statSync(filePath)
 					const fileRead = fs.readFileSync(filePath)
 					res.writeHead(200, {
 						'Content-Type': 'application/octet-stream',
-						'Content-Disposition': `attachment;filename="paradise-history-logs-export-${Date.now()}.txt"`,
+						'Content-Disposition': `attachment;filename="paradise-history-logs-export-${Date.now()}.${
+							historyFileRequested.endsWith('.gz') ? 'gz' : 'txt'
+						}"`,
 						'Content-Length': fileStat.size,
 					})
 					res.write(fileRead)
