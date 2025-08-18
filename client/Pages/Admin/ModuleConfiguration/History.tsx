@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Loader, LoadingOverlay, MultiSelect } from '@mantine/core'
+import { Alert, Box, Button, Checkbox, Loader, LoadingOverlay, Modal, MultiSelect, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { FaSave } from '@react-icons/all-files/fa/FaSave'
 import React, { useEffect, useState } from 'react'
@@ -6,6 +6,7 @@ import { useAppSelector } from '../../../apis/redux/mainStore'
 import { ApiCall } from '../../../apis/wrapper'
 
 export const HistoryConfigurationPage = () => {
+	const [showModal, setShowModal] = useState(false)
 	const [loadingOverlayVisible, setLoadingOverlayVisible] = useState(false)
 	const historyConfig = useAppSelector(state => (state.database ? state.database.config.history : false))
 	const form = useForm({
@@ -37,17 +38,45 @@ export const HistoryConfigurationPage = () => {
 		})
 	}
 	if (!historyConfig) return <Loader variant="bars" />
+
 	return (
 		<Box sx={{ maxWidth: 400 }} mx="auto">
 			<LoadingOverlay visible={loadingOverlayVisible} transitionDuration={0} />
-			<a
-				href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/history-logs`}
-				
-			>
+			<Text>
+				The history recording system allows you to monitor the usage of ParadisePi. A tool is available on the
+				ParadisePi website to support analysis of recorded files.
+			</Text>
+			<a href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/history-logs`}>
 				<Button variant="default" color="dark" my="xs">
 					Download History
 				</Button>
 			</a>
+			<Button variant="default" color="dark" size="sm" mb="xs" onClick={() => setShowModal(true)}>
+				Advanced History Download Options
+			</Button>
+			<Modal onClose={() => setShowModal(false)} opened={showModal} title="Upload new Database">
+				<a
+					href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/history-logs`}
+				>
+					<Button variant="default" color="dark" m="xs">
+						Download History File 1 - most recent events
+					</Button>
+				</a>
+				<Alert title="Warning" color="gray" m="sm">
+					The following files may not exist, depending on how long your system has been running. They will
+					return an error message if they do not exist, but this does not indicate a problem with the system.
+				</Alert>
+				{[...Array(11)].map((_, i) => (
+					<a
+						key={i}
+						href={`http://${sessionStorage.getItem('paradiseServerAddress') || window.location.host}/history-logs/${i + 1}`}
+					>
+						<Button variant="default" color="dark" m="xs">
+							Download Archive File {i + 2}
+						</Button>
+					</a>
+				))}
+			</Modal>
 			<form onSubmit={form.onSubmit(handleSubmit)}>
 				<Button type="submit" leftIcon={<FaSave />}>
 					Save
