@@ -36,7 +36,7 @@
 		"ip": "^1.1.9",
 		"node-os-utils": "^1.3.7",
 		"node-static": "^0.7.11",
-		"osc": "^2.4.4",
+		"osc": "^2.4.5",
 		"paradisepi-client": "file:../client",
 		"portfinder": "^1.0.32",
 		"reflect-metadata": "^0.1.14",
