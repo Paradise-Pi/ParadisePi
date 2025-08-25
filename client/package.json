@@ -62,7 +62,7 @@
 		"eslint-plugin-unused-imports": "^2.0.0",
 		"postcss-preset-mantine": "1.15.0",
 		"postcss-simple-vars": "^7.0.1",
-		"vite": "^5.3.1",
+		"vite": "^5.4.7",
 		"css-loader": "^6.8.1",
 		"postcss": "^8.4.31",
 		"postcss-import": "^15.1.0",
